@@ -47,7 +47,7 @@ export default function Upload() {
     }
   };
   return (
-    <main className="p-3 h-full">
+    <main className="p-3 h-full pb-10">
       <div className="h-full">
         <form
           className="flex flex-col space-y-3 h-full"

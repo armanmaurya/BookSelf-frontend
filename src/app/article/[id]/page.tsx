@@ -1,12 +1,12 @@
 import Markdown, { Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
-// import remarkPrism from "remark-prism";
-// import remarkHighlightjs from "remark-highlight.js";
-// import "highlight.js/styles/a11y-light.css";
 
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
+
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneLight } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 const components: Components = {
   h1: ({ node, ...props }) => (
@@ -33,13 +33,31 @@ const components: Components = {
     </p>
   ),
 
-  code: ({ node, ...props }) => (
-    <code
-      style={{ borderRadius: "0.5rem", backgroundColor: "#e0e0e0"}}
-      className=""
-      {...props}
-    />
-  ),
+  code: ({ node, inline, className, children, ...props }: any) => {
+    const match = /language-(\w+)/.exec(className || "");
+
+    return !inline && match ? (
+      <SyntaxHighlighter
+        style={oneLight}
+        PreTag="div"
+        language={match[1]}
+        {...props}
+      >
+        {String(children).replace(/\n$/, "")}
+      </SyntaxHighlighter>
+    ) : (
+      <code style={{ borderRadius: "0.5rem", backgroundColor: "#e0e0e0" , padding:"3px"}} className={className} {...props}>
+        {children}
+      </code>
+    );
+    // return (
+    //   <code
+    //     style={{ borderRadius: "0.5rem", backgroundColor: "#e0e0e0" }}
+    //     className=""
+    //     {...props}
+    //   />
+    // );
+  },
   pre: ({ node, ...props }) => <pre className="my-1" {...props} />,
 };
 
@@ -53,7 +71,9 @@ interface Article {
 
 async function getData(id: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article?id=${id}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/article?id=${id}`
+    );
     return res.json();
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -69,7 +89,9 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="">
       <div className="flex items-center justify-center p-2">
-        <h1 className="text-4xl font-semibold"><u>{(await data).title}</u></h1>
+        <h1 className="text-4xl font-semibold">
+          <u>{(await data).title}</u>
+        </h1>
       </div>
       <Markdown
         className="p-4 pb-10"

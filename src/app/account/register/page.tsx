@@ -118,7 +118,7 @@ export default function Register() {
                 type="text"
                 id="first_name"
                 name="first_name"
-                className="border rounded w-full"
+                className="border rounded w-full p-1"
                 value={form.first_name}
                 onChange={handleChange}
               />
@@ -129,7 +129,7 @@ export default function Register() {
                 type="text"
                 id="last_name"
                 name="last_name"
-                className="border rounded w-full"
+                className="border rounded w-full p-1"
                 value={form.last_name}
                 onChange={handleChange}
               />
@@ -140,7 +140,7 @@ export default function Register() {
                 type="password"
                 id="password"
                 name="password"
-                className="border rounded w-full"
+                className="border rounded w-full p-1"
                 value={form.password}
                 onChange={handleChange}
               />
@@ -151,7 +151,7 @@ export default function Register() {
                 type="password"
                 id="password2"
                 name="password2"
-                className="border rounded w-full"
+                className="border rounded w-full p-1"
                 value={form.password2}
                 onChange={handleChange}
               />
@@ -177,7 +177,7 @@ export default function Register() {
                     type="text"
                     id="code"
                     name="code"
-                    className="border rounded w-full"
+                    className="border rounded w-full p-1"
                     value={form.code}
                     onChange={handleChange}
                   />
@@ -202,7 +202,7 @@ export default function Register() {
                     type="text"
                     id="email"
                     name="email"
-                    className="border rounded w-full"
+                    className="border rounded w-full p-1"
                     value={form.email}
                     onChange={handleChange}
                   />
