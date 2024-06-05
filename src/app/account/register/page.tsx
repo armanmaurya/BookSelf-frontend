@@ -1,6 +1,9 @@
 "use client";
+import RNotification from "@/app/components/RNotification";
 import { useState } from "react";
-import { Bars } from "react-loader-spinner";
+import { Bars, ThreeCircles } from "react-loader-spinner";
+import { Store } from "react-notifications-component";
+import OtpInput from "react-otp-input";
 
 export default function Register() {
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -17,6 +20,7 @@ export default function Register() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsProgressBarVisible(true);
 
     try {
       const response = await fetch(
@@ -36,11 +40,57 @@ export default function Register() {
         // console.log(data);
         localStorage.setItem("refreshToken", data.refresh);
         localStorage.setItem("accessToken", data.access);
+        setIsProgressBarVisible(false);
+        Store.addNotification({
+          message: "Registration successful! Redirecting...",
+          type: "success",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated animate__faceIn"],
+          animationOut: ["animate__animated animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+          },
+        });
+        window.location.href = "/";
       } else {
         // Handle error response
-        console.log("Registration failed");
+        setIsProgressBarVisible(false);
+        Store.addNotification({
+          message: "Registration failed",
+          type: "danger",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated animate__faceIn"],
+          animationOut: ["animate__animated animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+          },
+        });
       }
     } catch (error) {
+      setIsProgressBarVisible(false);
+      Store.addNotification({
+        message: "Network Error",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated animate__faceIn"],
+        animationOut: ["animate__animated animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+        },
+      
+      })
       // Handle network error
       console.log("Network error");
     }
@@ -66,8 +116,21 @@ export default function Register() {
           email: form.email,
         }));
         setIsCodeSent(true);
-        console.log("Code sent");
         setIsProgressBarVisible(false);
+        Store.addNotification({
+          message: "Code sent successfully!",
+          type: "success",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated animate__faceIn"],
+          animationOut: ["animate__animated animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+          },
+        });
       }
     } catch (error) {
       console.log("Network error");
@@ -76,6 +139,7 @@ export default function Register() {
 
   const VerifyCode = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsProgressBarVisible(true);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/verify-email/`,
@@ -88,10 +152,54 @@ export default function Register() {
         }
       );
       if (response.ok) {
-        console.log("Email verified");
+        setIsProgressBarVisible(false);
+        Store.addNotification({
+          message: "Code verified successfully!",
+          type: "success",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated animate__faceIn"],
+          animationOut: ["animate__animated animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+          },
+        });
         setIsCodeVerified(true);
+      } else {
+        setIsProgressBarVisible(false);
+        Store.addNotification({
+          message: "Invalid code!",
+          type: "danger",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated animate__faceIn"],
+          animationOut: ["animate__animated animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+          },
+        });
       }
     } catch (error) {
+      Store.addNotification({
+        message: "Code verification failed!",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated animate__faceIn"],
+        animationOut: ["animate__animated animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+        },
+      });
       console.log("Network error");
     }
   };
@@ -105,6 +213,12 @@ export default function Register() {
 
   return (
     <main>
+      {isProgressBarVisible && (
+        <div className="flex items-center justify-center absolute bg-zinc-300 bg-opacity-20 h-full w-full">
+          <ThreeCircles color="#000" height={50} width={50} />
+        </div>
+      )}
+      <RNotification />
       <div className="flex items-center justify-center h-screen">
         {isCodeVerified ? (
           <form
@@ -171,15 +285,24 @@ export default function Register() {
                 onSubmit={VerifyCode}
               >
                 <h1>Enter OTP</h1>
-                <div className="">
-                  <label htmlFor="code">Code:</label>
-                  <input
-                    type="text"
-                    id="code"
-                    name="code"
-                    className="border rounded w-full p-1"
+                <div className="w-full">
+                  <OtpInput
                     value={form.code}
-                    onChange={handleChange}
+                    onChange={(e) => setForm({ ...form, code: e })}
+                    numInputs={4}
+                    renderSeparator={<span>-</span>}
+                    renderInput={(props) => <input name="code" {...props} />}
+                    inputStyle={{
+                      height: "40px",
+                      width: "40px",
+                      fontSize: "20px",
+                      textAlign: "center",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      margin: "0 5px",
+                    }}
+                    containerStyle={"flex justify-center w-full"}
+                    inputType="number"
                   />
                 </div>
 
@@ -187,7 +310,7 @@ export default function Register() {
                   type="submit"
                   className="bg-blue-500 p-2 text-white rounded"
                 >
-                  Register
+                  Verify
                 </button>
               </form>
             ) : (
@@ -207,18 +330,13 @@ export default function Register() {
                     onChange={handleChange}
                   />
                 </div>
-                {isProgressBarVisible ? (
-                  <div className="flex items-center justify-center">
-                    <Bars color="#000" height={80} width={80} />
-                  </div>
-                ) : (
-                  <button
-                    type="submit"
-                    className="bg-blue-500 p-2 text-white rounded"
-                  >
-                    Send Code
-                  </button>
-                )}
+
+                <button
+                  type="submit"
+                  className="bg-blue-500 p-2 text-white rounded"
+                >
+                  Send Code
+                </button>
               </form>
             )}
           </div>

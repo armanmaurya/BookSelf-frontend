@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+// import 'react-notifications-component/dist/theme.css'
+// import 'animate.css/animate.min.css';
 import AppBar from "./components/AppBar";
 import SideBar from "./components/SideBar";
 import { ContextProvider } from "./components/SideBarContext";

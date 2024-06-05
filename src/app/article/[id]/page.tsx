@@ -85,6 +85,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data: Promise<Article> = await getData(id);
   // console.log(data);
   const content = (await data).content;
+  // await new Promise((resolve) => setTimeout(resolve, 3000));  // Add Wait of 3 seconds
 
   return (
     <div className="">
