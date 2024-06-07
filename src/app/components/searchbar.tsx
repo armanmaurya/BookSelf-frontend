@@ -17,8 +17,8 @@ const SearchBar = () => {
   return (
     <input
       id="search-bar"
-      className="border p-1 rounded-md border-zinc-900 w-full"
-      placeholder="search"
+      className="border p-1 px-2 rounded-full border-zinc-900 w-full"
+      placeholder="Search..."
       type="text"
       onKeyDown={handleKeyPress}
     />

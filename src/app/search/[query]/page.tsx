@@ -11,6 +11,9 @@ interface Article {
 
 async function search(query: string) {
   try {
+    if (query === null || query === undefined || query === "") {
+      window.location.href = "/";
+    }
     const res = await fetch(`http://127.0.0.1:8000/api/search?q=${query}`);
     return res.json();
   } catch (error) {
@@ -20,7 +23,8 @@ async function search(query: string) {
   }
 }
 const Page = async ({ params: { query } }: { params: { query: string } }) => {
-    const data: Promise<Article>[] = await search(query);
+  const data: Promise<Article>[] = await search(query);
+  // await new Promise((resolve) => setTimeout(resolve, 9000));
 
   return (
     <main className="px-2 mt-2">

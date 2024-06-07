@@ -8,6 +8,8 @@ import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
+// import { H1Element, H2Element, H3Element, H4Element, H5Element, H6Element } from "@/app/components/CustomElements";
+
 const components: Components = {
   h1: ({ node, ...props }) => (
     <h1 className="text-4xl font-bold text-black" {...props} />

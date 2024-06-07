@@ -61,12 +61,12 @@ const ProfileIcon = () => {
         </div>
       ) : (
         <li className=" space-x-3 mr-2">
-          <Link
+          <a
             className="border p-1.5 bg-sky-500 text-slate-50 rounded-2xl"
             href="/account/register"
           >
             Create Account
-          </Link>
+          </a>
           <Link className="text-sky-500" href="/account/login">
             Login
           </Link>

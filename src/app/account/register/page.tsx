@@ -18,10 +18,48 @@ export default function Register() {
     code: "",
   });
 
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsProgressBarVisible(true);
 
+    if (!form.first_name || !form.last_name || !form.password) {
+      setIsProgressBarVisible(false);
+      Store.addNotification({
+        message: "All fields are required",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated animate__faceIn"],
+        animationOut: ["animate__animated animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+        },
+      });
+      return;
+    }
+
+    if (form.password !== form.password2) {
+      setIsProgressBarVisible(false);
+      Store.addNotification({
+        message: "Passwords do not match",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated animate__faceIn"],
+        animationOut: ["animate__animated animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+        },
+      });
+      return;
+    }
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/register/`,
@@ -98,6 +136,23 @@ export default function Register() {
 
   const SendCode = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!form.email) {
+      Store.addNotification({
+        message: "Email is required",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated animate__faceIn"],
+        animationOut: ["animate__animated animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+        },
+      });
+      return;
+    }
     setIsProgressBarVisible(true);
     try {
       const response = await fetch(
@@ -131,6 +186,23 @@ export default function Register() {
             showIcon: true,
           },
         });
+      } else {
+        setIsProgressBarVisible(false);
+        const data = await response.json();
+        Store.addNotification({
+          message: `${data.email[0]}`,
+          type: "danger",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated animate__faceIn"],
+          animationOut: ["animate__animated animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+          },
+        });
       }
     } catch (error) {
       console.log("Network error");
@@ -139,6 +211,23 @@ export default function Register() {
 
   const VerifyCode = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!form.code) {
+      Store.addNotification({
+        message: "Code is required",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated animate__faceIn"],
+        animationOut: ["animate__animated animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+        },
+      });
+      return;
+    }
     setIsProgressBarVisible(true);
     try {
       const response = await fetch(

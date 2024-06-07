@@ -16,6 +16,27 @@ export const metadata: Metadata = {
 };
 export const revalidate = 3600;
 
+const checklogin = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/example/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (response.ok) {
+      // window.location.href = "/";
+    }
+  }
+  catch (error) {
+    console.log("Network error");
+  }
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{

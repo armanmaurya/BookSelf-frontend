@@ -1,9 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThreeCircles } from "react-loader-spinner";
 import { Store } from "react-notifications-component";
 import RNotification from "@/app/components/RNotification";
 import ProgressBar from "@/app/components/ProgressBar";
+// import 'ldrs/zoomies'
+import { zoomies } from "ldrs";
+
+zoomies.register();
+
+// Default values shown
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -23,17 +29,12 @@ export default function Login() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(form),
+          credentials: "include",
         }
       );
       if (response.ok) {
         // Handle successful response
-
-        const data = await response.json();
-
-        localStorage.setItem("refreshToken", data.refresh);
-        localStorage.setItem("accessToken", data.access);
-
-        window.location.href = "/";
+        // window.location.href = "/";
         setIsProgressBarVisible(false);
         // Store.addNotification({
         //   message: "Login successful! Redirecting...",
@@ -49,7 +50,6 @@ export default function Login() {
         //     showIcon: true,
         //   },
         // });
-
       } else {
         setIsProgressBarVisible(false);
         // Handle error response
@@ -84,19 +84,54 @@ export default function Login() {
     }));
   };
 
+  const checklogin = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/example/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        // window.location.href = "/";
+      }
+    }
+    catch (error) {
+      console.log("Network error");
+    }
+  }
+
+  useEffect(() => {
+    checklogin();
+  
+  }, [])
+
   return (
     <main className="h-full">
       {isProgressBarVisible && (
         <div className="flex items-center justify-center absolute bg-zinc-300 bg-opacity-20 h-full w-full">
-          <ThreeCircles color="#000" height={50} width={50} />
+          {/* <ThreeCircles color="#000" height={50} width={50} /> */}
         </div>
       )}
       <RNotification />
       <div className="flex items-center justify-center h-full">
         <form
-          className="flex flex-col border w-80 p-4 rounded-md items-center justify-center space-y-3"
+          className="flex flex-col border w-80 px-4 pb-4 rounded-md items-center justify-center space-y-3"
           onSubmit={handleSubmit}
         >
+          {isProgressBarVisible && (
+            <l-zoomies
+              size="320"
+              stroke="5"
+              bg-opacity="0.1"
+              speed="1.4"
+              color="black"
+            ></l-zoomies>
+          )}
           <h1>Login</h1>
           <div className="">
             <label htmlFor="email">Email:</label>
