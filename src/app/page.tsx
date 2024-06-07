@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { ArticleCard, ArticleCard2 } from "./components/articleCard";
 
 interface Article {
@@ -11,29 +12,6 @@ interface Article {
   created_at: string;
 }
 
-const checklogin = async () => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/example/`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
-    if (response.ok) {
-      console.log("Login success")
-      // window.location.href = "/";
-    } else {
-      console.log("Login failed")
-    }
-  }
-  catch (error) {
-    console.log("Network error");
-  }
-}
 
 const fetchData = async () => {
   try {
@@ -49,9 +27,12 @@ const fetchData = async () => {
 
 
 export default async function Home() {
+  const cookieStore = cookies();
+  console.log(cookieStore);
+  
   const data: Promise<Article>[] = await fetchData();
   // console.log(data);
-  await checklogin();
+  // await checklogin();
 
   return (
     <main className="px-2 mt-2">
