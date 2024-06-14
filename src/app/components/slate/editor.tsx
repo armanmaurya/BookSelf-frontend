@@ -42,7 +42,7 @@ import { withHistory } from "slate-history";
 import { withMarkdownShortcuts } from "./plugin";
 import { handleKeyBoardFormating, markdownTokenizer } from "./utils";
 import { SlateToolBar } from "./toolbar";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 // --------------------------------- Types --------------------------------- //
 
 type CustomEditor = BaseEditor & ReactEditor & CustomEditorType;
@@ -370,7 +370,7 @@ const Leaf = (props: RenderLeafProps) => {
 
 export function WSGIEditor() {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
-  const [value, setValue] = useState<Descendant[]>(initialValue);
+  const [value, setValue] = useState("");
 
   // const slateToMarkdown = new SlateToMarkdown(NodeType);
   // const markdown = slateToMarkdown.convert(initialValue);
@@ -405,15 +405,19 @@ export function WSGIEditor() {
   // const getCookie = (name) => {
   //   let cookieValue = null;
   //   console.log(document.cookie);
-    
+
   //   return cookieValue;
   // };
 
-  // getCookie("csrftoken");  
-  const csrf = Cookies.get('csrftoken');
-  console.log(csrf);
-
+  // getCookie("csrftoken");
+  
   const SubmitContent = async () => {
+    const csrf = Cookies.get("csrftoken");
+    // const content = {
+    //   title: value,
+    //   content: JSON.stringify(editor.children),
+    // };
+    
     try {
       const res = await fetch(`${API_ENDPOINT.articleUpload.url}`, {
         method: "POST",
@@ -422,11 +426,14 @@ export function WSGIEditor() {
           "X-CSRFToken": `${csrf}`,
         },
         body: JSON.stringify({
-          title: "This is the title",
-          content: JSON.stringify(value),
+          title: value,
+          content: JSON.stringify(editor.children),
         }),
         credentials: "include",
       });
+      if (res.ok) {
+        console.log("Success");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -443,7 +450,7 @@ export function WSGIEditor() {
           );
           if (isAstChange) {
             // Save the value to Local Storage.
-            setValue(value);
+            // setValue(value);
             // const content = JSON.stringify(value);
             // console.log(content);
             // localStorage.setItem("content", content);
@@ -453,7 +460,18 @@ export function WSGIEditor() {
           // getNodeText();
         }}
       >
-        <SlateToolBar />
+        <SlateToolBar onSubmit={SubmitContent}/>
+        <div className="w-full flex items-center justify-center">
+          <input
+            type="text"
+            className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold"
+            onBlur={(e) => {
+              setValue(e.target.value);
+            }}
+            // value={value}
+            placeholder="Title"
+          />
+        </div>
         <Editable
           spellCheck
           autoFocus

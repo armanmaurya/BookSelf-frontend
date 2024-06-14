@@ -20,6 +20,9 @@ body {
 [contenteditable] {
   outline: 0px solid transparent;
 }
+/* input {
+  outline: 0px solid transparent;
+} */
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

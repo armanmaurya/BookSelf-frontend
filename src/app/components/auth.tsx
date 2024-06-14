@@ -31,8 +31,8 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
         }
       );
       if (response.ok) {
-        // window.location.href = "/";
-        console.log("Registration successful");
+        window.location.href = "/";
+        // console.log("Registration successful");
       } else {
         // setIsProgressBarVisible(false);
         // Handle error response

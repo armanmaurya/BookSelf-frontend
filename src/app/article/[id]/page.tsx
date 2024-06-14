@@ -89,12 +89,12 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data: Promise<Article> = await getData(id);
 
   const content = (await data).content;
-  console.log(typeof content);
+  // console.log(typeof content);
   const jsonContent = JSON.parse(content);
   
   const slateToMarkdown = new SlateToMarkdown(NodeType);
   const markdown = slateToMarkdown.convert(jsonContent);
-  console.log(markdown);
+  // console.log(markdown);
   // await new Promise((resolve) => setTimeout(resolve, 3000));  // Add Wait of 3 seconds
 
   return (
