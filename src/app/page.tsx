@@ -27,20 +27,20 @@ const fetchData = async () => {
 
 
 
-export default function Home() {
+export default async function Home() {
 
   
-  // const data: Promise<Article>[] = await fetchData();
+  const data: Promise<Article>[] = await fetchData();
   // console.log(data);
   // await checklogin();
 
   return (
     <main className="px-2 mt-2">
       <div className="flex space-x-2">
-        {/* {data.map(async (articlePromise) => {
+        {data.map(async (articlePromise) => {
           const article = await articlePromise;
           return <ArticleCard key={article.id} data={article} />;
-        })} */}
+        })}
       </div>
     </main>
   );
