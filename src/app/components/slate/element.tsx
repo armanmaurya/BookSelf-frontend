@@ -1,3 +1,4 @@
+import { NodeType } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 
 export const H1Element = (props: RenderElementProps) => {
@@ -57,8 +58,9 @@ export const H6Element = (props: RenderElementProps) => {
 };
 
 export const DefaultElement = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.PARAGRAPH ? props.element.align : "left"}
   return (
-    <p className="my-2 hover:bg-slate-50" {...props.attributes}>
+    <p className={`my-2 hover:bg-slate-50`} style={style} {...props.attributes}>
       {props.children}
     </p>
   );

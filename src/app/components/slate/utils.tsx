@@ -8,7 +8,7 @@ import {
 import { CustomElement } from "./editor";
 // import { CustomEditor } from "./CustomEditor";
 
-export const CustomEditor = {
+export const SlateCustomEditor = {
   isBoldMarkActive(editor: SlateEditor) {
     const marks = SlateEditor.marks(editor);
 
@@ -102,8 +102,9 @@ export const CustomEditor = {
     return !!match;
   },
 
+
   toggleBoldMark(editor: SlateEditor) {
-    const isActive = CustomEditor.isBoldMarkActive(editor);
+    const isActive = SlateCustomEditor.isBoldMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
     });
@@ -120,7 +121,7 @@ export const CustomEditor = {
   },
 
   toggleItalicMark(editor: SlateEditor) {
-    const isActive = CustomEditor.isItalicMarkActive(editor);
+    const isActive = SlateCustomEditor.isItalicMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
     });
@@ -137,7 +138,7 @@ export const CustomEditor = {
   },
 
   toggleUnderlineMark(editor: SlateEditor) {
-    const isActive = CustomEditor.isUnderlineMarkActive(editor);
+    const isActive = SlateCustomEditor.isUnderlineMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
     });
@@ -153,8 +154,27 @@ export const CustomEditor = {
     }
   },
 
+  setAlignment(editor: SlateEditor, alignment: "left" | "center" | "right" | "justify") {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+    });
+
+    if (!match) {
+      return;
+    }
+
+    Transforms.setNodes(
+      editor,
+      { align: alignment },
+      {
+        match: (n) =>
+          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      }
+    );
+  },
+
   runCommand(editor: SlateEditor) {
-    const isCommand = CustomEditor.isCommand(editor);
+    const isCommand = SlateCustomEditor.isCommand(editor);
 
     if (isCommand && editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
@@ -164,31 +184,31 @@ export const CustomEditor = {
       const rest = text.substring(command.length + 1);
       switch (command) {
         case "bold":
-          CustomEditor.toggleBoldMark(editor);
+          SlateCustomEditor.toggleBoldMark(editor);
           break;
         case "italic":
-          CustomEditor.toggleItalicMark(editor);
+          SlateCustomEditor.toggleItalicMark(editor);
           break;
         case "code":
-          CustomEditor.toggleCodeBlock(editor);
+          SlateCustomEditor.toggleCodeBlock(editor);
           break;
         case "h1":
-          CustomEditor.toggleH1Block(editor);
+          SlateCustomEditor.toggleH1Block(editor);
           break;
         case "h2":
-          CustomEditor.toggleH2Block(editor);
+          SlateCustomEditor.toggleH2Block(editor);
           break;
         case "h3":
-          CustomEditor.toggleH3Block(editor);
+          SlateCustomEditor.toggleH3Block(editor);
           break;
         case "h4":
-          CustomEditor.toggleH4Block(editor);
+          SlateCustomEditor.toggleH4Block(editor);
           break;
         case "h5":
-          CustomEditor.toggleH5Block(editor);
+          SlateCustomEditor.toggleH5Block(editor);
           break;
         case "h6":
-          CustomEditor.toggleH6Block(editor);
+          SlateCustomEditor.toggleH6Block(editor);
           break;
         default:
           console.log("Command not found");
@@ -197,7 +217,7 @@ export const CustomEditor = {
   },
 
   toggleParagraphBlock(editor: SlateEditor) {
-    const isActive = CustomEditor.isParagraphActive(editor);
+    const isActive = SlateCustomEditor.isParagraphActive(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "paragraph" },
@@ -209,7 +229,7 @@ export const CustomEditor = {
   },
 
   toggleH1Block(editor: SlateEditor) {
-    const isActive = CustomEditor.isH1Active(editor);
+    const isActive = SlateCustomEditor.isH1Active(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "heading-one" },
@@ -221,7 +241,7 @@ export const CustomEditor = {
   },
 
   toggleH2Block(editor: SlateEditor) {
-    const isActive = CustomEditor.isH2Active(editor);
+    const isActive = SlateCustomEditor.isH2Active(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "heading-two" },
@@ -233,7 +253,7 @@ export const CustomEditor = {
   },
 
   toggleH3Block(editor: SlateEditor) {
-    const isActive = CustomEditor.isH3Active(editor);
+    const isActive = SlateCustomEditor.isH3Active(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "heading-three" },
@@ -245,7 +265,7 @@ export const CustomEditor = {
   },
 
   toggleH4Block(editor: SlateEditor) {
-    const isActive = CustomEditor.isH4Active(editor);
+    const isActive = SlateCustomEditor.isH4Active(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "heading-four" },
@@ -257,7 +277,7 @@ export const CustomEditor = {
   },
 
   toggleH5Block(editor: SlateEditor) {
-    const isActive = CustomEditor.isH5Active(editor);
+    const isActive = SlateCustomEditor.isH5Active(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "heading-five" },
@@ -269,7 +289,7 @@ export const CustomEditor = {
   },
 
   toggleH6Block(editor: SlateEditor) {
-    const isActive = CustomEditor.isH6Active(editor);
+    const isActive = SlateCustomEditor.isH6Active(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? "paragraph" : "heading-six" }, 
@@ -281,7 +301,7 @@ export const CustomEditor = {
   },
 
   toggleCodeBlock(editor: SlateEditor) {
-    const isActive = CustomEditor.isCodeBlockActive(editor);
+    const isActive = SlateCustomEditor.isCodeBlockActive(editor);
     // if (editor.selection) {
     //   Transforms.mergeNodes(editor, {
     //     at: editor.selection,
@@ -349,48 +369,48 @@ export const handleKeyBoardFormating = (
     switch (event.key) {
       case "1":
         event.preventDefault();
-        CustomEditor.toggleH1Block(editor);
+        SlateCustomEditor.toggleH1Block(editor);
         break;
       case "2":
         event.preventDefault();
-        CustomEditor.toggleH2Block(editor);
+        SlateCustomEditor.toggleH2Block(editor);
         break;
       case "3":
         event.preventDefault();
-        CustomEditor.toggleH3Block(editor);
+        SlateCustomEditor.toggleH3Block(editor);
         break;
       case "4":
         event.preventDefault();
-        CustomEditor.toggleH4Block(editor);
+        SlateCustomEditor.toggleH4Block(editor);
         break;
       case "5":
         event.preventDefault();
-        CustomEditor.toggleH5Block(editor);
+        SlateCustomEditor.toggleH5Block(editor);
         break;
       case "6":
         event.preventDefault();
-        CustomEditor.toggleH6Block(editor);
+        SlateCustomEditor.toggleH6Block(editor);
         break;
       case "`":
         event.preventDefault();
-        CustomEditor.toggleCodeBlock(editor);
+        SlateCustomEditor.toggleCodeBlock(editor);
         break;
       case "b":
         event.preventDefault();
-        CustomEditor.toggleBoldMark(editor);
+        SlateCustomEditor.toggleBoldMark(editor);
         break;
       case "i":
         event.preventDefault();
-        CustomEditor.toggleItalicMark(editor);
+        SlateCustomEditor.toggleItalicMark(editor);
         break;
       case "u":
         event.preventDefault();
-        CustomEditor.toggleUnderlineMark(editor);
+        SlateCustomEditor.toggleUnderlineMark(editor);
         break;
       case "Enter":
-        if (CustomEditor.isCodeBlockActive(editor)) {
+        if (SlateCustomEditor.isCodeBlockActive(editor)) {
           event.preventDefault();
-          CustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor);
         }
     }
   }
@@ -398,27 +418,27 @@ export const handleKeyBoardFormating = (
     switch (event.key) {
       case "Enter":
         event.preventDefault();
-        if (CustomEditor.isParagraphActive(editor)) {
-          CustomEditor.insertLineBreak(editor);
+        if (SlateCustomEditor.isParagraphActive(editor)) {
+          SlateCustomEditor.insertLineBreak(editor);
         }
     }
   }
   if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
-    const isCodeBlockActive = CustomEditor.isCodeBlockActive(editor);
+    const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
     if (isCodeBlockActive) {
       event.preventDefault();
-      CustomEditor.insertLineBreak(editor);
+      SlateCustomEditor.insertLineBreak(editor);
       return;
     }
 
-    const isParagraphActive = CustomEditor.isParagraphActive(editor);
+    const isParagraphActive = SlateCustomEditor.isParagraphActive(editor);
     // if (isParagraphActive) {
     //   event.preventDefault();
     //   CustomEditor.runCommand(editor);
     // }
     if (!isParagraphActive) {
       event.preventDefault();
-      CustomEditor.insertParagraph(editor);
+      SlateCustomEditor.insertParagraph(editor);
       return;
     }
   }

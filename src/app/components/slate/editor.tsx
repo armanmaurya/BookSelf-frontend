@@ -1,7 +1,7 @@
 "use client";
 // Import React dependencies.
 import React, { useCallback, useMemo, useState } from "react";
-import { CustomEditor, SlateToMarkdown } from "./utils";
+import { SlateCustomEditor, SlateToMarkdown } from "./utils";
 import {
   H1Element,
   H2Element,
@@ -62,8 +62,8 @@ type HeadingElement = {
 };
 type ParagraphElement = {
   type: NodeType.PARAGRAPH | null;
-  children: CustomText[];
-  url?: string | null;
+  align: "left" | "center" | "right" | "justify";
+  children: CustomText[];  
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 
@@ -84,6 +84,7 @@ export type CustomElement =
   | ParagraphElement
   | HeadingElement
   | ImageElementType;
+
 type FormattedText = {
   text: string;
   bold?: boolean;
@@ -156,6 +157,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.PARAGRAPH,
+    align: "center",
     children: [
       {
         text: "A line of text in a paragraph.",
@@ -235,6 +237,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.PARAGRAPH,
+    align: "right",
     children: [
       {
         text: "A line of text \nin a paragraph.",
@@ -402,15 +405,6 @@ export function WSGIEditor() {
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
   }, []);
-
-  // const getCookie = (name) => {
-  //   let cookieValue = null;
-  //   console.log(document.cookie);
-
-  //   return cookieValue;
-  // };
-
-  // getCookie("csrftoken");
   
   const SubmitContent = async () => {
     const csrf = Cookies.get("csrftoken");
@@ -457,8 +451,7 @@ export function WSGIEditor() {
             // localStorage.setItem("content", content);
           }
 
-          // // Testing some features
-          // getNodeText();
+          
         }}
       >
         <SlateToolBar onSubmit={SubmitContent}/>

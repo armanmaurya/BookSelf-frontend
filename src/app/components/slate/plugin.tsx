@@ -7,7 +7,7 @@ import {
   setSelection,
   Node,
 } from "slate";
-import { CustomEditor } from "./utils";
+import { SlateCustomEditor } from "./utils";
 
 const SHORTCUTS: { [key: string]: string } = {
   "#": "heading-one",
@@ -26,7 +26,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "heading-one",
       });
       if (!match) {
-        CustomEditor.toggleH1Block(editor);
+        SlateCustomEditor.toggleH1Block(editor);
       }
       break;
     case "heading-two":
@@ -34,7 +34,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "heading-two",
       });
       if (!match2) {
-        CustomEditor.toggleH2Block(editor);
+        SlateCustomEditor.toggleH2Block(editor);
       }
       break;
     case "heading-three":
@@ -42,7 +42,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "heading-three",
       });
       if (!match3) {
-        CustomEditor.toggleH3Block(editor);
+        SlateCustomEditor.toggleH3Block(editor);
       }
       break;
     case "heading-four":
@@ -50,7 +50,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "heading-four",
       });
       if (!match4) {
-        CustomEditor.toggleH4Block(editor);
+        SlateCustomEditor.toggleH4Block(editor);
       }
       break;
     case "heading-five":
@@ -58,7 +58,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "heading-five",
       });
       if (!match5) {
-        CustomEditor.toggleH5Block(editor);
+        SlateCustomEditor.toggleH5Block(editor);
       }
       break;
     case "heading-six":
@@ -66,7 +66,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "heading-six",
       });
       if (!match6) {
-        CustomEditor.toggleH6Block(editor);
+        SlateCustomEditor.toggleH6Block(editor);
       }
       break;
     case "code":
@@ -74,7 +74,7 @@ export const toggleBlock = (editor: Editor, type: string) => {
         match: (n) => n.type === "code",
       });
       if (!match7) {
-        CustomEditor.toggleCodeBlock(editor);
+        SlateCustomEditor.toggleCodeBlock(editor);
       }
       break;
   }
@@ -118,7 +118,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
           const boldRegex = /\*\*(.*?)\*\*/g; // regex to extract bold text
 
           while ((match = boldRegex.exec(newText2)) !== null) {
-            const isActive = CustomEditor.isBoldMarkActive(editor);
+            const isActive = SlateCustomEditor.isBoldMarkActive(editor);
             insertText(text1);
             if (isActive) {
               return;
@@ -200,7 +200,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
 
           rmatch = boldRegex.exec(newText2);
           if (!rmatch) {
-            const isActive = CustomEditor.isBoldMarkActive(editor);
+            const isActive = SlateCustomEditor.isBoldMarkActive(editor);
             deleteBackward(...args);
             if (isActive) {
               if (editor.selection) {
