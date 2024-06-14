@@ -1,3 +1,4 @@
+"use client";
 import { ReactNotifications} from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import 'animate.css/animate.min.css';
@@ -8,4 +9,4 @@ const RNotification = () => {
   )
 }
 
-export default RNotification
+export default RNotification;

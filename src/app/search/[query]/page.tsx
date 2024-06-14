@@ -1,4 +1,4 @@
-import { ArticleCard } from "@/app/components/articleCard";
+import { ArticleCard } from "@/app/components/card";
 // import { useRouter } from "next/navigation";
 
 interface Article {

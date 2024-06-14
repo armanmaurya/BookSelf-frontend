@@ -1,8 +1,12 @@
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps, RenderLeafProps } from "slate-react";
 
 export const H1Element = (props: RenderElementProps) => {
   return (
-    <h1 className="text-4xl font-bold" style={{fontWeight:"bold"}} {...props.attributes}>
+    <h1
+      className="text-4xl font-bold"
+      style={{ fontWeight: "bold" }}
+      {...props.attributes}
+    >
       {props.children}
     </h1>
   );
@@ -10,7 +14,11 @@ export const H1Element = (props: RenderElementProps) => {
 
 export const H2Element = (props: RenderElementProps) => {
   return (
-    <h2 className="text-3xl" style={{fontWeight:"bold"}} {...props.attributes}>
+    <h2
+      className="text-3xl"
+      style={{ fontWeight: "bold" }}
+      {...props.attributes}
+    >
       {props.children}
     </h2>
   );
@@ -50,9 +58,45 @@ export const H6Element = (props: RenderElementProps) => {
 
 export const DefaultElement = (props: RenderElementProps) => {
   return (
-    <p className="my-2" {...props.attributes}>
+    <p className="my-2 hover:bg-slate-50" {...props.attributes}>
       {props.children}
     </p>
+  );
+};
+
+export const ImageElement = (props: RenderElementProps) => {
+  const { attributes, children, element } = props;
+  let imgUrl = "";
+  if (element.type === "image") {
+    imgUrl = element.url as string;
+  }
+  console.log("Runnded");
+  return (
+    <div {...attributes}>
+      {imgUrl === "" ? (
+        <div
+          contentEditable={false}
+          className="w-full h-12 bg-slate-200 flex items-center p-3"
+        >
+          <img
+            src="https://img.icons8.com/?size=100&id=53386&format=png&color=000000"
+            className="h-10"
+            alt=""
+          />
+        </div>
+      ) : (
+        <div>
+          <div contentEditable={false}>
+            <img
+              src={element.type === "image" ? (element.url as string) : ""}
+              alt="Invalid Image URL"
+              className={`w-full rounded-lg`}
+            />
+          </div>
+          <div className="w-full text-center text-sm">{children}</div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -77,5 +121,18 @@ export const CodeElement = (props: RenderElementProps) => {
     <pre className="bg-zinc-900 text-white p-4 rounded" {...attributes}>
       <code>{children}</code>
     </pre>
+  );
+};
+
+export const Leaf = (props: RenderLeafProps) => {
+  return (
+    <span
+      {...props.attributes}
+      className={`${props.leaf.bold ? "font-bold" : ""} ${
+        props.leaf.italic ? "italic" : ""
+      }`}
+    >
+      {props.children}
+    </span>
   );
 };

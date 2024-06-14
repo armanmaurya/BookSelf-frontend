@@ -1,9 +1,8 @@
 import React, { use, useContext } from "react";
 import Link from "next/link";
-import CheckCreadential from "./CheckCreadential";
-import HamburgerIcon from "./HamburgerIcon";
+import { HamburgerIcon } from "./decoration";
 import ProfileIcon from "./profileIcon";
-import SearchBar from "./searchbar";
+import SearchInput from "./input";
 
 const AppBar = () => {
 
@@ -19,7 +18,7 @@ const AppBar = () => {
           </li>
         </ul>
         <ul className="flex-1">
-          <SearchBar/>
+          <SearchInput/>
         </ul>
         <ul className="flex flex-1 flex-row-reverse space-x-4">
             <ProfileIcon />

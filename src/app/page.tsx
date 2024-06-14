@@ -2,7 +2,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { ArticleCard, ArticleCard2 } from "./components/articleCard";
+import { ArticleCard, ArticleCard2 } from "./components/card";
+import { API_ENDPOINT } from "./utils";
 
 interface Article {
   id: number;
@@ -15,7 +16,7 @@ interface Article {
 
 const fetchData = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`);
+    const res = await fetch(API_ENDPOINT.article.url);
     return res.json();
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -26,21 +27,20 @@ const fetchData = async () => {
 
 
 
-export default async function Home() {
-  const cookieStore = cookies();
-  console.log(cookieStore);
+export default function Home() {
+
   
-  const data: Promise<Article>[] = await fetchData();
+  // const data: Promise<Article>[] = await fetchData();
   // console.log(data);
   // await checklogin();
 
   return (
     <main className="px-2 mt-2">
       <div className="flex space-x-2">
-        {data.map(async (articlePromise) => {
+        {/* {data.map(async (articlePromise) => {
           const article = await articlePromise;
           return <ArticleCard key={article.id} data={article} />;
-        })}
+        })} */}
       </div>
     </main>
   );

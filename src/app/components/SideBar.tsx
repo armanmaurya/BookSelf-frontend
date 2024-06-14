@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { AppContext } from "./SideBarContext";
+import { AppContext } from "./context";
 
 const SideBar = () => {
   const sideBarState = useContext(AppContext);

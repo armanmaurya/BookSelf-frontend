@@ -7,6 +7,8 @@ import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { API_ENDPOINT, NodeType } from "@/app/utils";
+import { SlateToMarkdown } from "@/app/components/slate/utils";
 
 // import { H1Element, H2Element, H3Element, H4Element, H5Element, H6Element } from "@/app/components/CustomElements";
 
@@ -74,7 +76,7 @@ interface Article {
 async function getData(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/article?id=${id}`
+      `${API_ENDPOINT.article.url}?id=${id}`
     );
     return res.json();
   } catch (error) {
@@ -85,8 +87,14 @@ async function getData(id: string) {
 }
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data: Promise<Article> = await getData(id);
-  // console.log(data);
+
   const content = (await data).content;
+  console.log(typeof content);
+  const jsonContent = JSON.parse(content);
+  
+  const slateToMarkdown = new SlateToMarkdown(NodeType);
+  const markdown = slateToMarkdown.convert(jsonContent);
+  console.log(markdown);
   // await new Promise((resolve) => setTimeout(resolve, 3000));  // Add Wait of 3 seconds
 
   return (
@@ -102,7 +110,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
         remarkPlugins={[remarkMath, remarkBreaks]}
         rehypePlugins={[rehypeKatex]}
       >
-        {content}
+        {markdown}
       </Markdown>
     </div>
   );
