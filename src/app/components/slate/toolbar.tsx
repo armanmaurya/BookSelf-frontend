@@ -3,34 +3,9 @@ import { useSlate } from "slate-react";
 import { API_ENDPOINT } from "@/app/utils";
 import Cookies from "js-cookie";
 
-export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
+export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
   const editor = useSlate();
-  //   console.log("editor", editor.operations);
-  //   editor.onChange = (value) => {
-  //     console.log("Changed");
-  //   };
-  const SubmitContent = async () => {
-    const csrf = Cookies.get("csrftoken");
-    try {
-      const res = await fetch(`${API_ENDPOINT.articleUpload.url}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": `${csrf}`,
-        },
-        body: JSON.stringify({
-          title: "This is the title",
-          content: JSON.stringify(editor.children),
-        }),
-        credentials: "include",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const printdata = () => {
-    console.log("editor", JSON.stringify(editor.children));
-  };
+
   return (
     <div className="flex justify-between border p-3 font-serif">
       <div className="toolbar flex">
@@ -61,7 +36,7 @@ export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
           className="px-2 hover:bg-slate-100"
           onClick={(event) => {
             event.preventDefault();
-            // CustomEditor.toggleUnderlineMark(editor);
+            CustomEditor.toggleUnderlineMark(editor);
           }}
         >
           <u>U</u>
@@ -87,7 +62,9 @@ export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
           H1
         </button>
         <button
-          className="px-2 hover:bg-slate-100"
+          className={`px-2 mx-2 hover:bg-slate-100 ${
+            CustomEditor.isH2Active(editor) ? "bg-slate-100" : ""
+          }`}
           onClick={(event) => {
             event.preventDefault();
             CustomEditor.toggleH2Block(editor);
@@ -96,7 +73,9 @@ export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
           H2
         </button>
         <button
-          className="px-2 hover:bg-slate-100"
+          className={`px-2 mx-2 hover:bg-slate-100 ${
+            CustomEditor.isH3Active(editor) ? "bg-slate-100" : ""
+          }`}
           onClick={(event) => {
             event.preventDefault();
             CustomEditor.toggleH3Block(editor);
@@ -105,7 +84,9 @@ export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
           H3
         </button>
         <button
-          className="px-2 hover:bg-slate-100"
+          className={`px-2 mx-2 hover:bg-slate-100 ${
+            CustomEditor.isH4Active(editor) ? "bg-slate-100" : ""
+          }`}
           onClick={(event) => {
             event.preventDefault();
             console.log("H4");
@@ -115,7 +96,9 @@ export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
           H4
         </button>
         <button
-          className="px-2 hover:bg-slate-100"
+          className={`px-2 mx-2 hover:bg-slate-100 ${
+            CustomEditor.isH5Active(editor) ? "bg-slate-100" : ""
+          }`}
           onClick={(event) => {
             event.preventDefault();
             CustomEditor.toggleH5Block(editor);
@@ -124,7 +107,9 @@ export const SlateToolBar = ({onSubmit} : {onSubmit:() => {}}) => {
           H5
         </button>
         <button
-          className="px-2 hover:bg-slate-100"
+          className={`px-2 mx-2 hover:bg-slate-100 ${
+            CustomEditor.isH6Active(editor) ? "bg-slate-100" : ""
+          }`}
           onClick={(event) => {
             event.preventDefault();
             CustomEditor.toggleH6Block(editor);

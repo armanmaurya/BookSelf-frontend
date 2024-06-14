@@ -29,6 +29,16 @@ export const CustomEditor = {
     }
   },
 
+  isUnderlineMarkActive(editor: SlateEditor) {
+    const marks = SlateEditor.marks(editor);
+
+    if (marks) {
+      return marks?.underline === true;
+    } else {
+      return false;
+    }
+  },
+
   isCommand(editor: SlateEditor) {
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
@@ -123,6 +133,23 @@ export const CustomEditor = {
       SlateEditor.removeMark(editor, "italic");
     } else {
       SlateEditor.addMark(editor, "italic", true);
+    }
+  },
+
+  toggleUnderlineMark(editor: SlateEditor) {
+    const isActive = CustomEditor.isUnderlineMarkActive(editor);
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+    });
+
+    if (!match) {
+      return;
+    }
+
+    if (isActive) {
+      SlateEditor.removeMark(editor, "underline");
+    } else {
+      SlateEditor.addMark(editor, "underline", true);
     }
   },
 
@@ -355,6 +382,10 @@ export const handleKeyBoardFormating = (
       case "i":
         event.preventDefault();
         CustomEditor.toggleItalicMark(editor);
+        break;
+      case "u":
+        event.preventDefault();
+        CustomEditor.toggleUnderlineMark(editor);
         break;
       case "Enter":
         if (CustomEditor.isCodeBlockActive(editor)) {

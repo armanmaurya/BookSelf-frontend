@@ -128,9 +128,7 @@ export const Leaf = (props: RenderLeafProps) => {
   return (
     <span
       {...props.attributes}
-      className={`${props.leaf.bold ? "font-bold" : ""} ${
-        props.leaf.italic ? "italic" : ""
-      }`}
+      className={` ${props.leaf.bold ? "font-bold" : ""} ${props.leaf.italic ? "italic" : ""} ${props.leaf.underline ? "underline" : ""} ${props.leaf.code ? "code" : ""} `}
     >
       {props.children}
     </span>

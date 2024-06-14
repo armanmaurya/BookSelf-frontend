@@ -12,6 +12,7 @@ import {
   DefaultElement,
   CodeElement,
   ImageElement,
+  Leaf
 } from "./element";
 
 import {
@@ -355,18 +356,18 @@ export function MarkdownEditor() {
 }
 
 // Define a React component to render leaves with bold text.
-const Leaf = (props: RenderLeafProps) => {
-  return (
-    <span
-      {...props.attributes}
-      className={`${props.leaf.bold ? "font-bold" : ""} ${
-        props.leaf.italic ? "italic" : ""
-      }`}
-    >
-      {props.children}
-    </span>
-  );
-};
+// const Leaf = (props: RenderLeafProps) => {
+//   return (
+//     <span
+//       {...props.attributes}
+//       className={`${props.leaf.bold ? "font-bold" : ""} ${
+//         props.leaf.italic ? "italic" : ""
+//       }`}
+//     >
+//       {props.children}
+//     </span>
+//   );
+// };
 
 export function WSGIEditor() {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
@@ -461,10 +462,10 @@ export function WSGIEditor() {
         }}
       >
         <SlateToolBar onSubmit={SubmitContent}/>
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center mt-3">
           <input
             type="text"
-            className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold"
+            className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold "
             onBlur={(e) => {
               setValue(e.target.value);
             }}
