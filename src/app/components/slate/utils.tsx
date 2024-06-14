@@ -102,7 +102,6 @@ export const SlateCustomEditor = {
     return !!match;
   },
 
-
   toggleBoldMark(editor: SlateEditor) {
     const isActive = SlateCustomEditor.isBoldMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
@@ -154,9 +153,20 @@ export const SlateCustomEditor = {
     }
   },
 
-  setAlignment(editor: SlateEditor, alignment: "left" | "center" | "right" | "justify") {
+  setAlignment(
+    editor: SlateEditor,
+    alignment: "left" | "center" | "right" | "justify"
+  ) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+      match: (n) =>
+        SlateElement.isElement(n) &&
+        (n.type === NodeType.PARAGRAPH ||
+          n.type === NodeType.H1 ||
+          n.type === NodeType.H2 ||
+          n.type === NodeType.H3 ||
+          n.type === NodeType.H4 ||
+          n.type === NodeType.H5 ||
+          n.type === NodeType.H6),
     });
 
     if (!match) {
@@ -172,7 +182,6 @@ export const SlateCustomEditor = {
       }
     );
   },
-
   runCommand(editor: SlateEditor) {
     const isCommand = SlateCustomEditor.isCommand(editor);
 
@@ -292,7 +301,7 @@ export const SlateCustomEditor = {
     const isActive = SlateCustomEditor.isH6Active(editor);
     Transforms.setNodes(
       editor,
-      { type: isActive ? "paragraph" : "heading-six" }, 
+      { type: isActive ? "paragraph" : "heading-six" },
       {
         match: (n) =>
           SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
@@ -338,6 +347,7 @@ export const SlateCustomEditor = {
         {
           type: NodeType.PARAGRAPH,
           children: [{ text: "" }],
+          align: "left",
         },
         {
           match: (n) =>
@@ -575,14 +585,13 @@ export class SlateToMarkdown {
   convert = (nodes: any) => {
     const startTime = performance.now();
     let markdown = "";
-    nodes.forEach((node:any) => {
+    nodes.forEach((node: any) => {
       switch (node.type) {
         case this.nodeTypes.PARAGRAPH:
           for (const child of node.children) {
             if (child.bold && child.italic) {
               markdown += "***" + child.text + "***";
-            }
-            else if (child.bold) {
+            } else if (child.bold) {
               markdown += "**" + child.text + "**";
             } else if (child.italic) {
               markdown += "*" + child.text + "*";
@@ -621,7 +630,7 @@ export class SlateToMarkdown {
     });
     const endTime = performance.now();
     const timeTaken = endTime - startTime;
-    console.log("Time taken:", timeTaken, "ms")
+    console.log("Time taken:", timeTaken, "ms");
     return markdown;
   };
 }

@@ -58,6 +58,7 @@ type HeadingElement = {
     | NodeType.H5
     | NodeType.H6
     | null;
+  align: "left" | "center" | "right" | "justify";
   children: CustomText[];
 };
 type ParagraphElement = {
@@ -124,23 +125,25 @@ declare module "slate" {
 const initialValue: Descendant[] = [
   {
     type: NodeType.H1,
+    align: "center",
     children: [
       {
         text: "Heading One",
       },
     ],
   },
-  {
-    type: "image",
-    url: "",
-    children: [
-      {
-        text: "Image Caption",
-      },
-    ],
-  },
+  // {
+  //   type: "image",
+  //   url: "",
+  //   children: [
+  //     {
+  //       text: "Image Caption",
+  //     },
+  //   ],
+  // },
   {
     type: NodeType.H1,
+    align: "center",
     children: [
       {
         text: "Heading One",
@@ -149,6 +152,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.H2,
+    align: "left",
     children: [
       {
         text: "Heading Two",
@@ -193,6 +197,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.H3,
+    align: "right",
     children: [
       {
         text: "Heading Three",
@@ -201,6 +206,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.H4,
+    align: "right",
     children: [
       {
         text: "Heading Four",
@@ -209,6 +215,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.H5,
+    align: "center",
     children: [
       {
         text: "Heading Five",
@@ -217,6 +224,7 @@ const initialValue: Descendant[] = [
   },
   {
     type: NodeType.H6,
+    align: "center",
     children: [
       {
         text: "Heading Six",
@@ -475,9 +483,9 @@ export function WSGIEditor() {
           onKeyDown={(event) => handleKeyBoardFormating(event, editor)}
         />
       </Slate>
-      <button onClick={SubmitContent} className="bg-blue-400 mb-14">
+      {/* <button onClick={SubmitContent} className="bg-blue-400 mb-14">
         what
-      </button>
+      </button> */}
     </div>
   );
 }

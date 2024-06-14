@@ -2,10 +2,11 @@ import { NodeType } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 
 export const H1Element = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.H1 ? props.element.align : "left"}
   return (
     <h1
       className="text-4xl font-bold"
-      style={{ fontWeight: "bold" }}
+      style={style}
       {...props.attributes}
     >
       {props.children}
@@ -14,10 +15,11 @@ export const H1Element = (props: RenderElementProps) => {
 };
 
 export const H2Element = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.H2 ? props.element.align : "left"}
   return (
     <h2
       className="text-3xl"
-      style={{ fontWeight: "bold" }}
+      style={style}
       {...props.attributes}
     >
       {props.children}
@@ -26,32 +28,36 @@ export const H2Element = (props: RenderElementProps) => {
 };
 
 export const H3Element = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.H3 ? props.element.align : "left"}
   return (
-    <h3 className="text-2xl font-bold" {...props.attributes}>
+    <h3 className="text-2xl font-bold" {...props.attributes} style={style}>
       {props.children}
     </h3>
   );
 };
 
 export const H4Element = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.H4 ? props.element.align : "left"}
   return (
-    <h4 className="text-xl font-bold" {...props.attributes}>
+    <h4 className="text-xl font-bold" {...props.attributes} style={style}>
       {props.children}
     </h4>
   );
 };
 
 export const H5Element = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.H5 ? props.element.align : "left"}
   return (
-    <h5 className="text-lg font-bold" {...props.attributes}>
+    <h5 className="text-lg font-bold" {...props.attributes} style={style}>
       {props.children}
     </h5>
   );
 };
 
 export const H6Element = (props: RenderElementProps) => {
+  const style = { textAlign: props.element.type === NodeType.H6 ? props.element.align : "left"}
   return (
-    <h6 className="text-base font-bold" {...props.attributes}>
+    <h6 className="text-base font-bold" {...props.attributes} style={style}>
       {props.children}
     </h6>
   );
