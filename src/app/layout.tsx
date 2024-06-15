@@ -22,12 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} h-screen`}>
         <ContextProvider>
           <AppBar />
-          <div className="h-full w-full flex">
+          <div className="flex overflow-auto">
             <SideBar />
-            <div className="w-full h-full overflow-scroll">{children}</div>
+            <div className="w-full h-full">{children}</div>
           </div>
         </ContextProvider>
       </body>

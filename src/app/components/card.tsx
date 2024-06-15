@@ -12,33 +12,19 @@ interface Article {
 
 export const ArticleCard = ({ data }: { data: Article }) => {
   return (
-    <div className="border rounded-md h-28 w-2/4 shadow-md flex font-serif overflow-hidden">
-      {/* <Link href={`article/${data.id}`}>
-        <Image
-          src="https://picsum."
-          alt=""
-          className="h-full rounded-md"
-          style={{ width: "199px" }}
-          width={200}
-        />
-      </Link> */}
-      <div className="p-2 w-full h-full flex flex-col justify-center">
-        <Link href={`/article/${data.id}`}><h1 className="text-2xl font-bold text-black">{data.title}</h1></Link>
-        <div className="flex justify-between w-full">
-          <p className="text-sm">Author: {data.author}</p>
-          <p className="text-sm">
-            {new Date(data.created_at).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
-          </p>
-        </div>
-        {/* <p className="text-sm pt-1 w-full text-ellipsis overflow-hidden">
-          Lorem ipsum Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Veritatis, facilis? dolor sit amet consectetur, adipisicing elit Lorem
-          ipsum dolor sit amet consectetur.
-        </p> */}
+    <div className="border rounded-md w-full flex flex-col justify-center h-24 p-4 shadow-md font-serif">
+      <Link href={`/article/${data.id}`}>
+        <h1 className="text-2xl font-bold text-black">{data.title}</h1>
+      </Link>
+      <div className="flex justify-between w-full">
+        <p className="text-sm">Author: {data.author}</p>
+        <p className="text-sm">
+          {new Date(data.created_at).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}
+        </p>
       </div>
     </div>
   );

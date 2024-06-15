@@ -28,7 +28,7 @@ const Page = async ({ params: { query } }: { params: { query: string } }) => {
 
   return (
     <main className="px-2 mt-2">
-      <div className="flex space-x-2">
+      <div className="w-full h-full space-y-2 overflow-auto pr-2">
         {data.map(async (articlePromise) => {
           const article = await articlePromise;
           return <ArticleCard key={article.id} data={article} />;

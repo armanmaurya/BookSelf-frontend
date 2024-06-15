@@ -11,6 +11,8 @@
   "dependencies": {
     "@emotion/css": "^11.11.2",
     "@mdxeditor/editor": "^3.4.0",
+    "@om-tlh/react-custom-scrollbars": "^4.2.3",
+    "@types/react-custom-scrollbars": "^4.0.13",
     "animate.css": "^4.1.1",
     "emotion": "^11.0.0",
     "hamburger-react": "^2.5.1",
@@ -19,7 +21,9 @@
     "ldrs": "^1.0.2",
     "next": "14.2.3",
     "prismjs": "^1.29.0",
+    "rc-scrollbars": "^1.1.6",
     "react": "^18",
+    "react-custom-scrollbars-2": "^4.5.0",
     "react-dom": "^18",
     "react-loader-spinner": "^6.1.6",
     "react-markdown": "^9.0.1",

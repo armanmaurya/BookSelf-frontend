@@ -13,7 +13,6 @@ interface Article {
   created_at: string;
 }
 
-
 const fetchData = async () => {
   try {
     const res = await fetch(API_ENDPOINT.article.url);
@@ -25,22 +24,21 @@ const fetchData = async () => {
   }
 };
 
-
-
 export default async function Home() {
-
-  
   const data: Promise<Article>[] = await fetchData();
   // console.log(data);
   // await checklogin();
 
   return (
-    <main className="px-2 mt-2">
-      <div className="flex space-x-2">
-        {data.map(async (articlePromise) => {
-          const article = await articlePromise;
-          return <ArticleCard key={article.id} data={article} />;
-        })}
+    <main className="p-2 w-full flex h-[calc(100vh-48px)]">
+        <div className="w-full h-full space-y-2 overflow-auto pr-2">
+          {data.map(async (articlePromise) => {
+            const article = await articlePromise;
+            return <ArticleCard key={article.id} data={article} />;
+          })}
+        </div>
+      <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
+        Latest Article
       </div>
     </main>
   );
