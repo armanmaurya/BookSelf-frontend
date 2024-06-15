@@ -12,7 +12,7 @@ import {
   DefaultElement,
   CodeElement,
   ImageElement,
-  Leaf
+  Leaf,
 } from "./element";
 
 import {
@@ -64,7 +64,7 @@ type HeadingElement = {
 type ParagraphElement = {
   type: NodeType.PARAGRAPH | null;
   align: "left" | "center" | "right" | "justify";
-  children: CustomText[];  
+  children: CustomText[];
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 
@@ -413,14 +413,16 @@ export function WSGIEditor() {
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
   }, []);
-  
+
+  const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
+
   const SubmitContent = async () => {
     const csrf = Cookies.get("csrftoken");
     // const content = {
     //   title: value,
     //   content: JSON.stringify(editor.children),
     // };
-    
+
     try {
       const res = await fetch(`${API_ENDPOINT.articleUpload.url}`, {
         method: "POST",
@@ -436,6 +438,39 @@ export function WSGIEditor() {
       });
       if (res.ok) {
         console.log("Success");
+        Store.addNotification({
+          title: "Success",
+          message: "Article uploaded successfully",
+          type: "success",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            // onScreen: true,
+          },
+          
+        });
+
+        await delay(2000);
+        window.location.href = "/";
+
+      } else {
+        console.log("Failed");
+        Store.addNotification({
+          title: "Error",
+          message: "Article upload failed",
+          type: "danger",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            // onScreen: true,
+          },
+        });
       }
     } catch (error) {
       console.log(error);
@@ -458,11 +493,9 @@ export function WSGIEditor() {
             // console.log(content);
             // localStorage.setItem("content", content);
           }
-
-          
         }}
       >
-        <SlateToolBar onSubmit={SubmitContent}/>
+        <SlateToolBar onSubmit={SubmitContent} />
         <div className="w-full flex items-center justify-center mt-3">
           <input
             type="text"
@@ -494,6 +527,7 @@ import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-markdown";
 import { css } from "@emotion/css";
 import { API_ENDPOINT, NodeType } from "@/app/utils";
+import { Store } from "react-notifications-component";
 
 export const MarkdownPreviewExample = () => {
   //   const renderLeaf = useCallback((props) => <Lef {...props} />, []);
