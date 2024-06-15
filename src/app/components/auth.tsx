@@ -21,7 +21,7 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
     setIsChecking(true);
     try {
       const response = await fetch(
-        `${API_ENDPOINT.googleAuth.url}?code=${code}`,
+        `${API_ENDPOINT.googleAuth.url}?code=${code}&redirect_path=${redirect_path}`,
         {
           method: API_ENDPOINT.googleAuth.method,
           headers: {

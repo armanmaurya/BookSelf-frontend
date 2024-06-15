@@ -14,7 +14,6 @@ export const Divider = () => {
 
 export const HamburgerIcon = () => {
   const sideBarState = useContext(AppContext);
-  console.log("context", sideBarState)
 return (
   <div>
       {sideBarState && (
