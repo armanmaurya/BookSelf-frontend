@@ -52,6 +52,10 @@ export const API_ENDPOINT = {
     url: `${apiURl}/account/login/`,
     method: "POST",
   },
+  search: {
+    url: `${apiURl}/api/search/`,
+    method: "GET",
+  },
   register: {
     url: `${apiURl}/account/register/`,
     method: "POST",

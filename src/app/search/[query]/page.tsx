@@ -1,4 +1,5 @@
 import { ArticleCard } from "@/app/components/card";
+import { API_ENDPOINT } from "@/app/utils";
 // import { useRouter } from "next/navigation";
 
 interface Article {
@@ -14,7 +15,7 @@ async function search(query: string) {
     if (query === null || query === undefined || query === "") {
       window.location.href = "/";
     }
-    const res = await fetch(`http://127.0.0.1:8000/api/search?q=${query}`);
+    const res = await fetch(`${API_ENDPOINT.search.url}?q=${query}`);
     return res.json();
   } catch (error) {
     console.error("Error fetching data:", error);
