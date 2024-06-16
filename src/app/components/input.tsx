@@ -1,6 +1,5 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
-
 
 export const EmailInput = ({
   email,
@@ -83,8 +82,6 @@ export const PasswordInput = ({
   );
 };
 
-
-
 const SearchInput = () => {
   const router = useRouter();
 
@@ -93,6 +90,9 @@ const SearchInput = () => {
       React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.key === "Enter") {
+      if (event.target.value === "") {
+        return;
+      }
       router.push(`/search/${event.target.value}`);
     }
   };
