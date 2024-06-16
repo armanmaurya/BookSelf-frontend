@@ -13,7 +13,7 @@ import {
   Leaf,
   // Leaf,
 } from "@/app/components/slate/element";
-import { API_ENDPOINT, NodeType } from "@/app/utils";
+import { API_ENDPOINT, NodeType, getData } from "@/app/utils";
 import { Descendant, string } from "slate";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { CustomElement } from "@/app/components/slate/editor";
@@ -48,41 +48,9 @@ const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;
 };
 
-export async function getData(
-  id: string,
-  headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "Cookie": "",
-  }
-): Promise<Response> {
-  try {
-    const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
-      method: "GET",
-      headers: headers,
-    });
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // Rethrow the error to propagate it to the caller
-  }
-}
 
-export interface Article {
-  id: number;
-  title: string;
-  content: string;
-  author: number;
-  created_at: string;
-}
 
-interface Response {
-  data: Article;
-  is_owner : boolean;
-}
+
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getData(id);

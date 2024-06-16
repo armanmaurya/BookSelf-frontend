@@ -1,9 +1,9 @@
 import { Descendant, Transforms } from "slate";
 import RNotification from "../../components/RNotification";
 import { MarkdownEditor, WSGIEditor } from "../../components/slate/editor";
-import { Article, getData } from "@/app/article/[id]/page";
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getData } from "@/app/utils";
 
 
 export default async function Editor({params : {id}}: {params: {id: string}}) {

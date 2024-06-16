@@ -541,7 +541,6 @@ import "prismjs/components/prism-markdown";
 import { css } from "@emotion/css";
 import { API_ENDPOINT, NodeType } from "@/app/utils";
 import { Store } from "react-notifications-component";
-import { Article, getData } from "@/app/article/[id]/page";
 
 export const MarkdownPreviewExample = () => {
   //   const renderLeaf = useCallback((props) => <Lef {...props} />, []);
