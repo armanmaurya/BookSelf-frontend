@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AppContext } from "./context";
 import Link from "next/link";
 import { API_ENDPOINT } from "../utils";
+import Cookies from "js-cookie";
 
 const ProfileIcon = () => {
   const appContext = useContext(AppContext);
@@ -29,6 +30,29 @@ const ProfileIcon = () => {
       console.log("Network error");
     }
   };
+  const newArticle = async () => {
+    const csrf = Cookies.get("csrftoken");
+    try {
+      const res = await fetch(API_ENDPOINT.article.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": `${csrf}`,
+        },
+        credentials: "include",
+      });
+      
+      if (res.ok) {
+        console.log("Article created");
+        const data = await res.json();
+        // console.log(data);
+        
+        router.push(`/editor/${data.id}`);
+      }
+    } catch (error) {
+      console.log("Network error");
+    }
+  }
 
   const ProfileRoute = () => {
     router.push("/account/profile");
@@ -61,7 +85,7 @@ const ProfileIcon = () => {
                 Settings
               </li>
               <li className="bg-gray-200 rounded p-1.5 w-full text-center">
-                <Link href="/upload">Upload</Link>
+                <button onClick={newArticle}>New Article</button>
               </li>
               <button
                 onClick={logout}

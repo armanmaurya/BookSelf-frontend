@@ -391,13 +391,17 @@ const editorValue: Descendant[] = [
   },
 ];
 
-export function WSGIEditor({initialValue = editorValue, title}: {initialValue?: Descendant[], title?: string}) {
-  const editor = useMemo(
-    () => withReact(withHistory(createEditor())),
-    []
-  );
+export function WSGIEditor({
+  initialValue = editorValue,
+  title,
+  id,
+}: {
+  initialValue?: Descendant[];
+  title?: string;
+  id: string;
+}) {
+  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
   const [value, setValue] = useState(title || "");
-  
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -429,19 +433,16 @@ export function WSGIEditor({initialValue = editorValue, title}: {initialValue?: 
 
   const SubmitContent = async () => {
     const csrf = Cookies.get("csrftoken");
-    // const content = {
-    //   title: value,
-    //   content: JSON.stringify(editor.children),
-    // };
 
     try {
-      const res = await fetch(`${API_ENDPOINT.articleUpload.url}`, {
-        method: "POST",
+      const res = await fetch(`${API_ENDPOINT.article.url}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": `${csrf}`,
         },
         body: JSON.stringify({
+          id: id,
           title: value,
           content: JSON.stringify(editor.children),
         }),
@@ -449,6 +450,8 @@ export function WSGIEditor({initialValue = editorValue, title}: {initialValue?: 
       });
       if (res.ok) {
         console.log("Success");
+        console.log(await res.json());
+        
         Store.addNotification({
           title: "Success",
           message: "Article uploaded successfully",
@@ -464,7 +467,7 @@ export function WSGIEditor({initialValue = editorValue, title}: {initialValue?: 
         });
 
         await delay(2000);
-        window.location.href = "/";
+        // window.location.href = "/";
       } else {
         console.log("Failed");
         Store.addNotification({

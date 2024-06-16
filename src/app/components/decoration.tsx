@@ -2,6 +2,7 @@
 import { useContext } from "react";
 import { AppContext } from "./context";
 import { Divide as Hamburger } from "hamburger-react";
+import Link from "next/link";
 export const Divider = () => {
   return (
     <div className="w-full flex h-full justify-center items-center">
@@ -30,9 +31,9 @@ export const HamburgerIcon = () => {
 export const EditButton = ({ id }: { id: string }) => {
   return (
     <>
-      <button className="w-12 shadow-md bg-sky-500 h-8 absolute right-2 border flex items-center justify-center rounded mt-2">
+      <Link href={`/editor/${id}`} className="hover:cursor-pointer w-12 shadow-md bg-sky-500 h-8 absolute right-2 border flex items-center justify-center rounded mt-2">
         Edit
-      </button>
+      </Link>
     </>
   );
 };

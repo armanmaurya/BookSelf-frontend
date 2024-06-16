@@ -3,7 +3,7 @@ import RNotification from "../../components/RNotification";
 import { MarkdownEditor, WSGIEditor } from "../../components/slate/editor";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getData } from "@/app/utils";
+import { NodeType, getData } from "@/app/utils";
 
 export default async function Editor({
   params: { id },
@@ -28,14 +28,22 @@ export default async function Editor({
   if (!data.is_owner) {
     redirect("/");
   }
+
+  const editorValue: Descendant[] = [
+    {
+      type: NodeType.PARAGRAPH,
+      align: "left",
+      children: [{ text: "" }],
+    },
+  ];
   const content = data.data.content;
-  const jsonContent: Descendant[] = JSON.parse(content);
+  const jsonContent: Descendant[] = JSON.parse(content) || editorValue;
 
   return (
     // <MarkdownEditor/>
     <div>
       <RNotification />
-      <WSGIEditor initialValue={jsonContent} title={data.data.title} />
+      <WSGIEditor initialValue={jsonContent} title={data.data.title === null ? "" : data.data.title} id={id}/>
     </div>
     // <MarkdownPreviewExample/>
   );
