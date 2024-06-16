@@ -78,3 +78,40 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
     </a>
   );
 };
+
+interface CheckOwnerResponse {
+  status: boolean;
+}
+export const EditButton = ({ id }: { id: string }) => {
+  const [isOwner, setIsOwner] = useState(false);
+  const checkOwner = async () => {
+    try {
+      const res = await fetch(`${API_ENDPOINT.articleCheckOwner.url}?id=${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (res.ok) {
+        const data: CheckOwnerResponse = await res.json();
+        setIsOwner(data.status);
+        console.log(data.status);
+      } else {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    checkOwner();
+  }, []);
+  return (
+    <>
+      {isOwner && (
+        <button className="w-12 shadow-md bg-sky-500 h-8 absolute right-2 border flex items-center justify-center rounded mt-2">
+          Edit
+        </button>
+      )}
+    </>
+  );
+};

@@ -22,7 +22,7 @@ async function search(query: string) {
     throw error; // Rethrow the error to propagate it to the caller
   }
 }
-const Page = async ({ params: { query } }: { params: { query: string } }) => {
+const Page = async ({ params: { query } }:{ params: { query: string } }) => {
   const data: Promise<Article>[] = await search(query);
   // await new Promise((resolve) => setTimeout(resolve, 9000));
 

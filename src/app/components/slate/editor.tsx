@@ -1,6 +1,6 @@
 "use client";
 // Import React dependencies.
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SlateCustomEditor, SlateToMarkdown } from "./utils";
 import {
   H1Element,
@@ -28,6 +28,7 @@ import {
   NodeOperation,
   SelectionOperation,
   TextOperation,
+  Transforms,
 } from "slate";
 // Import the Slate components and React plugin.
 import {
@@ -44,6 +45,8 @@ import { withMarkdownShortcuts } from "./plugin";
 import { handleKeyBoardFormating, markdownTokenizer } from "./utils";
 import { SlateToolBar } from "./toolbar";
 import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
+
 // --------------------------------- Types --------------------------------- //
 
 type CustomEditor = BaseEditor & ReactEditor & CustomEditorType;
@@ -122,7 +125,7 @@ declare module "slate" {
 // --------------------------------- End Types --------------------------------- //
 
 // Initial value of the editor.
-const initialValue: Descendant[] = [
+const initialValue2: Descendant[] = [
   {
     type: NodeType.H1,
     align: "center",
@@ -336,7 +339,7 @@ export function MarkdownEditor() {
     <div>
       <Slate
         editor={editor}
-        initialValue={initialValue}
+        initialValue={initialValue2}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
@@ -380,13 +383,21 @@ export function MarkdownEditor() {
 //   );
 // };
 
-export function WSGIEditor() {
-  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
-  const [value, setValue] = useState("");
+const editorValue: Descendant[] = [
+  {
+    type: NodeType.PARAGRAPH,
+    align: "left",
+    children: [{ text: "This is text" }],
+  },
+];
 
-  // const slateToMarkdown = new SlateToMarkdown(NodeType);
-  // const markdown = slateToMarkdown.convert(initialValue);
-  // console.log(markdown);
+export function WSGIEditor({initialValue = editorValue, title}: {initialValue?: Descendant[], title?: string}) {
+  const editor = useMemo(
+    () => withReact(withHistory(createEditor())),
+    []
+  );
+  const [value, setValue] = useState(title || "");
+  
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -414,7 +425,7 @@ export function WSGIEditor() {
     return <Leaf {...props} />;
   }, []);
 
-  const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const SubmitContent = async () => {
     const csrf = Cookies.get("csrftoken");
@@ -450,12 +461,10 @@ export function WSGIEditor() {
             duration: 5000,
             // onScreen: true,
           },
-          
         });
 
         await delay(2000);
         window.location.href = "/";
-
       } else {
         console.log("Failed");
         Store.addNotification({
@@ -479,6 +488,7 @@ export function WSGIEditor() {
 
   return (
     <div>
+      {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
       <Slate
         editor={editor}
         initialValue={initialValue}
@@ -503,7 +513,10 @@ export function WSGIEditor() {
             onBlur={(e) => {
               setValue(e.target.value);
             }}
-            // value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+            value={value}
             placeholder="Title"
           />
         </div>
@@ -528,6 +541,7 @@ import "prismjs/components/prism-markdown";
 import { css } from "@emotion/css";
 import { API_ENDPOINT, NodeType } from "@/app/utils";
 import { Store } from "react-notifications-component";
+import { Article, getData } from "@/app/article/[id]/page";
 
 export const MarkdownPreviewExample = () => {
   //   const renderLeaf = useCallback((props) => <Lef {...props} />, []);
@@ -607,7 +621,7 @@ export const MarkdownPreviewExample = () => {
   }, []);
 
   return (
-    <Slate editor={editor} initialValue={initialValue}>
+    <Slate editor={editor} initialValue={initialValue2}>
       <Editable
         decorate={decorate}
         renderLeaf={renderLeaf}

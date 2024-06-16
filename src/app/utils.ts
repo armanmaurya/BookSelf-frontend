@@ -40,6 +40,10 @@ export const API_ENDPOINT = {
     url: `${apiURl}/article/`,
     methods: ["GET", "POST"],
   },
+  articleCheckOwner: {
+    url: `${apiURl}/article/checkowner/`,
+    methods: ["GET"],
+  },
   articleUpload: {
     url: `${apiURl}/article/upload/`,
     method: "POST",

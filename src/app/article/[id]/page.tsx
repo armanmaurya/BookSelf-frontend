@@ -1,3 +1,4 @@
+// "use client";
 import React, { useCallback } from "react";
 import {
   H1Element,
@@ -13,9 +14,10 @@ import {
   // Leaf,
 } from "@/app/components/slate/element";
 import { API_ENDPOINT, NodeType } from "@/app/utils";
-import { Descendant } from "slate";
+import { Descendant, string } from "slate";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { CustomElement } from "@/app/components/slate/editor";
+import { EditButton } from "@/app/components/auth";
 
 // Define a custom Element component for rendering
 const Element = (props: RenderElementProps) => {
@@ -46,9 +48,19 @@ const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;
 };
 
-async function getData(id: string): Promise<Article> {
+export async function getData(
+  id: string,
+  headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "Cookie": "",
+  }
+): Promise<Response> {
   try {
-    const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`);
+    const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+      method: "GET",
+      headers: headers,
+    });
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
@@ -59,7 +71,7 @@ async function getData(id: string): Promise<Article> {
   }
 }
 
-interface Article {
+export interface Article {
   id: number;
   title: string;
   content: string;
@@ -67,17 +79,22 @@ interface Article {
   created_at: string;
 }
 
-const Page = async ({ params: { id } }: { params: { id: string } }) => {
-  const data: Article = await getData(id);
+interface Response {
+  data: Article;
+  is_owner : boolean;
+}
 
-  const content = data.content;
-  // const content = `[{"type":"heading-one","align":"center","children":[{"text":"Heading One"}]},{"type":"heading-one","align":"center","children":[{"text":"Heading One"}]},{"type":"heading-two","align":"left","children":[{"text":"Heading Two"}]},{"type":"paragraph","align":"center","children":[{"text":"A line of text in a paragraph."},{"text":"Bold","bold":true},{"text":" Some More Text "},{"text":"Italic","italic":true},{"text":" Some more text "},{"text":"Underlined","underline":true},{"text":" Some more text "},{"text":"Bold Italic","bold":true,"italic":true}]},{"type":"heading-three","align":"right","children":[{"text":"Heading Three"}]},{"type":"heading-four","align":"right","children":[{"text":"Heading Four"}]},{"type":"heading-five","align":"center","children":[{"text":"Heading Five"}]},{"type":"heading-six","align":"center","children":[{"text":"Heading Six"}]},{"type":"code","language":"javascript","children":[{"text":"const a = 5;"},{"text":"const b = 10;"}]},{"type":"paragraph","align":"right","children":[{"text":"A line of text \nin a paragraph."},{"text":"Bold","bold":true},{"text":" Some More Text "},{"text":"Italic","italic":true},{"text":" Some more text "},{"text":"Underlined","underline":true},{"text":" Some more text "},{"text":"Bold Italic","bold":true,"italic":true}]}]`;
+const Page = async ({ params: { id } }: { params: { id: string } }) => {
+  const data = await getData(id);
+
+  const content = data.data.content;
   const jsonContent: CustomElement[] = JSON.parse(content);
   return (
     <div className="">
+      <EditButton id={id} />
       <div className="flex items-center justify-center p-2">
         <h1 className="text-4xl font-semibold">
-          <u>{data.title}</u>
+          <u>{data.data.title}</u>
         </h1>
       </div>
       <div className="px-4">
@@ -91,9 +108,14 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
             }}
           >
             {node.children.map((leaf, j) => (
-              <ServerLeaf key={j} leaf={leaf} text={leaf} attributes={{
-                'data-slate-leaf': true,
-              }}>
+              <ServerLeaf
+                key={j}
+                leaf={leaf}
+                text={leaf}
+                attributes={{
+                  "data-slate-leaf": true,
+                }}
+              >
                 {leaf.text}
               </ServerLeaf>
             ))}
