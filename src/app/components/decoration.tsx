@@ -14,11 +14,25 @@ export const Divider = () => {
 
 export const HamburgerIcon = () => {
   const sideBarState = useContext(AppContext);
-return (
-  <div>
+  return (
+    <div>
       {sideBarState && (
-          <Hamburger size={20} toggled={sideBarState.isOpen} toggle={sideBarState.setIsOpen}/>
+        <Hamburger
+          size={20}
+          toggled={sideBarState.isOpen}
+          toggle={sideBarState.setIsOpen}
+        />
       )}
-  </div>
-)
-}
+    </div>
+  );
+};
+
+export const EditButton = ({ id }: { id: string }) => {
+  return (
+    <>
+      <button className="w-12 shadow-md bg-sky-500 h-8 absolute right-2 border flex items-center justify-center rounded mt-2">
+        Edit
+      </button>
+    </>
+  );
+};

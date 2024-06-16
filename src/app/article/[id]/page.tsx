@@ -13,11 +13,11 @@ import {
   Leaf,
   // Leaf,
 } from "@/app/components/slate/element";
-import { API_ENDPOINT, NodeType, getData } from "@/app/utils";
-import { Descendant, string } from "slate";
+import { NodeType, getData } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { CustomElement } from "@/app/components/slate/editor";
-import { EditButton } from "@/app/components/auth";
+import { EditButton } from "@/app/components/decoration";
+import { cookies } from "next/headers";
 
 // Define a custom Element component for rendering
 const Element = (props: RenderElementProps) => {
@@ -48,18 +48,23 @@ const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;
 };
 
-
-
-
-
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
-  const data = await getData(id);
+  const cookieStore = cookies();
+
+  const data = await getData(id, {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "Cookie": `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value}`,
+  });
 
   const content = data.data.content;
+  // console.log();
+  
+
   const jsonContent: CustomElement[] = JSON.parse(content);
   return (
     <div className="">
-      <EditButton id={id} />
+      {data.is_owner && <EditButton id={id} />}
       <div className="flex items-center justify-center p-2">
         <h1 className="text-4xl font-semibold">
           <u>{data.data.title}</u>
