@@ -11,16 +11,20 @@ import {
   ImageElement,
   DefaultElement,
   Leaf,
+  ListItemElement,
+  OrderedListElement,
+  UnorderedListElement,
   // Leaf,
 } from "@/app/components/slate/element";
 import { NodeType, getData } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
-import { CustomElement } from "@/app/components/slate/editor";
 import { EditButton } from "@/app/components/decoration";
 import { cookies } from "next/headers";
+import { CustomElement } from "@/app/components/slate/types";
+import { Descendant, Element } from "slate";
 
 // Define a custom Element component for rendering
-const Element = (props: RenderElementProps) => {
+const ServerElement = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
   switch (element.type) {
     case NodeType.H1:
@@ -37,6 +41,12 @@ const Element = (props: RenderElementProps) => {
       return <H6Element {...props} />;
     case NodeType.CODE:
       return <CodeElement {...props} />;
+    case NodeType.ORDERED_LIST:
+      return <OrderedListElement {...props} />;
+    case NodeType.UNORDERED_LIST:
+      return <UnorderedListElement {...props} />;
+    case NodeType.LIST_ITEM:
+      return <ListItemElement {...props} />;
     case "image":
       return <ImageElement {...props} />;
     default:
@@ -54,14 +64,15 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getData(id, {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "Cookie": `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value}`,
+    Cookie: `${cookieStore.get("sessionid")?.name}=${
+      cookieStore.get("sessionid")?.value
+    }`,
   });
 
   const content = data.data.content;
   // console.log();
-  
 
-  const jsonContent: CustomElement[] = JSON.parse(content);
+  const jsonContent: Descendant[] = JSON.parse(content);
   return (
     <div className="">
       {data.is_owner && <EditButton id={id} />}
@@ -71,7 +82,8 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
         </h1>
       </div>
       <div className="px-4">
-        {jsonContent.map((node, i) => (
+        <Render value={jsonContent} />
+        {/* {jsonContent.map((node, i) => (
           <Element
             key={i}
             element={node}
@@ -93,9 +105,45 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
               </ServerLeaf>
             ))}
           </Element>
-        ))}
+        ))} */}
       </div>
     </div>
+  );
+};
+
+const Render = ({ value }: { value: Descendant[] }) => {
+  return (
+    <>
+      {value.map((node, i) => {
+        if (Element.isElement(node)) {
+          return (
+            <ServerElement
+              key={i}
+              element={node}
+              attributes={{
+                "data-slate-node": "element",
+                ref: null,
+              }}
+            >
+              <Render value={node.children} />
+            </ServerElement>
+          );
+        } else {
+          return (
+            <ServerLeaf
+              key={i}
+              leaf={node}
+              text={node}
+              attributes={{
+                "data-slate-leaf": true,
+              }}
+            >
+              {node.text}
+            </ServerLeaf>
+          );
+        }
+      })}
+    </>
   );
 };
 

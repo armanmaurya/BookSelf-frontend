@@ -13,11 +13,13 @@ import {
   CodeElement,
   ImageElement,
   Leaf,
+  OrderedListElement,
+  UnorderedListElement,
+  ListItemElement,
 } from "./element";
 
 import {
   createEditor,
-  BaseEditor,
   Descendant,
   Editor as SlateEditor,
   Element as SlateElement,
@@ -25,17 +27,12 @@ import {
   Text,
   Point,
   Range,
-  NodeOperation,
-  SelectionOperation,
-  TextOperation,
-  Transforms,
 } from "slate";
 // Import the Slate components and React plugin.
 import {
   Slate,
   Editable,
   withReact,
-  ReactEditor,
   RenderElementProps,
   RenderLeafProps,
 } from "slate-react";
@@ -45,84 +42,6 @@ import { withMarkdownShortcuts } from "./plugin";
 import { handleKeyBoardFormating, markdownTokenizer } from "./utils";
 import { SlateToolBar } from "./toolbar";
 import Cookies from "js-cookie";
-import { useSearchParams } from "next/navigation";
-
-// --------------------------------- Types --------------------------------- //
-
-type CustomEditor = BaseEditor & ReactEditor & CustomEditorType;
-type CustomEditorType = { type?: string };
-
-type HeadingElement = {
-  type:
-    | NodeType.H1
-    | NodeType.H2
-    | NodeType.H3
-    | NodeType.H4
-    | NodeType.H5
-    | NodeType.H6
-    | null;
-  align: "left" | "center" | "right" | "justify";
-  children: CustomText[];
-};
-type ParagraphElement = {
-  type: NodeType.PARAGRAPH | null;
-  align: "left" | "center" | "right" | "justify";
-  children: CustomText[];
-};
-export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
-
-type CodeElementType = {
-  type: NodeType.CODE | null;
-  language: string | null;
-  children: CustomText[];
-};
-
-export type ImageElementType = {
-  type: "image" | null;
-  url: string | null;
-  children: CustomText[];
-};
-
-export type CustomElement =
-  | CodeElementType
-  | ParagraphElement
-  | HeadingElement
-  | ImageElementType;
-
-type FormattedText = {
-  text: string;
-  bold?: boolean;
-  underlined?: boolean;
-  bold_italic?: boolean;
-  strike?: boolean;
-  title?: boolean;
-  h1?: boolean;
-  h2?: boolean;
-  h3?: boolean;
-  h4?: boolean;
-  h5?: boolean;
-  h6?: boolean;
-
-  italic?: boolean;
-  underline?: boolean;
-  list?: boolean;
-  hr?: boolean;
-  blockquote?: boolean;
-  code?: boolean;
-  type?: string;
-};
-
-type CustomText = FormattedText;
-
-declare module "slate" {
-  interface CustomTypes {
-    Editor: CustomEditor;
-    Element: CustomElement;
-    Text: CustomText;
-    Operation: BaseOperation;
-  }
-}
-// --------------------------------- End Types --------------------------------- //
 
 // Initial value of the editor.
 const initialValue2: Descendant[] = [
@@ -135,15 +54,90 @@ const initialValue2: Descendant[] = [
       },
     ],
   },
-  // {
-  //   type: "image",
-  //   url: "",
-  //   children: [
-  //     {
-  //       text: "Image Caption",
-  //     },
-  //   ],
-  // },
+  {
+    type: NodeType.UNORDERED_LIST,
+    children: [
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 1",
+          },
+        ],
+      },
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 2",
+          },
+        ],
+      },
+      {
+        type: NodeType.ORDERED_LIST,
+        children: [
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 1",
+              },
+            ],
+          },
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 2",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: NodeType.ORDERED_LIST,
+    children: [
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 1",
+          },
+        ],
+      },
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 2",
+          },
+        ],
+      },
+      {
+        type: NodeType.ORDERED_LIST,
+        children: [
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 1",
+              },
+            ],
+          },
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 2",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
   {
     type: NodeType.H1,
     align: "center",
@@ -154,7 +148,16 @@ const initialValue2: Descendant[] = [
     ],
   },
   {
-    type: NodeType.H2,
+    type: NodeType.UNORDERED_LIST,
+    children: [
+      {
+        type: NodeType.LIST_ITEM,
+        children: [{ text: "List Item 1" }],
+      },
+    ],
+  },
+  {
+    type: NodeType.PARAGRAPH,
     align: "left",
     children: [
       {
@@ -369,20 +372,6 @@ export function MarkdownEditor() {
   );
 }
 
-// Define a React component to render leaves with bold text.
-// const Leaf = (props: RenderLeafProps) => {
-//   return (
-//     <span
-//       {...props.attributes}
-//       className={`${props.leaf.bold ? "font-bold" : ""} ${
-//         props.leaf.italic ? "italic" : ""
-//       }`}
-//     >
-//       {props.children}
-//     </span>
-//   );
-// };
-
 const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
@@ -419,6 +408,12 @@ export function WSGIEditor({
         return <H6Element {...props} />;
       case NodeType.CODE:
         return <CodeElement {...props} />;
+      case NodeType.ORDERED_LIST:
+        return <OrderedListElement {...props} />;
+      case NodeType.UNORDERED_LIST:
+        return <UnorderedListElement {...props} />;
+      case NodeType.LIST_ITEM:
+        return <ListItemElement {...props} />;
       case "image":
         return <ImageElement {...props} />;
       default:
@@ -451,7 +446,7 @@ export function WSGIEditor({
       if (res.ok) {
         console.log("Success");
         console.log(await res.json());
-        
+
         Store.addNotification({
           title: "Success",
           message: "Article uploaded successfully",
@@ -494,7 +489,7 @@ export function WSGIEditor({
       {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
       <Slate
         editor={editor}
-        initialValue={initialValue}
+        initialValue={initialValue2}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type

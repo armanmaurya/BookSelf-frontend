@@ -66,9 +66,33 @@ export const H6Element = (props: RenderElementProps) => {
 export const DefaultElement = (props: RenderElementProps) => {
   const style = { textAlign: props.element.type === NodeType.PARAGRAPH ? props.element.align : "left"}
   return (
-    <p className={`my-2 hover:bg-slate-50`} style={style} {...props.attributes}>
+    <div className={`my-2 hover:bg-slate-50`} style={style} {...props.attributes}>
       {props.children}
-    </p>
+    </div>
+  );
+};
+
+export const OrderedListElement = (props: RenderElementProps) => {
+  return (
+    <ol {...props.attributes} className="font-sans list-decimal list-inside ml-4 my-2">
+      {props.children}
+    </ol>
+  );
+};
+
+export const UnorderedListElement = (props: RenderElementProps) => {
+  return (
+    <ul {...props.attributes} className="list-disc list-inside ml-4 my-2">
+      {props.children}
+    </ul>
+  );
+};
+
+export const ListItemElement = (props: RenderElementProps) => {
+  return (
+    <li {...props.attributes}>
+      {props.children}
+    </li>
   );
 };
 

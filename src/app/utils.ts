@@ -7,6 +7,9 @@ export enum NodeType {
   H5 = "heading-five",
   H6 = "heading-six",
   CODE = "code",
+  ORDERED_LIST = "ordered-list",
+  UNORDERED_LIST = "unordered-list",
+  LIST_ITEM = "list-item",
 }
 
 interface Article {

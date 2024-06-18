@@ -37,9 +37,9 @@ export default async function Home() {
             return <ArticleCard key={article.id} data={article} />;
           })}
         </div>
-      <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
+      {/* <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
         Latest Article
-      </div>
+      </div> */}
     </main>
   );
 }

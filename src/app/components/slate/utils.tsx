@@ -5,7 +5,6 @@ import {
   Element as SlateElement,
   Transforms,
 } from "slate";
-import { CustomElement } from "./editor";
 // import { CustomEditor } from "./CustomEditor";
 
 export const SlateCustomEditor = {
@@ -102,10 +101,19 @@ export const SlateCustomEditor = {
     return !!match;
   },
 
+  isListItemActive(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+    });
+    return !!match;
+  },
+
   toggleBoldMark(editor: SlateEditor) {
     const isActive = SlateCustomEditor.isBoldMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+      match: (n) =>
+        (SlateElement.isElement(n) && n.type === NodeType.PARAGRAPH) ||
+        n.type === NodeType.LIST_ITEM,
     });
 
     if (!match) {
@@ -122,7 +130,9 @@ export const SlateCustomEditor = {
   toggleItalicMark(editor: SlateEditor) {
     const isActive = SlateCustomEditor.isItalicMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+      match: (n) =>
+        (SlateElement.isElement(n) && n.type === NodeType.PARAGRAPH) ||
+        n.type === NodeType.LIST_ITEM,
     });
 
     if (!match) {
@@ -139,7 +149,9 @@ export const SlateCustomEditor = {
   toggleUnderlineMark(editor: SlateEditor) {
     const isActive = SlateCustomEditor.isUnderlineMarkActive(editor);
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+      match: (n) =>
+        (SlateElement.isElement(n) && n.type === NodeType.PARAGRAPH) ||
+        n.type === NodeType.LIST_ITEM,
     });
 
     if (!match) {
@@ -333,14 +345,56 @@ export const SlateCustomEditor = {
     // }
   },
 
+  toggleUnorderedListBlock(editor: SlateEditor) {
+    const isActive = SlateCustomEditor.isListItemActive(editor);
+    if (!isActive && editor.selection) {
+      Transforms.setNodes(editor, {
+        type: NodeType.LIST_ITEM,
+        // children: [{ text: "some text" }],
+      });
+      
+      Transforms.wrapNodes(editor, {
+        type: NodeType.UNORDERED_LIST,
+        children: [],
+      });
+
+
+    }
+  },
+  toggleOrderedListBlock(editor: SlateEditor) {
+    const isActive = SlateCustomEditor.isListItemActive(editor);
+    if (!isActive) {
+      Transforms.setNodes(editor, {
+        type: NodeType.LIST_ITEM,
+        // children: [{ text: "some text" }],
+      });
+      Transforms.wrapNodes(editor, {
+        type: NodeType.ORDERED_LIST,
+        children: [],
+      });
+    }
+  },
+
   insertLineBreak(editor: SlateEditor) {
     Transforms.insertText(editor, "\n");
   },
 
+  insertListItem(editor: SlateEditor) {
+    const isActive = SlateCustomEditor.isListItemActive(editor);
+    if (editor.selection && isActive) {
+      const text = SlateEditor.string(editor, editor.selection.focus.path);
+      Transforms.insertNodes(editor, {
+        type: NodeType.LIST_ITEM,
+        children: [{ text: "" }],
+      });
+    }
+  },
+
   insertParagraph(editor: SlateEditor) {
-    // const isActive = CustomEditor.isParagraphActive(editor);
-    console.log(editor.selection);
-    if (editor.selection) {
+    // const isParagraphActive = SlateCustomEditor.isParagraphActive(editor);
+    const isListItemActive = SlateCustomEditor.isListItemActive(editor);
+    const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
+    if (editor.selection && (!isListItemActive || !isCodeBlockActive)) {
       const text = SlateEditor.string(editor, editor.selection.focus.path);
       Transforms.insertNodes(
         editor,
@@ -418,10 +472,10 @@ export const handleKeyBoardFormating = (
         SlateCustomEditor.toggleUnderlineMark(editor);
         break;
       case "Enter":
-        if (SlateCustomEditor.isCodeBlockActive(editor)) {
-          event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
-        }
+        event.preventDefault();
+        SlateCustomEditor.insertParagraph(editor);
+      // if (SlateCustomEditor.isCodeBlockActive(editor)) {
+      // }
     }
   }
   if (event.shiftKey) {
@@ -431,27 +485,55 @@ export const handleKeyBoardFormating = (
         if (SlateCustomEditor.isParagraphActive(editor)) {
           SlateCustomEditor.insertLineBreak(editor);
         }
+        break;
+      case "*":
+        event.preventDefault();
+        SlateCustomEditor.toggleUnorderedListBlock(editor);
+        break;
+      case "&":
+        event.preventDefault();
+        SlateCustomEditor.toggleOrderedListBlock(editor);
+        break;
     }
   }
   if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
-    const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
-    if (isCodeBlockActive) {
-      event.preventDefault();
-      SlateCustomEditor.insertLineBreak(editor);
-      return;
-    }
+    // const isListItemActive = SlateCustomEditor.isListItemActive(editor);
+    event.preventDefault();
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      mode: "lowest",
+    });
 
-    const isParagraphActive = SlateCustomEditor.isParagraphActive(editor);
-    // if (isParagraphActive) {
-    //   event.preventDefault();
-    //   CustomEditor.runCommand(editor);
-    // }
-    if (!isParagraphActive) {
-      event.preventDefault();
-      SlateCustomEditor.insertParagraph(editor);
-      return;
+    if (match[0].type) {
+      const shortcut = handleEnterKey[`${match[0].type}`];
+      if (shortcut) {
+        shortcut(editor);
+      }
     }
+    // SlateCustomEditor.insertListItem(editor);
+    // SlateCustomEditor.insertParagraph(editor);
+    // const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
+    // if (isCodeBlockActive) {
+    //   SlateCustomEditor.insertLineBreak(editor);
+    //   return;
+    // }
   }
+};
+
+interface IHandleEnterKey {
+  [key: string]: (editor: SlateEditor) => void;
+}
+
+export const handleEnterKey: IHandleEnterKey = {
+  "list-item": SlateCustomEditor.insertListItem,
+  paragraph: SlateCustomEditor.insertParagraph,
+  "heading-one": SlateCustomEditor.insertParagraph,
+  "heading-two": SlateCustomEditor.insertParagraph,
+  "heading-three": SlateCustomEditor.insertParagraph,
+  "heading-four": SlateCustomEditor.insertParagraph,
+  "heading-five": SlateCustomEditor.insertParagraph,
+  "heading-six": SlateCustomEditor.insertParagraph,
+  code: SlateCustomEditor.insertLineBreak,
 };
 
 export const markdownTokenizer = (textin: string) => {
