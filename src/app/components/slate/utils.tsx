@@ -392,22 +392,28 @@ export const SlateCustomEditor = {
         });
 
         if (beforeMatch[0].type === NodeType.LIST_ITEM) {
+          console.log("this runned");
+          
           Transforms.splitNodes(editor, {
             mode: "highest",
             at: {
-              path: editor.selection.anchor.path,
-              offset: 0,
+              path: before ? before.path : editor.selection.anchor.path,
+              offset: before ? before.offset : 0,
             },
           });
         }
         if (afterMatch[0].type === NodeType.LIST_ITEM) {
+          console.log("This si runned");
+          
           const text = SlateEditor.string(editor, editor.selection.anchor.path);
+          console.log(text);
+          
           Transforms.splitNodes(editor, {
             mode: "highest",
             at: {
-              path: editor.selection.anchor.path,
-              offset: text ? text.length : 0,
-            },
+              path: after ? after.path : editor.selection.anchor.path,
+              offset: after ? after.offset : 0,
+            }
           });
         }
 
@@ -482,7 +488,7 @@ export const SlateCustomEditor = {
   },
 
   insertListItem(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isOrderedListActive(editor);
+    const isActive = SlateCustomEditor.isListActive(editor);
     if (editor.selection && isActive) {
       const text = SlateEditor.string(editor, editor.selection.focus.path);
       Transforms.insertNodes(editor, {
