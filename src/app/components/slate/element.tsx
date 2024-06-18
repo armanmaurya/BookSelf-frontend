@@ -74,7 +74,7 @@ export const DefaultElement = (props: RenderElementProps) => {
 
 export const OrderedListElement = (props: RenderElementProps) => {
   return (
-    <ol {...props.attributes} className="font-sans list-decimal list-inside ml-4 my-2">
+    <ol {...props.attributes} className="font-sans list-decimal list-inside ml-4">
       {props.children}
     </ol>
   );
@@ -82,7 +82,7 @@ export const OrderedListElement = (props: RenderElementProps) => {
 
 export const UnorderedListElement = (props: RenderElementProps) => {
   return (
-    <ul {...props.attributes} className="list-disc list-inside ml-4 my-2">
+    <ul {...props.attributes} className="list-disc list-inside ml-4">
       {props.children}
     </ul>
   );
