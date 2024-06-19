@@ -1,6 +1,7 @@
 import { Descendant, Transforms } from "slate";
 import RNotification from "../../components/RNotification";
-import { MarkdownEditor, WSGIEditor } from "../../components/slate/editor";
+import { MarkdownEditor } from "../../components/slate/editor";
+import { WSGIEditor } from "../../components/slate/editors/WSGIEditor";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { NodeType, getData } from "@/app/utils";

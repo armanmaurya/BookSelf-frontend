@@ -8,6 +8,7 @@ import {
   Node,
 } from "slate";
 import { SlateCustomEditor } from "./utils";
+import { NodeType } from "@/app/utils";
 
 const SHORTCUTS: { [key: string]: string } = {
   "#": "heading-one",
@@ -19,66 +20,66 @@ const SHORTCUTS: { [key: string]: string } = {
   "```": "code",
 };
 
-export const toggleBlock = (editor: Editor, type: string) => {
-  switch (type) {
-    case "heading-one":
-      const [match] = Editor.nodes(editor, {
-        match: (n) => n.type === "heading-one",
-      });
-      if (!match) {
-        SlateCustomEditor.toggleH1Block(editor);
-      }
-      break;
-    case "heading-two":
-      const [match2] = Editor.nodes(editor, {
-        match: (n) => n.type === "heading-two",
-      });
-      if (!match2) {
-        SlateCustomEditor.toggleH2Block(editor);
-      }
-      break;
-    case "heading-three":
-      const [match3] = Editor.nodes(editor, {
-        match: (n) => n.type === "heading-three",
-      });
-      if (!match3) {
-        SlateCustomEditor.toggleH3Block(editor);
-      }
-      break;
-    case "heading-four":
-      const [match4] = Editor.nodes(editor, {
-        match: (n) => n.type === "heading-four",
-      });
-      if (!match4) {
-        SlateCustomEditor.toggleH4Block(editor);
-      }
-      break;
-    case "heading-five":
-      const [match5] = Editor.nodes(editor, {
-        match: (n) => n.type === "heading-five",
-      });
-      if (!match5) {
-        SlateCustomEditor.toggleH5Block(editor);
-      }
-      break;
-    case "heading-six":
-      const [match6] = Editor.nodes(editor, {
-        match: (n) => n.type === "heading-six",
-      });
-      if (!match6) {
-        SlateCustomEditor.toggleH6Block(editor);
-      }
-      break;
-    case "code":
-      const [match7] = Editor.nodes(editor, {
-        match: (n) => n.type === "code",
-      });
-      if (!match7) {
-        SlateCustomEditor.toggleCodeBlock(editor);
-      }
-      break;
-  }
-};
+// export const toggleBlock = (editor: Editor, type: string) => {
+//   switch (type) {
+//     case "heading-one":
+//       const [match] = Editor.nodes(editor, {
+//         match: (n) => n.type === "heading-one",
+//       });
+//       if (!match) {
+//         SlateCustomEditor.toggleH1Block(editor);
+//       }
+//       break;
+//     case "heading-two":
+//       const [match2] = Editor.nodes(editor, {
+//         match: (n) => n.type === "heading-two",
+//       });
+//       if (!match2) {
+//         SlateCustomEditor.toggleH2Block(editor);
+//       }
+//       break;
+//     case "heading-three":
+//       const [match3] = Editor.nodes(editor, {
+//         match: (n) => n.type === "heading-three",
+//       });
+//       if (!match3) {
+//         SlateCustomEditor.toggleH3Block(editor);
+//       }
+//       break;
+//     case "heading-four":
+//       const [match4] = Editor.nodes(editor, {
+//         match: (n) => n.type === "heading-four",
+//       });
+//       if (!match4) {
+//         SlateCustomEditor.toggleH4Block(editor);
+//       }
+//       break;
+//     case "heading-five":
+//       const [match5] = Editor.nodes(editor, {
+//         match: (n) => n.type === "heading-five",
+//       });
+//       if (!match5) {
+//         SlateCustomEditor.toggleH5Block(editor);
+//       }
+//       break;
+//     case "heading-six":
+//       const [match6] = Editor.nodes(editor, {
+//         match: (n) => n.type === "heading-six",
+//       });
+//       if (!match6) {
+//         SlateCustomEditor.toggleH6Block(editor);
+//       }
+//       break;
+//     case "code":
+//       const [match7] = Editor.nodes(editor, {
+//         match: (n) => n.type === "code",
+//       });
+//       if (!match7) {
+//         SlateCustomEditor.toggleCodeBlock(editor);
+//       }
+//       break;
+//   }
+// };
 
 export const withMarkdownShortcuts = (editor: Editor) => {
   const { insertText, deleteBackward, deleteForward } = editor;
@@ -105,7 +106,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
       const type = SHORTCUTS[textlist[0]];
       //   console.log("type", type);
       if (type && textlist.length > 1) {
-        toggleBlock(editor, type);
+        SlateCustomEditor.toggleBlock(editor, type);
         insertText(text1);
         return;
       } else {
@@ -118,7 +119,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
           const boldRegex = /\*\*(.*?)\*\*/g; // regex to extract bold text
 
           while ((match = boldRegex.exec(newText2)) !== null) {
-            const isActive = SlateCustomEditor.isBoldMarkActive(editor);
+            const isActive = SlateCustomEditor.isMarkActive(editor, NodeType.BOLD);
             insertText(text1);
             if (isActive) {
               return;
@@ -178,7 +179,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
       // console.log("Text List", textlist);
       const type = SHORTCUTS[textlist[0]];
       if (type && textlist.length > 1) {
-        toggleBlock(editor, type);
+        SlateCustomEditor.toggleBlock(editor, type);
         deleteBackward(...args);
         return;
       } else {
@@ -200,7 +201,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
 
           rmatch = boldRegex.exec(newText2);
           if (!rmatch) {
-            const isActive = SlateCustomEditor.isBoldMarkActive(editor);
+            const isActive = SlateCustomEditor.isMarkActive(editor, NodeType.BOLD);
             deleteBackward(...args);
             if (isActive) {
               if (editor.selection) {
@@ -277,7 +278,7 @@ export const withMarkdownShortcuts = (editor: Editor) => {
       // console.log("Text List", textlist);
       const type = SHORTCUTS[textlist[0]];
       if (type && textlist.length > 1) {
-        toggleBlock(editor, type);
+        SlateCustomEditor.toggleBlock(editor, type);
       } else {
         const [match] = Editor.nodes(editor, {
           match: (n) => n.type === "paragraph",

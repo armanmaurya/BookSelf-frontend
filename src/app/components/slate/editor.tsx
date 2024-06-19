@@ -1,7 +1,6 @@
 "use client";
 // Import React dependencies.
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { SlateCustomEditor, SlateToMarkdown } from "./utils";
 import {
   H1Element,
   H2Element,
@@ -39,7 +38,7 @@ import {
 
 import { withHistory } from "slate-history";
 import { withMarkdownShortcuts } from "./plugin";
-import { handleKeyBoardFormating, markdownTokenizer } from "./utils";
+import { handleKeyBoardFormating} from "./utils";
 import { SlateToolBar } from "./toolbar";
 import Cookies from "js-cookie";
 
@@ -380,160 +379,6 @@ const editorValue: Descendant[] = [
   },
 ];
 
-export function WSGIEditor({
-  initialValue = editorValue,
-  title,
-  id,
-}: {
-  initialValue?: Descendant[];
-  title?: string;
-  id: string;
-}) {
-  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
-  const [value, setValue] = useState(title || "");
-
-  const renderElement = useCallback((props: RenderElementProps) => {
-    switch (props.element.type) {
-      case NodeType.H1:
-        return <H1Element {...props} />;
-      case NodeType.H2:
-        return <H2Element {...props} />;
-      case NodeType.H3:
-        return <H3Element {...props} />;
-      case NodeType.H4:
-        return <H4Element {...props} />;
-      case NodeType.H5:
-        return <H5Element {...props} />;
-      case NodeType.H6:
-        return <H6Element {...props} />;
-      case NodeType.CODE:
-        return <CodeElement {...props} />;
-      case NodeType.ORDERED_LIST:
-        return <OrderedListElement {...props} />;
-      case NodeType.UNORDERED_LIST:
-        return <UnorderedListElement {...props} />;
-      case NodeType.LIST_ITEM:
-        return <ListItemElement {...props} />;
-      case "image":
-        return <ImageElement {...props} />;
-      default:
-        return <DefaultElement {...props} />;
-    }
-  }, []);
-  const renderLeaf = useCallback((props: RenderLeafProps) => {
-    return <Leaf {...props} />;
-  }, []);
-
-  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-  const SubmitContent = async () => {
-    const csrf = Cookies.get("csrftoken");
-
-    try {
-      const res = await fetch(`${API_ENDPOINT.article.url}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": `${csrf}`,
-        },
-        body: JSON.stringify({
-          id: id,
-          title: value,
-          content: JSON.stringify(editor.children),
-        }),
-        credentials: "include",
-      });
-      if (res.ok) {
-        console.log("Success");
-        console.log(await res.json());
-
-        Store.addNotification({
-          title: "Success",
-          message: "Article uploaded successfully",
-          type: "success",
-          insert: "top",
-          container: "top-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 5000,
-            // onScreen: true,
-          },
-        });
-
-        await delay(2000);
-        // window.location.href = "/";
-      } else {
-        console.log("Failed");
-        Store.addNotification({
-          title: "Error",
-          message: "Article upload failed",
-          type: "danger",
-          insert: "top",
-          container: "top-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 5000,
-            // onScreen: true,
-          },
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  return (
-    <div>
-      {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
-      <Slate
-        editor={editor}
-        initialValue={initialValue2}
-        onChange={(value) => {
-          const isAstChange = editor.operations.some(
-            (op) => "set_selection" !== op.type
-          );
-          if (isAstChange) {
-            // Save the value to Local Storage.
-            // setValue(value);
-            // const content = JSON.stringify(value);
-            // console.log(content);
-            // localStorage.setItem("content", content);
-          }
-        }}
-      >
-        <SlateToolBar onSubmit={SubmitContent} />
-        <div className="w-full flex items-center justify-center mt-3">
-          <input
-            type="text"
-            className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold "
-            onBlur={(e) => {
-              setValue(e.target.value);
-            }}
-            onChange={(e) => {
-              setValue(e.target.value);
-            }}
-            value={value}
-            placeholder="Title"
-          />
-        </div>
-        <Editable
-          spellCheck
-          autoFocus
-          className="p-4 font-serif"
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          onKeyDown={(event) => handleKeyBoardFormating(event, editor)}
-        />
-      </Slate>
-      {/* <button onClick={SubmitContent} className="bg-blue-400 mb-14">
-        what
-      </button> */}
-    </div>
-  );
-}
-
 import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-markdown";
 import { css } from "@emotion/css";
@@ -590,7 +435,7 @@ export const MarkdownPreviewExample = () => {
     // console.log(node.text);
 
     const tokens = Prism.tokenize(node.text, Prism.languages.markdown);
-    const tokens2 = markdownTokenizer(node.text);
+    // const tokens2 = markdownTokenizer(node.text);
     // console.log(tokens2);
 
     let start = 0;
@@ -598,7 +443,7 @@ export const MarkdownPreviewExample = () => {
     // console.log(tokens);
     // console.log(tokens)
 
-    for (const token of tokens2) {
+    for (const token of tokens) {
       const length = getLength(token);
       const end = start + length;
 
