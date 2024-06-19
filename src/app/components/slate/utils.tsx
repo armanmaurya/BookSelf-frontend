@@ -5,45 +5,44 @@ import {
   Editor as SlateEditor,
   Element as SlateElement,
   Transforms,
+  isBlock,
 } from "slate";
 // import { CustomEditor } from "./CustomEditor";
 
 export const SlateCustomEditor = {
-  isBoldMarkActive(editor: SlateEditor) {
-    const marks = SlateEditor.marks(editor);
-
-    if (marks) {
-      return marks?.bold === true;
+  toggleBlock(editor: SlateEditor, format: string) {
+    const isActive = SlateCustomEditor.isBlockActive(editor, format);
+    Transforms.setNodes(
+      editor,
+      {
+        type: isActive ? "paragraph" : format,
+      },
+      {
+        match: (n) =>
+          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      }
+    );
+    // Transforms.setNodes(editor, {
+    //   type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+    // })
+  },
+  toggleMark(editor: SlateEditor, format: string) {
+    const isActive = SlateCustomEditor.isMarkActive(editor, format);
+    if (isActive) {
+      SlateEditor.removeMark(editor, format);
     } else {
-      return false;
+      SlateEditor.addMark(editor, format, true);
     }
   },
-
-  isItalicMarkActive(editor: SlateEditor) {
-    const marks = SlateEditor.marks(editor);
-
-    if (marks) {
-      return marks?.italic === true;
-    } else {
-      return false;
-    }
+  isBlockActive(editor: SlateEditor, format: string) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === format,
+    });
+    return !!match;
   },
-
-  isUnderlineMarkActive(editor: SlateEditor) {
+  isMarkActive(editor: SlateEditor, format: string) {
     const marks = SlateEditor.marks(editor);
-
-    if (marks) {
-      return marks?.underline === true;
-    } else {
-      return false;
-    }
-  },
-
-  isCommand(editor: SlateEditor) {
-    if (editor.selection) {
-      const text = SlateEditor.string(editor, editor.selection.anchor.path);
-      return text.startsWith("/");
-    }
+    return marks ? marks[format as keyof typeof marks] === true : false;
   },
 
   isParagraphActive(editor: SlateEditor) {
@@ -56,48 +55,6 @@ export const SlateCustomEditor = {
   isCodeBlockActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === "code",
-    });
-    return !!match;
-  },
-
-  isH1Active(editor: SlateEditor) {
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "heading-one",
-    });
-    return !!match;
-  },
-
-  isH2Active(editor: SlateEditor) {
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "heading-two",
-    });
-    return !!match;
-  },
-
-  isH3Active(editor: SlateEditor) {
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "heading-three",
-    });
-    return !!match;
-  },
-
-  isH4Active(editor: SlateEditor) {
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "heading-four",
-    });
-    return !!match;
-  },
-
-  isH5Active(editor: SlateEditor) {
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "heading-five",
-    });
-    return !!match;
-  },
-
-  isH6Active(editor: SlateEditor) {
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "heading-six",
     });
     return !!match;
   },
@@ -119,67 +76,9 @@ export const SlateCustomEditor = {
   },
   isListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) =>
-        SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+      match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
     });
     return !!match;
-  },
-
-  toggleBoldMark(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isBoldMarkActive(editor);
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) =>
-        (SlateElement.isElement(n) && n.type === NodeType.PARAGRAPH) ||
-        n.type === NodeType.LIST_ITEM,
-    });
-
-    if (!match) {
-      return;
-    }
-
-    if (isActive) {
-      SlateEditor.removeMark(editor, "bold");
-    } else {
-      SlateEditor.addMark(editor, "bold", true);
-    }
-  },
-
-  toggleItalicMark(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isItalicMarkActive(editor);
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) =>
-        (SlateElement.isElement(n) && n.type === NodeType.PARAGRAPH) ||
-        n.type === NodeType.LIST_ITEM,
-    });
-
-    if (!match) {
-      return;
-    }
-
-    if (isActive) {
-      SlateEditor.removeMark(editor, "italic");
-    } else {
-      SlateEditor.addMark(editor, "italic", true);
-    }
-  },
-
-  toggleUnderlineMark(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isUnderlineMarkActive(editor);
-    const [match] = SlateEditor.nodes(editor, {
-      match: (n) =>
-        (SlateElement.isElement(n) && n.type === NodeType.PARAGRAPH) ||
-        n.type === NodeType.LIST_ITEM,
-    });
-
-    if (!match) {
-      return;
-    }
-
-    if (isActive) {
-      SlateEditor.removeMark(editor, "underline");
-    } else {
-      SlateEditor.addMark(editor, "underline", true);
-    }
   },
 
   setAlignment(
@@ -211,156 +110,6 @@ export const SlateCustomEditor = {
       }
     );
   },
-  runCommand(editor: SlateEditor) {
-    const isCommand = SlateCustomEditor.isCommand(editor);
-
-    if (isCommand && editor.selection) {
-      const text = SlateEditor.string(editor, editor.selection.anchor.path);
-      const command = text.split(" ")[0].substring(1);
-      console.log("Command", command);
-
-      const rest = text.substring(command.length + 1);
-      switch (command) {
-        case "bold":
-          SlateCustomEditor.toggleBoldMark(editor);
-          break;
-        case "italic":
-          SlateCustomEditor.toggleItalicMark(editor);
-          break;
-        case "code":
-          SlateCustomEditor.toggleCodeBlock(editor);
-          break;
-        case "h1":
-          SlateCustomEditor.toggleH1Block(editor);
-          break;
-        case "h2":
-          SlateCustomEditor.toggleH2Block(editor);
-          break;
-        case "h3":
-          SlateCustomEditor.toggleH3Block(editor);
-          break;
-        case "h4":
-          SlateCustomEditor.toggleH4Block(editor);
-          break;
-        case "h5":
-          SlateCustomEditor.toggleH5Block(editor);
-          break;
-        case "h6":
-          SlateCustomEditor.toggleH6Block(editor);
-          break;
-        default:
-          console.log("Command not found");
-      }
-    }
-  },
-
-  toggleParagraphBlock(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isParagraphActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "paragraph" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleH1Block(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isH1Active(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "heading-one" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleH2Block(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isH2Active(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "heading-two" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleH3Block(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isH3Active(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "heading-three" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleH4Block(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isH4Active(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "heading-four" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleH5Block(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isH5Active(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "heading-five" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleH6Block(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isH6Active(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "heading-six" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-  },
-
-  toggleCodeBlock(editor: SlateEditor) {
-    const isActive = SlateCustomEditor.isCodeBlockActive(editor);
-    // if (editor.selection) {
-    //   Transforms.mergeNodes(editor, {
-    //     at: editor.selection,
-    //   });
-    // }
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "code" },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      }
-    );
-    // Transforms.insertText(editor, "\n```");
-    // if (editor.selection) {
-    //   Transforms.select(editor, {
-    //     path: [...editor.selection.anchor.path],
-    //     offset: 3,
-    //   });
-    // }
-  },
 
   toggleUnorderedListBlock(editor: SlateEditor) {
     const isActive = SlateCustomEditor.isListActive(editor);
@@ -391,29 +140,49 @@ export const SlateCustomEditor = {
           at: after ? after.path : editor.selection.anchor.path,
         });
 
-        if (beforeMatch[0].type === NodeType.LIST_ITEM) {
-          console.log("this runned");
-          
-          Transforms.splitNodes(editor, {
-            mode: "highest",
-            at: {
-              path: before ? before.path : editor.selection.anchor.path,
-              offset: before ? before.offset : 0,
-            },
-          });
-        }
         if (afterMatch[0].type === NodeType.LIST_ITEM) {
-          console.log("This si runned");
-          
-          const text = SlateEditor.string(editor, editor.selection.anchor.path);
-          console.log(text);
-          
+          // console.log("This si runned");
+          let text;
+          let offset;
+          if (after) {
+            text = SlateEditor.string(editor, after?.path);
+            // const currentText = SlateEditor.string(editor, editor.selection.anchor.path);
+            if (text.length === 0) {
+              offset = 1;
+            } else {
+              offset = after.offset;
+            }
+          }
+          // console.log(text);
+
           Transforms.splitNodes(editor, {
             mode: "highest",
             at: {
               path: after ? after.path : editor.selection.anchor.path,
-              offset: after ? after.offset : 0,
+              offset: offset as number,
+            },
+          });
+        }
+        if (beforeMatch[0].type === NodeType.LIST_ITEM) {
+          // console.log("this runned");
+
+          let text;
+          let offset;
+          if (before) {
+            text = SlateEditor.string(editor, before?.path);
+            if (text.length === 0) {
+              offset = 0;
+            } else {
+              offset = before.offset;
             }
+          }
+
+          Transforms.splitNodes(editor, {
+            mode: "highest",
+            at: {
+              path: before ? before.path : editor.selection.anchor.path,
+              offset: offset as number,
+            },
           });
         }
 
@@ -453,24 +222,48 @@ export const SlateCustomEditor = {
           at: after ? after.path : editor.selection.anchor.path,
         });
 
-        if (beforeMatch[0].type === NodeType.LIST_ITEM) {
+        if (afterMatch[0].type === NodeType.LIST_ITEM) {
+          // console.log("This si runned");
+          let text;
+          let offset;
+          if (after) {
+            text = SlateEditor.string(editor, after?.path);
+            // const currentText = SlateEditor.string(editor, editor.selection.anchor.path);
+            if (text.length === 0) {
+              offset = 1;
+            } else {
+              offset = after.offset;
+            }
+          }
+          // console.log(text);
+
           Transforms.splitNodes(editor, {
-            // match: (n) => n.type === NodeType.ORDERED_LIST,
             mode: "highest",
             at: {
-              path: editor.selection.anchor.path,
-              offset: 0,
+              path: after ? after.path : editor.selection.anchor.path,
+              offset: offset as number,
             },
           });
         }
-        if (afterMatch[0].type === NodeType.LIST_ITEM) {
-          const text = SlateEditor.string(editor, editor.selection.anchor.path);
+        if (beforeMatch[0].type === NodeType.LIST_ITEM) {
+          // console.log("this runned");
+
+          let text;
+          let offset;
+          if (before) {
+            text = SlateEditor.string(editor, before?.path);
+            if (text.length === 0) {
+              offset = 0;
+            } else {
+              offset = before.offset;
+            }
+          }
+
           Transforms.splitNodes(editor, {
-            // match: (n) => n.type === NodeType.ORDERED_LIST,
             mode: "highest",
             at: {
-              path: editor.selection.anchor.path,
-              offset: text ? text.length : 0,
+              path: before ? before.path : editor.selection.anchor.path,
+              offset: offset as number,
             },
           });
         }
@@ -541,43 +334,43 @@ export const handleKeyBoardFormating = (
     switch (event.key) {
       case "1":
         event.preventDefault();
-        SlateCustomEditor.toggleH1Block(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.H1);
         break;
       case "2":
         event.preventDefault();
-        SlateCustomEditor.toggleH2Block(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.H2);
         break;
       case "3":
         event.preventDefault();
-        SlateCustomEditor.toggleH3Block(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.H3);
         break;
       case "4":
         event.preventDefault();
-        SlateCustomEditor.toggleH4Block(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.H4);
         break;
       case "5":
         event.preventDefault();
-        SlateCustomEditor.toggleH5Block(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.H5);
         break;
       case "6":
         event.preventDefault();
-        SlateCustomEditor.toggleH6Block(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.H6);
         break;
       case "`":
         event.preventDefault();
-        SlateCustomEditor.toggleCodeBlock(editor);
+        SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
         break;
       case "b":
         event.preventDefault();
-        SlateCustomEditor.toggleBoldMark(editor);
+        SlateCustomEditor.toggleMark(editor, "bold");
         break;
       case "i":
         event.preventDefault();
-        SlateCustomEditor.toggleItalicMark(editor);
+        SlateCustomEditor.toggleMark(editor, "italic");
         break;
       case "u":
         event.preventDefault();
-        SlateCustomEditor.toggleUnderlineMark(editor);
+        SlateCustomEditor.toggleMark(editor, "underline");
         break;
       case "Enter":
         event.preventDefault();

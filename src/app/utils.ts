@@ -10,6 +10,9 @@ export enum NodeType {
   ORDERED_LIST = "ordered-list",
   UNORDERED_LIST = "unordered-list",
   LIST_ITEM = "list-item",
+  BOLD = "bold",
+  ITALIC = "italic",
+  UNDERLINE = "underline",
 }
 
 interface Article {

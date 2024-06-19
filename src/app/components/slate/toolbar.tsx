@@ -1,6 +1,6 @@
 import { SlateCustomEditor } from "./utils";
 import { useSlate } from "slate-react";
-import { API_ENDPOINT } from "@/app/utils";
+import { API_ENDPOINT, NodeType } from "@/app/utils";
 import Cookies from "js-cookie";
 
 export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
@@ -11,11 +11,11 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
       <div className="toolbar flex">
         <button
           className={`px-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isBoldMarkActive(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isMarkActive(editor, NodeType.BOLD) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleBoldMark(editor);
+            SlateCustomEditor.toggleMark(editor, NodeType.BOLD);
             // printdata();
           }}
         >
@@ -23,11 +23,11 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isItalicMarkActive(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isMarkActive(editor, NodeType.ITALIC) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleItalicMark(editor);
+            SlateCustomEditor.toggleMark(editor, NodeType.ITALIC);
           }}
         >
           <em>I</em>
@@ -36,7 +36,7 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
           className="px-2 hover:bg-slate-100"
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleUnderlineMark(editor);
+            SlateCustomEditor.toggleMark(editor, NodeType.UNDERLINE);
           }}
         >
           <u>U</u>
@@ -45,82 +45,80 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
           className="px-2 hover:bg-slate-100"
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleCodeBlock(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
           }}
         >
           {"</>"}
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH1Active(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isBlockActive(editor, NodeType.H1) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleH1Block(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.H1);
           }}
         >
           H1
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH2Active(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isBlockActive(editor, NodeType.H2) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleH2Block(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.H2);
           }}
         >
           H2
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH3Active(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isBlockActive(editor, NodeType.H3) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleH3Block(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.H3);
           }}
         >
           H3
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH4Active(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isBlockActive(editor, NodeType.H4) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
             console.log("H4");
-            SlateCustomEditor.toggleH4Block(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.H4);
           }}
         >
           H4
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH5Active(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isBlockActive(editor, NodeType.H5) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleH5Block(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.H5);
           }}
         >
           H5
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH6Active(editor) ? "bg-slate-100" : ""
+            SlateCustomEditor.isBlockActive(editor, NodeType.H6) ? "bg-slate-100" : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleH6Block(editor);
+            SlateCustomEditor.toggleBlock(editor, NodeType.H6);
           }}
         >
           H6
         </button>
         <button
-          className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH6Active(editor) ? "bg-slate-100" : ""
-          }`}
+          className={`px-2 mx-2 hover:bg-slate-100 `}
           onClick={(event) => {
             event.preventDefault();
             SlateCustomEditor.setAlignment(editor, "left");
@@ -129,9 +127,7 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
           left
         </button>
         <button
-          className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH6Active(editor) ? "bg-slate-100" : ""
-          }`}
+          className={`px-2 mx-2 hover:bg-slate-100 `}
           onClick={(event) => {
             event.preventDefault();
             SlateCustomEditor.setAlignment(editor, "center");
@@ -140,9 +136,7 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
           center
         </button>
         <button
-          className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isH6Active(editor) ? "bg-slate-100" : ""
-          }`}
+          className={`px-2 mx-2 hover:bg-slate-100 `}
           onClick={(event) => {
             event.preventDefault();
             SlateCustomEditor.setAlignment(editor, "right");
