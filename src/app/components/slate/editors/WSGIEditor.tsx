@@ -147,7 +147,7 @@ export function WSGIEditor({
       {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
       <Slate
         editor={editor}
-        initialValue={initialValue2}
+        initialValue={initialValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
