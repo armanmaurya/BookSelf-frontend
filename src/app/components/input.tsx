@@ -82,7 +82,7 @@ export const PasswordInput = ({
   );
 };
 
-const SearchInput = () => {
+export const SearchInput = () => {
   const router = useRouter();
 
   const handleKeyPress = (
@@ -108,4 +108,3 @@ const SearchInput = () => {
   );
 };
 
-export default SearchInput;

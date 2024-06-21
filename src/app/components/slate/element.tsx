@@ -2,33 +2,34 @@ import { NodeType } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 
 export const H1Element = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.H1 ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.H1 ? props.element.align : "left",
+  };
   return (
-    <h1
-      className="text-4xl font-bold"
-      style={style}
-      {...props.attributes}
-    >
+    <h1 className="text-4xl font-bold" style={style} {...props.attributes}>
       {props.children}
     </h1>
   );
 };
 
 export const H2Element = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.H2 ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.H2 ? props.element.align : "left",
+  };
   return (
-    <h2
-      className="text-3xl"
-      style={style}
-      {...props.attributes}
-    >
+    <h2 className="text-3xl" style={style} {...props.attributes}>
       {props.children}
     </h2>
   );
 };
 
 export const H3Element = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.H3 ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.H3 ? props.element.align : "left",
+  };
   return (
     <h3 className="text-2xl font-bold" {...props.attributes} style={style}>
       {props.children}
@@ -37,7 +38,10 @@ export const H3Element = (props: RenderElementProps) => {
 };
 
 export const H4Element = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.H4 ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.H4 ? props.element.align : "left",
+  };
   return (
     <h4 className="text-xl font-bold" {...props.attributes} style={style}>
       {props.children}
@@ -46,7 +50,10 @@ export const H4Element = (props: RenderElementProps) => {
 };
 
 export const H5Element = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.H5 ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.H5 ? props.element.align : "left",
+  };
   return (
     <h5 className="text-lg font-bold" {...props.attributes} style={style}>
       {props.children}
@@ -55,7 +62,10 @@ export const H5Element = (props: RenderElementProps) => {
 };
 
 export const H6Element = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.H6 ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.H6 ? props.element.align : "left",
+  };
   return (
     <h6 className="text-base font-bold" {...props.attributes} style={style}>
       {props.children}
@@ -64,9 +74,16 @@ export const H6Element = (props: RenderElementProps) => {
 };
 
 export const DefaultElement = (props: RenderElementProps) => {
-  const style = { textAlign: props.element.type === NodeType.PARAGRAPH ? props.element.align : "left"}
+  const style = {
+    textAlign:
+      props.element.type === NodeType.PARAGRAPH ? props.element.align : "left",
+  };
   return (
-    <div className={`my-2 hover:bg-slate-50`} style={style} {...props.attributes}>
+    <div
+      className={`my-2 hover:bg-slate-50`}
+      style={style}
+      {...props.attributes}
+    >
       {props.children}
     </div>
   );
@@ -74,7 +91,7 @@ export const DefaultElement = (props: RenderElementProps) => {
 
 export const OrderedListElement = (props: RenderElementProps) => {
   return (
-    <ol {...props.attributes} className="font-sans list-decimal list-inside ml-4">
+    <ol {...props.attributes} className="font-sans list-decimal ml-4">
       {props.children}
     </ol>
   );
@@ -82,18 +99,14 @@ export const OrderedListElement = (props: RenderElementProps) => {
 
 export const UnorderedListElement = (props: RenderElementProps) => {
   return (
-    <ul {...props.attributes} className="list-disc list-inside ml-4">
+    <ul {...props.attributes} className="list-disc ml-4">
       {props.children}
     </ul>
   );
 };
 
 export const ListItemElement = (props: RenderElementProps) => {
-  return (
-    <li {...props.attributes}>
-      {props.children}
-    </li>
-  );
+  return <li {...props.attributes}>{props.children}</li>;
 };
 
 export const ImageElement = (props: RenderElementProps) => {
@@ -150,7 +163,7 @@ export const CodeElement = (props: RenderElementProps) => {
   // });
 
   return (
-    <pre className="bg-zinc-900 text-white p-4 rounded" {...attributes}>
+    <pre className="bg-zinc-900 text-white p-4 rounded my-2" {...attributes}>
       <code>{children}</code>
     </pre>
   );
@@ -160,7 +173,11 @@ export const Leaf = (props: RenderLeafProps) => {
   return (
     <span
       {...props.attributes}
-      className={` ${props.leaf.bold ? "font-bold" : ""} ${props.leaf.italic ? "italic" : ""} ${props.leaf.underline ? "underline" : ""} ${props.leaf.code ? "code" : ""} `}
+      className={` ${props.leaf.bold ? "font-bold" : ""} ${
+        props.leaf.italic ? "italic" : ""
+      } ${props.leaf.underline ? "underline" : ""} ${
+        props.leaf.code ? "bg-slate-200 px-0.5 rounded" : ""
+      } `}
     >
       {props.children}
     </span>

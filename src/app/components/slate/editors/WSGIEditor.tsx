@@ -1,16 +1,16 @@
 "use client";
 import { NodeType, API_ENDPOINT } from "@/app/utils";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useRef } from "react";
 import { Store } from "react-notifications-component";
 import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
   withReact,
   RenderElementProps,
-  DefaultElement,
   RenderLeafProps,
   Slate,
   Editable,
+  ReactEditor,
 } from "slate-react";
 import {
   H1Element,
@@ -24,6 +24,7 @@ import {
   UnorderedListElement,
   ListItemElement,
   ImageElement,
+  DefaultElement,
   Leaf,
 } from "../element";
 import { SlateToolBar } from "../toolbar";
@@ -142,12 +143,14 @@ export function WSGIEditor({
     }
   };
 
+  const titleRef = useRef<HTMLInputElement>(null);
+
   return (
-    <div>
+    <div className="">
       {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
       <Slate
         editor={editor}
-        initialValue={initialValue}
+        initialValue={initialValue2}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
@@ -162,8 +165,9 @@ export function WSGIEditor({
         }}
       >
         <SlateToolBar onSubmit={SubmitContent} />
-        <div className="w-full flex items-center justify-center mt-3">
+        <div className="w-full flex flex-col flex-grow  mt-3 h-[calc(100vh-104px)] overflow-auto">
           <input
+            ref={titleRef}
             type="text"
             className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold "
             onBlur={(e) => {
@@ -172,18 +176,48 @@ export function WSGIEditor({
             onChange={(e) => {
               setValue(e.target.value);
             }}
+            onKeyDown={(e) => {
+              switch (e.key) {
+                case "Enter":
+                  e.preventDefault();
+                  ReactEditor.focus(editor);
+                  break;
+                case "ArrowDown":
+                  e.preventDefault();
+                  ReactEditor.focus(editor);
+                  break;
+                case "ArrowUp":
+                  e.preventDefault();
+                default:
+                  break;
+              }
+            }}
             value={value}
             placeholder="Title"
           />
+          <Editable
+            spellCheck
+            autoFocus
+            id="editor"
+            className="p-4 font-serif"
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            onKeyDown={(event) => {
+              handleKeyBoardFormating(event, editor);
+              if (
+                event.key === "ArrowUp" &&
+                editor.selection?.anchor.path[0] === 0
+              ) {
+                if (titleRef.current) {
+                  event.preventDefault();
+                  titleRef.current.focus();
+                  const length = titleRef.current.value.length;
+                  titleRef.current.setSelectionRange(length, length);
+                }
+              }
+            }}
+          />
         </div>
-        <Editable
-          spellCheck
-          autoFocus
-          className="p-4 font-serif"
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          onKeyDown={(event) => handleKeyBoardFormating(event, editor)}
-        />
       </Slate>
       {/* <button onClick={SubmitContent} className="bg-blue-400 mb-14">
           what
@@ -192,259 +226,258 @@ export function WSGIEditor({
   );
 }
 
-
 const initialValue2: Descendant[] = [
-    {
-      type: NodeType.H1,
-      align: "center",
-      children: [
-        {
-          text: "Heading One",
-        },
-      ],
-    },
-    {
-      type: NodeType.UNORDERED_LIST,
-      children: [
-        {
-          type: NodeType.LIST_ITEM,
-          children: [
-            {
-              text: "List Item 1",
-            },
-          ],
-        },
-        {
-          type: NodeType.LIST_ITEM,
-          children: [
-            {
-              text: "List Item 2",
-            },
-          ],
-        },
-        {
-          type: NodeType.ORDERED_LIST,
-          children: [
-            {
-              type: NodeType.LIST_ITEM,
-              children: [
-                {
-                  text: "List Item 1",
-                },
-              ],
-            },
-            {
-              type: NodeType.LIST_ITEM,
-              children: [
-                {
-                  text: "List Item 2",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: NodeType.ORDERED_LIST,
-      children: [
-        {
-          type: NodeType.LIST_ITEM,
-          children: [
-            {
-              text: "List Item 1",
-            },
-          ],
-        },
-        {
-          type: NodeType.LIST_ITEM,
-          children: [
-            {
-              text: "List Item 2",
-            },
-          ],
-        },
-        {
-          type: NodeType.ORDERED_LIST,
-          children: [
-            {
-              type: NodeType.LIST_ITEM,
-              children: [
-                {
-                  text: "List Item 1",
-                },
-              ],
-            },
-            {
-              type: NodeType.LIST_ITEM,
-              children: [
-                {
-                  text: "List Item 2",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: NodeType.H1,
-      align: "center",
-      children: [
-        {
-          text: "Heading One",
-        },
-      ],
-    },
-    {
-      type: NodeType.UNORDERED_LIST,
-      children: [
-        {
-          type: NodeType.LIST_ITEM,
-          children: [{ text: "List Item 1" }],
-        },
-      ],
-    },
-    {
-      type: NodeType.PARAGRAPH,
-      align: "left",
-      children: [
-        {
-          text: "Heading Two",
-        },
-      ],
-    },
-    {
-      type: NodeType.PARAGRAPH,
-      align: "center",
-      children: [
-        {
-          text: "A line of text in a paragraph.",
-          // bold: true,
-        },
-        {
-          text: "Bold",
-          bold: true,
-        },
-        {
-          text: " Some More Text ",
-        },
-        {
-          text: "Italic",
-          italic: true,
-        },
-        {
-          text: " Some more text ",
-        },
-        {
-          text: "Underlined",
-          underline: true,
-        },
-        {
-          text: " Some more text ",
-        },
-        {
-          text: "Bold Italic",
-          bold: true,
-          italic: true,
-        },
-      ],
-    },
-    {
-      type: NodeType.H3,
-      align: "right",
-      children: [
-        {
-          text: "Heading Three",
-        },
-      ],
-    },
-    {
-      type: NodeType.H4,
-      align: "right",
-      children: [
-        {
-          text: "Heading Four",
-        },
-      ],
-    },
-    {
-      type: NodeType.H5,
-      align: "center",
-      children: [
-        {
-          text: "Heading Five",
-        },
-      ],
-    },
-    {
-      type: NodeType.H6,
-      align: "center",
-      children: [
-        {
-          text: "Heading Six",
-        },
-      ],
-    },
-    {
-      type: NodeType.CODE,
-      language: "javascript",
-      children: [
-        {
-          text: "const a = 5;",
-        },
-        {
-          text: "const b = 10;",
-        },
-      ],
-    },
-    {
-      type: NodeType.PARAGRAPH,
-      align: "right",
-      children: [
-        {
-          text: "A line of text \nin a paragraph.",
-          // bold: true,
-        },
-        {
-          text: "Bold",
-          bold: true,
-        },
-        {
-          text: " Some More Text ",
-        },
-        {
-          text: "Italic",
-          italic: true,
-        },
-        {
-          text: " Some more text ",
-        },
-        {
-          text: "Underlined",
-          underline: true,
-        },
-        {
-          text: " Some more text ",
-        },
-        {
-          text: "Bold Italic",
-          bold: true,
-          italic: true,
-        },
-      ],
-    },
-  
-    // {
-    //   type: "code",
-    //   language: "javascript",
-    //   children: [
-    //     {
-    //       text: "const a = 5;",
-    //     },
-    //     {
-    //       text: "const b = 10;",
-    //     },
-    //   ],
-    // },
-  ];
+  {
+    type: NodeType.H1,
+    align: "center",
+    children: [
+      {
+        text: "Heading One",
+      },
+    ],
+  },
+  {
+    type: NodeType.UNORDERED_LIST,
+    children: [
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 1",
+          },
+        ],
+      },
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 2",
+          },
+        ],
+      },
+      {
+        type: NodeType.ORDERED_LIST,
+        children: [
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 1",
+              },
+            ],
+          },
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 2",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: NodeType.ORDERED_LIST,
+    children: [
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 1",
+          },
+        ],
+      },
+      {
+        type: NodeType.LIST_ITEM,
+        children: [
+          {
+            text: "List Item 2",
+          },
+        ],
+      },
+      {
+        type: NodeType.ORDERED_LIST,
+        children: [
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 1",
+              },
+            ],
+          },
+          {
+            type: NodeType.LIST_ITEM,
+            children: [
+              {
+                text: "List Item 2",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: NodeType.H1,
+    align: "center",
+    children: [
+      {
+        text: "Heading One",
+      },
+    ],
+  },
+  {
+    type: NodeType.UNORDERED_LIST,
+    children: [
+      {
+        type: NodeType.LIST_ITEM,
+        children: [{ text: "List Item 1" }],
+      },
+    ],
+  },
+  {
+    type: NodeType.PARAGRAPH,
+    align: "left",
+    children: [
+      {
+        text: "Heading Two",
+      },
+    ],
+  },
+  {
+    type: NodeType.PARAGRAPH,
+    align: "center",
+    children: [
+      {
+        text: "A line of text in a paragraph.",
+        bold: true,
+      },
+      {
+        text: "Bold",
+        bold: true,
+      },
+      {
+        text: " Some More Text ",
+      },
+      {
+        text: "Italic",
+        italic: true,
+      },
+      {
+        text: " Some more text ",
+      },
+      {
+        text: "Underlined",
+        underline: true,
+      },
+      {
+        text: " Some more text ",
+      },
+      {
+        text: "Bold Italic",
+        bold: true,
+        italic: true,
+      },
+    ],
+  },
+  {
+    type: NodeType.H3,
+    align: "right",
+    children: [
+      {
+        text: "Heading Three",
+      },
+    ],
+  },
+  {
+    type: NodeType.H4,
+    align: "right",
+    children: [
+      {
+        text: "Heading Four",
+      },
+    ],
+  },
+  {
+    type: NodeType.H5,
+    align: "center",
+    children: [
+      {
+        text: "Heading Five",
+      },
+    ],
+  },
+  {
+    type: NodeType.H6,
+    align: "center",
+    children: [
+      {
+        text: "Heading Six",
+      },
+    ],
+  },
+  {
+    type: NodeType.CODE,
+    language: "javascript",
+    children: [
+      {
+        text: "const a = 5;",
+      },
+      {
+        text: "const b = 10;",
+      },
+    ],
+  },
+  {
+    type: NodeType.PARAGRAPH,
+    align: "right",
+    children: [
+      {
+        text: "A line of text \nin a paragraph.",
+        // bold: true,
+      },
+      {
+        text: "Bold",
+        bold: true,
+      },
+      {
+        text: " Some More Text ",
+      },
+      {
+        text: "Italic",
+        italic: true,
+      },
+      {
+        text: " Some more text ",
+      },
+      {
+        text: "Underlined",
+        underline: true,
+      },
+      {
+        text: " Some more text ",
+      },
+      {
+        text: "Bold Italic",
+        bold: true,
+        italic: true,
+      },
+    ],
+  },
+
+  // {
+  //   type: "code",
+  //   language: "javascript",
+  //   children: [
+  //     {
+  //       text: "const a = 5;",
+  //     },
+  //     {
+  //       text: "const b = 10;",
+  //     },
+  //   ],
+  // },
+];

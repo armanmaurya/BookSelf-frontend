@@ -20,68 +20,9 @@ const SHORTCUTS: { [key: string]: string } = {
   "```": "code",
 };
 
-// export const toggleBlock = (editor: Editor, type: string) => {
-//   switch (type) {
-//     case "heading-one":
-//       const [match] = Editor.nodes(editor, {
-//         match: (n) => n.type === "heading-one",
-//       });
-//       if (!match) {
-//         SlateCustomEditor.toggleH1Block(editor);
-//       }
-//       break;
-//     case "heading-two":
-//       const [match2] = Editor.nodes(editor, {
-//         match: (n) => n.type === "heading-two",
-//       });
-//       if (!match2) {
-//         SlateCustomEditor.toggleH2Block(editor);
-//       }
-//       break;
-//     case "heading-three":
-//       const [match3] = Editor.nodes(editor, {
-//         match: (n) => n.type === "heading-three",
-//       });
-//       if (!match3) {
-//         SlateCustomEditor.toggleH3Block(editor);
-//       }
-//       break;
-//     case "heading-four":
-//       const [match4] = Editor.nodes(editor, {
-//         match: (n) => n.type === "heading-four",
-//       });
-//       if (!match4) {
-//         SlateCustomEditor.toggleH4Block(editor);
-//       }
-//       break;
-//     case "heading-five":
-//       const [match5] = Editor.nodes(editor, {
-//         match: (n) => n.type === "heading-five",
-//       });
-//       if (!match5) {
-//         SlateCustomEditor.toggleH5Block(editor);
-//       }
-//       break;
-//     case "heading-six":
-//       const [match6] = Editor.nodes(editor, {
-//         match: (n) => n.type === "heading-six",
-//       });
-//       if (!match6) {
-//         SlateCustomEditor.toggleH6Block(editor);
-//       }
-//       break;
-//     case "code":
-//       const [match7] = Editor.nodes(editor, {
-//         match: (n) => n.type === "code",
-//       });
-//       if (!match7) {
-//         SlateCustomEditor.toggleCodeBlock(editor);
-//       }
-//       break;
-//   }
-// };
 
-export const withMarkdownShortcuts = (editor: Editor) => {
+
+export const withShortcuts = (editor: Editor) => {
   const { insertText, deleteBackward, deleteForward } = editor;
 
   editor.insertText = (text1: string) => {

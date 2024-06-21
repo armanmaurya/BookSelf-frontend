@@ -37,7 +37,7 @@ import {
 } from "slate-react";
 
 import { withHistory } from "slate-history";
-import { withMarkdownShortcuts } from "./plugin";
+import { withShortcuts } from "./plugin";
 import { handleKeyBoardFormating} from "./utils";
 import { SlateToolBar } from "./toolbar";
 import Cookies from "js-cookie";
@@ -303,7 +303,7 @@ const initialValue2: Descendant[] = [
 
 export function MarkdownEditor() {
   const editor = useMemo(
-    () => withMarkdownShortcuts(withReact(withHistory(createEditor()))),
+    () => withShortcuts(withReact(withHistory(createEditor()))),
     []
   );
 
