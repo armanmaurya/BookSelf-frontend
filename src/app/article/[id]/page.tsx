@@ -1,5 +1,6 @@
 // "use client";
 import React, { useCallback } from "react";
+import { notFound } from "next/navigation";
 import {
   H1Element,
   H2Element,
@@ -68,9 +69,13 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       cookieStore.get("sessionid")?.value
     }`,
   });
+  if (!data) {
+    return notFound();
+  }
 
   const content = data.data.content;
   // console.log();
+  if (content.length === 0) return notFound();
 
   const jsonContent: Descendant[] = JSON.parse(content);
   return (

@@ -3,7 +3,7 @@ import RNotification from "../../components/RNotification";
 import { MarkdownEditor } from "../../components/slate/editor";
 import { WSGIEditor } from "../../components/slate/editors/WSGIEditor";
 import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { NodeType, getData } from "@/app/utils";
 
 export default async function Editor({
@@ -25,6 +25,9 @@ export default async function Editor({
       cookieStore.get("sessionid")?.value
     }`,
   });
+  if (!data) {
+    return notFound();
+  }
 
   if (!data.is_owner) {
     redirect("/");
@@ -37,6 +40,9 @@ export default async function Editor({
       children: [{ text: "" }],
     },
   ];
+  if (data.data === null) {
+    return notFound();
+  }
   const content = data.data.content;
   const jsonContent: Descendant[] = JSON.parse(content) || editorValue;
 

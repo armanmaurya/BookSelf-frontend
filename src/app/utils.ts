@@ -25,7 +25,7 @@ interface Article {
 
 interface CustomResponse {
   data: Article;
-  is_owner : boolean;
+  is_owner: boolean;
 }
 
 export async function getData(
@@ -33,18 +33,18 @@ export async function getData(
   headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "Cookie": "",
+    Cookie: "",
   }
-): Promise<CustomResponse> {
+): Promise<CustomResponse| null> {
   try {
     const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
       method: "GET",
       headers: headers,
     });
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
+    if (res.ok) {
+      return await res.json();
     }
-    return await res.json();
+    return null;
   } catch (error) {
     console.error("Error fetching data:", error);
     throw error; // Rethrow the error to propagate it to the caller
@@ -321,5 +321,3 @@ export const markdownTokenizer = (textin: string) => {
 
   return tokens;
 };
-
-
