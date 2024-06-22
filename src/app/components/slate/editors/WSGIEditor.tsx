@@ -1,6 +1,6 @@
 "use client";
 import { NodeType, API_ENDPOINT } from "@/app/utils";
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
 import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
@@ -50,6 +50,8 @@ export function WSGIEditor({
 }) {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
   const [value, setValue] = useState(title || "");
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [LastSaveTime, setLastSaveTime] = useState<number>(Date.now());
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -86,6 +88,7 @@ export function WSGIEditor({
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const SubmitContent = async () => {
+    setIsSaving(true);
     const csrf = Cookies.get("csrftoken");
 
     try {
@@ -103,26 +106,29 @@ export function WSGIEditor({
         credentials: "include",
       });
       if (res.ok) {
+        setIsSaving(false);
+        setLastSaveTime
         console.log("Success");
         console.log(await res.json());
 
-        Store.addNotification({
-          title: "Success",
-          message: "Article uploaded successfully",
-          type: "success",
-          insert: "top",
-          container: "top-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 5000,
-            // onScreen: true,
-          },
-        });
+        // Store.addNotification({
+        //   title: "Success",
+        //   message: "Article uploaded successfully",
+        //   type: "success",
+        //   insert: "top",
+        //   container: "top-center",
+        //   animationIn: ["animate__animated", "animate__fadeIn"],
+        //   animationOut: ["animate__animated", "animate__fadeOut"],
+        //   dismiss: {
+        //     duration: 5000,
+        //     // onScreen: true,
+        //   },
+        // });
 
-        await delay(2000);
+        // await delay(2000);
         // window.location.href = "/";
       } else {
+        setIsSaving(false);
         console.log("Failed");
         Store.addNotification({
           title: "Error",
@@ -143,21 +149,53 @@ export function WSGIEditor({
     }
   };
 
+  const debounce = (callback: () => {}, delay: number) => {
+    let timeout: string | number | NodeJS.Timeout | undefined;
+    return (...args: any) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => callback(), delay);
+    };
+  };
+  const debouncedSave = debounce(SubmitContent, 3000);
+
   const titleRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="">
+    <div className="relative">
+      {isSaving ? (
+        <div className="absolute right-2 top-10 text-slate-600">Saving....</div>
+      ) : (
+        <div className="absolute right-2 top-10 text-slate-600">
+          <span className="px-2">Saved</span>
+          <span>
+            {
+              Date.now() - LastSaveTime > 1000 ? "now" : `${Date.now() - LastSaveTime} seconds ago`
+            }
+          </span>
+        </div>
+      )}
       {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
       <Slate
         editor={editor}
-        initialValue={initialValue2}
+        initialValue={initialValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
           );
           if (isAstChange) {
+            debouncedSave();
+            // currentTime.current = Date.now();
+            //   if (!isSaving.current) {
+            //     setTimeout(() => {
+            //       if (Date.now() - currentTime.current >= savingDelay) {
+            //         isSaving.current = true;
+            //         SubmitContent();
+            //         isSaving.current = false;
+            //       }
+            //     }, savingDelay);
+            //   }
             // Save the value to Local Storage.
-            // setValue(value);
+
             // const content = JSON.stringify(value);
             // console.log(content);
             // localStorage.setItem("content", content);
