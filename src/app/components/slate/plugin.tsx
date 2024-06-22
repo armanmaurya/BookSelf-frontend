@@ -20,13 +20,12 @@ const SHORTCUTS: { [key: string]: string } = {
   "```": "code",
 };
 
-
-
 export const withShortcuts = (editor: Editor) => {
   const { insertText, deleteBackward, deleteForward } = editor;
 
   editor.insertText = (text1: string) => {
     const { selection } = editor;
+    console.log(text1);
 
     if (selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;
@@ -60,7 +59,10 @@ export const withShortcuts = (editor: Editor) => {
           const boldRegex = /\*\*(.*?)\*\*/g; // regex to extract bold text
 
           while ((match = boldRegex.exec(newText2)) !== null) {
-            const isActive = SlateCustomEditor.isMarkActive(editor, NodeType.BOLD);
+            const isActive = SlateCustomEditor.isMarkActive(
+              editor,
+              NodeType.BOLD
+            );
             insertText(text1);
             if (isActive) {
               return;
@@ -142,7 +144,10 @@ export const withShortcuts = (editor: Editor) => {
 
           rmatch = boldRegex.exec(newText2);
           if (!rmatch) {
-            const isActive = SlateCustomEditor.isMarkActive(editor, NodeType.BOLD);
+            const isActive = SlateCustomEditor.isMarkActive(
+              editor,
+              NodeType.BOLD
+            );
             deleteBackward(...args);
             if (isActive) {
               if (editor.selection) {
@@ -234,6 +239,40 @@ export const withShortcuts = (editor: Editor) => {
       }
     }
     deleteForward(...args);
+  };
+
+  return editor;
+};
+
+export const withPaste = (editor: Editor) => {
+  const { insertText, insertData, insertFragment } = editor;
+  // editor.insertText = (text: string) => {
+  //   if (text && text.length > 1) {
+  //     console.log(text);
+  //     insertText(text);
+  //   }
+  // };
+
+  editor.insertData = (data: DataTransfer) => {
+    const text = data.getData("text/plain");
+    if (text) {
+      const textlist = text.split("\r\n\r\n");
+      let fragement:Node[] = [];
+      textlist.forEach((text) => {
+        fragement.push({
+          type: NodeType.PARAGRAPH,
+          children: [{ text }],
+          align: "left",
+        });
+      });
+      
+      Transforms.insertFragment(editor, fragement);
+      
+      // Transforms.insertNodes(editor)
+      return
+    }
+
+    insertData(data);
   };
 
   return editor;

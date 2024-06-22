@@ -6,6 +6,7 @@ import "./globals.css";
 import AppBar from "./components/AppBar";
 import SideBar from "./components/SideBar";
 import { ContextProvider } from "./components/context";
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} h-screen`}>
+      <NextTopLoader />
         <ContextProvider>
           <AppBar />
           <div className="flex overflow-auto">

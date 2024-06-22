@@ -4,6 +4,7 @@ import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
 import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
+import { withShortcuts, withPaste } from "../plugin";
 import {
   withReact,
   RenderElementProps,
@@ -48,7 +49,10 @@ export function WSGIEditor({
   title?: string;
   id: string;
 }) {
-  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
+  const editor = useMemo(
+    () => withPaste(withReact(withHistory(createEditor()))),
+    []
+  );
   const [value, setValue] = useState(title || "");
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [LastSaveTime, setLastSaveTime] = useState<number>(Date.now());
@@ -107,9 +111,9 @@ export function WSGIEditor({
       });
       if (res.ok) {
         setIsSaving(false);
-        setLastSaveTime
+        setLastSaveTime;
         console.log("Success");
-        console.log(await res.json());
+        // console.log(await res.json());
 
         // Store.addNotification({
         //   title: "Success",
@@ -168,9 +172,9 @@ export function WSGIEditor({
         <div className="absolute right-2 top-10 text-slate-600">
           <span className="px-2">Saved</span>
           <span>
-            {
-              Date.now() - LastSaveTime > 1000 ? "now" : `${Date.now() - LastSaveTime} seconds ago`
-            }
+            {Date.now() - LastSaveTime > 1000
+              ? "now"
+              : `${Date.now() - LastSaveTime} seconds ago`}
           </span>
         </div>
       )}

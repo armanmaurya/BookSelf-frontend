@@ -1,5 +1,5 @@
 // "use client";
-import React, { useCallback } from "react";
+import React from "react";
 import { notFound } from "next/navigation";
 import {
   H1Element,
@@ -21,7 +21,6 @@ import { NodeType, getData } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { EditButton } from "@/app/components/decoration";
 import { cookies } from "next/headers";
-import { CustomElement } from "@/app/components/slate/types";
 import { Descendant, Element } from "slate";
 
 // Define a custom Element component for rendering
