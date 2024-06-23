@@ -4,19 +4,26 @@ import { API_ENDPOINT, NodeType } from "@/app/utils";
 import Cookies from "js-cookie";
 import { useState } from "react";
 
-export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
+export const SlateToolBar = ({ onSubmit, onDelete }: { onSubmit: () => {}, onDelete:() => {} }) => {
   const editor = useSlate();
   const [currentImage, setCurrentImage] = useState<string>(
     "https://img.icons8.com/?size=100&id=8195&format=png&color=000000"
   );
   const [isDropDownActive, setIsDropDownActive] = useState<boolean>(false);
+  const [isOpened, setIsOpened] = useState(false);
   return (
-    <div className="flex justify-between border space-x-1 font-serif  p-1 px-3 m-2 mx-4 rounded-full" onMouseDown={(e)=> {
-      e.preventDefault();
-    }}>
-      <div className="toolbar flex space-x-1" onMouseDown={(e) => {
+    <div
+      className="flex justify-between border space-x-1 font-serif  p-1 px-3 m-2 mx-4 rounded-full"
+      onMouseDown={(e) => {
         e.preventDefault();
-      }}>
+      }}
+    >
+      <div
+        className="toolbar flex space-x-1"
+        onMouseDown={(e) => {
+          e.preventDefault();
+        }}
+      >
         <button
           className={`px-2 rounded ${
             SlateCustomEditor.isMarkActive(editor, NodeType.BOLD)
@@ -224,12 +231,25 @@ export const SlateToolBar = ({ onSubmit }: { onSubmit: () => {} }) => {
         </div>
       </div>
       <div>
-        <button
-          className="hover:bg-slate-100 bg-sky-600 rounded-md"
-          onClick={onSubmit}
-        >
-          Submit
-        </button>
+        <div className="relative">
+          <div
+            className="hover:cursor-pointer"
+            onClick={() => {
+              setIsOpened(!isOpened);
+            }}
+          >
+            Click
+          </div>
+          <div
+            className={`${
+              isOpened ? "" : "hidden"
+            } absolute right-0  border h-96 rounded w-52 bg-white`}
+          >
+            <button className="h-12 hover:bg-red-500 w-full border" onClick={onDelete}>
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

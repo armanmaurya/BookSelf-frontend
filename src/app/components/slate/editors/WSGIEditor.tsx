@@ -40,6 +40,14 @@ const editorValue: Descendant[] = [
   },
 ];
 
+const isFocusAtStart = (path: number[]) => {
+  for (let i = 0; i < path.length; i++) {
+    if (path[i] !== 0) return false;
+  }
+  
+  return true;
+}
+
 export function WSGIEditor({
   initialValue = editorValue,
   title,
@@ -91,7 +99,7 @@ export function WSGIEditor({
 
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-  const SubmitContent = async () => {
+  const UpdateContent = async () => {
     setIsSaving(true);
     const csrf = Cookies.get("csrftoken");
 
@@ -113,24 +121,6 @@ export function WSGIEditor({
         setIsSaving(false);
         setLastSaveTime;
         console.log("Success");
-        // console.log(await res.json());
-
-        // Store.addNotification({
-        //   title: "Success",
-        //   message: "Article uploaded successfully",
-        //   type: "success",
-        //   insert: "top",
-        //   container: "top-center",
-        //   animationIn: ["animate__animated", "animate__fadeIn"],
-        //   animationOut: ["animate__animated", "animate__fadeOut"],
-        //   dismiss: {
-        //     duration: 5000,
-        //     // onScreen: true,
-        //   },
-        // });
-
-        // await delay(2000);
-        // window.location.href = "/";
       } else {
         setIsSaving(false);
         console.log("Failed");
@@ -152,6 +142,27 @@ export function WSGIEditor({
       console.log(error);
     }
   };
+  const DeleteArticle = async () => {
+    const csrf = Cookies.get("csrftoken");
+
+    try {
+      const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": `${csrf}`,
+        },
+        credentials: "include",
+      })
+      if (res.ok) {
+        console.log("Article deleted");
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
   const debounce = (callback: () => {}, delay: number) => {
     let timeout: string | number | NodeJS.Timeout | undefined;
@@ -160,7 +171,7 @@ export function WSGIEditor({
       timeout = setTimeout(() => callback(), delay);
     };
   };
-  const debouncedSave = debounce(SubmitContent, 3000);
+  const debouncedSave = debounce(UpdateContent, 3000);
 
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -178,7 +189,6 @@ export function WSGIEditor({
           </span>
         </div>
       )}
-      {/* {isLoading ? <div className="absolute bg-yellow-400 h-full w-full z-10"></div> : ""} */}
       <Slate
         editor={editor}
         initialValue={initialValue}
@@ -188,16 +198,7 @@ export function WSGIEditor({
           );
           if (isAstChange) {
             debouncedSave();
-            // currentTime.current = Date.now();
-            //   if (!isSaving.current) {
-            //     setTimeout(() => {
-            //       if (Date.now() - currentTime.current >= savingDelay) {
-            //         isSaving.current = true;
-            //         SubmitContent();
-            //         isSaving.current = false;
-            //       }
-            //     }, savingDelay);
-            //   }
+
             // Save the value to Local Storage.
 
             // const content = JSON.stringify(value);
@@ -206,7 +207,7 @@ export function WSGIEditor({
           }
         }}
       >
-        <SlateToolBar onSubmit={SubmitContent} />
+        <SlateToolBar onSubmit={UpdateContent} onDelete={DeleteArticle}/>
         <div className="w-full flex flex-col flex-grow  mt-3 h-[calc(100vh-104px)] overflow-auto">
           <input
             ref={titleRef}
@@ -248,7 +249,7 @@ export function WSGIEditor({
               handleKeyBoardFormating(event, editor);
               if (
                 event.key === "ArrowUp" &&
-                editor.selection?.anchor.path[0] === 0
+                isFocusAtStart(editor.selection?.anchor.path || [])
               ) {
                 if (titleRef.current) {
                   event.preventDefault();
@@ -261,9 +262,6 @@ export function WSGIEditor({
           />
         </div>
       </Slate>
-      {/* <button onClick={SubmitContent} className="bg-blue-400 mb-14">
-          what
-        </button> */}
     </div>
   );
 }
