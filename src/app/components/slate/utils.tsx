@@ -139,7 +139,11 @@ export const SlateCustomEditor = {
           at: after ? after.path : editor.selection.anchor.path,
         });
 
-        if (afterMatch[0].type === NodeType.LIST_ITEM) {
+        console.log("Before", before, "After", after);
+        
+        if (afterMatch[0].type === NodeType.LIST_ITEM && after) {
+          console.log("After match");
+          
           // console.log("This si runned");
           let text;
           let offset;
@@ -162,8 +166,8 @@ export const SlateCustomEditor = {
             },
           });
         }
-        if (beforeMatch[0].type === NodeType.LIST_ITEM) {
-          // console.log("this runned");
+        if (beforeMatch[0].type === NodeType.LIST_ITEM && before) {
+          console.log("Before match");
 
           let text;
           let offset;
