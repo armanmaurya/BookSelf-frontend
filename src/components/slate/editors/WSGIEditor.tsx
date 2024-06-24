@@ -111,7 +111,7 @@ export function WSGIEditor({
           <div>
             <div className="absolute right-0">
               <select
-                value={
+                defaultValue={
                   element.type === NodeType.CODE
                     ? (element.language as string)
                     : ""
@@ -124,7 +124,7 @@ export function WSGIEditor({
                   setLanguage(language);
                 }}
               >
-                <option value="" disabled selected>
+                <option value="" selected>
                   Select
                 </option>
                 <option value="javascript">Javascript</option>
@@ -133,7 +133,7 @@ export function WSGIEditor({
                 <option value="jsx">JSX</option>
               </select>
             </div>
-            <CodeElement {...props} />;
+            <CodeElement {...props} />
           </div>
         );
       case NodeType.ORDERED_LIST:
