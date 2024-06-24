@@ -1,5 +1,11 @@
 import { NodeType } from "@/app/utils";
-import { RenderElementProps, RenderLeafProps } from "slate-react";
+import { Transforms } from "slate";
+import {
+  ReactEditor,
+  RenderElementProps,
+  RenderLeafProps,
+  useSlateStatic,
+} from "slate-react";
 
 export const H1Element = (props: RenderElementProps) => {
   const style = {
@@ -79,11 +85,7 @@ export const DefaultElement = (props: RenderElementProps) => {
       props.element.type === NodeType.PARAGRAPH ? props.element.align : "left",
   };
   return (
-    <div
-      className={`my-2 hover:bg-slate-50`}
-      style={style}
-      {...props.attributes}
-    >
+    <div className={`my-2`} style={style} {...props.attributes}>
       {props.children}
     </div>
   );
@@ -147,37 +149,24 @@ export const ImageElement = (props: RenderElementProps) => {
 
 export const CodeElement = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
-  // const codeText = element.children.map((child: any) => child.text).join("\n");
-  // const tokens = Prism.tokenize(codeText, Prism.languages.javascript);
-
-  // const highlightedCode = tokens.map((token, i) => {
-  //   if (typeof token === "string") {
-  //     return <span key={i}>{token}</span>;
-  //   } else {
-  //     return (
-  //       <span key={i} className={`token ${token.type}`}>
-  //         {token.content}
-  //       </span>
-  //     );
-  //   }
-  // });
 
   return (
-    <pre className="bg-zinc-900 text-white p-4 rounded my-2" {...attributes}>
+    <pre className="bg-slate-100 p-4 rounded my-2" {...attributes}>
       <code>{children}</code>
     </pre>
   );
 };
 
 export const Leaf = (props: RenderLeafProps) => {
+  const { text, ...rest } = props.leaf;
   return (
     <span
       {...props.attributes}
-      className={` ${props.leaf.bold ? "font-bold" : ""} ${
-        props.leaf.italic ? "italic" : ""
-      } ${props.leaf.underline ? "underline" : ""} ${
-        props.leaf.code ? "bg-slate-200 px-0.5 rounded" : ""
-      } `}
+      className={`${props.leaf.bold ? " font-bold " : ""}${
+        props.leaf.italic ? " `italic " : ""
+      }${props.leaf.underline ? " underline " : ""}${
+        props.leaf.code ? " bg-slate-200 px-0.5 rounded " : ""
+      }${Object.keys(rest).join(" ")}`}
     >
       {props.children}
     </span>

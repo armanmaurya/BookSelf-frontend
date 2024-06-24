@@ -254,9 +254,25 @@ export const withPaste = (editor: Editor) => {
   // };
 
   editor.insertData = (data: DataTransfer) => {
+    console.log(data);
+    
     const text = data.getData("text/plain");
+    const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
+    
+    if (isCodeBlockActive) {
+      console.log("inserting Code");
+      Transforms.insertFragment(editor, [{ text }])
+      return;
+    }
+    
     if (text) {
-      const textlist = text.split("\r\n\r\n");
+      console.log("Inserting Text");
+      console.log("Text", text);
+      
+      
+      const textlist = text.split(/\r?\n\r?\n/);
+      console.log(textlist);
+      
       let fragement:Node[] = [];
       textlist.forEach((text) => {
         fragement.push({

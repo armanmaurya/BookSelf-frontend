@@ -1,13 +1,12 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { Store } from "react-notifications-component";
-import "ldrs/zoomies";
-import { EmailInput, PasswordInput, TextInput } from "./input";
+import { EmailInput, PasswordInput, TextInput } from "@/components/element/input";
 import { useRouter } from "next/navigation";
 import OtpInput from "react-otp-input";
 import { Oval } from "react-loader-spinner";
-import { AppContext } from "./context";
-import { API_ENDPOINT } from "../utils";
+import { AppContext } from "@/components/context";
+import { API_ENDPOINT } from "@/app/utils";
 
 export const LoginForm = () => {
   const [isProgressBarVisible, setIsProgressBarVisible] = useState(false);

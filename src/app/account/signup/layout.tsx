@@ -1,6 +1,6 @@
 "use client"
-import { AppContext } from "@/app/components/context";
-import RNotification from "@/app/components/RNotification";
+import { AppContext } from "@/components/context";
+import RNotification from "@/components/RNotification";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 

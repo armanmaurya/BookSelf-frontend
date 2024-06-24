@@ -1,8 +1,8 @@
 "use client";
-import RNotification from "@/app/components/RNotification";
-import { Divider } from "@/app/components/decoration";
-import { VerifyEmailForm } from "@/app/components/form";
-import { GoolgeAuth } from "@/app/components/auth";
+import RNotification from "@/components/RNotification";
+import { Divider } from "@/components/decoration";
+import { VerifyEmailForm } from "@/components/block/form";
+import { GoolgeAuth } from "@/components/auth";
 import { Suspense } from "react";
 
 export default function Register() {

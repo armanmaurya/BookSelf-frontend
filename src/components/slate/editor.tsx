@@ -439,9 +439,6 @@ export const MarkdownPreviewExample = () => {
     // console.log(tokens2);
 
     let start = 0;
-    // console.log(tokens);
-    // console.log(tokens);
-    // console.log(tokens)
 
     for (const token of tokens) {
       const length = getLength(token);

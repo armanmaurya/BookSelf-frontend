@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 // import 'react-notifications-component/dist/theme.css'
 // import 'animate.css/animate.min.css';
-import AppBar from "./components/AppBar";
-import SideBar from "./components/SideBar";
-import { ContextProvider } from "./components/context";
+import AppBar from "../components/AppBar";
+import SideBar from "../components/SideBar";
+import { ContextProvider } from "../components/context";
 import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ["latin"] });

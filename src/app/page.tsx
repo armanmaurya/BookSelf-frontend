@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { ArticleCard, ArticleCard2 } from "./components/card";
+import { ArticleCard, ArticleCard2 } from "../components/block/card";
 import { API_ENDPOINT } from "./utils";
 
 interface Article {

@@ -1,12 +1,12 @@
 "use client";
 
-import RNotification from "@/app/components/RNotification";
+import RNotification from "@/components/RNotification";
 
-import { GoolgeAuth } from "@/app/components/auth";
-import { LoginForm } from "@/app/components/form";
-import { Divider } from "@/app/components/decoration";
+import { GoolgeAuth } from "@/components/auth";
+import { LoginForm } from "@/components/block/form";
+import { Divider } from "@/components/decoration";
 import { Suspense, useContext, useEffect } from "react";
-import { AppContext } from "@/app/components/context";
+import { AppContext } from "@/components/context";
 
 export default function Login() {
   const context = useContext(AppContext);

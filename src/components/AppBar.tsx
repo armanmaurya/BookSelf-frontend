@@ -2,7 +2,7 @@ import React, { use, useContext } from "react";
 import Link from "next/link";
 import { HamburgerIcon } from "./decoration";
 import ProfileIcon from "./profileIcon";
-import { SearchInput } from "./input";
+import { SearchInput } from "./element/input";
 
 const AppBar = () => {
   return (

@@ -2,7 +2,6 @@
 import { NodeType, API_ENDPOINT } from "@/app/utils";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
-import { Descendant, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import { withShortcuts, withPaste } from "../plugin";
 import {
@@ -28,9 +27,32 @@ import {
   DefaultElement,
   Leaf,
 } from "../element";
+import {
+  Text as SlateText,
+  Node as SlateNode,
+  Path as SlatePath,
+  Range as SlateRange,
+  BaseRange,
+  Descendant,
+  createEditor,
+  Element as SlateElement,
+  Transforms,
+} from "slate";
 import { SlateToolBar } from "../toolbar";
 import { handleKeyBoardFormating } from "../utils";
 import Cookies from "js-cookie";
+
+import Prism, { Token } from "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-markdown";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-php";
+import "prismjs/components/prism-sql";
+import "prismjs/components/prism-java";
+import "prismjs/themes/prism-solarizedlight.css";
 
 const editorValue: Descendant[] = [
   {
@@ -44,9 +66,9 @@ const isFocusAtStart = (path: number[]) => {
   for (let i = 0; i < path.length; i++) {
     if (path[i] !== 0) return false;
   }
-  
+
   return true;
-}
+};
 
 export function WSGIEditor({
   initialValue = editorValue,
@@ -80,7 +102,40 @@ export function WSGIEditor({
       case NodeType.H6:
         return <H6Element {...props} />;
       case NodeType.CODE:
-        return <CodeElement {...props} />;
+        const { attributes, children, element } = props;
+        const setLanguage = (language: string) => {
+          const path = ReactEditor.findPath(editor, element);
+          Transforms.setNodes(editor, { language }, { at: path });
+        };
+        return (
+          <div>
+            <div className="absolute right-0">
+              <select
+                value={
+                  element.type === NodeType.CODE
+                    ? (element.language as string)
+                    : ""
+                }
+                name="languages"
+                id=""
+                className="m-1 rounded"
+                onChange={(e) => {
+                  const language = e.target.value;
+                  setLanguage(language);
+                }}
+              >
+                <option value="" disabled selected>
+                  Select
+                </option>
+                <option value="javascript">Javascript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="jsx">JSX</option>
+              </select>
+            </div>
+            <CodeElement {...props} />;
+          </div>
+        );
       case NodeType.ORDERED_LIST:
         return <OrderedListElement {...props} />;
       case NodeType.UNORDERED_LIST:
@@ -96,7 +151,87 @@ export function WSGIEditor({
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
   }, []);
+  const decorate = useCallback(([node, path]: [SlateNode, number[]]) => {
+    const ranges: any[] = [];
 
+    if (node.type === NodeType.CODE && SlateElement.isElement(node)) {
+      const text = SlateNode.string(node);
+      const language = node.language;
+
+      if (language) {
+        const tokens = Prism.tokenize(text, Prism.languages[language]);
+        // console.log(tokens);
+
+        const getLength = (token: string | Token): number => {
+          if (typeof token === "string") {
+            return token.length;
+          } else if (typeof token.content === "string") {
+            return token.content.length;
+          } else {
+            if (Array.isArray(token.content))
+              return token.content.reduce((l, t) => l + getLength(t), 0);
+            // return token.content.reduce((l, t) => l + getLength(t), 0);
+          }
+          return 0;
+        };
+
+        let start = 0;
+        const generateRanges = (tokens: (string | Token)[]) => {
+          for (const token of tokens) {
+            const length = getLength(token);
+            const end = start + length;
+
+            if (typeof token !== "string") {
+              ranges.push({
+                token: true,
+                anchor: { path, offset: start },
+                focus: { path, offset: end },
+                [token.type]: true,
+              });
+              if (Array.isArray(token.content)) {
+                generateRanges(token.content);
+              }
+            }
+
+            start = end;
+          }
+        };
+
+        generateRanges(tokens);
+
+        // for (const token of tokens) {
+        //   const length = token.length;
+        //   const end = start + length;
+
+        //   if (typeof token !== "string") {
+        //     if (Array.isArray(token.content)) {
+        //       for (const childtoken of token.content) {
+        //       }
+        //     } else {
+        //       ranges.push({
+        //         token: true,
+        //         anchor: { path, offset: start },
+        //         focus: { path, offset: end },
+        //         [token.type]: true,
+        //       });
+        //     }
+        //     // ranges.push({
+        //     //   token: true,
+        //     //   anchor: { path, offset: start },
+        //     //   focus: { path, offset: end },
+        //     //   [token.type]: true,
+        //     // });
+        //   }
+
+        //   start = end;
+        // }
+      }
+
+      return ranges;
+    }
+
+    return ranges;
+  }, []);
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const UpdateContent = async () => {
@@ -153,16 +288,15 @@ export function WSGIEditor({
           "X-CSRFToken": `${csrf}`,
         },
         credentials: "include",
-      })
+      });
       if (res.ok) {
         console.log("Article deleted");
         window.location.href = "/";
       }
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
   const debounce = (callback: () => {}, delay: number) => {
     let timeout: string | number | NodeJS.Timeout | undefined;
@@ -207,7 +341,7 @@ export function WSGIEditor({
           }
         }}
       >
-        <SlateToolBar onSubmit={UpdateContent} onDelete={DeleteArticle}/>
+        <SlateToolBar onSubmit={UpdateContent} onDelete={DeleteArticle} />
         <div className="w-full flex flex-col flex-grow  mt-3 h-[calc(100vh-104px)] overflow-auto">
           <input
             ref={titleRef}
@@ -239,6 +373,7 @@ export function WSGIEditor({
             placeholder="Title"
           />
           <Editable
+            decorate={decorate}
             spellCheck
             autoFocus
             id="editor"

@@ -4,7 +4,7 @@ import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { AppContext } from "./context";
 import Link from "next/link";
-import { API_ENDPOINT } from "../utils";
+import { API_ENDPOINT } from "../app/utils";
 import Cookies from "js-cookie";
 
 const ProfileIcon = () => {

@@ -1,4 +1,4 @@
-import { FillDetailsForm } from '@/app/components/form';
+import { FillDetailsForm } from '@/components//block/form';
 import React from 'react'
 
 const Page = () => {

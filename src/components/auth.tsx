@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import googleImg from "./google.png";
-import { getGoogleAuthUrl } from "../utils";
+import { getGoogleAuthUrl } from "../app/utils";
 import { Oval } from "react-loader-spinner";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Store } from "react-notifications-component";
-import { API_ENDPOINT } from "../utils";
+import { API_ENDPOINT } from "../app/utils";
 
 export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   const googleAuthUrl = getGoogleAuthUrl(redirect_path);
