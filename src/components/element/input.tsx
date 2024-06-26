@@ -122,6 +122,16 @@ export const TagInput = ({
   const removeTag = (index: number) => {
     setTags([...tags.slice(0, index), ...tags.slice(index + 1)]);
   };
+  const addTag = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const newTag = event.currentTarget.value;
+    if (tags.includes(newTag)) {
+      setHighlightedTag(newTag); // Highlight the tag instead of adding it
+      setTimeout(() => setHighlightedTag(''), 1500); // Reset highlightedTag after 3 seconds
+      return;
+    }
+    setTags([...tags, event.currentTarget.value]);
+    event.currentTarget.value = "";
+  };
 
   const UpdateTags = async (tags: string[]) => {
     const csrf = Cookies.get("csrftoken");
@@ -138,6 +148,8 @@ export const TagInput = ({
     } catch (error) {}
   };
 
+  const [highlightedTag, setHighlightedTag] = useState<string | null>(null);
+
   useEffect(() => {
     UpdateTags(tags);
   }, [tags]);
@@ -146,7 +158,7 @@ export const TagInput = ({
     <div className="border rounded-md p-1 w-full flex">
       <div className="">
         {tags.map((tag, index) => (
-          <Tag key={index} tag={tag} onClick={() => removeTag(index)} />
+          <Tag key={index} tag={tag} onClick={() => removeTag(index)} isHighlighted={tag === highlightedTag}/>
         ))}
       </div>
       <input
@@ -156,16 +168,14 @@ export const TagInput = ({
         type="text"
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            setTags([...tags, e.currentTarget.value]);
-            e.currentTarget.value = "";
+            addTag(e);
           }
           if (e.key === "Backspace" && e.currentTarget.value === "") {
             setTags([...tags.slice(0, tags.length - 1)]);
           }
 
           if (e.key === " ") {
-            setTags([...tags, e.currentTarget.value]);
-            e.currentTarget.value = "";
+            addTag(e);
           }
         }}
       />
@@ -173,10 +183,18 @@ export const TagInput = ({
   );
 };
 
-export const Tag = ({ tag, onClick }: { tag: string; onClick: () => void }) => {
+export const Tag = ({
+  tag,
+  onClick,
+  isHighlighted = false,
+}: {
+  tag: string;
+  onClick: () => void;
+  isHighlighted?: boolean;
+}) => {
   return (
     <span className="m-1 bg-gray-200 rounded p-1">
-      <span>{tag}</span>
+      <span className={`${isHighlighted ? 'text-yellow-300' : ''}`} >{tag}</span>
       <img
         onClick={onClick}
         src="https://img.icons8.com/?size=100&id=9433&format=png&color=000000"
