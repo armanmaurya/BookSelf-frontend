@@ -145,7 +145,7 @@ export const TagInput = ({ id, initialTags }: { id: string; initialTags:string[]
       ))}
       <input
         id="tag-bar"
-        className=""
+        className="w-full"
         placeholder="Tag..."
         type="text"
         onKeyDown={(e) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect, RefAttributes } from "react";
 import { useRouter } from "next/navigation";
 import { AppContext } from "./context";
 import Link from "next/link";
@@ -21,7 +21,7 @@ const ProfileIcon = () => {
         },
         credentials: "include",
       });
-      
+
       if (res.ok) {
         console.log("Logout successful");
         window.location.href = "/account/signin";
@@ -41,30 +41,45 @@ const ProfileIcon = () => {
         },
         credentials: "include",
       });
-      
+
       if (res.ok) {
         console.log("Article created");
         const data = await res.json();
         // console.log(data);
-        
+        setIsOpened(false);
+
         router.push(`/editor/${data.id}`);
       }
     } catch (error) {
       console.log("Network error");
     }
-  }
+  };
 
   const ProfileRoute = () => {
     router.push("/account/profile");
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpened(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
+
   const toggle = () => {
     setIsOpened(!isOpened);
   };
+  const ref = useRef<HTMLDivElement>(null);
   return (
     <>
       {appContext.isAuthenticated ? (
-        <div className="">
+        <div className="" ref={ref}>
           <div
             className="bg-black h-8 w-8 rounded-full hover:cursor-pointer"
             onClick={toggle}
@@ -72,9 +87,9 @@ const ProfileIcon = () => {
           <div
             className={`${
               isOpened ? "h-44" : "h-0"
-            } flex overflow-hidden ease-in-out absolute top-14 right-7 bg-gray-100  rounded-2xl shadow-xl w-40 items-center justify-center`}
+            } flex overflow-hidden ease-in-out absolute top-14 right-7 z-10 bg-gray-100  rounded-2xl shadow-xl w-40 items-center justify-center`}
           >
-            <ul className="space-y-1 p-2 w-full items-center">
+            <ul className="space-y-1 p-2 w-full items-center bg-slate-100">
               <button
                 onClick={ProfileRoute}
                 className="bg-gray-200 rounded p-1.5 w-full"
