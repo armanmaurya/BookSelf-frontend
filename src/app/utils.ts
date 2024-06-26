@@ -15,12 +15,13 @@ export enum NodeType {
   UNDERLINE = "underline",
 }
 
-interface Article {
+export interface Article {
   id: number;
   title: string;
   content: string;
   author: number;
   created_at: string;
+  tags: string[];
 }
 
 interface CustomResponse {

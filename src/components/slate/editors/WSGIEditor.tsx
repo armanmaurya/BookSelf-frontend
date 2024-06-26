@@ -1,5 +1,5 @@
 "use client";
-import { NodeType, API_ENDPOINT } from "@/app/utils";
+import { NodeType, API_ENDPOINT, Article } from "@/app/utils";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
 import { withHistory } from "slate-history";
@@ -53,6 +53,7 @@ import "prismjs/components/prism-php";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
+import { TagInput } from "@/components/element/input";
 
 const editorValue: Descendant[] = [
   {
@@ -71,11 +72,10 @@ const isFocusAtStart = (path: number[]) => {
 };
 
 export function WSGIEditor({
-  initialValue = editorValue,
-  title,
+  initialValue,
   id,
 }: {
-  initialValue?: Descendant[];
+  initialValue: Article;
   title?: string;
   id: string;
 }) {
@@ -83,7 +83,8 @@ export function WSGIEditor({
     () => withPaste(withReact(withHistory(createEditor()))),
     []
   );
-  const [value, setValue] = useState(title || "");
+  const [value, setValue] = useState(initialValue.title || "");
+
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [LastSaveTime, setLastSaveTime] = useState<number>(Date.now());
 
@@ -199,32 +200,6 @@ export function WSGIEditor({
 
         generateRanges(tokens);
 
-        // for (const token of tokens) {
-        //   const length = token.length;
-        //   const end = start + length;
-
-        //   if (typeof token !== "string") {
-        //     if (Array.isArray(token.content)) {
-        //       for (const childtoken of token.content) {
-        //       }
-        //     } else {
-        //       ranges.push({
-        //         token: true,
-        //         anchor: { path, offset: start },
-        //         focus: { path, offset: end },
-        //         [token.type]: true,
-        //       });
-        //     }
-        //     // ranges.push({
-        //     //   token: true,
-        //     //   anchor: { path, offset: start },
-        //     //   focus: { path, offset: end },
-        //     //   [token.type]: true,
-        //     // });
-        //   }
-
-        //   start = end;
-        // }
       }
 
       return ranges;
@@ -234,22 +209,25 @@ export function WSGIEditor({
   }, []);
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-  const UpdateContent = async () => {
+  const UpdateContent = useCallback(async (body: string) => {
     setIsSaving(true);
+    console.log(body);
+
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}`, {
-        method: "PUT",
+      const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": `${csrf}`,
         },
-        body: JSON.stringify({
-          id: id,
-          title: value,
-          content: JSON.stringify(editor.children),
-        }),
+        body: body,
+        // body: JSON.stringify({
+        //   id: id,
+        //   title: value,
+        //   content: JSON.stringify(editor.children),
+        // }),
         credentials: "include",
       });
       if (res.ok) {
@@ -276,7 +254,7 @@ export function WSGIEditor({
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
   const DeleteArticle = async () => {
     const csrf = Cookies.get("csrftoken");
 
@@ -298,16 +276,20 @@ export function WSGIEditor({
     }
   };
 
-  const debounce = (callback: () => {}, delay: number) => {
+  const debounce = (callback: any, delay: number) => {
     let timeout: string | number | NodeJS.Timeout | undefined;
     return (...args: any) => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => callback(), delay);
+      timeout = setTimeout(() => callback(...args), delay);
     };
   };
-  const debouncedSave = debounce(UpdateContent, 3000);
+  const debouncedSave = useMemo(() => {
+    return debounce((body: string) => UpdateContent(body), 3000);
+  }, [UpdateContent]);
 
   const titleRef = useRef<HTMLInputElement>(null);
+  console.log(initialValue.tags);
+  
 
   return (
     <div className="relative">
@@ -316,42 +298,42 @@ export function WSGIEditor({
       ) : (
         <div className="absolute right-2 top-10 text-slate-600">
           <span className="px-2">Saved</span>
-          <span>
+          {/* <span>
             {Date.now() - LastSaveTime > 1000
               ? "now"
               : `${Date.now() - LastSaveTime} seconds ago`}
-          </span>
+          </span> */}
         </div>
       )}
       <Slate
         editor={editor}
-        initialValue={initialValue}
+        initialValue={JSON.parse(initialValue.content) || editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
           );
           if (isAstChange) {
-            debouncedSave();
-
-            // Save the value to Local Storage.
-
-            // const content = JSON.stringify(value);
-            // console.log(content);
-            // localStorage.setItem("content", content);
+            debouncedSave(
+              JSON.stringify({
+                content: JSON.stringify(value),
+              })
+            );
           }
         }}
       >
-        <SlateToolBar onSubmit={UpdateContent} onDelete={DeleteArticle} />
-        <div className="w-full flex flex-col flex-grow  mt-3 h-[calc(100vh-104px)] overflow-auto">
+        <SlateToolBar onDelete={DeleteArticle} />
+        <div className="w-full flex flex-col flex-grow px-2  mt-3 h-[calc(100vh-104px)] overflow-auto">
           <input
             ref={titleRef}
             type="text"
             className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold "
-            onBlur={(e) => {
-              setValue(e.target.value);
-            }}
             onChange={(e) => {
               setValue(e.target.value);
+              debouncedSave(
+                JSON.stringify({
+                  title: e.target.value,
+                })
+              );
             }}
             onKeyDown={(e) => {
               switch (e.key) {
@@ -372,12 +354,14 @@ export function WSGIEditor({
             value={value}
             placeholder="Title"
           />
+          <TagInput id={id} initialTags={initialValue.tags}/>
+
           <Editable
             decorate={decorate}
             spellCheck
             autoFocus
             id="editor"
-            className="p-4 font-serif"
+            className="font-serif"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {

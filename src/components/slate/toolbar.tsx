@@ -4,7 +4,7 @@ import { API_ENDPOINT, NodeType } from "@/app/utils";
 import Cookies from "js-cookie";
 import { useState } from "react";
 
-export const SlateToolBar = ({ onSubmit, onDelete }: { onSubmit: () => {}, onDelete:() => {} }) => {
+export const SlateToolBar = ({  onDelete }: { onDelete:() => {} }) => {
   const editor = useSlate();
   const [currentImage, setCurrentImage] = useState<string>(
     "https://img.icons8.com/?size=100&id=8195&format=png&color=000000"

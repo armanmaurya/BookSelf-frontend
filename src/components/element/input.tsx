@@ -1,5 +1,8 @@
 "use client";
+import { API_ENDPOINT } from "@/app/utils";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export const EmailInput = ({
   email,
@@ -108,3 +111,72 @@ export const SearchInput = () => {
   );
 };
 
+export const TagInput = ({ id, initialTags }: { id: string; initialTags:string[] }) => {
+  const [tags, setTags] = useState<string[]>(initialTags || []);
+  const removeTag = (index: number) => {
+    setTags([...tags.slice(0, index), ...tags.slice(index + 1)]);
+  };
+
+  const UpdateTags = async (tags: string[]) => {
+    const csrf = Cookies.get("csrftoken");
+    try {
+      const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": `${csrf}`,
+        },
+        body: JSON.stringify({ tags: tags }),
+        credentials: "include",
+      });
+    } catch (error) {
+      
+    }
+  }
+
+  useEffect(() => {
+    UpdateTags(tags);
+  }, [tags])
+
+  return (
+    <div className="border rounded-md p-1 w-full">
+      {tags.map((tag, index) => (
+        <Tag key={index} tag={tag} onClick={() => removeTag(index)} />
+      ))}
+      <input
+        id="tag-bar"
+        className=""
+        placeholder="Tag..."
+        type="text"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            setTags([...tags, e.currentTarget.value]);
+            e.currentTarget.value = "";
+          }
+          if (e.key === "Backspace" && e.currentTarget.value === "") {
+            setTags([...tags.slice(0, tags.length - 1)]);
+          }
+
+          if (e.key === " ") {
+            setTags([...tags, e.currentTarget.value]);
+            e.currentTarget.value = "";
+          }
+        }}
+      />
+    </div>
+  );
+};
+
+export const Tag = ({ tag, onClick }: { tag: string; onClick: () => void }) => {
+  return (
+    <span className="m-1 bg-gray-200 rounded p-1">
+      <span>{tag}</span>
+      <img
+        onClick={onClick}
+        src="https://img.icons8.com/?size=100&id=9433&format=png&color=000000"
+        alt=""
+        className="h-4 inline hover:cursor-pointer hover:bg-gray-500 m-0.5 rounded-md"
+      />
+    </span>
+  );
+};

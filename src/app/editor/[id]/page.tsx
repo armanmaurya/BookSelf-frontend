@@ -4,7 +4,7 @@ import { MarkdownEditor } from "../../../components/slate/editor";
 import { WSGIEditor } from "../../../components/slate/editors/WSGIEditor";
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { NodeType, getData } from "@/app/utils";
+import { Article, NodeType, getData } from "@/app/utils";
 
 export default async function Editor({
   params: { id },
@@ -43,14 +43,14 @@ export default async function Editor({
   if (data.data === null) {
     return notFound();
   }
-  const content = data.data.content;
-  const jsonContent: Descendant[] = JSON.parse(content) || editorValue;
+  const content = data.data;
+  const jsonContent = content;
 
   return (
     // <MarkdownEditor/>
     <div>
       <RNotification />
-      <WSGIEditor initialValue={jsonContent} title={data.data.title === null ? "" : data.data.title} id={id}/>
+      <WSGIEditor initialValue={jsonContent} id={id}/>
     </div>
     // <MarkdownPreviewExample/>
   );
