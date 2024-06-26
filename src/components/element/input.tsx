@@ -111,7 +111,13 @@ export const SearchInput = () => {
   );
 };
 
-export const TagInput = ({ id, initialTags }: { id: string; initialTags:string[] }) => {
+export const TagInput = ({
+  id,
+  initialTags,
+}: {
+  id: string;
+  initialTags: string[];
+}) => {
   const [tags, setTags] = useState<string[]>(initialTags || []);
   const removeTag = (index: number) => {
     setTags([...tags.slice(0, index), ...tags.slice(index + 1)]);
@@ -129,23 +135,23 @@ export const TagInput = ({ id, initialTags }: { id: string; initialTags:string[]
         body: JSON.stringify({ tags: tags }),
         credentials: "include",
       });
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     UpdateTags(tags);
-  }, [tags])
+  }, [tags]);
 
   return (
-    <div className="border rounded-md p-1 w-full">
-      {tags.map((tag, index) => (
-        <Tag key={index} tag={tag} onClick={() => removeTag(index)} />
-      ))}
+    <div className="border rounded-md p-1 w-full flex">
+      <div className="">
+        {tags.map((tag, index) => (
+          <Tag key={index} tag={tag} onClick={() => removeTag(index)} />
+        ))}
+      </div>
       <input
         id="tag-bar"
-        className="w-full"
+        className="flex-grow"
         placeholder="Tag..."
         type="text"
         onKeyDown={(e) => {
