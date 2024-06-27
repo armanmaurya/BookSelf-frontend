@@ -360,7 +360,7 @@ export function MarkdownEditor() {
         <Editable
           spellCheck
           autoFocus
-          className="p-4 font-serif"
+          className="p-4"
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           //   onKeyDown={onKeyDown}

@@ -19,7 +19,7 @@ import {
 } from "@/components/slate/element";
 import { NodeType, getData } from "@/app/utils";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
-import { EditButton } from "@/components/element/button";
+import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
 import { Descendant, Element } from "slate";
 import Prism from "prismjs";

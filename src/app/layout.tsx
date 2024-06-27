@@ -6,7 +6,8 @@ import "./globals.css";
 import AppBar from "../components/AppBar";
 import SideBar from "../components/SideBar";
 import { ContextProvider } from "../components/context";
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,16 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} h-screen`}>
-      <NextTopLoader />
-        <ContextProvider>
-          <AppBar />
-          <div className="flex overflow-auto">
-            <SideBar />
-            <div className="w-full h-full">{children}</div>
-          </div>
-        </ContextProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}>
+        <ThemeProvider attribute="class" enableSystem={true} defaultTheme="system">
+          <NextTopLoader />
+          <ContextProvider>
+            <AppBar />
+            <div className="flex overflow-auto">
+              <SideBar />
+              <div className="w-full h-full">{children}</div>
+            </div>
+          </ContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

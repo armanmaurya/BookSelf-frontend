@@ -12,9 +12,9 @@ interface Article {
 
 export const ArticleCard = ({ data }: { data: Article }) => {
   return (
-    <div className="border rounded-md w-full flex flex-col justify-center h-24 p-4 shadow-md font-serif">
+    <div className="border rounded-md w-full flex flex-col justify-center h-24 p-4 shadow-md">
       <Link href={`/article/${data.id}`}>
-        <h1 className="text-2xl font-bold text-black">{data.title || "Untitled"}</h1>
+        <h1 className="text-2xl font-bold">{data.title || "Untitled"}</h1>
       </Link>
       <div className="flex justify-between w-full">
         <p className="text-sm">Author: {data.author}</p>

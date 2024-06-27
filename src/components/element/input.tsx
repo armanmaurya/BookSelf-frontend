@@ -155,7 +155,10 @@ export const TagInput = ({
   }, [tags]);
 
   return (
-    <div className="border rounded-md p-1 w-full flex">
+    <div className="border rounded-md p-2 w-full flex">
+      <div>
+        <span className="dark:text-gray-600">Tags:</span>
+      </div>
       <div className="">
         {tags.map((tag, index) => (
           <Tag key={index} tag={tag} onClick={() => removeTag(index)} isHighlighted={tag === highlightedTag}/>
@@ -163,8 +166,8 @@ export const TagInput = ({
       </div>
       <input
         id="tag-bar"
-        className="flex-grow"
-        placeholder="Tag..."
+        className="flex-grow bg-transparent"
+        // placeholder="Tag..."
         type="text"
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -193,7 +196,7 @@ export const Tag = ({
   isHighlighted?: boolean;
 }) => {
   return (
-    <span className="m-1 bg-gray-200 rounded p-1">
+    <span className="m-1 dark:bg-neutral-600 rounded p-1">
       <span className={`${isHighlighted ? 'text-yellow-300' : ''}`} >{tag}</span>
       <img
         onClick={onClick}

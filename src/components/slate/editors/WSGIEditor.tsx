@@ -361,7 +361,7 @@ export function WSGIEditor({
             spellCheck
             autoFocus
             id="editor"
-            className="font-serif"
+            className="pt-2"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {

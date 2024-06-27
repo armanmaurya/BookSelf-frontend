@@ -4,7 +4,7 @@ import { API_ENDPOINT, NodeType } from "@/app/utils";
 import Cookies from "js-cookie";
 import { useState } from "react";
 
-export const SlateToolBar = ({  onDelete }: { onDelete:() => {} }) => {
+export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
   const editor = useSlate();
   const [currentImage, setCurrentImage] = useState<string>(
     "https://img.icons8.com/?size=100&id=8195&format=png&color=000000"
@@ -13,7 +13,7 @@ export const SlateToolBar = ({  onDelete }: { onDelete:() => {} }) => {
   const [isOpened, setIsOpened] = useState(false);
   return (
     <div
-      className="flex justify-between border space-x-1 font-serif  p-1 px-3 m-2 mx-4 rounded-full"
+      className="flex justify-between border space-x-1  p-1 px-3 m-2 mx-4 rounded-full"
       onMouseDown={(e) => {
         e.preventDefault();
       }}
@@ -245,7 +245,10 @@ export const SlateToolBar = ({  onDelete }: { onDelete:() => {} }) => {
               isOpened ? "" : "hidden"
             } absolute right-0  border h-96 rounded w-52 bg-white`}
           >
-            <button className="h-12 hover:bg-red-500 w-full border" onClick={onDelete}>
+            <button
+              className="h-12 hover:bg-red-500 w-full border"
+              onClick={onDelete}
+            >
               Delete
             </button>
           </div>
