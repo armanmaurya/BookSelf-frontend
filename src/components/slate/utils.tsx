@@ -140,10 +140,10 @@ export const SlateCustomEditor = {
         });
 
         console.log("Before", before, "After", after);
-        
+
         if (afterMatch[0].type === NodeType.LIST_ITEM && after) {
           console.log("After match");
-          
+
           // console.log("This si runned");
           let text;
           let offset;
@@ -340,6 +340,12 @@ export const handleKeyBoardFormating = (
       if (text.length === 0 && SlateCustomEditor.isListActive(editor)) {
         event.preventDefault();
         SlateCustomEditor.toggleListBlock(editor);
+        return;
+      }
+
+      if (text.length === 0 && SlateCustomEditor.isCodeBlockActive(editor)) {
+        event.preventDefault();
+        SlateCustomEditor.toggleBlock(editor, NodeType.PARAGRAPH);
         return;
       }
     }

@@ -110,7 +110,7 @@ export function WSGIEditor({
         };
         return (
           <div>
-            <div className="absolute right-0">
+            <div contentEditable={false} className="absolute right-0">
               <select
                 defaultValue={
                   element.type === NodeType.CODE
