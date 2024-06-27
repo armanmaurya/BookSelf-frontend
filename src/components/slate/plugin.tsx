@@ -245,35 +245,33 @@ export const withShortcuts = (editor: Editor) => {
 };
 
 export const withPaste = (editor: Editor) => {
-  const { insertText, insertData, insertFragment } = editor;
-  // editor.insertText = (text: string) => {
-  //   if (text && text.length > 1) {
-  //     console.log(text);
-  //     insertText(text);
-  //   }
-  // };
+  const { insertData } = editor;
 
   editor.insertData = (data: DataTransfer) => {
     console.log(data);
-    
+
     const text = data.getData("text/plain");
     const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
-    
+
     if (isCodeBlockActive) {
       console.log("inserting Code");
-      Transforms.insertFragment(editor, [{ text }])
+      const textList = text.split(/\r?\n/);
+      textList.forEach((text) => {
+        Transforms.insertText(editor, text);
+        Transforms.insertText(editor, "\n");
+      })
+      
       return;
     }
-    
+
     if (text) {
       console.log("Inserting Text");
       console.log("Text", text);
-      
-      
+
       const textlist = text.split(/\r?\n\r?\n/);
       console.log(textlist);
-      
-      let fragement:Node[] = [];
+
+      let fragement: Node[] = [];
       textlist.forEach((text) => {
         fragement.push({
           type: NodeType.PARAGRAPH,
@@ -281,11 +279,11 @@ export const withPaste = (editor: Editor) => {
           align: "left",
         });
       });
-      
+
       Transforms.insertFragment(editor, fragement);
-      
+
       // Transforms.insertNodes(editor)
-      return
+      return;
     }
 
     insertData(data);

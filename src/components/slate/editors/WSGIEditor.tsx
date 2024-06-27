@@ -199,7 +199,6 @@ export function WSGIEditor({
         };
 
         generateRanges(tokens);
-
       }
 
       return ranges;
@@ -289,7 +288,6 @@ export function WSGIEditor({
 
   const titleRef = useRef<HTMLInputElement>(null);
   console.log(initialValue.tags);
-  
 
   return (
     <div className="relative">
@@ -354,7 +352,7 @@ export function WSGIEditor({
             value={value}
             placeholder="Title"
           />
-          <TagInput id={id} initialTags={initialValue.tags}/>
+          <TagInput id={id} initialTags={initialValue.tags} />
 
           <Editable
             decorate={decorate}
@@ -376,6 +374,14 @@ export function WSGIEditor({
                   const length = titleRef.current.value.length;
                   titleRef.current.setSelectionRange(length, length);
                 }
+              }
+              if (event.ctrlKey && event.key === "s") {
+                event.preventDefault();
+                UpdateContent(
+                  JSON.stringify({
+                    content: JSON.stringify(editor.children),
+                  })
+                );
               }
             }}
           />
