@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}>
-        <ThemeProvider attribute="class" enableSystem={true} defaultTheme="system">
+        <ThemeProvider attribute="class" enableSystem>
           <NextTopLoader />
           <ContextProvider>
             <AppBar />

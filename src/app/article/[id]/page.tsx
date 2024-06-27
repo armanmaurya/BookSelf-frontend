@@ -137,15 +137,15 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
 
   const content = data.data.content;
   // console.log();
-  if (content.length === 0) return notFound();
+  // if (!content) return notFound();
 
-  const jsonContent: Descendant[] = JSON.parse(content);
+  const jsonContent: Descendant[] = JSON.parse(content) || [];
   return (
     <div className="">
       {data.is_owner && <EditButton id={id} />}
       <div className="flex items-center justify-center p-2">
         <h1 className="text-4xl font-semibold">
-          <u>{data.data.title}</u>
+          <u>{data.data.title || "Untitled"}</u>
         </h1>
       </div>
       <div className="px-4">
