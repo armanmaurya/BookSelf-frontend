@@ -103,7 +103,7 @@ export const SearchInput = () => {
   return (
     <input
       id="search-bar"
-      className="border p-1 px-2 rounded-full border-zinc-900 w-full sm:block hidden"
+      className="border dark:bg-neutral-700 p-1 px-2 rounded-full border-zinc-900 bg-transparent w-full sm:block hidden"
       placeholder="Search..."
       type="text"
       onKeyDown={handleKeyPress}

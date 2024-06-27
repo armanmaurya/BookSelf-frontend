@@ -9,18 +9,25 @@ const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const prefersDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const prefersDarkMode = () =>
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   useEffect(() => {
     setMounted(true);
-    setIsDarkMode(prefersDarkMode());
+    if (theme === "dark") {
+      setIsDarkMode(true);
+    } else if (theme === "light") {
+      setIsDarkMode(false);
+    } else if (theme === "system") {
+      setIsDarkMode(prefersDarkMode());
+    }
     console.log(theme);
-    
   }, []);
 
-//   if (!mounted) {
-//     return null;
-//   }
+  //   if (!mounted) {
+  //     return null;
+  //   }
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -78,16 +85,8 @@ const ThemeSwitcher = () => {
             {" "}
             <circle cx="12" cy="12" r="5" strokeWidth="1.5"></circle>{" "}
             <path d="M12 2V4" strokeWidth="1.5" strokeLinecap="round"></path>{" "}
-            <path
-              d="M12 20V22"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
-            <path
-              d="M4 12L2 12"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
+            <path d="M12 20V22" strokeWidth="1.5" strokeLinecap="round"></path>{" "}
+            <path d="M4 12L2 12" strokeWidth="1.5" strokeLinecap="round"></path>{" "}
             <path
               d="M22 12L20 12"
               strokeWidth="1.5"
