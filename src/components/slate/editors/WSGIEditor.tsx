@@ -80,7 +80,7 @@ export function WSGIEditor({
   id: string;
 }) {
   const editor = useMemo(
-    () => withPaste(withReact(withHistory(createEditor()))),
+    () => withShortcuts(withPaste(withReact(withHistory(createEditor())))),
     []
   );
   const [value, setValue] = useState(initialValue.title || "");
@@ -114,7 +114,7 @@ export function WSGIEditor({
               <select
                 defaultValue={
                   element.type === NodeType.CODE
-                    ? (element.language as string)
+                  ? (element.language as string)
                     : ""
                 }
                 name="languages"

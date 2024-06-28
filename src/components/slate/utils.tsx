@@ -1,17 +1,125 @@
 import Editor from "@/app/editor/[id]/page";
 import { NodeType } from "@/app/utils";
 import {
+  BaseRange,
   Descendant,
+  Point,
   Editor as SlateEditor,
   Element as SlateElement,
   Transforms,
-  isBlock,
+  Text,
+  Path,
+  Range,
 } from "slate";
 // import { CustomEditor } from "./CustomEditor";
 
 export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isBlockActive(editor, format);
+    const { selection } = editor;
+    // if (selection) {
+    //   if (
+    //     format === NodeType.ORDERED_LIST ||
+    //     format === NodeType.UNORDERED_LIST
+    //   ) {
+    //     SlateCustomEditor.toggleBlock(editor, NodeType.LIST_ITEM);
+    //     Transforms.wrapNodes(editor, {
+    //       type: format,
+    //       children: [],
+    //     });
+    //     const before = SlateEditor.before(editor, selection.anchor.path);
+    //     const after = SlateEditor.after(editor, selection.anchor.path);
+    //     let range: BaseRange | undefined;
+    //     let toSelect: Point | undefined;
+
+    //     if (before) {
+    //       const [beforeMatch] = SlateEditor.nodes(editor, {
+    //         match: (n) =>
+    //           SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+    //         at: before ? before.path : selection.anchor.path,
+    //       });
+
+    //       if (beforeMatch[0].type === format && !Text.isText(beforeMatch[0])) {
+    //         toSelect = {
+    //           path: [before.path[0], beforeMatch[0].children.length, 0],
+    //           offset: 0,
+    //         };
+    //         range = {
+    //           anchor: { path: [before.path[0], 0, 0], offset: 0 },
+    //           focus: {
+    //             path: selection.focus.path,
+    //             offset: 0,
+    //           },
+    //         };
+    //         Transforms.select(editor, range);
+    //       }
+    //     }
+    //     if (after) {
+    //       const [afterMatch] = SlateEditor.nodes(editor, {
+    //         match: (n) =>
+    //           SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+    //         at: after.path,
+    //       });
+
+    //       if (afterMatch[0].type === format) {
+    //         const parentNode = SlateEditor.node(
+    //           editor,
+    //           Path.parent(Path.parent(after.path))
+    //         );
+
+    //         if (!Text.isText(parentNode[0])) {
+    //           if (range) {
+    //             if (!Range.isCollapsed(range)) {
+    //               Transforms.setSelection(editor, {
+    //                 focus: {
+    //                   path: [after.path[0], parentNode[0].children.length, 0],
+    //                   offset: 1,
+    //                 },
+    //               });
+    //             }
+    //           } else {
+    //             console.log("Start", selection.anchor.path, "End", parentNode);
+
+    //             if (!Text.isText(parentNode[0])) {
+    //               toSelect = {
+    //                 path: [selection.anchor.path[0], 0, 0],
+    //                 offset: 0,
+    //               };
+    //               Transforms.select(editor, {
+    //                 anchor: {
+    //                   path: [selection.anchor.path[0], 0, 0],
+    //                   offset: 0,
+    //                 },
+    //                 focus: {
+    //                   path: [
+    //                     after.path[0],
+    //                     parentNode[0].children.length - 1,
+    //                     0,
+    //                   ],
+    //                   offset: 1,
+    //                 },
+    //               });
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //     Transforms.unwrapNodes(editor, {
+    //       match: (n) =>
+    //         n.type === NodeType.UNORDERED_LIST ||
+    //         n.type === NodeType.ORDERED_LIST,
+    //     });
+    //     Transforms.wrapNodes(editor, {
+    //       type: format,
+    //       children: [],
+    //     });
+    //     if (toSelect) {
+    //       Transforms.select(editor, toSelect);
+    //     }
+
+    //     return;
+    //   }
+    // }
     Transforms.setNodes(
       editor,
       {
@@ -113,15 +221,104 @@ export const SlateCustomEditor = {
 
   toggleListBlock(editor: SlateEditor, format?: string) {
     const isActive = SlateCustomEditor.isListActive(editor);
+    const { selection } = editor;
     if (!isActive && format) {
-      Transforms.setNodes(editor, {
-        type: NodeType.LIST_ITEM,
-        // children: [{ text: "some text" }],
-      });
-      Transforms.wrapNodes(editor, {
-        type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
-        children: [],
-      });
+      // Transforms.setNodes(editor, {
+      //   type: NodeType.LIST_ITEM,
+      //   // children: [{ text: "some text" }],
+      // });
+      // Transforms.wrapNodes(editor, {
+      //   type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+      //   children: [],
+      // });
+
+      if (selection) {
+        SlateCustomEditor.toggleBlock(editor, NodeType.LIST_ITEM);
+        Transforms.wrapNodes(editor, {
+          type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+          children: [],
+        });
+        const before = SlateEditor.before(editor, selection.anchor.path);
+        const after = SlateEditor.after(editor, selection.anchor.path);
+        let range: BaseRange | undefined;
+        let toSelect: Point | undefined;
+
+        if (before) {
+          const [beforeMatch] = SlateEditor.nodes(editor, {
+            match: (n) =>
+              SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+            at: before ? before.path : selection.anchor.path,
+          });
+
+          if (beforeMatch[0].type === format && !Text.isText(beforeMatch[0])) {
+            toSelect = {
+              path: [before.path[0], beforeMatch[0].children.length, 0],
+              offset: 0,
+            };
+            range = {
+              anchor: { path: [before.path[0], 0, 0], offset: 0 },
+              focus: {
+                path: selection.focus.path,
+                offset: 0,
+              },
+            };
+            Transforms.select(editor, range);
+          }
+        }
+        if (after) {
+          const [afterMatch]: any = SlateEditor.nodes(editor, {
+            match: (n) =>
+              SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+            at: after.path,
+          });
+          // console.log(afterMatch);
+
+          if (afterMatch[0].type === format && !Text.isText(afterMatch[0])) {
+            const listLastItemLength =
+              afterMatch[0].children[afterMatch[0].children.length - 1]
+                .children[0].text.length;
+            if (range) {
+              if (!Range.isCollapsed(range)) {
+                Transforms.setSelection(editor, {
+                  focus: {
+                    path: [after.path[0], afterMatch[0].children.length, 0],
+                    offset: 1,
+                  },
+                });
+              }
+            } else {
+              toSelect = {
+                path: [selection.anchor.path[0], 0, 0],
+                offset: 0,
+              };
+              Transforms.select(editor, {
+                anchor: {
+                  path: [selection.anchor.path[0], 0, 0],
+                  offset: 0,
+                },
+                focus: {
+                  path: [after.path[0], afterMatch[0].children.length - 1, 0],
+                  offset: listLastItemLength,
+                },
+              });
+            }
+          }
+        }
+        Transforms.unwrapNodes(editor, {
+          match: (n) =>
+            n.type === NodeType.UNORDERED_LIST ||
+            n.type === NodeType.ORDERED_LIST,
+        });
+        Transforms.wrapNodes(editor, {
+          type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+          children: [],
+        });
+        if (toSelect) {
+          Transforms.select(editor, toSelect);
+        }
+
+        return;
+      }
     } else {
       if (editor.selection) {
         const before = SlateEditor.before(editor, editor.selection.anchor.path);
@@ -189,7 +386,11 @@ export const SlateCustomEditor = {
           });
         }
 
-        Transforms.unwrapNodes(editor);
+        Transforms.unwrapNodes(editor, {
+          match: (n) =>
+            n.type === NodeType.UNORDERED_LIST ||
+            n.type === NodeType.ORDERED_LIST,
+        });
         Transforms.setNodes(editor, {
           type: NodeType.PARAGRAPH,
         });
@@ -343,11 +544,11 @@ export const handleKeyBoardFormating = (
         return;
       }
 
-      if (text.length === 0 && SlateCustomEditor.isCodeBlockActive(editor)) {
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.PARAGRAPH);
-        return;
-      }
+      // if (text.length === 0 && SlateCustomEditor.isCodeBlockActive(editor)) {
+      //   event.preventDefault();
+      //   SlateCustomEditor.toggleBlock(editor, NodeType.PARAGRAPH);
+      //   return;
+      // }
     }
   }
   if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {

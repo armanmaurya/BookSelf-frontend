@@ -25,7 +25,7 @@ type HeadingElement = {
 type ParagraphElement = {
   type: NodeType.PARAGRAPH | null;
   align: "left" | "center" | "right" | "justify";
-  children: CustomText[];
+  children: any[];
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 
