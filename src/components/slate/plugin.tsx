@@ -29,6 +29,8 @@ export const withShortcuts = (editor: SlateEditor) => {
 
   editor.insertText = (text: string) => {
     const { selection } = editor;
+    console.log(selection?.anchor.path);
+    
 
     if (text.endsWith(" ") && selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;

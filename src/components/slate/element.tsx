@@ -108,7 +108,7 @@ export const UnorderedListElement = (props: RenderElementProps) => {
 };
 
 export const ListItemElement = (props: RenderElementProps) => {
-  return <li {...props.attributes}>{props.children}</li>;
+  return <li className="hover:bg-neutral-200" {...props.attributes}>{props.children}</li>;
 };
 
 export const ImageElement = (props: RenderElementProps) => {

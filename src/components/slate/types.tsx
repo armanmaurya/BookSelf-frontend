@@ -49,7 +49,7 @@ type UnorderedListElementType = {
 
 type ListItemElementType = {
   type: NodeType.LIST_ITEM | null;
-  children: CustomText[];
+  children: any;
 };
 
 export type ImageElementType = {
