@@ -95,9 +95,9 @@ export const handleKeyBoardFormating = (
     });
 
     if (match[0].type) {
-      event.preventDefault();
       const shortcut = handleEnterKey[`${match[0].type}`];
       if (shortcut) {
+        event.preventDefault();
         shortcut(editor);
       }
     }
@@ -110,12 +110,13 @@ interface IHandleEnterKey {
 
 const handleEnterKey: IHandleEnterKey = {
     "list-item": SlateCustomEditor.insertListItem,
-    paragraph: SlateCustomEditor.insertParagraph,
+    "paragraph": SlateCustomEditor.insertParagraph,
     "heading-one": SlateCustomEditor.insertParagraph,
     "heading-two": SlateCustomEditor.insertParagraph,
     "heading-three": SlateCustomEditor.insertParagraph,
     "heading-four": SlateCustomEditor.insertParagraph,
     "heading-five": SlateCustomEditor.insertParagraph,
     "heading-six": SlateCustomEditor.insertParagraph,
-    code: SlateCustomEditor.insertLineBreak,
+    "code": SlateCustomEditor.insertLineBreak,
+    "quote": SlateCustomEditor.insertLineBreak,
   };

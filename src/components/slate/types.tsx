@@ -37,14 +37,22 @@ type CodeElementType = {
 
 type OrderedListElementType = {
   type: NodeType.ORDERED_LIST | null;
-//   children: (OrderedListElementType | CustomText)[]
-  children: (OrderedListElementType | ListItemElementType | UnorderedListElementType)[]
+  //   children: (OrderedListElementType | CustomText)[]
+  children: (
+    | OrderedListElementType
+    | ListItemElementType
+    | UnorderedListElementType
+  )[];
 };
 
 type UnorderedListElementType = {
   type: NodeType.UNORDERED_LIST | null;
-//   children: (UnorderedListElementType | CustomText)[]
-  children: (UnorderedListElementType | ListItemElementType | OrderedListElementType)[]
+  //   children: (UnorderedListElementType | CustomText)[]
+  children: (
+    | UnorderedListElementType
+    | ListItemElementType
+    | OrderedListElementType
+  )[];
 };
 
 type ListItemElementType = {
@@ -58,6 +66,11 @@ export type ImageElementType = {
   children: CustomText[];
 };
 
+type QUOTE = {
+  type: NodeType.QUOTE | null;
+  children: any[];
+};
+
 export type CustomElement =
   | CodeElementType
   | ParagraphElement
@@ -65,7 +78,8 @@ export type CustomElement =
   | ImageElementType
   | OrderedListElementType
   | UnorderedListElementType
-  | ListItemElementType;
+  | ListItemElementType
+  | QUOTE;
 
 export type FormattedText = {
   text: string;
@@ -101,7 +115,6 @@ declare module "slate" {
   }
 }
 
-
 export enum NodeType {
   PARAGRAPH = "paragraph",
   H1 = "heading-one",
@@ -116,6 +129,6 @@ export enum NodeType {
   LIST_ITEM = "list-item",
   BOLD = "bold",
   ITALIC = "italic",
-  UNDERLINE = "underline"
+  UNDERLINE = "underline",
+  QUOTE = "quote",
 }
-

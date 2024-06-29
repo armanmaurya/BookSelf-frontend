@@ -53,6 +53,7 @@ import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 import { TagInput } from "@/components/element/input";
+import { Quote } from "../blocks/quote";
 
 const editorValue: Descendant[] = [
   {
@@ -144,6 +145,8 @@ export function WSGIEditor({
         return <Li {...props} />;
       case "image":
         return <Image {...props} />;
+      case NodeType.QUOTE:
+        return <Quote {...props} />;
       default:
         return <Default {...props} />;
     }
