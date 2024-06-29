@@ -37,9 +37,10 @@ import {
   createEditor,
   Element as SlateElement,
   Transforms,
+  Editor,
 } from "slate";
 import { SlateToolBar } from "../toolbar";
-import { handleKeyBoardFormating } from "../utils";
+import { SlateCustomEditor, handleKeyBoardFormating } from "../utils";
 import Cookies from "js-cookie";
 
 import Prism, { Token } from "prismjs";
@@ -114,7 +115,7 @@ export function WSGIEditor({
               <select
                 defaultValue={
                   element.type === NodeType.CODE
-                  ? (element.language as string)
+                    ? (element.language as string)
                     : ""
                 }
                 name="languages"
@@ -287,7 +288,21 @@ export function WSGIEditor({
   }, [UpdateContent]);
 
   const titleRef = useRef<HTMLInputElement>(null);
-  console.log(initialValue.tags);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && ref.current.contains(event.target as Node)) {
+        SlateCustomEditor.insertParagraph(editor);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
 
   return (
     <div className="relative">
@@ -320,7 +335,7 @@ export function WSGIEditor({
         }}
       >
         <SlateToolBar onDelete={DeleteArticle} />
-        <div className="w-full flex flex-col flex-grow px-2  mt-3 h-[calc(100vh-104px)] overflow-auto">
+        <div className="w-full px-2  mt-3 h-[calc(100vh-104px)]  overflow-y-scroll">
           <input
             ref={titleRef}
             type="text"
@@ -353,7 +368,6 @@ export function WSGIEditor({
             placeholder="Title"
           />
           <TagInput id={id} initialTags={initialValue.tags} />
-
           <Editable
             decorate={decorate}
             spellCheck
@@ -385,6 +399,14 @@ export function WSGIEditor({
               }
             }}
           />
+
+          <div
+            onMouseDown={(e) => {
+              e.preventDefault();
+            }}
+            ref={ref}
+            className="h-96"
+          ></div>
         </div>
       </Slate>
     </div>
