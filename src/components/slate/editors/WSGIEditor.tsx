@@ -1,9 +1,10 @@
 "use client";
-import { NodeType, API_ENDPOINT, Article } from "@/app/utils";
+import { API_ENDPOINT, Article } from "@/app/utils";
+import { NodeType } from "../types";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
 import { withHistory } from "slate-history";
-import { withShortcuts, withPaste } from "../plugin";
+import { withShortcuts, withPaste } from "../plugins";
 import {
   withReact,
   RenderElementProps,
@@ -12,36 +13,33 @@ import {
   Editable,
   ReactEditor,
 } from "slate-react";
+
 import {
-  H1Element,
-  H2Element,
-  H3Element,
-  H4Element,
-  H5Element,
-  H6Element,
-  CodeElement,
-  OrderedListElement,
-  UnorderedListElement,
-  ListItemElement,
-  ImageElement,
-  DefaultElement,
+  H1,
+  H2,
+  H3,
+  H4,
+  H5,
+  H6,
+  Ol,
+  Ul,
+  Li,
+  Code,
   Leaf,
-} from "../element";
+  Default,
+  Image,
+} from "@/components/slate/blocks";
 import {
-  Text as SlateText,
   Node as SlateNode,
-  Path as SlatePath,
-  Range as SlateRange,
-  BaseRange,
   Descendant,
   createEditor,
   Element as SlateElement,
   Transforms,
-  Editor,
 } from "slate";
 import { SlateToolBar } from "../toolbar";
 import { SlateCustomEditor, handleKeyBoardFormating } from "../utils";
 import Cookies from "js-cookie";
+import { decorate } from "../utils/decorate";
 
 import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-javascript";
@@ -92,17 +90,17 @@ export function WSGIEditor({
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
       case NodeType.H1:
-        return <H1Element {...props} />;
+        return <H1 {...props} />;
       case NodeType.H2:
-        return <H2Element {...props} />;
+        return <H2 {...props} />;
       case NodeType.H3:
-        return <H3Element {...props} />;
+        return <H3 {...props} />;
       case NodeType.H4:
-        return <H4Element {...props} />;
+        return <H4 {...props} />;
       case NodeType.H5:
-        return <H5Element {...props} />;
+        return <H5 {...props} />;
       case NodeType.H6:
-        return <H6Element {...props} />;
+        return <H6 {...props} />;
       case NodeType.CODE:
         const { attributes, children, element } = props;
         const setLanguage = (language: string) => {
@@ -135,77 +133,23 @@ export function WSGIEditor({
                 <option value="jsx">JSX</option>
               </select>
             </div>
-            <CodeElement {...props} />
+            <Code {...props} />
           </div>
         );
       case NodeType.ORDERED_LIST:
-        return <OrderedListElement {...props} />;
+        return <Ol {...props} />;
       case NodeType.UNORDERED_LIST:
-        return <UnorderedListElement {...props} />;
+        return <Ul {...props} />;
       case NodeType.LIST_ITEM:
-        return <ListItemElement {...props} />;
+        return <Li {...props} />;
       case "image":
-        return <ImageElement {...props} />;
+        return <Image {...props} />;
       default:
-        return <DefaultElement {...props} />;
+        return <Default {...props} />;
     }
   }, []);
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
-  }, []);
-  const decorate = useCallback(([node, path]: [SlateNode, number[]]) => {
-    const ranges: any[] = [];
-
-    if (node.type === NodeType.CODE && SlateElement.isElement(node)) {
-      const text = SlateNode.string(node);
-      const language = node.language;
-
-      if (language) {
-        const tokens = Prism.tokenize(text, Prism.languages[language]);
-        // console.log(tokens);
-
-        const getLength = (token: string | Token): number => {
-          if (typeof token === "string") {
-            return token.length;
-          } else if (typeof token.content === "string") {
-            return token.content.length;
-          } else {
-            if (Array.isArray(token.content))
-              return token.content.reduce((l, t) => l + getLength(t), 0);
-            // return token.content.reduce((l, t) => l + getLength(t), 0);
-          }
-          return 0;
-        };
-
-        let start = 0;
-        const generateRanges = (tokens: (string | Token)[]) => {
-          for (const token of tokens) {
-            const length = getLength(token);
-            const end = start + length;
-
-            if (typeof token !== "string") {
-              ranges.push({
-                token: true,
-                anchor: { path, offset: start },
-                focus: { path, offset: end },
-                [token.type]: true,
-              });
-              if (Array.isArray(token.content)) {
-                generateRanges(token.content);
-              }
-            }
-
-            start = end;
-          }
-        };
-
-        generateRanges(tokens);
-      }
-
-      return ranges;
-    }
-
-    return ranges;
   }, []);
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -369,7 +313,7 @@ export function WSGIEditor({
           />
           <TagInput id={id} initialTags={initialValue.tags} />
           <Editable
-            decorate={decorate}
+            decorate={useCallback(decorate, [])}
             spellCheck
             autoFocus
             id="editor"

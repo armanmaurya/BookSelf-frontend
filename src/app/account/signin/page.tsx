@@ -3,7 +3,7 @@
 import RNotification from "@/components/RNotification";
 
 import { GoolgeAuth } from "@/components/auth";
-import { LoginForm } from "@/components/block/form";
+import { LoginForm } from "@/components/blocks/form";
 import { Divider } from "@/components/decoration";
 import { Suspense, useContext, useEffect } from "react";
 import { AppContext } from "@/components/context";

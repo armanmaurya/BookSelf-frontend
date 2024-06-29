@@ -1,23 +1,24 @@
 // "use client";
 import React from "react";
 import { notFound } from "next/navigation";
+
 import {
-  H1Element,
-  H2Element,
-  H3Element,
-  H4Element,
-  H5Element,
-  H6Element,
-  CodeElement,
-  ImageElement,
-  DefaultElement,
+  H1,
+  H2,
+  H3,
+  H4,
+  H5,
+  H6,
+  Code,
+  Li,
+  Ol,
+  Ul,
   Leaf,
-  ListItemElement,
-  OrderedListElement,
-  UnorderedListElement,
-  // Leaf,
-} from "@/components/slate/element";
-import { NodeType, getData } from "@/app/utils";
+  Default,
+  Image,
+} from "@/components/slate/blocks";
+import { getData } from "@/app/utils";
+import { NodeType } from "@/components/slate/types";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
@@ -39,17 +40,17 @@ const ServerElement = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
   switch (element.type) {
     case NodeType.H1:
-      return <H1Element {...props} />;
+      return <H1 {...props} />;
     case NodeType.H2:
-      return <H2Element {...props} />;
+      return <H2 {...props} />;
     case NodeType.H3:
-      return <H3Element {...props} />;
+      return <H3 {...props} />;
     case NodeType.H4:
-      return <H4Element {...props} />;
+      return <H4 {...props} />;
     case NodeType.H5:
-      return <H5Element {...props} />;
+      return <H5 {...props} />;
     case NodeType.H6:
-      return <H6Element {...props} />;
+      return <H6 {...props} />;
     case NodeType.CODE:
       const codeText = element.children
         .map((child: any) => child.text)
@@ -85,37 +86,40 @@ const ServerElement = (props: RenderElementProps) => {
           generateHighlightedCode(tokens);
 
         const newProps = { ...props, children: highlightedCode };
-        return <div className="relative">
-          <div className="absolute right-1 m-1 text-gray-400">{Language[language as string]}</div>
-          <CodeElement {...newProps} />
-        </div>
+        return (
+          <div className="relative">
+            <div className="absolute right-1 m-1 text-gray-400">
+              {Language[language as string]}
+            </div>
+            <Code {...newProps} />
+          </div>
+        );
       }
-      return <CodeElement {...props} />;
+      return <Code {...props} />;
     case NodeType.ORDERED_LIST:
-      return <OrderedListElement {...props} />;
+      return <Ol {...props} />;
     case NodeType.UNORDERED_LIST:
-      return <UnorderedListElement {...props} />;
+      return <Ul {...props} />;
     case NodeType.LIST_ITEM:
-      return <ListItemElement {...props} />;
+      return <Li {...props} />;
     case "image":
-      return <ImageElement {...props} />;
+      return <Image {...props} />;
     default:
-      return <DefaultElement {...props} />;
+      return <Default {...props} />;
   }
 };
 
 const Language: { [key: string]: string } = {
-  "javascript": "Javascript",
-  "jsx": "JSX",
-  "typescript": "Typescript",
-  "tsx": "TSX",
-  "markdown": "Markdown",
-  "python": "Python",
-  "php": "PHP",
-  "sql": "SQL",
-  "java": "Java",
+  javascript: "Javascript",
+  jsx: "JSX",
+  typescript: "Typescript",
+  tsx: "TSX",
+  markdown: "Markdown",
+  python: "Python",
+  php: "PHP",
+  sql: "SQL",
+  java: "Java",
 };
-
 
 const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;

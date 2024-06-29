@@ -1,6 +1,7 @@
 import { SlateCustomEditor } from "./utils";
 import { useSlate } from "slate-react";
-import { API_ENDPOINT, NodeType } from "@/app/utils";
+import { API_ENDPOINT } from "@/app/utils";
+import { NodeType } from "./types";
 import Cookies from "js-cookie";
 import { useState } from "react";
 

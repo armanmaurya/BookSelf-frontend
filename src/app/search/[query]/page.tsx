@@ -1,4 +1,4 @@
-import { ArticleCard } from "@/components/block/card";
+import { ArticleCard } from "@/components/blocks/card";
 import { API_ENDPOINT } from "@/app/utils";
 // import { useRouter } from "next/navigation";
 

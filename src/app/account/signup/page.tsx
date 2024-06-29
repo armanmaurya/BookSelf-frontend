@@ -1,7 +1,7 @@
 "use client";
 import RNotification from "@/components/RNotification";
 import { Divider } from "@/components/decoration";
-import { VerifyEmailForm } from "@/components/block/form";
+import { VerifyEmailForm } from "@/components/blocks/form";
 import { GoolgeAuth } from "@/components/auth";
 import { Suspense } from "react";
 

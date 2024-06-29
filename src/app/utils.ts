@@ -1,20 +1,3 @@
-export enum NodeType {
-  PARAGRAPH = "paragraph",
-  H1 = "heading-one",
-  H2 = "heading-two",
-  H3 = "heading-three",
-  H4 = "heading-four",
-  H5 = "heading-five",
-  H6 = "heading-six",
-  CODE = "code",
-  ORDERED_LIST = "ordered-list",
-  UNORDERED_LIST = "unordered-list",
-  LIST_ITEM = "list-item",
-  BOLD = "bold",
-  ITALIC = "italic",
-  UNDERLINE = "underline",
-}
-
 export interface Article {
   id: number;
   title: string;
