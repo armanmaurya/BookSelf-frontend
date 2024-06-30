@@ -213,6 +213,20 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
             </g>
           </svg>
         </button>
+        <button
+          className={`px-2 mx-2 hover:bg-slate-100 ${
+            SlateCustomEditor.isBlockActive(editor, NodeType.H6)
+              ? "bg-slate-100"
+              : ""
+          }`}
+          onClick={(event) => {
+            event.preventDefault();
+            const url = prompt("Enter the URL of the link:");
+            SlateCustomEditor.insertLink(editor, url);
+          }}
+        >
+          link
+        </button>
         <div
           className="flex relative items-center justify-center hover:cursor-pointer"
           onClick={(event) => {

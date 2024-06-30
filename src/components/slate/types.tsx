@@ -71,6 +71,12 @@ type QUOTE = {
   children: any[];
 };
 
+type Link = {
+  type: "link";
+  url: string;
+  children: CustomText[];
+};
+
 export type CustomElement =
   | CodeElementType
   | ParagraphElement
@@ -79,7 +85,8 @@ export type CustomElement =
   | OrderedListElementType
   | UnorderedListElementType
   | ListItemElementType
-  | QUOTE;
+  | QUOTE
+  | Link;
 
 export type FormattedText = {
   text: string;
@@ -131,4 +138,5 @@ export enum NodeType {
   ITALIC = "italic",
   UNDERLINE = "underline",
   QUOTE = "quote",
+  LINK = "link",
 }

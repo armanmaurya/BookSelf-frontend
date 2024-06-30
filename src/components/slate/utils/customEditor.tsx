@@ -242,6 +242,27 @@ export const SlateCustomEditor = {
     }
   },
 
+  insertLink(editor: SlateEditor, url?: string | null) {
+    if (!url) {
+      return;
+    }
+    const { selection } = editor;
+    if (selection) {
+      if (!Range.isCollapsed(selection)) {
+        Transforms.wrapNodes(
+          editor,
+          {
+            type: NodeType.LINK,
+            url,
+            children: [{ text: "Some Text" }],
+          },
+          { split: true }
+        );
+        Transforms.collapse(editor, { edge: "end" });
+      }
+    }
+  },
+
   insertParagraph(editor: SlateEditor) {
     // const isParagraphActive = SlateCustomEditor.isParagraphActive(editor);
     const isListItemActive = SlateCustomEditor.isOrderedListActive(editor);

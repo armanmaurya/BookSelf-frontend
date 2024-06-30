@@ -1,6 +1,12 @@
 import { SlateCustomEditor } from "../utils";
-import { Editor as SlateEditor, Element as SlateElement } from "slate";
+import {
+  Path,
+  Editor as SlateEditor,
+  Element as SlateElement,
+  Transforms,
+} from "slate";
 import { NodeType } from "../types";
+import { Text } from "slate";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -102,21 +108,44 @@ export const handleKeyBoardFormating = (
       }
     }
   }
+  if (event.key === " ") {
+    if (editor.selection) {
+      const [match] = SlateEditor.nodes(editor, {
+        match: (n) => SlateElement.isElement(n),
+        mode: "lowest",
+      });
+
+      if (match[0].type === NodeType.LINK && SlateElement.isElement(match[0])) {
+        const string = match[0].children[0].text;
+        console.log(string);
+        if (string.length === editor.selection.focus.offset) {
+          event.preventDefault();
+          const nextPath = SlateEditor.next(editor);
+          if (nextPath) {
+            Transforms.select(editor, nextPath[1]);
+            Transforms.insertText(editor, " ");
+          }
+
+          // Transforms.select(editor, nextPath);
+        }
+      }
+    }
+  }
 };
 
 interface IHandleEnterKey {
-    [key: string]: (editor: SlateEditor) => void;
-  }
+  [key: string]: (editor: SlateEditor) => void;
+}
 
 const handleEnterKey: IHandleEnterKey = {
-    "list-item": SlateCustomEditor.insertListItem,
-    "paragraph": SlateCustomEditor.insertParagraph,
-    "heading-one": SlateCustomEditor.insertParagraph,
-    "heading-two": SlateCustomEditor.insertParagraph,
-    "heading-three": SlateCustomEditor.insertParagraph,
-    "heading-four": SlateCustomEditor.insertParagraph,
-    "heading-five": SlateCustomEditor.insertParagraph,
-    "heading-six": SlateCustomEditor.insertParagraph,
-    "code": SlateCustomEditor.insertLineBreak,
-    "quote": SlateCustomEditor.insertLineBreak,
-  };
+  "list-item": SlateCustomEditor.insertListItem,
+  paragraph: SlateCustomEditor.insertParagraph,
+  "heading-one": SlateCustomEditor.insertParagraph,
+  "heading-two": SlateCustomEditor.insertParagraph,
+  "heading-three": SlateCustomEditor.insertParagraph,
+  "heading-four": SlateCustomEditor.insertParagraph,
+  "heading-five": SlateCustomEditor.insertParagraph,
+  "heading-six": SlateCustomEditor.insertParagraph,
+  code: SlateCustomEditor.insertLineBreak,
+  quote: SlateCustomEditor.insertLineBreak,
+};

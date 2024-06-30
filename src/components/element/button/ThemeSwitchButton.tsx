@@ -23,7 +23,7 @@ const ThemeSwitcher = () => {
       setIsDarkMode(prefersDarkMode());
     }
     console.log(theme);
-  }, []);
+  });
 
   //   if (!mounted) {
   //     return null;

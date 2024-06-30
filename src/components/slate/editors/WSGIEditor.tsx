@@ -4,7 +4,12 @@ import { NodeType } from "../types";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
 import { withHistory } from "slate-history";
-import { withShortcuts, withPaste } from "../plugins";
+import {
+  withShortcuts,
+  withPaste,
+  withLinks,
+  withKeyCommands,
+} from "../plugins";
 import {
   withReact,
   RenderElementProps,
@@ -12,6 +17,9 @@ import {
   Slate,
   Editable,
   ReactEditor,
+  useSlateStatic,
+  useFocused,
+  useSelected,
 } from "slate-react";
 
 import {
@@ -28,6 +36,8 @@ import {
   Leaf,
   Default,
   Image,
+  Quote,
+  Anchor,
 } from "@/components/slate/blocks";
 import {
   Node as SlateNode,
@@ -53,13 +63,19 @@ import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 import { TagInput } from "@/components/element/input";
-import { Quote } from "../blocks/quote";
 
 const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
-    children: [{ text: "This is text" }],
+    children: [
+      { text: "This is text" },
+      {
+        type: NodeType.LINK,
+        url: "https://google.com",
+        children: [{ text: "Google" }],
+      },
+    ],
   },
 ];
 
@@ -80,7 +96,12 @@ export function WSGIEditor({
   id: string;
 }) {
   const editor = useMemo(
-    () => withShortcuts(withPaste(withReact(withHistory(createEditor())))),
+    () =>
+      withKeyCommands(
+        withLinks(
+          withShortcuts(withPaste(withReact(withHistory(createEditor()))))
+        )
+      ),
     []
   );
   const [value, setValue] = useState(initialValue.title || "");
@@ -147,6 +168,8 @@ export function WSGIEditor({
         return <Image {...props} />;
       case NodeType.QUOTE:
         return <Quote {...props} />;
+      case NodeType.LINK:
+        return <SlateAnchorTag {...props} />;
       default:
         return <Default {...props} />;
     }
@@ -250,6 +273,8 @@ export function WSGIEditor({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   });
+
+  console.log(JSON.parse(initialValue.content));
 
   return (
     <div className="relative">
@@ -359,6 +384,44 @@ export function WSGIEditor({
     </div>
   );
 }
+
+const SlateAnchorTag = (props: RenderElementProps) => {
+  const editor = useSlateStatic();
+  const selected = useSelected();
+  const focused = useFocused();
+  const [isHovering, setIsHovering] = useState(false);
+  return (
+    <span
+      className="relative"
+      onMouseEnter={() => {
+        setIsHovering(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovering(false);
+      }}
+    >
+      <Anchor {...props} />
+      {((selected && focused) || isHovering) && (
+        <span
+          className="absolute top-4 left-0 pt-4 hover:cursor-pointer bg-neutral-800"
+          contentEditable={false}
+        >
+          <span className=" border p-2 underline text-blue-500 rounded">
+            <a
+              href={
+                props.element.type === NodeType.LINK ? props.element.url : ""
+              }
+              rel="noreferrer"
+              target="_blank"
+            >
+              {props.element.type === NodeType.LINK ? props.element.url : ""}
+            </a>
+          </span>
+        </span>
+      )}
+    </span>
+  );
+};
 
 const initialValue2: Descendant[] = [
   {

@@ -16,6 +16,8 @@ import {
   Leaf,
   Default,
   Image,
+  Quote,
+  Anchor,
 } from "@/components/slate/blocks";
 import { getData } from "@/app/utils";
 import { NodeType } from "@/components/slate/types";
@@ -104,6 +106,10 @@ const ServerElement = (props: RenderElementProps) => {
       return <Li {...props} />;
     case "image":
       return <Image {...props} />;
+    case NodeType.QUOTE:
+      return <Quote {...props} />;
+    case NodeType.LINK:
+      return <Anchor {...props} />;
     default:
       return <Default {...props} />;
   }
@@ -154,29 +160,6 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       </div>
       <div className="px-4">
         <Render value={jsonContent} />
-        {/* {jsonContent.map((node, i) => (
-          <Element
-            key={i}
-            element={node}
-            attributes={{
-              "data-slate-node": "element",
-              ref: null,
-            }}
-          >
-            {node.children.map((leaf, j) => (
-              <ServerLeaf
-                key={j}
-                leaf={leaf}
-                text={leaf}
-                attributes={{
-                  "data-slate-leaf": true,
-                }}
-              >
-                {leaf.text}
-              </ServerLeaf>
-            ))}
-          </Element>
-        ))} */}
       </div>
     </div>
   );

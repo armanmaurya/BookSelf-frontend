@@ -62,7 +62,7 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
 
   useEffect(() => {
     socialLogin();
-  }, []);
+  });
 
   return (
     <a
@@ -78,5 +78,3 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
     </a>
   );
 };
-
-
