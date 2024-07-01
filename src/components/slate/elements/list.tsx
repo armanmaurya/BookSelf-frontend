@@ -18,7 +18,7 @@ export const Ul = (props: RenderElementProps) => {
 
 export const Li = (props: RenderElementProps) => {
   return (
-    <li className="hover:bg-neutral-200" {...props.attributes}>
+    <li className="ml-4" {...props.attributes}>
       {props.children}
     </li>
   );

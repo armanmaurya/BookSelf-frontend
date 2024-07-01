@@ -8,7 +8,7 @@ export const Leaf = (props: RenderLeafProps) => {
       className={`${props.leaf.bold ? " font-bold " : ""}${
         props.leaf.italic ? " `italic " : ""
       }${props.leaf.underline ? " underline " : ""}${
-        props.leaf.code ? " bg-slate-200 px-0.5 rounded " : ""
+        props.leaf.code ? " dark:bg-neutral-700 dark:bg-opacity-60 bg-slate-200 bg-opacity-60 px-0.5 rounded " : ""
       }${Object.keys(rest).join(" ")}`}
     >
       {props.children}
