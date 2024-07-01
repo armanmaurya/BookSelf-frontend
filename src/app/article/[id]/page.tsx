@@ -18,7 +18,7 @@ import {
   Image,
   Quote,
   Anchor,
-} from "@/components/slate/blocks";
+} from "@/components/slate/elements";
 import { getData } from "@/app/utils";
 import { NodeType } from "@/components/slate/types";
 import { RenderElementProps, RenderLeafProps } from "slate-react";

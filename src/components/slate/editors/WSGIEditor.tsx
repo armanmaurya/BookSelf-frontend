@@ -38,7 +38,7 @@ import {
   Image,
   Quote,
   Anchor,
-} from "@/components/slate/blocks";
+} from "@/components/slate/elements";
 import {
   Node as SlateNode,
   Descendant,
@@ -46,7 +46,7 @@ import {
   Element as SlateElement,
   Transforms,
 } from "slate";
-import { SlateToolBar } from "../toolbar";
+import { SlateToolBar } from "../components/Toolbar/toolbar";
 import { SlateCustomEditor, handleKeyBoardFormating } from "../utils";
 import Cookies from "js-cookie";
 import { decorate } from "../utils/decorate";
