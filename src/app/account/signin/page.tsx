@@ -1,21 +1,37 @@
-"use client";
-
 import RNotification from "@/components/RNotification";
-
 import { GoolgeAuth } from "@/components/auth";
 import { LoginForm } from "@/components/blocks/form";
 import { Divider } from "@/components/decoration";
-import { Suspense, useContext, useEffect } from "react";
-import { AppContext } from "@/components/context";
+import { Suspense } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Login() {
-  const context = useContext(AppContext);
+export default async function Login() {
+  const cookieStore = cookies();
 
-  useEffect(() => {
-    if (context.isAuthenticated) {
-      window.location.href = "/";
-    }
-  })
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/example/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Cookie: `${cookieStore.get("sessionid")?.name}=${
+        cookieStore.get("sessionid")?.value
+      }`,
+    },
+  });
+  if (res.ok) {
+    redirect("/");
+  } else {
+    console.log("Error", res);
+  }
+
+  // const context = useContext(AppContext);
+
+  // useEffect(() => {
+  //   if (context.isAuthenticated) {
+  //     window.location.href = "/";
+  //   }
+  // })
   return (
     <main className="h-full">
       <RNotification />

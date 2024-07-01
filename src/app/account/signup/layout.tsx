@@ -1,22 +1,31 @@
-"use client"
-import { AppContext } from "@/components/context";
 import RNotification from "@/components/RNotification";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Articlelayout({
+export default async function Articlelayout({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode;
 }) {
-  const context = useContext(AppContext);
-  const router = useRouter();
+  const cookieStore = cookies();
 
-  useEffect(() => {
-    if (context.isAuthenticated) {
-      window.location.href = "/";
-    }
-  })
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/example/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Cookie: `${cookieStore.get("sessionid")?.name}=${
+        cookieStore.get("sessionid")?.value
+      }`,
+    },
+  });
+  if (res.ok) {
+    console.log("Success", res);
+
+    redirect("/");
+  } else {
+    console.log("Error", res);
+  }
   return (
     <main className="h-full">
       <RNotification />

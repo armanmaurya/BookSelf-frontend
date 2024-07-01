@@ -1,11 +1,11 @@
-"use client";
-import RNotification from "@/components/RNotification";
 import { Divider } from "@/components/decoration";
 import { VerifyEmailForm } from "@/components/blocks/form";
 import { GoolgeAuth } from "@/components/auth";
 import { Suspense } from "react";
 
-export default function Register() {
+
+
+export default async function Register() {
   return (
     <main className="h-full">
       <div className="flex flex-col items-center justify-center h-full">

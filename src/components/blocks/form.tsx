@@ -8,6 +8,7 @@ import { Oval } from "react-loader-spinner";
 import { AppContext } from "@/components/context";
 import { API_ENDPOINT } from "@/app/utils";
 
+
 export const LoginForm = () => {
   const [isProgressBarVisible, setIsProgressBarVisible] = useState(false);
   const [form, setForm] = useState({
@@ -18,11 +19,11 @@ export const LoginForm = () => {
   const context = useContext(AppContext);
   const router = useRouter();
 
-  useEffect(() => {
-    if (context.isAuthenticated) {
-      router.push("/");
-    }
-  });
+  // useEffect(() => {
+  //   if (context.isAuthenticated) {
+  //     router.push("/");
+  //   }
+  // });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
