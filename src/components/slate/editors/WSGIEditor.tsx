@@ -99,6 +99,7 @@ export function WSGIEditor({
     []
   );
   const [value, setValue] = useState(initialValue.title || "");
+  const [articleSlug, setArticleSlug] = useState<string>(id);
 
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [LastSaveTime, setLastSaveTime] = useState<number>(Date.now());
@@ -178,20 +179,17 @@ export function WSGIEditor({
     console.log(body);
 
     const csrf = Cookies.get("csrftoken");
+    console.log(articleSlug);
+    
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": `${csrf}`,
         },
         body: body,
-        // body: JSON.stringify({
-        //   id: id,
-        //   title: value,
-        //   content: JSON.stringify(editor.children),
-        // }),
         credentials: "include",
       });
       if (res.ok) {
@@ -200,6 +198,9 @@ export function WSGIEditor({
         const data:Article = await res.json();
         if (data.slug) {
           window.history.pushState({}, "", `/editor/${data.slug}`);
+          setArticleSlug(data.slug);
+          console.log(articleSlug);
+          
         }
           console.log("Success");
       } else {
@@ -222,12 +223,12 @@ export function WSGIEditor({
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [articleSlug]);
   const DeleteArticle = async () => {
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -272,7 +273,7 @@ export function WSGIEditor({
     };
   });
 
-  console.log(JSON.parse(initialValue.content));
+  // console.log(JSON.parse(initialValue.content));
 
   return (
     <div className="relative">

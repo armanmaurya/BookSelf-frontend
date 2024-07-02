@@ -14,7 +14,7 @@ const AppBar = () => {
             <HamburgerIcon />
           </li>
           <li className="w-full text-center sm:text-left">
-            <Link className="text-3xl font-semibold" href="/">
+            <Link  className="text-3xl font-semibold" href="/">
               Home
             </Link>
           </li>
