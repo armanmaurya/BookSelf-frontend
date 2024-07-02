@@ -10,6 +10,7 @@ import {
   Range,
 } from "slate";
 import { NodeType } from "../types";
+import { text } from "stream/consumers";
 
 export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
@@ -261,6 +262,10 @@ export const SlateCustomEditor = {
         Transforms.collapse(editor, { edge: "end" });
       }
     }
+  },
+
+  deleteNode(editor: SlateEditor) {
+    Transforms.delete(editor, { reverse: true });
   },
 
   insertParagraph(editor: SlateEditor) {

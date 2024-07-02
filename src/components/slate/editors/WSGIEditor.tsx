@@ -130,8 +130,8 @@ export function WSGIEditor({
           Transforms.setNodes(editor, { language }, { at: path });
         };
         return (
-          <div>
-            <div contentEditable={false} className="absolute right-0">
+          <div className="relative">
+            <div contentEditable={false} className="absolute">
               <select
                 defaultValue={
                   element.type === NodeType.CODE
@@ -140,7 +140,7 @@ export function WSGIEditor({
                 }
                 name="languages"
                 id=""
-                className="m-1 rounded"
+                className="m-1 text-xs bg-transparent rounded"
                 onChange={(e) => {
                   const language = e.target.value;
                   setLanguage(language);

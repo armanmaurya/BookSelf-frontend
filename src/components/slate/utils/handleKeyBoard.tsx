@@ -83,18 +83,57 @@ export const handleKeyBoardFormating = (
     }
   }
   if (event.key === "Backspace") {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      mode: "lowest",
+    });
     if (editor.selection) {
-      const text = SlateEditor.string(editor, editor.selection.focus.path);
-      if (text.length === 0 && SlateCustomEditor.isListActive(editor)) {
-        event.preventDefault();
-        SlateCustomEditor.toggleListBlock(editor);
-        return;
+      const text = SlateEditor.string(editor, editor.selection.anchor.path);
+      console.log(text);
+      
+      if (match[0].type && text.length === 0 && editor.selection.focus.offset === 0) {
+        switch (match[0].type) {
+          case NodeType.PARAGRAPH:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.H1:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.H2:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.H3:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.H4:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.H5:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.H6:
+            event.preventDefault();
+            SlateCustomEditor.deleteNode(editor);
+            break;
+          case NodeType.LIST_ITEM:
+            event.preventDefault();
+            SlateCustomEditor.toggleListBlock(editor);
+            break;
+          case NodeType.CODE:
+            event.preventDefault();
+            SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
+            break;
+        }
       }
     }
   }
   if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
-    // const isListItemActive = SlateCustomEditor.isListItemActive(editor);
-    // event.preventDefault();
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
       mode: "lowest",
@@ -133,8 +172,20 @@ export const handleKeyBoardFormating = (
   }
 };
 
+const handleBackspace: IHandleEnterKey = {
+  paragraph: SlateCustomEditor.deleteNode,
+  "heading-one": SlateCustomEditor.deleteNode,
+  "heading-two": SlateCustomEditor.deleteNode,
+  "heading-three": SlateCustomEditor.deleteNode,
+  "heading-four": SlateCustomEditor.deleteNode,
+  "heading-five": SlateCustomEditor.deleteNode,
+  "heading-six": SlateCustomEditor.deleteNode,
+  "list-item": SlateCustomEditor.toggleListBlock,
+  // "code": SlateCustomEditor.toggleBlock( NodeType.CODE),
+};
+
 interface IHandleEnterKey {
-  [key: string]: (editor: SlateEditor) => void;
+  [key: string]: (editor: SlateEditor) => void | null;
 }
 
 const handleEnterKey: IHandleEnterKey = {
