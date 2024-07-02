@@ -1,15 +1,9 @@
+import { Article } from "@/app/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-interface Article {
-  id: number;
-  title: string;
-  content: string;
-  author: number;
-  created_at: string;
-  slug: string;
-}
+
 
 export const ArticleCard = ({ data }: { data: Article }) => {
   return (

@@ -4,15 +4,9 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { ArticleCard, ArticleCard2 } from "../components/blocks/card";
 import { API_ENDPOINT } from "./utils";
+import { Article } from "./types";
 
-interface Article {
-  id: number;
-  title: string;
-  content: string;
-  author: number;
-  created_at: string;
-  slug: string;
-}
+
 
 const fetchData = async () => {
   try {

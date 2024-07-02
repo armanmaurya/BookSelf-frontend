@@ -1,14 +1,9 @@
 import { ArticleCard } from "@/components/blocks/card";
 import { API_ENDPOINT } from "@/app/utils";
+import { Article } from "../../types";
 // import { useRouter } from "next/navigation";
 
-interface Article {
-  id: number;
-  title: string;
-  content: string;
-  author: number;
-  created_at: string;
-}
+
 
 async function search(query: string) {
   try {
