@@ -5,4 +5,5 @@ export interface Article {
   author: number;
   created_at: string;
   slug: string;
+  tags: string[];
 }

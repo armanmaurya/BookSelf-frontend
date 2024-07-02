@@ -28,6 +28,8 @@ export async function getData(
     if (res.ok) {
       return await res.json();
     }
+    console.log(await res.body);
+    
     return null;
   } catch (error) {
     console.error("Error fetching data:", error);

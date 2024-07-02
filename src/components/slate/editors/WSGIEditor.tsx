@@ -1,5 +1,6 @@
 "use client";
-import { API_ENDPOINT, Article } from "@/app/utils";
+import { API_ENDPOINT } from "@/app/utils";
+import { Article } from "@/app/types";
 import { NodeType } from "../types";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Store } from "react-notifications-component";
@@ -179,7 +180,7 @@ export function WSGIEditor({
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +197,11 @@ export function WSGIEditor({
       if (res.ok) {
         setIsSaving(false);
         setLastSaveTime;
-        console.log("Success");
+        const data:Article = await res.json();
+        if (data.slug) {
+          window.history.pushState({}, "", `/editor/${data.slug}`);
+        }
+          console.log("Success");
       } else {
         setIsSaving(false);
         console.log("Failed");
@@ -222,7 +227,7 @@ export function WSGIEditor({
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

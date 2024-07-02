@@ -136,7 +136,7 @@ export const TagInput = ({
   const UpdateTags = async (tags: string[]) => {
     const csrf = Cookies.get("csrftoken");
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

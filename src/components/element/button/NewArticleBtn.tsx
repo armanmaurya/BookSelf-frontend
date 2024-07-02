@@ -21,10 +21,10 @@ export const NewArticleBtn = () => {
       if (res.ok) {
         console.log("Article created");
         const data = await res.json();
-        // console.log(data);
+        console.log(data);
         // setIsOpened(false);
 
-        router.push(`/editor/${data.id}`);
+        // router.push(`/editor/${data.slug}`);
       }
     } catch (error) {
       console.log("Network error");
