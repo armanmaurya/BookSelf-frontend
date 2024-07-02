@@ -68,14 +68,7 @@ const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
-    children: [
-      { text: "This is text" },
-      {
-        type: NodeType.LINK,
-        url: "https://google.com",
-        children: [{ text: "Google" }],
-      },
-    ],
+    children: [{ text: "" }],
   },
 ];
 

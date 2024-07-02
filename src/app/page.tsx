@@ -11,6 +11,7 @@ interface Article {
   content: string;
   author: number;
   created_at: string;
+  slug: string;
 }
 
 const fetchData = async () => {

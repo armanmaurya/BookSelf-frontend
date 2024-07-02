@@ -8,12 +8,13 @@ interface Article {
   content: string;
   author: number;
   created_at: string;
+  slug: string;
 }
 
 export const ArticleCard = ({ data }: { data: Article }) => {
   return (
     <div className="border rounded-md w-full flex flex-col justify-center h-24 p-4 shadow-md">
-      <Link href={`/article/${data.id}`}>
+      <Link href={`/${data.slug}`}>
         <h1 className="text-2xl font-bold">{data.title || "Untitled"}</h1>
       </Link>
       <div className="flex justify-between w-full">

@@ -21,7 +21,7 @@ export async function getData(
   }
 ): Promise<CustomResponse| null> {
   try {
-    const res = await fetch(`${API_ENDPOINT.article.url}?id=${id}`, {
+    const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
       method: "GET",
       headers: headers,
     });
