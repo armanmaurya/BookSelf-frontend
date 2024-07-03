@@ -65,7 +65,7 @@ import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 import { TagInput } from "@/components/element/input";
 
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath, revalidateTag } from "next/cache";
 import action from "@/app/actions";
 
 const editorValue: Descendant[] = [
@@ -177,75 +177,85 @@ export function WSGIEditor({
   }, []);
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-  const UpdateContent = useCallback(async (body: string) => {
-    setIsSaving(true);
-    console.log(body);
+  const UpdateContent = useCallback(
+    async (body: string) => {
+      setIsSaving(true);
+      console.log(body);
 
-    const csrf = Cookies.get("csrftoken");
-    console.log(articleSlug);
-    
+      const csrf = Cookies.get("csrftoken");
+      console.log(articleSlug);
 
-    try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": `${csrf}`,
-        },
-        body: body,
-        credentials: "include",
-      });
-      if (res.ok) {
-        setIsSaving(false);
-        setLastSaveTime;
-        const data:Article = await res.json();
-        if (data.slug) {
-          window.history.pushState({}, "", `/editor/${data.slug}`);
-          setArticleSlug(data.slug);
-          console.log(articleSlug);
-          const res = await fetch('/api/revalidate?path=/')
-          const ata = await res.json()
-          console.log(ata)
-          action()
-          
-
-        }
+      try {
+        const res = await fetch(
+          `${API_ENDPOINT.article.url}?slug=${articleSlug}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": `${csrf}`,
+            },
+            body: body,
+            credentials: "include",
+          }
+        );
+        if (res.ok) {
+          setIsSaving(false);
+          setLastSaveTime;
+          const data: Article = await res.json();
+          if (data.slug) {
+            window.history.pushState({}, "", `/editor/${data.slug}`);
+            setArticleSlug(data.slug);
+            console.log(articleSlug);
+            const res = await fetch("/api/revalidate?path=/");
+            const ata = await res.json();
+            console.log(ata);
+            action();
+          }
           console.log("Success");
-      } else {
-        setIsSaving(false);
-        console.log("Failed");
-        Store.addNotification({
-          title: "Error",
-          message: "Article upload failed",
-          type: "danger",
-          insert: "top",
-          container: "top-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 5000,
-            // onScreen: true,
-          },
-        });
+        } else {
+          setIsSaving(false);
+          console.log("Failed");
+          Store.addNotification({
+            title: "Error",
+            message: "Article upload failed",
+            type: "danger",
+            insert: "top",
+            container: "top-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              // onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [articleSlug]);
+    },
+    [articleSlug]
+  );
   const DeleteArticle = async () => {
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": `${csrf}`,
-        },
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${API_ENDPOINT.article.url}?slug=${articleSlug}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": `${csrf}`,
+          },
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         console.log("Article deleted");
+        const res = await fetch("/api/revalidate?path=/");
+        const ata = await res.json();
+        console.log(ata);
+        action();
         window.location.href = "/";
       }
     } catch (error) {
