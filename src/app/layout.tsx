@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description:
     "Welcome to bookself.site, your go-to destination for insightful and engaging articles on a wide range of topics. Whether you're looking to stay informed, learn something new, or simply enjoy some quality reading time",
 };
-export const revalidate = 1;
+export const revalidate = 3600;
 
 export default function RootLayout({
   children,
@@ -26,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}>
+      <body
+        className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}
+      >
         <ThemeProvider attribute="class" enableSystem>
           <NextTopLoader />
           <ContextProvider>

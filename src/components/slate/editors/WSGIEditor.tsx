@@ -65,6 +65,9 @@ import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 import { TagInput } from "@/components/element/input";
 
+import { revalidatePath, revalidateTag } from 'next/cache'
+import action from "@/app/actions";
+
 const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
@@ -200,7 +203,12 @@ export function WSGIEditor({
           window.history.pushState({}, "", `/editor/${data.slug}`);
           setArticleSlug(data.slug);
           console.log(articleSlug);
+          const res = await fetch('/api/revalidate?path=/')
+          const ata = await res.json()
+          console.log(ata)
+          action()
           
+
         }
           console.log("Success");
       } else {

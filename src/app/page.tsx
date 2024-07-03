@@ -10,7 +10,9 @@ import { Article } from "./types";
 
 const fetchData = async () => {
   try {
-    const res = await fetch(API_ENDPOINT.article.url);
+    const res = await fetch(API_ENDPOINT.article.url, {next: {
+      tags: ["home"],
+    }});
     return res.json();
   } catch (error) {
     console.error("Error fetching data:", error);
