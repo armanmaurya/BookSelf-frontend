@@ -24,7 +24,7 @@ import { NodeType } from "@/components/slate/types";
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
-import { Descendant, Element } from "slate";
+import { Descendant, Element, node, Text } from "slate";
 import Prism from "prismjs";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-jsx";
@@ -158,14 +158,49 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
           <u>{data.data.title || "Untitled"}</u>
         </h1>
       </div>
-      <div className="px-4">
-        <Render value={jsonContent} />
+      <div className="flex">
+        <div className="px-4 flex-1">
+          <RenderPage value={jsonContent} />
+        </div>
+        <div className="mx-4 px-4">
+          <RenderTableOfContents value={jsonContent} />
+        </div>
       </div>
     </div>
   );
 };
 
-const Render = ({ value }: { value: Descendant[] }) => {
+const headings: { [key: string]: number } = {
+  "heading-one": 1,
+  "heading-two": 2,
+  "heading-three": 3,
+  "heading-four": 4,
+  "heading-five": 5,
+  "heading-six": 6,
+};
+
+const RenderTableOfContents = ({ value }: { value: Descendant[] }) => {
+  let previousHeadingNumber: number;
+  return (
+    <>
+      {value.map((node, i) => {
+        if (Element.isElement(node)) {
+          const headingNumber = headings[node.type as string];
+
+          if (headingNumber) {
+            if (headingNumber > previousHeadingNumber) {
+              return <div key={i} className="pl-4">{node.children[0].text}</div>;
+            }
+            previousHeadingNumber = headingNumber;
+            return <div key={i}>{node.children[0].text}</div>;
+          }
+        }
+      })}
+    </>
+  );
+};
+
+const RenderPage = ({ value }: { value: Descendant[] }) => {
   return (
     <>
       {value.map((node, i) => {
@@ -179,7 +214,7 @@ const Render = ({ value }: { value: Descendant[] }) => {
                 ref: null,
               }}
             >
-              <Render value={node.children} />
+              <RenderPage value={node.children} />
             </ServerElement>
           );
         } else {

@@ -11,6 +11,7 @@ type CustomEditor = BaseEditor & ReactEditor & CustomEditorType;
 type CustomEditorType = { type?: string };
 
 type HeadingElement = {
+  id: string;
   type:
     | NodeType.H1
     | NodeType.H2

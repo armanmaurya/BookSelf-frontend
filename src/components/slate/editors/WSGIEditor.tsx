@@ -10,6 +10,7 @@ import {
   withPaste,
   withLinks,
   withKeyCommands,
+  withHeadingId,
 } from "../plugins";
 import {
   withReact,
@@ -65,7 +66,6 @@ import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 import { TagInput } from "@/components/element/input";
 
-import { revalidatePath, revalidateTag } from "next/cache";
 import action from "@/app/actions";
 
 const editorValue: Descendant[] = [
@@ -94,11 +94,11 @@ export function WSGIEditor({
 }) {
   const editor = useMemo(
     () =>
-      withKeyCommands(
+      withHeadingId(withKeyCommands(
         withLinks(
           withShortcuts(withPaste(withReact(withHistory(createEditor()))))
         )
-      ),
+      )),
     []
   );
   const [value, setValue] = useState(initialValue.title || "");
@@ -442,6 +442,7 @@ const SlateAnchorTag = (props: RenderElementProps) => {
 
 const initialValue2: Descendant[] = [
   {
+    id: "heading-one",
     type: NodeType.H1,
     align: "center",
     children: [
@@ -535,6 +536,7 @@ const initialValue2: Descendant[] = [
     ],
   },
   {
+    id: "heading-on-1e",
     type: NodeType.H1,
     align: "center",
     children: [
@@ -594,42 +596,6 @@ const initialValue2: Descendant[] = [
         text: "Bold Italic",
         bold: true,
         italic: true,
-      },
-    ],
-  },
-  {
-    type: NodeType.H3,
-    align: "right",
-    children: [
-      {
-        text: "Heading Three",
-      },
-    ],
-  },
-  {
-    type: NodeType.H4,
-    align: "right",
-    children: [
-      {
-        text: "Heading Four",
-      },
-    ],
-  },
-  {
-    type: NodeType.H5,
-    align: "center",
-    children: [
-      {
-        text: "Heading Five",
-      },
-    ],
-  },
-  {
-    type: NodeType.H6,
-    align: "center",
-    children: [
-      {
-        text: "Heading Six",
       },
     ],
   },

@@ -1,3 +1,4 @@
+export * from "./withHeadingId"
 export * from "./withMarkdownShortcuts"
 export * from "./withPaste"
 export * from "./withLinks"

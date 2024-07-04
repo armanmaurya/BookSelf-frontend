@@ -50,6 +50,20 @@ export const SlateCustomEditor = {
     return marks ? marks[format as keyof typeof marks] === true : false;
   },
 
+  isHeadingActive(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) =>
+        SlateElement.isElement(n) &&
+        (n.type === NodeType.H1 ||
+          n.type === NodeType.H2 ||
+          n.type === NodeType.H3 ||
+          n.type === NodeType.H4 ||
+          n.type === NodeType.H5 ||
+          n.type === NodeType.H6),
+    });
+    return !!match;
+  },
+
   isCodeBlockActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === "code",
@@ -63,6 +77,51 @@ export const SlateCustomEditor = {
         SlateElement.isElement(n) && n.type === NodeType.ORDERED_LIST,
     });
     return !!match;
+  },
+
+  addHeadingId(editor: SlateEditor) {
+    const { selection } = editor;
+    if (selection) {
+      const isHeading = SlateCustomEditor.isHeadingActive(editor);
+      if (isHeading) {
+        const nodetext = SlateEditor.string(editor, selection.anchor.path);
+        console.log(nodetext);
+
+        const allNodes = SlateEditor.nodes(editor, {
+          mode: "all",
+          at: [],
+          match(node, path) {
+            return (
+              SlateElement.isElement(node) &&
+              (node.type === NodeType.H1 ||
+                node.type === NodeType.H2 ||
+                node.type === NodeType.H3 ||
+                node.type === NodeType.H4 ||
+                node.type === NodeType.H5 ||
+                node.type === NodeType.H6) &&
+              node.children[0].text.toLowerCase() === nodetext
+            );
+          },
+        });
+
+        const id = nodetext.trim().toLowerCase().replace(/\s/g, "-");
+        let numberOfDuplicates: number = 0;
+
+        for (const value of allNodes) {
+          Transforms.setNodes(
+            editor,
+            {
+              id: numberOfDuplicates > 0 ? `${id}-${numberOfDuplicates}` : id,
+            },
+            {
+              at: value[1],
+              match: (n) => SlateElement.isElement(n),
+            }
+          );
+          numberOfDuplicates++;
+        }
+      }
+    }
   },
 
   isListActive(editor: SlateEditor) {
