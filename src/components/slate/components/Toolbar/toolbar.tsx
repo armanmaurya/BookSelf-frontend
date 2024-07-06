@@ -168,7 +168,7 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
               isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
             }`}
           >
-            <AlignIconSwitcher align={alignment} />
+            <AlignIconSwitcher align={`${SlateCustomEditor.getAlignment(editor)}`} />
             <div
               className={`${
                 isDropDownActive ? "-rotate-180" : "rotate-0"
@@ -185,30 +185,27 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
             <ToolbarButton
               onClick={() => {
                 SlateCustomEditor.setAlignment(editor, "left");
-                setAlignment("left");
                 setIsDropDownActive(false);
               }}
-              isActive={alignment === "left"}
+              isActive={`${SlateCustomEditor.getAlignment(editor)}` === "left"}
             >
               <FaAlignLeft className="my-0.5" />
             </ToolbarButton>
             <ToolbarButton
               onClick={() => {
                 SlateCustomEditor.setAlignment(editor, "center");
-                setAlignment("center");
                 setIsDropDownActive(false);
               }}
-              isActive={alignment === "center"}
+              isActive={`${SlateCustomEditor.getAlignment(editor)}` === "center"}
             >
               <FaAlignCenter className="my-0.5" />
             </ToolbarButton>
             <ToolbarButton
               onClick={() => {
                 SlateCustomEditor.setAlignment(editor, "right");
-                setAlignment("right");
                 setIsDropDownActive(false);
               }}
-              isActive={alignment === "right"}
+              isActive={`${SlateCustomEditor.getAlignment(editor)}` === "right"}
             >
               <FaAlignRight className="my-0.5" />
             </ToolbarButton>

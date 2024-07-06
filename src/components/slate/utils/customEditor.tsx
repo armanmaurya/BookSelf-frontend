@@ -161,6 +161,28 @@ export const SlateCustomEditor = {
     );
   },
 
+  getAlignment(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n),
+    });
+
+    if (!match) {
+      return "left";
+    }
+
+    if (
+      match[0].type === NodeType.PARAGRAPH ||
+      match[0].type === NodeType.H1 ||
+      match[0].type === NodeType.H2 ||
+      match[0].type === NodeType.H3 ||
+      match[0].type === NodeType.H4 ||
+      match[0].type === NodeType.H5 ||
+      match[0].type === NodeType.H6
+    ) {
+      return match[0].align;
+    }
+  },
+
   toggleListBlock(editor: SlateEditor, format?: string) {
     const isActive = SlateCustomEditor.isListActive(editor);
     const { selection } = editor;

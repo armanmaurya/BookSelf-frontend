@@ -18,7 +18,7 @@ export const H1 = (props: RenderElementProps) => {
 export const H2 = (props: RenderElementProps) => {
   const style = {
     textAlign:
-      props.element.type === NodeType.H1 ? props.element.align : "left",
+      props.element.type === NodeType.H2 ? props.element.align : "left",
   };
   const idAttribute =props.element.type=== NodeType.H2 ? (props.element.id ? { id: props.element.id } : {}) : {};
   return (
