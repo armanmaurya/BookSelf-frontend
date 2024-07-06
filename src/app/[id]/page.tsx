@@ -150,20 +150,23 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   // if (!content) return notFound();
 
   const jsonContent: Descendant[] = JSON.parse(content) || [];
+
+  const tableofcontent = constructTableOfContents(jsonContent);
+
   return (
     <div className="">
       {data.is_owner && <EditButton id={id} />}
-      <div className="flex items-center justify-center p-2">
-        <h1 className="text-4xl font-semibold">
-          <u>{data.data.title || "Untitled"}</u>
-        </h1>
-      </div>
       <div className="flex">
-        <div className="px-4 flex-1">
+        <div className="px-4 flex-1 overflow-auto h-[calc(100vh-48px)]">
+          <div className="flex items-center justify-center p-2">
+            <h1 className="text-4xl font-semibold">
+              <u>{data.data.title || "Untitled"}</u>
+            </h1>
+          </div>
           <RenderPage value={jsonContent} />
         </div>
-        <div className="mx-4 px-4">
-          <RenderTableOfContents value={jsonContent} />
+        <div className="p-3 flex justify-center">
+          <RenderTableOfContents value={tableofcontent} />
         </div>
       </div>
     </div>
@@ -179,21 +182,93 @@ const headings: { [key: string]: number } = {
   "heading-six": 6,
 };
 
-const RenderTableOfContents = ({ value }: { value: Descendant[] }) => {
-  let previousHeadingNumber: number;
+type TableOfContentType = {
+  id: string;
+  text: string;
+  children: TableOfContentType[];
+  headingNumber: number;
+};
+
+/*When you push an object to the stack, you are not creating a new copy of the object; 
+you are merely storing a reference to the same object in memory. 
+Thus, when you update the children property of an object in the stack, 
+the same object in the tableOfContents is also updated because they are references to the same object. */
+const constructTableOfContents = (value: Descendant[]) => {
+  let tableOfContents: TableOfContentType[] = [];
+  let stack: any[] = [];
+
+  value.forEach((node, i) => {
+    if (
+      Element.isElement(node) &&
+      (node.type === NodeType.H1 ||
+        node.type === NodeType.H2 ||
+        node.type === NodeType.H3 ||
+        node.type === NodeType.H4 ||
+        node.type === NodeType.H5 ||
+        node.type === NodeType.H6)
+    ) {
+      // console.log(tableOfContents);
+
+      const headingNumber = headings[node.type as string];
+      const Item = {
+        id: `${node.id}`,
+        text: node.children[0].text,
+        children: [],
+        headingNumber: headingNumber,
+      };
+
+      while (
+        stack.length > 0 &&
+        stack[stack.length - 1].headingNumber >= headingNumber
+      ) {
+        stack.pop();
+      }
+
+      if (stack.length > 0) {
+        // If we update the value of the children property of the object in the stack, the same object in the tableOfContents is also updated because they are references to the same object.
+        stack[stack.length - 1].children.push(Item);
+      } else {
+        // H1 Item added to root
+        tableOfContents.push(Item);
+      }
+
+      // We also push the Item to the stack as if we update the value of the children property of the object in the stack, the same object in the tableOfContents is also updated because they are references to the same object.
+      stack.push(Item);
+      // console.log(JSON.stringify(stack, null, 2));
+    }
+  });
+
+  return tableOfContents;
+};
+
+// Rucussive function to render the table of contents
+const RenderTableOfContents = ({ value }: { value: TableOfContentType[] }) => {
   return (
     <>
       {value.map((node, i) => {
-        if (Element.isElement(node)) {
-          const headingNumber = headings[node.type as string];
-
-          if (headingNumber) {
-            if (headingNumber > previousHeadingNumber) {
-              return <div key={i} className="pl-4">{node.children[0].text}</div>;
-            }
-            previousHeadingNumber = headingNumber;
-            return <div key={i}>{node.children[0].text}</div>;
-          }
+        if (node.children.length > 0) {
+          return (
+            <div key={i} className="pl-4">
+              <a
+                className="text-blue-400 hover:text-blue-500"
+                href={`#${node.id}`}
+              >
+                {node.text}
+              </a>
+              <RenderTableOfContents value={node.children} />
+            </div>
+          );
+        } else {
+          return (
+            <div className="pl-4" key={i}>
+              <a
+                className="py-1 text-blue-400 hover:text-blue-500"
+                href={`#${node.id}`}
+              >
+                {node.text}
+              </a>
+            </div>
+          );
         }
       })}
     </>

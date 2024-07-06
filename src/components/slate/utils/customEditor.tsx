@@ -99,7 +99,7 @@ export const SlateCustomEditor = {
                 node.type === NodeType.H4 ||
                 node.type === NodeType.H5 ||
                 node.type === NodeType.H6) &&
-              node.children[0].text.toLowerCase() === nodetext
+              node.children[0].text.toLowerCase() === nodetext.toLowerCase()
             );
           },
         });
