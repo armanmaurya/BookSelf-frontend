@@ -158,7 +158,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       {data.is_owner && <EditButton id={id} />}
       <div className="flex">
         <div className="px-4 flex-1 overflow-auto h-[calc(100vh-48px)]">
-          <div className="flex items-center justify-center p-2">
+          <div className="flex items-center justify-center p-1">
             <h1 className="text-4xl font-semibold">
               <u>{data.data.title || "Untitled"}</u>
             </h1>
@@ -242,25 +242,25 @@ const constructTableOfContents = (value: Descendant[]) => {
 };
 
 // Rucussive function to render the table of contents
-const RenderTableOfContents = ({ value }: { value: TableOfContentType[] }) => {
+const RenderTableOfContents = ({ value, className }: { value: TableOfContentType[]; className?:string }) => {
   return (
     <>
       {value.map((node, i) => {
         if (node.children.length > 0) {
           return (
-            <div key={i} className="pl-4">
+            <div key={i} className={`${className}`}>
               <a
                 className="text-blue-400 hover:text-blue-500"
                 href={`#${node.id}`}
               >
                 {node.text}
               </a>
-              <RenderTableOfContents value={node.children} />
+              <RenderTableOfContents className="pl-4"  value={node.children} />
             </div>
           );
         } else {
           return (
-            <div className="pl-4" key={i}>
+            <div className={`${className}`} key={i} >
               <a
                 className="py-1 text-blue-400 hover:text-blue-500"
                 href={`#${node.id}`}
