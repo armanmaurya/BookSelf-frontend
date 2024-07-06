@@ -72,14 +72,14 @@ export const handleKeyBoardFormating = (
         SlateCustomEditor.insertLineBreak(editor);
 
         break;
-      case "*":
-        event.preventDefault();
-        SlateCustomEditor.toggleListBlock(editor, NodeType.UNORDERED_LIST);
-        break;
-      case "&":
-        event.preventDefault();
-        SlateCustomEditor.toggleListBlock(editor, NodeType.ORDERED_LIST);
-        break;
+      // case "*":
+      //   event.preventDefault();
+      //   SlateCustomEditor.toggleListBlock(editor, NodeType.UNORDERED_LIST);
+      //   break;
+      // case "&":
+      //   event.preventDefault();
+      //   SlateCustomEditor.toggleListBlock(editor, NodeType.ORDERED_LIST);
+      //   break;
     }
   }
   if (event.key === "Backspace") {
@@ -89,37 +89,49 @@ export const handleKeyBoardFormating = (
     });
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
-      console.log(text);
-      
-      if (match[0].type && text.length === 0 && editor.selection.focus.offset === 0) {
+      if (match[0].type && editor.selection.focus.offset === 0) {
         switch (match[0].type) {
           case NodeType.PARAGRAPH:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.H1:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.H2:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.H3:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.H4:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.H5:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.H6:
-            event.preventDefault();
-            SlateCustomEditor.deleteNode(editor);
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
             break;
           case NodeType.LIST_ITEM:
             event.preventDefault();
@@ -128,6 +140,7 @@ export const handleKeyBoardFormating = (
           case NodeType.CODE:
             event.preventDefault();
             SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
+
             break;
         }
       }
@@ -155,13 +168,17 @@ export const handleKeyBoardFormating = (
       });
 
       if (match[0].type === NodeType.LINK && SlateElement.isElement(match[0])) {
+        console.log("matched");
+
         const string = match[0].children[0].text;
-        console.log(string);
         if (string.length === editor.selection.focus.offset) {
           event.preventDefault();
           const nextPath = SlateEditor.next(editor);
           if (nextPath) {
-            Transforms.select(editor, nextPath[1]);
+            Transforms.select(editor, {
+              anchor: { path: nextPath[1], offset: 0 },
+              focus: { path: nextPath[1], offset: 0 },
+            });
             Transforms.insertText(editor, " ");
           }
 
