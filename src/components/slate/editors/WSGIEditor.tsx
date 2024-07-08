@@ -164,7 +164,7 @@ export function WSGIEditor({
         return <Li {...props} />;
       case "image":
         return <Image {...props} />;
-      case NodeType.QUOTE:
+      case NodeType.BLOCKQUOTE:
         return <Quote {...props} />;
       case NodeType.LINK:
         return <SlateAnchorTag {...props} />;

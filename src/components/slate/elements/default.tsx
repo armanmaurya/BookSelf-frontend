@@ -7,7 +7,7 @@ export const Default = (props: RenderElementProps) => {
       props.element.type === NodeType.PARAGRAPH ? props.element.align : "left",
   };
   return (
-    <div className={`my-2`} style={style} {...props.attributes}>
+    <div className={``} style={style} {...props.attributes}>
       {props.children}
     </div>
   );

@@ -68,7 +68,7 @@ export type ImageElementType = {
 };
 
 type QUOTE = {
-  type: NodeType.QUOTE | null;
+  type: NodeType.BLOCKQUOTE | null;
   children: any[];
 };
 
@@ -138,6 +138,6 @@ export enum NodeType {
   BOLD = "bold",
   ITALIC = "italic",
   UNDERLINE = "underline",
-  QUOTE = "quote",
+  BLOCKQUOTE = "quote",
   LINK = "link",
 }

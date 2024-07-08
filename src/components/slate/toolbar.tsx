@@ -159,13 +159,13 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
         </button>
         <button
           className={`px-2 mx-2 hover:bg-slate-100 ${
-            SlateCustomEditor.isBlockActive(editor, NodeType.QUOTE)
+            SlateCustomEditor.isBlockActive(editor, NodeType.BLOCKQUOTE)
               ? "bg-slate-100"
               : ""
           }`}
           onClick={(event) => {
             event.preventDefault();
-            SlateCustomEditor.toggleBlock(editor, NodeType.QUOTE);
+            SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
           }}
         >
           <svg

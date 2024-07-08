@@ -61,8 +61,6 @@ export const handleKeyBoardFormating = (
       case "Enter":
         event.preventDefault();
         SlateCustomEditor.insertParagraph(editor);
-      // if (SlateCustomEditor.isCodeBlockActive(editor)) {
-      // }
     }
   }
   if (event.shiftKey) {
@@ -70,22 +68,25 @@ export const handleKeyBoardFormating = (
       case "Enter":
         event.preventDefault();
         SlateCustomEditor.insertLineBreak(editor);
-
         break;
-      // case "*":
-      //   event.preventDefault();
-      //   SlateCustomEditor.toggleListBlock(editor, NodeType.UNORDERED_LIST);
-      //   break;
-      // case "&":
-      //   event.preventDefault();
-      //   SlateCustomEditor.toggleListBlock(editor, NodeType.ORDERED_LIST);
-      //   break;
+    }
+  }
+  if (event.key === "Tab") {
+    event.preventDefault();
+    if (editor.selection) {
+      const parent = SlateEditor.parent(editor, editor.selection.focus.path);
+      console.log(parent[0]);
+
+      // if (parent[0].type === NodeType.LIST_ITEM) {
+      //   const listType = SlateEditor.parent(editor, parent[1])[;
+      //   console.log(listType);
+
+      // }
     }
   }
   if (event.key === "Backspace") {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      mode: "lowest",
     });
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
@@ -133,7 +134,7 @@ export const handleKeyBoardFormating = (
               SlateCustomEditor.deleteNode(editor);
             }
             break;
-          case NodeType.LIST_ITEM:
+          case NodeType.UNORDERED_LIST:
             event.preventDefault();
             SlateCustomEditor.toggleListBlock(editor);
             break;
@@ -149,14 +150,16 @@ export const handleKeyBoardFormating = (
   if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      mode: "lowest",
     });
-
+    event.preventDefault();    
     if (match[0].type) {
-      const shortcut = handleEnterKey[`${match[0].type}`];
-      if (shortcut) {
-        event.preventDefault();
-        shortcut(editor);
+      switch (match[0].type) {
+        case NodeType.UNORDERED_LIST || NodeType.ORDERED_LIST:
+          SlateCustomEditor.insertListItem(editor, match[1]);
+          break;
+        default:
+          SlateCustomEditor.insertParagraph(editor);
+          break;
       }
     }
   }
@@ -206,7 +209,7 @@ interface IHandleEnterKey {
 }
 
 const handleEnterKey: IHandleEnterKey = {
-  "list-item": SlateCustomEditor.insertListItem,
+  // "list-item": SlateCustomEditor.insertListItem,
   paragraph: SlateCustomEditor.insertParagraph,
   "heading-one": SlateCustomEditor.insertParagraph,
   "heading-two": SlateCustomEditor.insertParagraph,

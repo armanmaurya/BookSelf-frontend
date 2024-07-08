@@ -139,9 +139,9 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
           <FaCode />
         </ToolbarButton>
         <ToolbarButton
-          isActive={SlateCustomEditor.isBlockActive(editor, NodeType.QUOTE)}
+          isActive={SlateCustomEditor.isBlockActive(editor, NodeType.BLOCKQUOTE)}
           onClick={() => {
-            SlateCustomEditor.toggleBlock(editor, NodeType.QUOTE);
+            SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
           }}
         >
           <FaQuoteLeft />

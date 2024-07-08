@@ -2,7 +2,7 @@ import { RenderElementProps } from "slate-react";
 
 export const Ol = (props: RenderElementProps) => {
   return (
-    <ol {...props.attributes} className="font-sans list-decimal ml-8 my-2">
+    <ol {...props.attributes} className="font-sans list-decimal ml-8">
       {props.children}
     </ol>
   );
@@ -10,7 +10,7 @@ export const Ol = (props: RenderElementProps) => {
 
 export const Ul = (props: RenderElementProps) => {
   return (
-    <ul {...props.attributes} className="list-disc ml-8 my-2">
+    <ul {...props.attributes} className="list-disc ml-8">
       {props.children}
     </ul>
   );
