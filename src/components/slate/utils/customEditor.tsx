@@ -306,10 +306,16 @@ export const SlateCustomEditor = {
             n.type === NodeType.UNORDERED_LIST ||
             n.type === NodeType.ORDERED_LIST,
         });
-        Transforms.wrapNodes(editor, {
-          type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
-          children: [],
-        });
+        Transforms.wrapNodes(
+          editor,
+          {
+            type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+            children: [],
+          },
+          {
+            match: (n) => n.type === NodeType.LIST_ITEM,
+          }
+        );
         if (toSelect) {
           Transforms.select(editor, toSelect);
         }
