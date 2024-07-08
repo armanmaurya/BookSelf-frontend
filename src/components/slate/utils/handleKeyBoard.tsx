@@ -141,7 +141,10 @@ export const handleKeyBoardFormating = (
           case NodeType.CODE:
             event.preventDefault();
             SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
-
+            break;
+          case NodeType.BLOCKQUOTE:
+            event.preventDefault();
+            SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
             break;
         }
       }
