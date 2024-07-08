@@ -151,17 +151,40 @@ export const handleKeyBoardFormating = (
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
     });
-    event.preventDefault();    
+
     if (match[0].type) {
       switch (match[0].type) {
+        case NodeType.H1:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor);
+          break;
+        case NodeType.H2:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor);
+          break;
+        case NodeType.H3:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor);
+          break;
+        case NodeType.H4:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor);
+          break;
+        case NodeType.H5:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor);
+          break;
+        case NodeType.H6:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor);
+          break;
         case NodeType.UNORDERED_LIST || NodeType.ORDERED_LIST:
+          event.preventDefault();
           SlateCustomEditor.insertListItem(editor, match[1]);
           break;
         case NodeType.BLOCKQUOTE:
+          event.preventDefault(); 
           SlateCustomEditor.insertNewLine(editor);
-          break;
-        default:
-          SlateCustomEditor.insertParagraph(editor);
           break;
       }
     }
