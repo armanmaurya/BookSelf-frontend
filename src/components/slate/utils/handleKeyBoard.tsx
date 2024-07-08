@@ -67,7 +67,7 @@ export const handleKeyBoardFormating = (
     switch (event.key) {
       case "Enter":
         event.preventDefault();
-        SlateCustomEditor.insertLineBreak(editor);
+        SlateCustomEditor.insertNewLine(editor);
         break;
     }
   }
@@ -157,6 +157,9 @@ export const handleKeyBoardFormating = (
         case NodeType.UNORDERED_LIST || NodeType.ORDERED_LIST:
           SlateCustomEditor.insertListItem(editor, match[1]);
           break;
+        case NodeType.BLOCKQUOTE:
+          SlateCustomEditor.insertNewLine(editor);
+          break;
         default:
           SlateCustomEditor.insertParagraph(editor);
           break;
@@ -217,6 +220,6 @@ const handleEnterKey: IHandleEnterKey = {
   "heading-four": SlateCustomEditor.insertParagraph,
   "heading-five": SlateCustomEditor.insertParagraph,
   "heading-six": SlateCustomEditor.insertParagraph,
-  code: SlateCustomEditor.insertLineBreak,
-  quote: SlateCustomEditor.insertLineBreak,
+  code: SlateCustomEditor.insertNewLine,
+  quote: SlateCustomEditor.insertNewLine,
 };

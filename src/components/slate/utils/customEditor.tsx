@@ -375,7 +375,7 @@ export const SlateCustomEditor = {
     const isActive = SlateCustomEditor.isListActive(editor);
   },
 
-  insertLineBreak(editor: SlateEditor) {
+  insertNewLine(editor: SlateEditor) {
     Transforms.insertText(editor, "\n");
   },
 
