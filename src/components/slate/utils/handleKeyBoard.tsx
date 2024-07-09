@@ -7,6 +7,7 @@ import {
 } from "slate";
 import { NodeType } from "../types";
 import { Text } from "slate";
+import { ReactEditor } from "slate-react";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -72,16 +73,60 @@ export const handleKeyBoardFormating = (
     }
   }
   if (event.key === "Tab") {
-    event.preventDefault();
+    // event.preventDefault();
     if (editor.selection) {
-      const parent = SlateEditor.parent(editor, editor.selection.focus.path);
-      console.log(parent[0]);
+      const [match] = SlateEditor.nodes(editor, {
+        match: (n) =>
+          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      });
 
-      // if (parent[0].type === NodeType.LIST_ITEM) {
-      //   const listType = SlateEditor.parent(editor, parent[1])[;
-      //   console.log(listType);
+      if (
+        (match[0].type === NodeType.UNORDERED_LIST ||
+          match[0].type === NodeType.ORDERED_LIST) &&
+        SlateElement.isElement(match[0])
+      ) {
+        event.preventDefault();
+        const [currentListItem] = SlateEditor.nodes(editor, {
+          match: (n) => n.type === NodeType.LIST_ITEM,
+        });
 
-      // }
+        let beforeNode;
+        try {
+          const beforeNodePath = Path.previous(currentListItem[1]);
+          beforeNode = SlateEditor.node(editor, beforeNodePath);
+        } catch (error) {
+          console.log("No Before Node");
+        }
+        if (
+          beforeNode &&
+          beforeNode[0].type === NodeType.LIST_ITEM &&
+          SlateElement.isElement(beforeNode[0])
+        ) {
+          const lastNodePath = ReactEditor.findPath(
+            editor,
+            beforeNode[0].children[beforeNode[0].children.length - 1]
+          );
+
+          const nextPath = Path.next(lastNodePath);
+
+          Transforms.wrapNodes(
+            editor, {
+              type: match[0].type,
+              children: [],
+            }, {
+              match: (n) => n.type === NodeType.LIST_ITEM,
+            }
+          )
+
+          
+          Transforms.moveNodes(editor, {
+            at: currentListItem[1],
+            to: nextPath,
+          })
+          
+
+        }
+      }
     }
   }
   if (event.key === "Backspace") {
@@ -186,7 +231,7 @@ export const handleKeyBoardFormating = (
           SlateCustomEditor.insertListItem(editor, match[1]);
           break;
         case NodeType.BLOCKQUOTE:
-          event.preventDefault(); 
+          event.preventDefault();
           SlateCustomEditor.insertNewLine(editor);
           break;
       }
@@ -213,8 +258,6 @@ export const handleKeyBoardFormating = (
             });
             Transforms.insertText(editor, " ");
           }
-
-          // Transforms.select(editor, nextPath);
         }
       }
     }

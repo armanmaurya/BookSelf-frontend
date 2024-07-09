@@ -189,8 +189,6 @@ export const SlateCustomEditor = {
     const { selection } = editor;
     if (!isActive && format) {
       if (selection) {
-        // const beforeNode = SlateCustomEditor.beforeNode(editor);
-        // const afterNode = SlateCustomEditor.afterNode(editor);
         Transforms.wrapNodes(editor, {
           type: NodeType.LIST_ITEM,
           children: [],
@@ -327,7 +325,17 @@ export const SlateCustomEditor = {
         const [beforeMatch] = SlateEditor.nodes(editor, {
           match: (n) =>
             SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+          mode: "lowest",
         });
+
+        if (beforeMatch[0].type === NodeType.LIST_ITEM && SlateElement.isElement(beforeMatch[0])) {
+          const lastChildNode = beforeMatch[0].children[beforeMatch[0].children.length - 1];
+          if (lastChildNode.type === NodeType.UNORDERED_LIST || lastChildNode.type === NodeType.ORDERED_LIST) {
+            
+          }
+          
+        }
+
         let beforeNode;
         try {
           const beforeNodePath = Path.previous(beforeMatch[1]);
@@ -343,15 +351,19 @@ export const SlateCustomEditor = {
             });
           }
         }
+
+        // -----------------------------------------------
         const [afterMatch] = SlateEditor.nodes(editor, {
           match: (n) =>
             SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+          mode: "lowest",
         });
 
         let afterNode;
         try {
           const afterNodePath = Path.next(afterMatch[1]);
           afterNode = SlateEditor.node(editor, afterNodePath);
+          console.log(afterNode);
         } catch (error) {
           console.log("Can't Find After Node");
         }
@@ -363,6 +375,8 @@ export const SlateCustomEditor = {
             });
           }
         }
+
+        // -----------------------------------------------
 
         Transforms.unwrapNodes(editor, {
           match: (n) => n.type === NodeType.LIST_ITEM,
@@ -386,21 +400,15 @@ export const SlateCustomEditor = {
   },
 
   insertListItem(editor: SlateEditor, at: SlateLocation | null = null) {
-    const isActive = SlateCustomEditor.isListActive(editor);
-    if (editor.selection && isActive) {
-      const text = SlateEditor.string(editor, editor.selection.focus.path);
-      if (text.length === 0) {
-        SlateCustomEditor.toggleListBlock(editor);
-        // Transforms.unwrapNodes(editor);
-        return;
-      }
-
-      const [match] = SlateEditor.nodes(editor, {
+    // const isActive = SlateCustomEditor.isListActive(editor);
+    if (editor.selection) {
+      const [currentListItem] = SlateEditor.nodes(editor, {
         match: (n) =>
           SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+        mode: "lowest",
       });
 
-      const nextPath = Path.next(match[1]);
+      const nextNode = Path.next(currentListItem[1]);
       Transforms.insertNodes(
         editor,
         {
@@ -409,16 +417,46 @@ export const SlateCustomEditor = {
           children: [{ text: "" }],
         },
         {
-          at: nextPath,
+          at: nextNode,
+          select: true,
         }
       );
-
-      Transforms.select(editor, nextPath);
 
       Transforms.wrapNodes(editor, {
         type: NodeType.LIST_ITEM,
         children: [],
       });
+      // const text = SlateEditor.string(editor, editor.selection.focus.path);
+      // if (text.length === 0) {
+      //   SlateCustomEditor.toggleListBlock(editor);
+      //   // Transforms.unwrapNodes(editor);
+      //   return;
+      // }
+
+      // const [match] = SlateEditor.nodes(editor, {
+      //   match: (n) =>
+      //     SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+      // });
+
+      // const nextPath = Path.next(match[1]);
+      // Transforms.insertNodes(
+      //   editor,
+      //   {
+      //     type: NodeType.PARAGRAPH,
+      //     align: "left",
+      //     children: [{ text: "" }],
+      //   },
+      //   {
+      //     at: nextPath,
+      //   }
+      // );
+
+      // Transforms.select(editor, nextPath);
+
+      // Transforms.wrapNodes(editor, {
+      //   type: NodeType.LIST_ITEM,
+      //   children: [],
+      // });
     }
   },
 
