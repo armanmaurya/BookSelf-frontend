@@ -75,57 +75,10 @@ export const handleKeyBoardFormating = (
   if (event.key === "Tab") {
     // event.preventDefault();
     if (editor.selection) {
-      const [match] = SlateEditor.nodes(editor, {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      });
-
-      if (
-        (match[0].type === NodeType.UNORDERED_LIST ||
-          match[0].type === NodeType.ORDERED_LIST) &&
-        SlateElement.isElement(match[0])
-      ) {
-        event.preventDefault();
-        const [currentListItem] = SlateEditor.nodes(editor, {
-          match: (n) => n.type === NodeType.LIST_ITEM,
-        });
-
-        let beforeNode;
-        try {
-          const beforeNodePath = Path.previous(currentListItem[1]);
-          beforeNode = SlateEditor.node(editor, beforeNodePath);
-        } catch (error) {
-          console.log("No Before Node");
-        }
-        if (
-          beforeNode &&
-          beforeNode[0].type === NodeType.LIST_ITEM &&
-          SlateElement.isElement(beforeNode[0])
-        ) {
-          const lastNodePath = ReactEditor.findPath(
-            editor,
-            beforeNode[0].children[beforeNode[0].children.length - 1]
-          );
-
-          const nextPath = Path.next(lastNodePath);
-
-          Transforms.wrapNodes(
-            editor, {
-              type: match[0].type,
-              children: [],
-            }, {
-              match: (n) => n.type === NodeType.LIST_ITEM,
-            }
-          )
-
-          
-          Transforms.moveNodes(editor, {
-            at: currentListItem[1],
-            to: nextPath,
-          })
-          
-
-        }
+      event.preventDefault();
+      const indent = SlateCustomEditor.indentListPath(editor);
+      if (indent) {
+        SlateCustomEditor.indentList(editor, indent.to, indent.from, indent.type);
       }
     }
   }

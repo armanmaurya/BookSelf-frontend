@@ -12,6 +12,7 @@ import {
 } from "slate";
 import { NodeType } from "../types";
 import { text } from "stream/consumers";
+import { ReactEditor } from "slate-react";
 
 export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
@@ -123,6 +124,67 @@ export const SlateCustomEditor = {
         }
       }
     }
+  },
+
+  indentListPath(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) =>
+        SlateElement.isElement(n) &&
+        (n.type === NodeType.UNORDERED_LIST ||
+          n.type === NodeType.ORDERED_LIST),
+      mode: "lowest",
+    });
+
+    if (!match) {
+      return false;
+    }
+
+    const [currentListItem] = SlateEditor.nodes(editor, {
+      match: (n) => n.type === NodeType.LIST_ITEM,
+    });
+
+    let beforeNode;
+    try {
+      const beforeNodePath = Path.previous(currentListItem[1]);
+      beforeNode = SlateEditor.node(editor, beforeNodePath);
+    } catch (error) {
+      console.log("No Before Node");
+    }
+
+    if (
+      beforeNode &&
+      beforeNode[0].type === NodeType.LIST_ITEM &&
+      SlateElement.isElement(beforeNode[0])
+    ) {
+      return {
+        type: match[0].type as string,
+        from : currentListItem[1],
+        to: Path.next(
+          ReactEditor.findPath(
+            editor,
+            beforeNode[0].children[beforeNode[0].children.length - 1]
+          )
+        ),
+      };
+    }
+  },
+
+  indentList(editor: SlateEditor, to: Path,from: Path, type: string) {
+    Transforms.wrapNodes(
+      editor,
+      {
+        type: type as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+        children: [],
+      },
+      {
+        match: (n) => n.type === NodeType.LIST_ITEM,
+      }
+    );
+    Transforms.moveNodes(editor, {
+      at: from,
+      to: to,
+      // match: (n) => n.type === NodeType.LIST_ITEM,
+    });
   },
 
   isListActive(editor: SlateEditor) {
@@ -328,12 +390,17 @@ export const SlateCustomEditor = {
           mode: "lowest",
         });
 
-        if (beforeMatch[0].type === NodeType.LIST_ITEM && SlateElement.isElement(beforeMatch[0])) {
-          const lastChildNode = beforeMatch[0].children[beforeMatch[0].children.length - 1];
-          if (lastChildNode.type === NodeType.UNORDERED_LIST || lastChildNode.type === NodeType.ORDERED_LIST) {
-            
+        if (
+          beforeMatch[0].type === NodeType.LIST_ITEM &&
+          SlateElement.isElement(beforeMatch[0])
+        ) {
+          const lastChildNode =
+            beforeMatch[0].children[beforeMatch[0].children.length - 1];
+          if (
+            lastChildNode.type === NodeType.UNORDERED_LIST ||
+            lastChildNode.type === NodeType.ORDERED_LIST
+          ) {
           }
-          
         }
 
         let beforeNode;
