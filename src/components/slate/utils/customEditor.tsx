@@ -260,9 +260,11 @@ export const SlateCustomEditor = {
       const [currentNode] = SlateEditor.nodes(editor, options);
       try {
         const afterNode = SlateEditor.node(editor, Path.next(currentNode[1]));
-        Transforms.mergeNodes(editor, {
-          at: afterNode[1],
-        });
+        if (afterNode[0].type === currentNode[0].type) {
+          Transforms.mergeNodes(editor, {
+            at: afterNode[1],
+          });
+        }
       } catch (error) {
         console.log("Can't Find After Node");
       }
@@ -272,9 +274,11 @@ export const SlateCustomEditor = {
           editor,
           Path.previous(currentNode[1])
         );
-        Transforms.mergeNodes(editor, {
-          at: currentNode[1],
-        });
+        if (beforeNode[0].type === currentNode[0].type) {
+          Transforms.mergeNodes(editor, {
+            at: currentNode[1],
+          });
+        }
       } catch (error) {
         console.log("Can't Find Before Node");
       }

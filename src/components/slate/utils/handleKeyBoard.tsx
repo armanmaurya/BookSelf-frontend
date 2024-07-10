@@ -11,6 +11,7 @@ import { ReactEditor } from "slate-react";
 import { toggleList } from "../plugins/withList/transforms/toggleList";
 import { getIndentPath } from "../plugins/withList/queries/getIndentPath";
 import { indentList } from "../plugins/withList/transforms/indentList";
+import { insertListItem } from "../plugins/withList/transforms/insertListItem";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -195,7 +196,8 @@ export const handleKeyBoardFormating = (
           break;
         case NodeType.UNORDERED_LIST || NodeType.ORDERED_LIST:
           event.preventDefault();
-          SlateCustomEditor.insertListItem(editor, match[1]);
+          // SlateCustomEditor.insertListItem(editor, match[1]);
+          insertListItem(editor);
           break;
         case NodeType.BLOCKQUOTE:
           event.preventDefault();
