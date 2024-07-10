@@ -9,10 +9,12 @@ import {
   Text,
   Range,
   Location as SlateLocation,
+  EditorNodesOptions,
+  Node,
 } from "slate";
 import { NodeType } from "../types";
 import { text } from "stream/consumers";
-import { ReactEditor } from "slate-react";
+import { ReactEditor, Slate } from "slate-react";
 
 export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
@@ -126,7 +128,33 @@ export const SlateCustomEditor = {
     }
   },
 
-  indentListPath(editor: SlateEditor) {
+  outdentInfo(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+      mode: "lowest",
+    });
+
+    if (!match) {
+      return false;
+    }
+    return {
+      from: match[1] as Path,
+      to: Path.next(Path.parent(Path.parent(match[1]))),
+    };
+  },
+
+  outdentList(editor: SlateEditor, from: Path, to: Path) {
+    // Transforms.unwrapNodes(editor, {
+    //   match: (n) => n.type === NodeType.ORDERED_LIST || n.type === NodeType.UNORDERED_LIST,
+    // })
+    // const afterNodes = SlateEditor
+    // Transforms.moveNodes(editor, {
+    //   at: from,
+    //   to: to,
+    // });
+  },
+
+  indentInfo(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
         SlateElement.isElement(n) &&
@@ -141,6 +169,7 @@ export const SlateCustomEditor = {
 
     const [currentListItem] = SlateEditor.nodes(editor, {
       match: (n) => n.type === NodeType.LIST_ITEM,
+      mode: "lowest",
     });
 
     let beforeNode;
@@ -158,7 +187,7 @@ export const SlateCustomEditor = {
     ) {
       return {
         type: match[0].type as string,
-        from : currentListItem[1],
+        from: currentListItem[1],
         to: Path.next(
           ReactEditor.findPath(
             editor,
@@ -168,8 +197,7 @@ export const SlateCustomEditor = {
       };
     }
   },
-
-  indentList(editor: SlateEditor, to: Path,from: Path, type: string) {
+  indentList(editor: SlateEditor, to: Path, from: Path, type: string) {
     Transforms.wrapNodes(
       editor,
       {
@@ -192,6 +220,65 @@ export const SlateCustomEditor = {
       match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
     });
     return !!match;
+  },
+
+  splitNodesDoubleEdge(
+    editor: SlateEditor,
+    options?: EditorNodesOptions<Node>
+  ) {
+    const { selection } = editor;
+
+    if (selection) {
+      const [currentNode] = SlateEditor.nodes(editor, options);
+      try {
+        const afterNode = SlateEditor.node(editor, Path.next(currentNode[1]));
+        Transforms.splitNodes(editor, {
+          at: afterNode[1],
+        });
+      } catch (error) {
+        console.log("Can't Find After Node");
+      }
+
+      try {
+        const beforeNode = SlateEditor.node(
+          editor,
+          Path.previous(currentNode[1])
+        );
+        Transforms.splitNodes(editor, { at: currentNode[1] });
+      } catch {
+        console.log("Can't Find Before Node");
+      }
+    }
+  },
+
+  mergePreviousAfterNodes(
+    editor: SlateEditor,
+    options?: EditorNodesOptions<Node>
+  ) {
+    const { selection } = editor;
+    if (selection) {
+      const [currentNode] = SlateEditor.nodes(editor, options);
+      try {
+        const afterNode = SlateEditor.node(editor, Path.next(currentNode[1]));
+        Transforms.mergeNodes(editor, {
+          at: afterNode[1],
+        });
+      } catch (error) {
+        console.log("Can't Find After Node");
+      }
+
+      try {
+        const beforeNode = SlateEditor.node(
+          editor,
+          Path.previous(currentNode[1])
+        );
+        Transforms.mergeNodes(editor, {
+          at: currentNode[1],
+        });
+      } catch (error) {
+        console.log("Can't Find Before Node");
+      }
+    }
   },
 
   setAlignment(

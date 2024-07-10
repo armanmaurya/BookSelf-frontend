@@ -8,6 +8,9 @@ import {
 import { NodeType } from "../types";
 import { Text } from "slate";
 import { ReactEditor } from "slate-react";
+import { toggleList } from "../plugins/withList/transforms/toggleList";
+import { getIndentPath } from "../plugins/withList/queries/getIndentPath";
+import { indentList } from "../plugins/withList/transforms/indentList";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -70,15 +73,25 @@ export const handleKeyBoardFormating = (
         event.preventDefault();
         SlateCustomEditor.insertNewLine(editor);
         break;
+      case "Tab":
+        const outdentInfo = SlateCustomEditor.outdentInfo(editor);
+        if (outdentInfo) {
+          event.preventDefault();
+          SlateCustomEditor.outdentList(
+            editor,
+            outdentInfo.from,
+            outdentInfo.to
+          );
+        }
     }
   }
-  if (event.key === "Tab") {
+  if (event.key === "Tab" && !event.shiftKey) {
     // event.preventDefault();
     if (editor.selection) {
       event.preventDefault();
-      const indent = SlateCustomEditor.indentListPath(editor);
-      if (indent) {
-        SlateCustomEditor.indentList(editor, indent.to, indent.from, indent.type);
+      const indentInfo = getIndentPath(editor);
+      if (indentInfo) {
+        indentList(editor, indentInfo.to, indentInfo.from, indentInfo.type);
       }
     }
   }
@@ -134,7 +147,8 @@ export const handleKeyBoardFormating = (
             break;
           case NodeType.UNORDERED_LIST:
             event.preventDefault();
-            SlateCustomEditor.toggleListBlock(editor);
+            toggleList(editor);
+            
             break;
           case NodeType.CODE:
             event.preventDefault();

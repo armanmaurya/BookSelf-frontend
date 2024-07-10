@@ -6,6 +6,7 @@ import {
 } from "slate";
 import { NodeType } from "../types";
 import { SlateCustomEditor } from "../utils";
+import { toggleList } from "./withList/transforms/toggleList";
 
 const SHORTCUTS: { [key: string]: string } = {
   "#": NodeType.H1,
@@ -47,7 +48,9 @@ export const withShortcuts = (editor: SlateEditor) => {
           type === NodeType.ORDERED_LIST ||
           type === NodeType.UNORDERED_LIST
         ) {
-          SlateCustomEditor.toggleListBlock(editor, type);
+          // SlateCustomEditor.toggleListBlock(editor, type);
+          toggleList(editor, type);
+          // SlateCustomEditor.mergePreviousAfterNodes(editor);
           return;
         }
         SlateCustomEditor.toggleBlock(editor, type);
