@@ -6,12 +6,10 @@ import {
   Transforms,
 } from "slate";
 import { NodeType } from "../types";
-import { Text } from "slate";
-import { ReactEditor } from "slate-react";
-import { toggleList } from "../plugins/withList/transforms/toggleList";
 import { getIndentPath } from "../plugins/withList/queries/getIndentPath";
 import { indentList } from "../plugins/withList/transforms/indentList";
 import { insertListItem } from "../plugins/withList/transforms/insertListItem";
+import { outdentList } from "../plugins/withList/transforms/outdentList";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -75,15 +73,9 @@ export const handleKeyBoardFormating = (
         SlateCustomEditor.insertNewLine(editor);
         break;
       case "Tab":
-        const outdentInfo = SlateCustomEditor.outdentInfo(editor);
-        if (outdentInfo) {
-          event.preventDefault();
-          SlateCustomEditor.outdentList(
-            editor,
-            outdentInfo.from,
-            outdentInfo.to
-          );
-        }
+        event.preventDefault();
+        // const outdentInfo = getOutdentPath(editor);
+        outdentList(editor);
     }
   }
   if (event.key === "Tab" && !event.shiftKey) {
@@ -148,8 +140,9 @@ export const handleKeyBoardFormating = (
             break;
           case NodeType.UNORDERED_LIST:
             event.preventDefault();
-            toggleList(editor);
-            
+            outdentList(editor);
+            // toggleList(editor);
+
             break;
           case NodeType.CODE:
             event.preventDefault();
@@ -167,7 +160,6 @@ export const handleKeyBoardFormating = (
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
     });
-
     if (match[0].type) {
       switch (match[0].type) {
         case NodeType.H1:
