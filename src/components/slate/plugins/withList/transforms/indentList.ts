@@ -7,7 +7,6 @@ import {
   Node as SlateNode,
 } from "slate";
 import { ReactEditor } from "slate-react";
-import { Transform } from "stream";
 
 export const indentList = (
   editor: SlateEditor,

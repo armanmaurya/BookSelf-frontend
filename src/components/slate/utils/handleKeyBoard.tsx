@@ -4,12 +4,14 @@ import {
   Editor as SlateEditor,
   Element as SlateElement,
   Transforms,
+  Range as SlateRange,
 } from "slate";
 import { NodeType } from "../types";
 import { getIndentPath } from "../plugins/withList/queries/getIndentPath";
 import { indentList } from "../plugins/withList/transforms/indentList";
 import { insertListItem } from "../plugins/withList/transforms/insertListItem";
 import { outdentList } from "../plugins/withList/transforms/outdentList";
+import { deleteListItem } from "../plugins/withList/transforms/deleteListItem";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -61,9 +63,9 @@ export const handleKeyBoardFormating = (
         event.preventDefault();
         SlateCustomEditor.toggleMark(editor, "code");
         break;
-      case "Enter":
-        event.preventDefault();
-        SlateCustomEditor.insertParagraph(editor);
+      // case "Enter":
+      //   event.preventDefault();
+      //   SlateCustomEditor.insertParagraph(editor);
     }
   }
   if (event.shiftKey) {
@@ -140,9 +142,11 @@ export const handleKeyBoardFormating = (
             break;
           case NodeType.UNORDERED_LIST:
             event.preventDefault();
-            outdentList(editor);
-            // toggleList(editor);
-
+            if (text.length === 0) {
+              deleteListItem(editor);
+            } else {
+              outdentList(editor);
+            }
             break;
           case NodeType.CODE:
             event.preventDefault();
