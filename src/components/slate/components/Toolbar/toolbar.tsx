@@ -18,6 +18,9 @@ import {
   LuHeading6,
 } from "react-icons/lu";
 
+import { MdFormatListNumbered } from "react-icons/md";
+import { toggleList } from "../../plugins/withList/transforms/toggleList";
+
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
     case "left":
@@ -139,7 +142,10 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
           <FaCode />
         </ToolbarButton>
         <ToolbarButton
-          isActive={SlateCustomEditor.isBlockActive(editor, NodeType.BLOCKQUOTE)}
+          isActive={SlateCustomEditor.isBlockActive(
+            editor,
+            NodeType.BLOCKQUOTE
+          )}
           onClick={() => {
             SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
           }}
@@ -168,7 +174,9 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
               isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
             }`}
           >
-            <AlignIconSwitcher align={`${SlateCustomEditor.getAlignment(editor)}`} />
+            <AlignIconSwitcher
+              align={`${SlateCustomEditor.getAlignment(editor)}`}
+            />
             <div
               className={`${
                 isDropDownActive ? "-rotate-180" : "rotate-0"
@@ -196,7 +204,9 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
                 SlateCustomEditor.setAlignment(editor, "center");
                 setIsDropDownActive(false);
               }}
-              isActive={`${SlateCustomEditor.getAlignment(editor)}` === "center"}
+              isActive={
+                `${SlateCustomEditor.getAlignment(editor)}` === "center"
+              }
             >
               <FaAlignCenter className="my-0.5" />
             </ToolbarButton>
@@ -211,6 +221,14 @@ export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {
             </ToolbarButton>
           </div>
         </div>
+
+        <ToolbarButton
+          onClick={() => {
+            toggleList(editor, NodeType.ORDERED_LIST);
+          }}
+        >
+          <MdFormatListNumbered />
+        </ToolbarButton>
       </div>
       <div>
         <div className="relative">

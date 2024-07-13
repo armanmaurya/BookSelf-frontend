@@ -94,8 +94,10 @@ export const handleKeyBoardFormating = (
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
     });
+    console.log(match[0].type);
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
+      console.log(text);
       if (match[0].type && editor.selection.focus.offset === 0) {
         switch (match[0].type) {
           case NodeType.PARAGRAPH:
@@ -142,12 +144,28 @@ export const handleKeyBoardFormating = (
             break;
           case NodeType.UNORDERED_LIST:
             event.preventDefault();
-            if (text.length === 0) {
-              deleteListItem(editor);
+            if (SlateRange.isCollapsed(editor.selection)) {
+              if (text.length === 0) {
+                deleteListItem(editor);
+              } else {
+                outdentList(editor);
+              }
             } else {
-              outdentList(editor);
+              deleteListItem(editor);
             }
             break;
+            case NodeType.ORDERED_LIST:
+              event.preventDefault();
+              if (SlateRange.isCollapsed(editor.selection)) {
+                if (text.length === 0) {
+                  deleteListItem(editor);
+                } else {
+                  outdentList(editor);
+                }
+              } else {
+                deleteListItem(editor);
+              }
+              break;
           case NodeType.CODE:
             event.preventDefault();
             SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
@@ -190,9 +208,12 @@ export const handleKeyBoardFormating = (
           event.preventDefault();
           SlateCustomEditor.insertParagraph(editor);
           break;
-        case NodeType.UNORDERED_LIST || NodeType.ORDERED_LIST:
+        case NodeType.UNORDERED_LIST:
           event.preventDefault();
-          // SlateCustomEditor.insertListItem(editor, match[1]);
+          insertListItem(editor);
+          break;
+        case NodeType.ORDERED_LIST:
+          event.preventDefault();
           insertListItem(editor);
           break;
         case NodeType.BLOCKQUOTE:

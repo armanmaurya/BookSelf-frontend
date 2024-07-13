@@ -3,7 +3,7 @@ export const ToolbarButton = ({
   onClick,
   children,
 }: {
-  isActive: boolean;
+  isActive?: boolean;
   onClick: () => void;
   children?: React.ReactNode;
 }) => {
