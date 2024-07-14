@@ -37,7 +37,6 @@ import {
   Code,
   Leaf,
   Default,
-  Image,
   Quote,
   Anchor,
 } from "@/components/slate/elements";
@@ -67,6 +66,7 @@ import "prismjs/themes/prism-solarizedlight.css";
 import { TagInput } from "@/components/element/input";
 
 import action from "@/app/actions";
+import { withImage, EditableImage } from "../plugins/image";
 
 const editorValue: Descendant[] = [
   {
@@ -94,11 +94,15 @@ export function WSGIEditor({
 }) {
   const editor = useMemo(
     () =>
-      withHeadingId(withKeyCommands(
-        withLinks(
-          withShortcuts(withPaste(withReact(withHistory(createEditor()))))
+      withImage(
+        withHeadingId(
+          withKeyCommands(
+            withLinks(
+              withShortcuts(withPaste(withReact(withHistory(createEditor()))))
+            )
+          )
         )
-      )),
+      ),
     []
   );
   const [value, setValue] = useState(initialValue.title || "");
@@ -162,8 +166,8 @@ export function WSGIEditor({
         return <Ul {...props} />;
       case NodeType.LIST_ITEM:
         return <Li {...props} />;
-      case "image":
-        return <Image {...props} />;
+      case NodeType.IMAGE:
+        return <EditableImage {...props} />;
       case NodeType.BLOCKQUOTE:
         return <Quote {...props} />;
       case NodeType.LINK:

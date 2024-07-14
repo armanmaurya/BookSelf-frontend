@@ -63,6 +63,8 @@ type ListItemElementType = {
 
 export type ImageElementType = {
   type: "image" | null;
+  align: "left" | "center" | "right";
+  width: number;
   url: string | null;
   children: CustomText[];
 };
@@ -140,4 +142,5 @@ export enum NodeType {
   UNDERLINE = "underline",
   BLOCKQUOTE = "quote",
   LINK = "link",
+  IMAGE = "image",
 }

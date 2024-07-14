@@ -43,6 +43,25 @@ export const SlateCustomEditor = {
       SlateEditor.addMark(editor, format, true);
     }
   },
+
+  toggleImage(editor: SlateEditor) {
+    Transforms.setNodes(
+      editor,
+      {
+        type: NodeType.IMAGE,
+        url: "",
+        align: "center",
+        children: [{ text: "" }],
+        width: 320
+      },
+      {
+        match: (n) =>
+          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      }
+    );
+    // Transforms.select(editor, SlateEditor.start(editor, []));
+  },
+
   isBlockActive(editor: SlateEditor, format: string) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === format,

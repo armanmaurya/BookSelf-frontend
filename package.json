@@ -25,6 +25,7 @@
     "nextjs-toploader": "^1.6.12",
     "prismjs": "^1.29.0",
     "rc-scrollbars": "^1.1.6",
+    "re-resizable": "^6.9.17",
     "react": "^18",
     "react-custom-scrollbars-2": "^4.5.0",
     "react-dom": "^18",
