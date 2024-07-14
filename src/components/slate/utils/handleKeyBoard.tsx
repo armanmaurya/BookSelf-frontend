@@ -63,9 +63,24 @@ export const handleKeyBoardFormating = (
         event.preventDefault();
         SlateCustomEditor.toggleMark(editor, "code");
         break;
-      // case "Enter":
-      //   event.preventDefault();
-      //   SlateCustomEditor.insertParagraph(editor);
+      case "Enter":
+        const [match] = SlateEditor.nodes(editor, {
+          match: (n) =>
+            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+        });
+
+        if (match[0].type) {
+          switch (match[0].type) {
+            case NodeType.CODE:
+              event.preventDefault();
+              SlateCustomEditor.insertParagraph(editor);
+              break;
+            case NodeType.BLOCKQUOTE:
+              event.preventDefault();
+              SlateCustomEditor.insertParagraph(editor);
+              break;
+          }
+        }
     }
   }
   if (event.shiftKey) {
@@ -154,18 +169,18 @@ export const handleKeyBoardFormating = (
               deleteListItem(editor);
             }
             break;
-            case NodeType.ORDERED_LIST:
-              event.preventDefault();
-              if (SlateRange.isCollapsed(editor.selection)) {
-                if (text.length === 0) {
-                  deleteListItem(editor);
-                } else {
-                  outdentList(editor);
-                }
-              } else {
+          case NodeType.ORDERED_LIST:
+            event.preventDefault();
+            if (SlateRange.isCollapsed(editor.selection)) {
+              if (text.length === 0) {
                 deleteListItem(editor);
+              } else {
+                outdentList(editor);
               }
-              break;
+            } else {
+              deleteListItem(editor);
+            }
+            break;
           case NodeType.CODE:
             event.preventDefault();
             SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
@@ -217,6 +232,10 @@ export const handleKeyBoardFormating = (
           insertListItem(editor);
           break;
         case NodeType.BLOCKQUOTE:
+          event.preventDefault();
+          SlateCustomEditor.insertNewLine(editor);
+          break;
+        case NodeType.CODE:
           event.preventDefault();
           SlateCustomEditor.insertNewLine(editor);
           break;
