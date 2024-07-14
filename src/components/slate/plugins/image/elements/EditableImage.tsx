@@ -10,6 +10,7 @@ import { Transforms } from "slate";
 import { NodeType } from "@/components/slate/types";
 import { Resizable } from "re-resizable";
 import { useState } from "react";
+import { AlignButton } from "@/components/slate/components/alignButton";
 
 export const EditableImage = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
@@ -85,7 +86,7 @@ export const EditableImage = (props: RenderElementProps) => {
               }}
               resizeRatio={2}
               lockAspectRatio={true}
-              className="border"
+              className="relative"
               onResizeStop={(e, direction, ref, d) => {
                 Transforms.setNodes(
                   editor,
@@ -116,16 +117,17 @@ export const EditableImage = (props: RenderElementProps) => {
                   selected && focused ? "border border-blue-500" : ""
                 }`}
               />
+              <div className="absolute top-0 right-0">
+                <AlignButton
+                  align={
+                    element.type === NodeType.IMAGE ? element.align : "left"
+                  }
+                  onAlign={(align) => {
+                    Transforms.setNodes(editor, { align }, { at: path });
+                  }}
+                />
+              </div>
             </Resizable>
-            {/* <ResizableBox height={200} width={300}>
-              <img
-                src={element.type === "image" ? (element.url as string) : ""}
-                alt="Invalid Image URL"
-                className={`rounded-lg w-full  ${
-                  selected && focused ? "border border-blue-500" : ""
-                }`}
-              />
-            </ResizableBox> */}
           </div>
           {/* <div className="w-full text-center text-sm"></div> */}
         </div>
