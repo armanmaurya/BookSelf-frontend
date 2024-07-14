@@ -2,6 +2,7 @@
 import { API_ENDPOINT } from "@/app/utils";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import * as NProgress from "nprogress";
 
 export const NewArticleBtn = () => {
   const router = useRouter();
@@ -21,13 +22,11 @@ export const NewArticleBtn = () => {
       if (res.ok) {
         console.log("Article created");
         const data = await res.json();
-        console.log(data);
-        // setIsOpened(false);
-
-        // router.push(`/editor/${data.slug}`);
+        NProgress.start();
+        router.push(`/editor/${data.slug}`);
       }
     } catch (error) {
-      console.log("Network error");
+      console.log(error);
     }
   };
   return <button onClick={newArticle}>New Article</button>;

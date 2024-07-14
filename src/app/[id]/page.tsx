@@ -15,7 +15,7 @@ import {
   Ul,
   Leaf,
   Default,
-  Image,
+  // Image,
   Quote,
   Anchor,
 } from "@/components/slate/elements";
@@ -36,6 +36,7 @@ import "prismjs/components/prism-php";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
+import { RenderImage } from "@/components/slate/plugins/image/elements/RenderImage";
 
 // Define a custom Element component for rendering
 const ServerElement = (props: RenderElementProps) => {
@@ -104,8 +105,8 @@ const ServerElement = (props: RenderElementProps) => {
       return <Ul {...props} />;
     case NodeType.LIST_ITEM:
       return <Li {...props} />;
-    case "image":
-      return <Image {...props} />;
+    case NodeType.IMAGE:
+      return <RenderImage {...props} />;
     case NodeType.BLOCKQUOTE:
       return <Quote {...props} />;
     case NodeType.LINK:
