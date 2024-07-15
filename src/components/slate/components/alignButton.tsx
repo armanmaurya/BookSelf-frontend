@@ -27,7 +27,7 @@ export const AlignButton = ({
 
   return (
     <div
-      className={`flex relative w-24 items-center justify-center hover:cursor-pointer`}
+      className={`flex relative items-center justify-center hover:cursor-pointer`}
       onClick={(event) => {
         event.preventDefault();
         setIsDropDownActive(!isDropDownActive);
@@ -35,7 +35,7 @@ export const AlignButton = ({
     >
       <div className="w-full flex flex-row-reverse">
         <div
-          className={`flex space-x-1 p-1 rounded dark:bg-opacity-15 bg-opacity-15  ${
+          className={`flex space p-1 rounded dark:bg-opacity-15 bg-opacity-15  ${
             isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
           }`}
         >

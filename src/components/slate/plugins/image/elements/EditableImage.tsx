@@ -11,6 +11,11 @@ import { NodeType } from "@/components/slate/types";
 import { Resizable } from "re-resizable";
 import { useState } from "react";
 import { AlignButton } from "@/components/slate/components/alignButton";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import {
+  MenuItem,
+  ThreeDotsMenu,
+} from "@/components/slate/components/threeDotsMenu";
 
 export const EditableImage = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
@@ -18,8 +23,7 @@ export const EditableImage = (props: RenderElementProps) => {
   if (element.type === "image") {
     imgUrl = element.url as string;
   }
-
-  const [width, setWidth] = useState(320);
+  const [isOpen, setIsOpen] = useState(false);
 
   const style = {
     textAlign:
@@ -86,7 +90,7 @@ export const EditableImage = (props: RenderElementProps) => {
               }}
               resizeRatio={2}
               lockAspectRatio={true}
-              className="relative"
+              className="relative flex justify-center"
               onResizeStop={(e, direction, ref, d) => {
                 Transforms.setNodes(
                   editor,
@@ -112,21 +116,48 @@ export const EditableImage = (props: RenderElementProps) => {
             >
               <img
                 src={element.type === "image" ? (element.url as string) : ""}
+                onError={(e) => {
+                  Transforms.setNodes(editor, { url: "" }, { at: path });
+                }}
                 alt="Invalid Image URL"
                 className={`rounded-lg w-full h-full  ${
                   selected && focused ? "border border-blue-500" : ""
                 }`}
               />
-              <div className="absolute top-0 right-0">
-                <AlignButton
-                  align={
-                    element.type === NodeType.IMAGE ? element.align : "left"
-                  }
-                  onAlign={(align) => {
-                    Transforms.setNodes(editor, { align }, { at: path });
-                  }}
-                />
-              </div>
+              {selected && (
+                <div className="absolute top-0 right-0 flex p-1">
+                  <AlignButton
+                    align={
+                      element.type === NodeType.IMAGE ? element.align : "left"
+                    }
+                    onAlign={(align) => {
+                      Transforms.setNodes(editor, { align }, { at: path });
+                    }}
+                  />
+                  <ThreeDotsMenu>
+                    <MenuItem name="Replace" onClick={() => {setIsOpen(true)}} />
+                  </ThreeDotsMenu>
+                </div>
+              )}
+              {isOpen && (
+                <div className="absolute justify-center ">
+                  <div className="rounded bg-neutral-600">
+                    <input
+                      type="text"
+                      className="bg-transparent p-2"
+                      placeholder="Paste Image link..."
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const url = e.currentTarget.value;
+                          setIsOpen(false);
+                          Transforms.setNodes(editor, { url }, { at: path });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </Resizable>
           </div>
           {/* <div className="w-full text-center text-sm"></div> */}
