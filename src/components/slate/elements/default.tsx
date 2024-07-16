@@ -7,7 +7,7 @@ export const Default = (props: RenderElementProps) => {
       props.element.type === NodeType.PARAGRAPH ? props.element.align : "left",
   };
   return (
-    <div className={`whitespace-pre-line`} style={style} {...props.attributes}>
+    <div className={`whitespace-pre`} style={style} {...props.attributes}>
       {props.children}
     </div>
   );

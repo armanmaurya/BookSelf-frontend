@@ -158,26 +158,30 @@ export const handleKeyBoardFormating = (
             }
             break;
           case NodeType.UNORDERED_LIST:
-            event.preventDefault();
             if (SlateRange.isCollapsed(editor.selection)) {
               if (text.length === 0) {
+                event.preventDefault();
                 deleteListItem(editor);
               } else {
+                event.preventDefault();
                 outdentList(editor);
               }
             } else {
+              event.preventDefault();
               deleteListItem(editor);
             }
             break;
           case NodeType.ORDERED_LIST:
-            event.preventDefault();
             if (SlateRange.isCollapsed(editor.selection)) {
               if (text.length === 0) {
+                event.preventDefault();
                 deleteListItem(editor);
               } else {
+                event.preventDefault();
                 outdentList(editor);
               }
             } else {
+              event.preventDefault();
               deleteListItem(editor);
             }
             break;
