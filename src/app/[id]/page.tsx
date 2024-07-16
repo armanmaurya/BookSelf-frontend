@@ -166,7 +166,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
           </div>
           <RenderPage value={jsonContent} />
         </div>
-        <div className="p-3 flex flex-col">
+        <div className="p-3 flex-col sm:flex hidden">
           <RenderTableOfContents value={tableofcontent} />
         </div>
       </div>

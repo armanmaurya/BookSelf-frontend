@@ -12,13 +12,13 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   const googleAuthUrl = getGoogleAuthUrl(redirect_path);
   const searchParams = useSearchParams();
   const code = searchParams.get("code");
-  const [isChecking, setIsChecking] = useState(false);
+  const [isChecking, setIsChecking] = useState(code ? true : false);
 
   const socialLogin = async () => {
     if (!code) {
       return;
     }
-    setIsChecking(true);
+    // setIsChecking(true);
     try {
       const response = await fetch(
         `${API_ENDPOINT.googleAuth.url}?code=${code}&redirect_path=${redirect_path}`,
@@ -32,11 +32,7 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
       );
       if (response.ok) {
         window.location.href = "/";
-        // console.log("Registration successful");
       } else {
-        // setIsProgressBarVisible(false);
-        // Handle error response
-
         console.log("Registration failed");
         Store.addNotification({
           title: "Error",
@@ -51,11 +47,9 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
             // onScreen: true,
           },
         });
-        setIsChecking(false);
+        // setIsChecking(false);
       }
     } catch (error) {
-      // setIsProgressBarVisible(false);
-      // Handle network error
       console.log("Network error");
     }
   };
