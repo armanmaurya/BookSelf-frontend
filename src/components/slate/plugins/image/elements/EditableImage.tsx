@@ -9,7 +9,7 @@ import { FaRegImage } from "react-icons/fa6";
 import { Transforms } from "slate";
 import { NodeType } from "@/components/slate/types";
 import { Resizable } from "re-resizable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlignButton } from "@/components/slate/components/alignButton";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
@@ -35,6 +35,11 @@ export const EditableImage = (props: RenderElementProps) => {
 
   const selected = useSelected();
   const focused = useFocused();
+  useEffect(() => {
+    if (!selected) {
+      setIsOpen(false);
+    }
+  }, [selected]);
   return (
     <div {...attributes} className="py-3">
       {children}
@@ -135,11 +140,16 @@ export const EditableImage = (props: RenderElementProps) => {
                     }}
                   />
                   <ThreeDotsMenu>
-                    <MenuItem name="Replace" onClick={() => {setIsOpen(true)}} />
+                    <MenuItem
+                      name="Replace"
+                      onClick={() => {
+                        setIsOpen(true);
+                      }}
+                    />
                   </ThreeDotsMenu>
                 </div>
               )}
-              {isOpen && (
+              {isOpen && selected && (
                 <div className="absolute justify-center ">
                   <div className="rounded bg-neutral-600">
                     <input
