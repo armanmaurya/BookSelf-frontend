@@ -1,4 +1,3 @@
-"use client";
 import { EditorContent, NodeType } from "../types";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { withHistory } from "slate-history";

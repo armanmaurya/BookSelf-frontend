@@ -1,5 +1,3 @@
-"use client";
-
 import { NodeType } from "../../../types";
 import React from "react";
 import { Transforms } from "slate";

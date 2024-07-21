@@ -1,54 +1,12 @@
 // "use client";
 import React from "react";
 import { notFound } from "next/navigation";
-
-import {
-  H1,
-  H2,
-  H3,
-  H4,
-  H5,
-  H6,
-  Code,
-  Li,
-  Ol,
-  Ul,
-  Leaf,
-  Default,
-  // Image,
-  Quote,
-  Anchor,
-} from "@/components/slate/elements";
 import { getData } from "@/app/utils";
 import { NodeType } from "@/components/slate/types";
-import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
-import { Descendant, Element, node, Text } from "slate";
-// import Prism from "prismjs";
-// import "prismjs/components/prism-javascript";
-// import "prismjs/components/prism-jsx";
-// import "prismjs/components/prism-typescript";
-// import "prismjs/components/prism-tsx";
-// import "prismjs/components/prism-markdown";
-// import "prismjs/components/prism-python";
-// import "prismjs/components/prism-php";
-// import "prismjs/components/prism-sql";
-// import "prismjs/components/prism-java";
-// import "prismjs/themes/prism-solarizedlight.css";
+import { Descendant, Element} from "slate";
 import { RenderEditorStatic } from "@repo/slate-editor";
-
-const Language: { [key: string]: string } = {
-  javascript: "Javascript",
-  jsx: "JSX",
-  typescript: "Typescript",
-  tsx: "TSX",
-  markdown: "Markdown",
-  python: "Python",
-  php: "PHP",
-  sql: "SQL",
-  java: "Java",
-};
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const cookieStore = cookies();
