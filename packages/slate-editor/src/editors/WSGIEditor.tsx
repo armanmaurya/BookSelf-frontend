@@ -31,12 +31,13 @@ import {
   Ol,
   Ul,
   Li,
-  Code,
   Leaf,
   Default,
   Quote,
   Anchor,
 } from "../elements";
+
+import { EditableCode } from "../plugins/code/elements";
 import {
   Node as SlateNode,
   Descendant,
@@ -46,7 +47,6 @@ import {
 } from "slate";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
 import { SlateCustomEditor, handleKeyBoardFormating } from "../utils";
-import Cookies from "js-cookie";
 import { decorate } from "../utils/decorate";
 
 import "prismjs/components/prism-javascript";
@@ -59,9 +59,9 @@ import "prismjs/components/prism-php";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
-import { TagInput } from "@/components/element/input";
+// import { TagInput } from "@/components/element/input";
 
-import action from "@/app/actions";
+// import action from "@/app/actions";
 import { withImage, EditableImage } from "../plugins/image";
 
 const editorValue: Descendant[] = [
@@ -120,40 +120,7 @@ export function WSGIEditor({
       case NodeType.H6:
         return <H6 {...props} />;
       case NodeType.CODE:
-        const { attributes, children, element } = props;
-        const setLanguage = (language: string) => {
-          const path = ReactEditor.findPath(editor, element);
-          Transforms.setNodes(editor, { language }, { at: path });
-        };
-        return (
-          <div className="relative">
-            <div contentEditable={false} className="absolute">
-              <select
-                defaultValue={
-                  element.type === NodeType.CODE
-                    ? (element.language as string)
-                    : ""
-                }
-                name="languages"
-                id=""
-                className="m-1 text-xs bg-transparent rounded"
-                onChange={(e) => {
-                  const language = e.target.value;
-                  setLanguage(language);
-                }}
-              >
-                <option value="" selected>
-                  Select
-                </option>
-                <option value="javascript">Javascript</option>
-                <option value="python">Python</option>
-                <option value="java">Java</option>
-                <option value="jsx">JSX</option>
-              </select>
-            </div>
-            <Code {...props} />
-          </div>
-        );
+        return <EditableCode {...props} />;
       case NodeType.ORDERED_LIST:
         return <Ol {...props} />;
       case NodeType.UNORDERED_LIST:
@@ -257,7 +224,7 @@ export function WSGIEditor({
             value={title}
             placeholder="Title"
           />
-          <TagInput id={id} initialTags={initialValue.tags} />
+          {/* <TagInput id={id} initialTags={initialValue.tags} /> */}
           <Editable
             decorate={useCallback(decorate, [])}
             spellCheck

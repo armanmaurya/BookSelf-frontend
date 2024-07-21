@@ -25,96 +25,18 @@ import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
 import { Descendant, Element, node, Text } from "slate";
-import Prism from "prismjs";
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-tsx";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-python";
-import "prismjs/components/prism-php";
-import "prismjs/components/prism-sql";
-import "prismjs/components/prism-java";
-import "prismjs/themes/prism-solarizedlight.css";
-import { RenderImage } from "@/components/slate/plugins/image/elements/RenderImage";
-
-// Define a custom Element component for rendering
-const ServerElement = (props: RenderElementProps) => {
-  const { attributes, children, element } = props;
-  switch (element.type) {
-    case NodeType.H1:
-      return <H1 {...props} />;
-    case NodeType.H2:
-      return <H2 {...props} />;
-    case NodeType.H3:
-      return <H3 {...props} />;
-    case NodeType.H4:
-      return <H4 {...props} />;
-    case NodeType.H5:
-      return <H5 {...props} />;
-    case NodeType.H6:
-      return <H6 {...props} />;
-    case NodeType.CODE:
-      const codeText = element.children
-        .map((child: any) => child.text)
-        .join("\n");
-
-      const language = element.language;
-      if (language) {
-        const tokens = Prism.tokenize(codeText, Prism.languages[language]);
-
-        const generateHighlightedCode = (tokens: any) => {
-          return tokens.map((token: any, i: number) => {
-            if (typeof token === "string") {
-              return <span key={i}>{token}</span>;
-            } else {
-              if (Array.isArray(token.content)) {
-                return (
-                  <span key={i} className={`token ${token.type}`}>
-                    {generateHighlightedCode(token.content)}
-                  </span>
-                );
-              } else {
-                return (
-                  <span key={i} className={`token ${token.type}`}>
-                    {token.content}
-                  </span>
-                );
-              }
-            }
-          });
-        };
-
-        const highlightedCode: React.JSX.Element[] =
-          generateHighlightedCode(tokens);
-
-        const newProps = { ...props, children: highlightedCode };
-        return (
-          <div className="relative">
-            <div className="absolute right-1 m-1 text-gray-400">
-              {Language[language as string]}
-            </div>
-            <Code {...newProps} />
-          </div>
-        );
-      }
-      return <Code {...props} />;
-    case NodeType.ORDERED_LIST:
-      return <Ol {...props} />;
-    case NodeType.UNORDERED_LIST:
-      return <Ul {...props} />;
-    case NodeType.LIST_ITEM:
-      return <Li {...props} />;
-    case NodeType.IMAGE:
-      return <RenderImage {...props} />;
-    case NodeType.BLOCKQUOTE:
-      return <Quote {...props} />;
-    case NodeType.LINK:
-      return <Anchor {...props} />;
-    default:
-      return <Default {...props} />;
-  }
-};
+// import Prism from "prismjs";
+// import "prismjs/components/prism-javascript";
+// import "prismjs/components/prism-jsx";
+// import "prismjs/components/prism-typescript";
+// import "prismjs/components/prism-tsx";
+// import "prismjs/components/prism-markdown";
+// import "prismjs/components/prism-python";
+// import "prismjs/components/prism-php";
+// import "prismjs/components/prism-sql";
+// import "prismjs/components/prism-java";
+// import "prismjs/themes/prism-solarizedlight.css";
+import { RenderEditorStatic } from "@repo/slate-editor";
 
 const Language: { [key: string]: string } = {
   javascript: "Javascript",
@@ -126,10 +48,6 @@ const Language: { [key: string]: string } = {
   php: "PHP",
   sql: "SQL",
   java: "Java",
-};
-
-const ServerLeaf = (props: RenderLeafProps) => {
-  return <Leaf {...props} />;
 };
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
@@ -164,7 +82,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
               <u>{data.data.title || "Untitled"}</u>
             </h1>
           </div>
-          <RenderPage value={jsonContent} />
+          <RenderEditorStatic value={jsonContent} />
         </div>
         <div className="p-3 flex-col sm:flex hidden">
           <RenderTableOfContents value={tableofcontent} />
@@ -243,7 +161,13 @@ const constructTableOfContents = (value: Descendant[]) => {
 };
 
 // Rucussive function to render the table of contents
-const RenderTableOfContents = ({ value, className }: { value: TableOfContentType[]; className?:string }) => {
+const RenderTableOfContents = ({
+  value,
+  className,
+}: {
+  value: TableOfContentType[];
+  className?: string;
+}) => {
   return (
     <>
       {value.map((node, i) => {
@@ -256,12 +180,12 @@ const RenderTableOfContents = ({ value, className }: { value: TableOfContentType
               >
                 {node.text}
               </a>
-              <RenderTableOfContents className="pl-4"  value={node.children} />
+              <RenderTableOfContents className="pl-4" value={node.children} />
             </div>
           );
         } else {
           return (
-            <div className={`${className}`} key={i} >
+            <div className={`${className}`} key={i}>
               <a
                 className="py-1 text-blue-400 hover:text-blue-500"
                 href={`#${node.id}`}
@@ -269,42 +193,6 @@ const RenderTableOfContents = ({ value, className }: { value: TableOfContentType
                 {node.text}
               </a>
             </div>
-          );
-        }
-      })}
-    </>
-  );
-};
-
-const RenderPage = ({ value }: { value: Descendant[] }) => {
-  return (
-    <>
-      {value.map((node, i) => {
-        if (Element.isElement(node)) {
-          return (
-            <ServerElement
-              key={i}
-              element={node}
-              attributes={{
-                "data-slate-node": "element",
-                ref: null,
-              }}
-            >
-              <RenderPage value={node.children} />
-            </ServerElement>
-          );
-        } else {
-          return (
-            <ServerLeaf
-              key={i}
-              leaf={node}
-              text={node}
-              attributes={{
-                "data-slate-leaf": true,
-              }}
-            >
-              {node.text}
-            </ServerLeaf>
           );
         }
       })}
