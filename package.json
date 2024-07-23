@@ -6,6 +6,10 @@
     "apps/*",
     "packages/*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/armanmaurya/frontend.git"
+  },
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "dev": "turbo run dev",

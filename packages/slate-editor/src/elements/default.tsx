@@ -1,5 +1,5 @@
 import { RenderElementProps } from "slate-react";
-import { NodeType } from "@/components/slate/types";
+import { NodeType } from "../types";
 
 export const Default = (props: RenderElementProps) => {
   const style = {

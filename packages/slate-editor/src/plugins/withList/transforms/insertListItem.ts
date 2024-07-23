@@ -1,4 +1,4 @@
-import { NodeType } from "@/components/slate/types";
+import { NodeType } from "../../../types";
 import {
   Transforms as SlateTransforms,
   Editor as SlateEditor,

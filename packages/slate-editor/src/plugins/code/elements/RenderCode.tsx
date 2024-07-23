@@ -1,6 +1,5 @@
 import { NodeType } from "../../../types";
 import Prism from "prismjs";
-import React from "react";
 import { RenderElementProps } from "slate-react";
 import { BaseCode } from "./BaseCode";
 

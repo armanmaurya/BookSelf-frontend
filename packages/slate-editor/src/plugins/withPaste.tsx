@@ -1,4 +1,4 @@
-import { SlateCustomEditor } from "../utils";
+import { SlateCustomEditor } from "../utils/customEditor";
 import { Editor as SlateEditor, Transforms, Node as SlateNode } from "slate";
 import { NodeType } from "../types";
 

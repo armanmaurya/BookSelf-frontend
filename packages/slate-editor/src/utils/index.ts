@@ -1,2 +1,2 @@
-export * from "./customEditor"
-export * from "./handleKeyBoard"
+export { SlateCustomEditor } from "./customEditor";
+export { handleKeyBoardFormating } from "./handleKeyBoard";

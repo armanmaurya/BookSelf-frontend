@@ -1,5 +1,4 @@
 import { NodeType } from "../../../types";
-import React from "react";
 import { Transforms } from "slate";
 import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
 import { BaseCode } from "./BaseCode";

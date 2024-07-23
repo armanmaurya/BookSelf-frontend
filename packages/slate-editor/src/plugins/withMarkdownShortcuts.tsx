@@ -5,7 +5,7 @@ import {
   Transforms,
 } from "slate";
 import { NodeType } from "../types";
-import { SlateCustomEditor } from "../utils";
+import { SlateCustomEditor } from "../utils/customEditor";
 import { toggleList } from "./withList/transforms/toggleList";
 
 const SHORTCUTS: { [key: string]: string } = {

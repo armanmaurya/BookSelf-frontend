@@ -5,9 +5,14 @@ import { useState } from "react";
 
 // ------------ Icons ------------
 import { FaLink, FaQuoteLeft, FaCode } from "react-icons/fa";
-import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaImage } from "react-icons/fa6";
+import {
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaImage,
+} from "react-icons/fa6";
 import { IoMdCode, IoIosArrowDown } from "react-icons/io";
-import { ToolbarButton } from "@/components/element/button/ToolbarButton";
+import { ToolbarButton } from "./toolBarButton";
 
 import {
   LuHeading1,
@@ -17,7 +22,6 @@ import {
   LuHeading5,
   LuHeading6,
 } from "react-icons/lu";
-
 
 import { MdFormatListNumbered } from "react-icons/md";
 import { toggleList } from "../../plugins/withList/transforms/toggleList";
@@ -228,12 +232,14 @@ export const SlateToolBar = () => {
             toggleList(editor, NodeType.ORDERED_LIST);
           }}
         >
-          <MdFormatListNumbered size={20}/>
+          <MdFormatListNumbered size={20} />
         </ToolbarButton>
-        <ToolbarButton onClick={() => {
-          SlateCustomEditor.toggleImage(editor);
-        }}>
-          <FaImage size={20}/>
+        <ToolbarButton
+          onClick={() => {
+            SlateCustomEditor.toggleImage(editor);
+          }}
+        >
+          <FaImage size={20} />
         </ToolbarButton>
       </div>
       <div>

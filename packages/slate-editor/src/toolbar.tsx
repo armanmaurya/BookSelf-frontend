@@ -1,8 +1,6 @@
-import { SlateCustomEditor } from "./utils";
+import { SlateCustomEditor } from "./utils/customEditor";
 import { useSlate } from "slate-react";
-import { API_ENDPOINT } from "@/app/utils";
 import { NodeType } from "./types";
-import Cookies from "js-cookie";
 import { useState } from "react";
 
 export const SlateToolBar = ({ onDelete }: { onDelete: () => {} }) => {

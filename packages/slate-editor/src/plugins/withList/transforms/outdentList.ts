@@ -1,5 +1,5 @@
-import { NodeType } from "@/components/slate/types";
-import { SlateCustomEditor } from "@/components/slate/utils";
+import { NodeType } from "../../../types";
+import { SlateCustomEditor } from "../../../utils";
 import {
   Transforms as SlateTransforms,
   Editor as SlateEditor,

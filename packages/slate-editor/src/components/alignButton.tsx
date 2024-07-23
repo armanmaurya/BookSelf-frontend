@@ -1,9 +1,8 @@
-import { ToolbarButton } from "@/components/element/button";
+// import { ToolbarButton } from "@/components/element/button";
 import { FaAlignLeft, FaAlignCenter, FaAlignRight } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
-import { SlateCustomEditor } from "../utils";
+import { ToolbarButton } from "./Toolbar/toolBarButton";
 import { useState } from "react";
-
 export const AlignButton = ({
   align,
   onAlign,

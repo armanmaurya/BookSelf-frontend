@@ -1,5 +1,5 @@
 import { EditorContent, NodeType } from "../types";
-import { useMemo, useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withHistory } from "slate-history";
 import {
   withShortcuts,
@@ -45,7 +45,8 @@ import {
   Transforms,
 } from "slate";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
-import { SlateCustomEditor, handleKeyBoardFormating } from "../utils";
+import { SlateCustomEditor } from "../utils/customEditor";
+import { handleKeyBoardFormating } from "../utils/handleKeyBoard";
 import { decorate } from "../utils/decorate";
 
 import "prismjs/components/prism-javascript";
@@ -79,7 +80,7 @@ const isFocusAtStart = (path: number[]) => {
   return true;
 };
 
-export function WSGIEditor({
+const WSGIEditor = ({
   editorContent: initialValue,
   id,
   onChange,
@@ -88,7 +89,7 @@ export function WSGIEditor({
   title?: string;
   id: string;
   onChange: (value: string) => void;
-}) {
+}) => {
   const editor = useMemo(
     () =>
       withImage(
@@ -274,7 +275,7 @@ export function WSGIEditor({
       </Slate>
     </div>
   );
-}
+};
 
 const SlateAnchorTag = (props: RenderElementProps) => {
   const editor = useSlateStatic();
@@ -535,3 +536,5 @@ const initialValue2: Descendant[] = [
   //   ],
   // },
 ];
+
+export default WSGIEditor;

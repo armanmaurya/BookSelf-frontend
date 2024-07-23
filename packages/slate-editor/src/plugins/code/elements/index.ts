@@ -1,2 +1,2 @@
-export * from "./EditableCode"
-export * from "./RenderCode"
+export { EditableCode } from "./EditableCode";
+export * from "./RenderCode";

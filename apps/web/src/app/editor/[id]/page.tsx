@@ -2,17 +2,13 @@
 import { Descendant, Transforms } from "slate";
 import RNotification from "@/components/RNotification";
 
-import { WSGIEditor } from "@/components/slate/editors/WSGIEditor";
-// import { WSGIEditor } from "@repo/slate-editor";
+// import { WSGIEditor } from "@/components/slate/editors/WSGIEditor";
+// import { WSGIEditor } from "@repo/slate-editor/editor";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { API_ENDPOINT, getData } from "@/app/utils";
-import { NodeType } from "@/components/slate/types";
-import { Article } from "@/app/types";
-import { useCallback } from "react";
+import { getData } from "@/app/utils";
 import Cookies from "js-cookie";
-import { Store } from "react-notifications-component";
 import { Editor } from "./editor";
 
 
@@ -43,14 +39,6 @@ export default async function Page({
   if (!data.is_owner) {
     redirect("/");
   }
-
-  const editorValue: Descendant[] = [
-    {
-      type: NodeType.PARAGRAPH,
-      align: "left",
-      children: [{ text: "" }],
-    },
-  ];
   if (data.data === null) {
     return notFound();
   }

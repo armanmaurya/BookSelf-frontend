@@ -9,12 +9,12 @@ import { FaRegImage } from "react-icons/fa6";
 import { Transforms } from "slate";
 import { NodeType } from "../../../types";
 import { Resizable } from "re-resizable";
-import { useEffect, useState } from "react";
 import { AlignButton } from "../../../components/alignButton";
 import {
   MenuItem,
   ThreeDotsMenu,
 } from "../../../components/threeDotsMenu";
+import { useState, useEffect } from "react";
 
 export const EditableImage = (props: RenderElementProps) => {
   const { attributes, children, element } = props;

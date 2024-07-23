@@ -6,15 +6,13 @@ import {
   NodeEntry,
   Element as SlateElement,
   Editor as SlateEditor,
-  Text,
   Range,
   Location as SlateLocation,
   EditorNodesOptions,
   Node,
 } from "slate";
 import { NodeType } from "../types";
-import { text } from "stream/consumers";
-import { ReactEditor, Slate } from "slate-react";
+import { ReactEditor } from "slate-react";
 
 export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
@@ -52,7 +50,7 @@ export const SlateCustomEditor = {
         url: "",
         align: "center",
         children: [{ text: "" }],
-        width: 320
+        width: 320,
       },
       {
         match: (n) =>

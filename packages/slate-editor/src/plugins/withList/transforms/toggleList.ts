@@ -1,4 +1,4 @@
-import { NodeType } from "@/components/slate/types";
+import { NodeType } from "../../../types";
 import {
   Editor as SlateEditor,
   Transforms as SlateTransforms,
@@ -9,7 +9,7 @@ import {
   Point,
 } from "slate";
 import { wrapList } from "./wrapList";
-import { SlateCustomEditor } from "@/components/slate/utils";
+import { SlateCustomEditor } from "../../../utils/customEditor";
 // import { isListActive } from "../queries/isListActive";
 
 export const toggleList = (editor: SlateEditor, type?: string) => {

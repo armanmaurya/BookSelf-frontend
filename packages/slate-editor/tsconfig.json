@@ -1,21 +1,20 @@
 {
   "compilerOptions": {
-    "allowUnreachableCode": false,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "target": "ES6",
+    "module": "ES2015",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "types": ["node"],
+    "lib": ["ES2015", "DOM"],
+    "declaration": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "allowUnreachableCode": false,
     "jsx": "preserve",
-    "incremental": true,
-    "target": "es2015",
-    "downlevelIteration": true,
-    "baseUrl": "./"
+
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]

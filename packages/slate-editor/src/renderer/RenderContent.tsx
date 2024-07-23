@@ -18,10 +18,10 @@ import {
 import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { NodeType } from "../types";
 import { Descendant, Element } from "slate";
-import { RenderImage } from "../plugins/image/elements";
-import { RenderCode } from "../plugins/code/elements";
+import { RenderImage } from "../plugins/image/elements/RenderImage";
+import { RenderCode } from "../plugins/code/elements/RenderCode";
 
-export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
+const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
   return (
     <>
       {value.map((node, i) => {
@@ -94,3 +94,5 @@ const ServerElement = (props: RenderElementProps) => {
 const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;
 };
+
+export default RenderEditorStatic;
