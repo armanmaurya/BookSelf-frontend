@@ -80,7 +80,7 @@ const isFocusAtStart = (path: number[]) => {
   return true;
 };
 
-const WSGIEditor = ({
+export const WSGIEditor = ({
   editorContent: initialValue,
   id,
   onChange,
@@ -537,4 +537,3 @@ const initialValue2: Descendant[] = [
   // },
 ];
 
-export default WSGIEditor;

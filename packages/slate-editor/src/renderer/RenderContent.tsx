@@ -21,7 +21,7 @@ import { Descendant, Element } from "slate";
 import { RenderImage } from "../plugins/image/elements/RenderImage";
 import { RenderCode } from "../plugins/code/elements/RenderCode";
 
-const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
+export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
   return (
     <>
       {value.map((node, i) => {
@@ -95,4 +95,3 @@ const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;
 };
 
-export default RenderEditorStatic;
