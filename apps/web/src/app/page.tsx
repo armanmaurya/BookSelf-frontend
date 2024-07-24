@@ -1,18 +1,16 @@
 import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { cookies } from "next/headers";
-import { ArticleCard, ArticleCard2 } from "../components/blocks/card";
+
+import { ArticleCard } from "../components/blocks/card";
 import { API_ENDPOINT } from "./utils";
 import { Article } from "./types";
 
-
-
 const fetchData = async () => {
   try {
-    const res = await fetch(API_ENDPOINT.article.url, {next: {
-      tags: ["home"],
-    }});
+    const res = await fetch(API_ENDPOINT.article.url, {
+      next: {
+        tags: ["home"],
+      },
+    });
     return res.json();
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -28,12 +26,12 @@ export default async function Home() {
 
   return (
     <main className="p-2 w-full flex h-[calc(100vh-48px)]">
-        <div className="w-full h-full space-y-2 overflow-auto pr-2">
-          {data.map(async (articlePromise) => {
-            const article = await articlePromise;
-            return <ArticleCard key={article.id} data={article} />;
-          })}
-        </div>
+      <div className="w-full h-full space-y-2 overflow-auto pr-2">
+        {data.map(async (articlePromise) => {
+          const article = await articlePromise;
+          return <ArticleCard key={article.id} data={article} />;
+        })}
+      </div>
       {/* <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
         Latest Article
       </div> */}

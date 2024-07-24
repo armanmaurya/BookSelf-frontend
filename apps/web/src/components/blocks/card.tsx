@@ -3,25 +3,24 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-
-
 export const ArticleCard = ({ data }: { data: Article }) => {
   return (
-    <div className="border rounded-md w-full flex flex-col justify-center h-24 p-4 shadow-md">
-      <Link href={`/${data.slug}`}>
+    <Link href={`/${data.slug}`}>
+      <div className="rounded-md w-full flex flex-col justify-center h-24 p-4 shadow-lg">
         <h1 className="text-2xl font-bold">{data.title || "Untitled"}</h1>
-      </Link>
-      <div className="flex justify-between w-full">
-        <p className="text-sm">Author: {data.author}</p>
-        <p className="text-sm">
-          {new Date(data.created_at).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })}
-        </p>
+
+        <div className="flex justify-between w-full">
+          <p className="text-sm">Author: {data.author}</p>
+          <p className="text-sm">
+            {new Date(data.created_at).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
