@@ -5,7 +5,7 @@ import { getData } from "@/app/utils";
 import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
 import { Descendant } from "slate";
-import { RenderEditorStatic } from "@repo/slate-editor";
+import { RenderEditorStatic } from "@repo/slate-editor/renderer";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const cookieStore = cookies();
