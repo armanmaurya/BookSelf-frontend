@@ -4,7 +4,7 @@ import { NodeType } from "../../types";
 import { useState } from "react";
 
 // ------------ Icons ------------
-import { FaLink, FaQuoteLeft, FaCode } from "react-icons/fa";
+import { FaLink, FaQuoteLeft, FaCode, FaListUl } from "react-icons/fa";
 import {
   FaAlignLeft,
   FaAlignCenter,
@@ -233,6 +233,13 @@ export const SlateToolBar = () => {
           }}
         >
           <MdFormatListNumbered size={20} />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => {
+            toggleList(editor, NodeType.UNORDERED_LIST);
+          }}
+        >
+          <FaListUl size={20} />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => {

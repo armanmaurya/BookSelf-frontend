@@ -48,9 +48,7 @@ export const withShortcuts = (editor: SlateEditor) => {
           type === NodeType.ORDERED_LIST ||
           type === NodeType.UNORDERED_LIST
         ) {
-          // SlateCustomEditor.toggleListBlock(editor, type);
           toggleList(editor, type);
-          // SlateCustomEditor.mergePreviousAfterNodes(editor);
           return;
         }
         SlateCustomEditor.toggleBlock(editor, type);

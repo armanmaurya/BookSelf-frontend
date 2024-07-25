@@ -10,12 +10,13 @@ import {
 } from "slate";
 import { wrapList } from "./wrapList";
 import { SlateCustomEditor } from "../../../utils/customEditor";
+import { isListActive } from "../queries/isListActive";
 // import { isListActive } from "../queries/isListActive";
 
 export const toggleList = (editor: SlateEditor, type?: string) => {
   const { selection } = editor;
-
-  if (type) {
+  const isActive = isListActive(editor);
+  if (type && !isActive) {
     if (selection) {
       wrapList(editor, type);
       SlateCustomEditor.mergePreviousAfterNodes(editor, {
@@ -45,6 +46,23 @@ export const toggleList = (editor: SlateEditor, type?: string) => {
           n.type === NodeType.ORDERED_LIST,
         mode: "lowest",
       });
+
+      const [currentType] = SlateEditor.nodes(editor, {
+        match: (n) =>
+          n.type === NodeType.UNORDERED_LIST ||
+          n.type === NodeType.ORDERED_LIST,
+        mode: "lowest",
+      });
+
+      if (type !== currentType?.[0].type && type) {
+        wrapList(editor, type);
+        SlateCustomEditor.mergePreviousAfterNodes(editor, {
+          match: (n) =>
+            n.type === NodeType.UNORDERED_LIST ||
+            n.type === NodeType.ORDERED_LIST,
+          mode: "lowest",
+        });
+      }
     }
   }
 };
