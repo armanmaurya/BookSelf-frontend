@@ -15,54 +15,62 @@ import { isListActive } from "../queries/isListActive";
 
 export const toggleList = (editor: SlateEditor, type?: string) => {
   const { selection } = editor;
-  const isActive = isListActive(editor);
-  if (type && !isActive) {
-    if (selection) {
-      wrapList(editor, type);
-      SlateCustomEditor.mergePreviousAfterNodes(editor, {
-        match: (n) =>
-          n.type === NodeType.UNORDERED_LIST ||
-          n.type === NodeType.ORDERED_LIST,
-        mode: "lowest",
-      });
+  if (selection) {
+    if (SlateRange.isCollapsed(selection)) {
+      // if selection is Collapsed
+      const isActive = isListActive(editor);
+      if (type && !isActive) {
+        if (selection) {
+          wrapList(editor, type);
+          SlateCustomEditor.mergePreviousAfterNodes(editor, {
+            match: (n) =>
+              n.type === NodeType.UNORDERED_LIST ||
+              n.type === NodeType.ORDERED_LIST,
+            mode: "lowest",
+          });
 
-      return;
-    }
-  } else {
-    if (editor.selection) {
-      SlateCustomEditor.splitNodesDoubleEdge(editor, {
-        match: (n) => n.type === NodeType.LIST_ITEM,
-        mode: "lowest",
-      });
+          return;
+        }
+      } else {
+        if (editor.selection) {
+          SlateCustomEditor.splitNodesDoubleEdge(editor, {
+            match: (n) => n.type === NodeType.LIST_ITEM,
+            mode: "lowest",
+          });
 
-      SlateTransforms.unwrapNodes(editor, {
-        match: (n) => n.type === NodeType.LIST_ITEM,
-        mode: "lowest",
-      });
+          SlateTransforms.unwrapNodes(editor, {
+            match: (n) => n.type === NodeType.LIST_ITEM,
+            mode: "lowest",
+          });
 
-      SlateTransforms.unwrapNodes(editor, {
-        match: (n) =>
-          n.type === NodeType.UNORDERED_LIST ||
-          n.type === NodeType.ORDERED_LIST,
-        mode: "lowest",
-      });
+          SlateTransforms.unwrapNodes(editor, {
+            match: (n) =>
+              n.type === NodeType.UNORDERED_LIST ||
+              n.type === NodeType.ORDERED_LIST,
+            mode: "lowest",
+          });
 
-      const [currentType] = SlateEditor.nodes(editor, {
-        match: (n) =>
-          n.type === NodeType.UNORDERED_LIST ||
-          n.type === NodeType.ORDERED_LIST,
-        mode: "lowest",
-      });
+          const [currentType] = SlateEditor.nodes(editor, {
+            match: (n) =>
+              n.type === NodeType.UNORDERED_LIST ||
+              n.type === NodeType.ORDERED_LIST,
+            mode: "lowest",
+          });
 
-      if (type !== currentType?.[0].type && type) {
-        wrapList(editor, type);
-        SlateCustomEditor.mergePreviousAfterNodes(editor, {
-          match: (n) =>
-            n.type === NodeType.UNORDERED_LIST ||
-            n.type === NodeType.ORDERED_LIST,
-          mode: "lowest",
-        });
+          if (type !== currentType?.[0].type && type) {
+            wrapList(editor, type);
+            SlateCustomEditor.mergePreviousAfterNodes(editor, {
+              match: (n) =>
+                n.type === NodeType.UNORDERED_LIST ||
+                n.type === NodeType.ORDERED_LIST,
+              mode: "lowest",
+            });
+          }
+        }
       }
+    } else {
+      // selection is not Collapsed
+      
     }
   }
 };

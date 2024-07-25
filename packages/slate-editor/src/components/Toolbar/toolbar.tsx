@@ -152,7 +152,8 @@ export const SlateToolBar = () => {
             NodeType.BLOCKQUOTE
           )}
           onClick={() => {
-            SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
+            // SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
+            SlateCustomEditor.toggleBlockQuote(editor);
           }}
         >
           <FaQuoteLeft />

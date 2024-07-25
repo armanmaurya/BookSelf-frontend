@@ -159,7 +159,7 @@ export const WSGIEditor = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && ref.current.contains(event.target as Node)) {
-        SlateCustomEditor.insertParagraph(editor);
+        SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
       }
     };
 

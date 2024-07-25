@@ -73,11 +73,11 @@ export const handleKeyBoardFormating = (
           switch (match[0].type) {
             case NodeType.CODE:
               event.preventDefault();
-              SlateCustomEditor.insertParagraph(editor);
+              SlateCustomEditor.insertParagraph(editor, NodeType.CODE);
               break;
             case NodeType.BLOCKQUOTE:
               event.preventDefault();
-              SlateCustomEditor.insertParagraph(editor);
+              SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
               break;
           }
         }
@@ -108,8 +108,8 @@ export const handleKeyBoardFormating = (
   if (event.key === "Backspace") {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      mode: "lowest",
     });
-    console.log(match[0].type);
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
       console.log(text);
@@ -205,27 +205,27 @@ export const handleKeyBoardFormating = (
       switch (match[0].type) {
         case NodeType.H1:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.H1);
           break;
         case NodeType.H2:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.H2);
           break;
         case NodeType.H3:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.H3);
           break;
         case NodeType.H4:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.H4);
           break;
         case NodeType.H5:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.H5);
           break;
         case NodeType.H6:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.H6);
           break;
         case NodeType.UNORDERED_LIST:
           event.preventDefault();
@@ -237,7 +237,7 @@ export const handleKeyBoardFormating = (
           break;
         case NodeType.BLOCKQUOTE:
           event.preventDefault();
-          SlateCustomEditor.insertNewLine(editor);
+          SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
           break;
         case NodeType.CODE:
           event.preventDefault();
@@ -289,15 +289,3 @@ interface IHandleEnterKey {
   [key: string]: (editor: SlateEditor) => void | null;
 }
 
-const handleEnterKey: IHandleEnterKey = {
-  // "list-item": SlateCustomEditor.insertListItem,
-  paragraph: SlateCustomEditor.insertParagraph,
-  "heading-one": SlateCustomEditor.insertParagraph,
-  "heading-two": SlateCustomEditor.insertParagraph,
-  "heading-three": SlateCustomEditor.insertParagraph,
-  "heading-four": SlateCustomEditor.insertParagraph,
-  "heading-five": SlateCustomEditor.insertParagraph,
-  "heading-six": SlateCustomEditor.insertParagraph,
-  code: SlateCustomEditor.insertNewLine,
-  quote: SlateCustomEditor.insertNewLine,
-};

@@ -18,20 +18,48 @@ export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isBlockActive(editor, format);
     const { selection } = editor;
-
-    Transforms.setNodes(
-      editor,
-      {
-        type: isActive ? "paragraph" : format,
-      },
-      {
-        match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+    if (selection) {
+      if (Range.isCollapsed(selection)) {
+        Transforms.setNodes(
+          editor,
+          {
+            type: isActive ? "paragraph" : format,
+          },
+          {
+            match: (n) =>
+              SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+          }
+        );
+      } else {
+        // selection is not collapsed
       }
+    }
+  },
+
+  toggleBlockQuote(editor: SlateEditor) {
+    const isActive = SlateCustomEditor.isBlockActive(
+      editor,
+      NodeType.BLOCKQUOTE
     );
-    // Transforms.setNodes(editor, {
-    //   type: isActive ? 'paragraph' : isList ? 'list-item' : format,
-    // })
+    if (!isActive) {
+      Transforms.wrapNodes(
+        editor,
+        { type: NodeType.BLOCKQUOTE, children: [] },
+        {
+          match: (n) =>
+            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+        }
+      );
+    } else {
+      Transforms.unwrapNodes(
+        editor,
+        {
+          match: (n) =>
+            SlateElement.isElement(n) && n.type === NodeType.BLOCKQUOTE,
+          split: true,
+        },
+      );
+    }
   },
   toggleMark(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isMarkActive(editor, format);
@@ -660,7 +688,7 @@ export const SlateCustomEditor = {
     Transforms.delete(editor, { reverse: true });
   },
 
-  insertParagraph(editor: SlateEditor) {
+  insertParagraph(editor: SlateEditor, block: string) {
     // const isParagraphActive = SlateCustomEditor.isParagraphActive(editor);
     const isListItemActive = SlateCustomEditor.isOrderedListActive(editor);
     const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
@@ -683,7 +711,7 @@ export const SlateCustomEditor = {
         },
         {
           match: (n) =>
-            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n) && n.type === block,
           at: {
             path: editor.selection.anchor.path,
             offset: text.length,
