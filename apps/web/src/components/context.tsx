@@ -1,17 +1,20 @@
 "use client";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 export const AppContext = createContext<{
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isAuthenticated: boolean;
+  hamburderButtonRef: React.RefObject<HTMLDivElement>;
 }>({
   isOpen: false,
   setIsOpen: () => {},
   isAuthenticated: false,
+  hamburderButtonRef: {current: null},
 });
 
 export const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const hamburderButtonRef = useRef<HTMLDivElement>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const checklogin = async () => {
@@ -42,7 +45,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   }, []);
 
   return (
-    <AppContext.Provider value={{ isOpen, setIsOpen, isAuthenticated }}>
+    <AppContext.Provider value={{ isOpen, setIsOpen, isAuthenticated, hamburderButtonRef }}>
       {children}
     </AppContext.Provider>
   );

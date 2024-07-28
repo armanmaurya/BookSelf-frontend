@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NewArticleBtn, LogoutBtn } from "./element/button";
 import { motion, AnimationControls, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export const IconBtn = () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -46,7 +47,10 @@ export const IconBtn = () => {
                 Profile
               </button> */}
               <li className="rounded dark:bg-neutral-700 p-1.5 w-full bg-slate-100 text-center hover:cursor-pointer">
+                <Link href="./settings">
                 Settings
+
+                </Link>
               </li>
               <li className="rounded p-1.5 dark:bg-neutral-700 w-full bg-slate-100 text-center hover:cursor-pointer">
                 <NewArticleBtn />

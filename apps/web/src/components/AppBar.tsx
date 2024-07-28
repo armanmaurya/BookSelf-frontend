@@ -7,25 +7,21 @@ import ThemeSwitcher from "./element/button/ThemeSwitchButton";
 
 const AppBar = () => {
   return (
-    <header className="shadow-md">
-      <nav className=" flex justify-between items-center h-12 pr-2">
-        <ul className="flex flex-1 space-x-2 w-full items-center">
-          <li>
+    <header className="shadow-md fixed dark:bg-neutral-800 bg-white w-full h-12">
+      <nav className=" flex justify-between items-center  pr-2">
+        <div className="flex flex-1 space-x-2 w-full items-center justify-between">
+          <div className="flex items-center">
             <HamburgerIcon />
-          </li>
-          <li className="w-full text-center sm:text-left">
-            <Link  className="text-3xl font-semibold" href="/">
+            <Link className="text-3xl font-semibold" href="/">
               Home
             </Link>
-          </li>
-        </ul>
-        <ul className="flex-1 hidden sm:block">
+          </div>
           <SearchInput />
-        </ul>
-        <ul className="sm:flex flex-1 flex-row-reverse space-x-4 hidden items-center">
-          <ProfileIcon />
-          <ThemeSwitcher />
-        </ul>
+          <div className="flex">
+            <ThemeSwitcher />
+            <ProfileIcon />
+          </div>
+        </div>
       </nav>
     </header>
   );

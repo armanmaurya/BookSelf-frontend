@@ -33,7 +33,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
     <div className="">
       {data.is_owner && <EditButton id={id} />}
       <div className="flex">
-        <div className="px-4 flex-1 overflow-auto h-[calc(100vh-48px)]">
+        <div className="px-4 flex-1">
           <div className="flex items-center justify-center p-1">
             <h1 className="text-4xl font-semibold">
               <u>{data.data.title || "Untitled"}</u>

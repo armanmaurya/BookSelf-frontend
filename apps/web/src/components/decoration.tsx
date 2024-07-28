@@ -16,7 +16,7 @@ export const Divider = () => {
 export const HamburgerIcon = () => {
   const sideBarState = useContext(AppContext);
   return (
-    <div>
+    <div ref={sideBarState.hamburderButtonRef}>
       {sideBarState && (
         <Hamburger
           size={20}

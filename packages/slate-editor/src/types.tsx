@@ -6,8 +6,9 @@ import {
   TextOperation,
 } from "slate";
 import { ReactEditor } from "slate-react";
+import { HistoryEditor } from "slate-history";
 
-type CustomEditor = BaseEditor & ReactEditor & CustomEditorType;
+type CustomEditor = BaseEditor & ReactEditor & CustomEditorType & HistoryEditor;
 type CustomEditorType = { type?: string };
 
 type HeadingElement = {

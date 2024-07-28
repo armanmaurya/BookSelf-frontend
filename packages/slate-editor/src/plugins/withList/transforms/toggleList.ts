@@ -70,7 +70,19 @@ export const toggleList = (editor: SlateEditor, type?: string) => {
       }
     } else {
       // selection is not Collapsed
-      
+      console.log("selection is not Collapsed");
+      const match = SlateEditor.nodes(editor, {
+        match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+        mode: "lowest",
+      });
+
+
+      for (const ma of match) {
+        console.log(ma);
+      }
+
+
+
     }
   }
 };

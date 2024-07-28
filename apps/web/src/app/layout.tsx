@@ -33,9 +33,11 @@ export default function RootLayout({
           <NextTopLoader />
           <ContextProvider>
             <AppBar />
-            <div className="flex overflow-auto">
-              <SideBar />
-              <div className="w-full h-full">{children}</div>
+            <div className="flex">
+              <div className="w-full h-full mt-12">
+                <SideBar />
+                <div>{children}</div>
+              </div>
             </div>
           </ContextProvider>
         </ThemeProvider>
