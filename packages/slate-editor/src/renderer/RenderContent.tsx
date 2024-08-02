@@ -21,6 +21,7 @@ import { NodeType } from "../types";
 import { Descendant, Element } from "slate";
 import { RenderImage } from "../plugins/image/elements/RenderImage";
 import { RenderCode } from "../plugins/code/elements/RenderCode";
+import { RenderQuote } from "../plugins/quote/elements/RenderQuote";
 
 export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
   return (
@@ -84,7 +85,7 @@ const ServerElement = (props: RenderElementProps) => {
     case NodeType.IMAGE:
       return <RenderImage {...props} />;
     case NodeType.BLOCKQUOTE:
-      return <Quote {...props} />;
+      return <RenderQuote {...props} />;
     case NodeType.LINK:
       return <Anchor {...props} />;
     default:

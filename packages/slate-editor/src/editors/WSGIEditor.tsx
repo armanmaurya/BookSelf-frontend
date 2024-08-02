@@ -64,6 +64,7 @@ import "prismjs/themes/prism-solarizedlight.css";
 
 // import action from "@/app/actions";
 import { withImage, EditableImage } from "../plugins/image";
+import { EditableQuote } from "../plugins/quote/elements/EditableQuote";
 
 const editorValue: Descendant[] = [
   {
@@ -131,7 +132,7 @@ export const WSGIEditor = ({
       case NodeType.IMAGE:
         return <EditableImage {...props} />;
       case NodeType.BLOCKQUOTE:
-        return <Quote {...props} />;
+        return <EditableQuote {...props} />;
       case NodeType.LINK:
         return <SlateAnchorTag {...props} />;
       default:
