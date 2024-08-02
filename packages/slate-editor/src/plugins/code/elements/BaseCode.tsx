@@ -1,5 +1,5 @@
 import { RenderElementProps } from "slate-react";
-
+import React from "react";
 export const BaseCode = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
 

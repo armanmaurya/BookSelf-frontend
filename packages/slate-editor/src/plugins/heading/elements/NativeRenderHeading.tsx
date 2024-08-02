@@ -1,12 +1,18 @@
 import { RenderElementProps } from "slate-react";
-import { NodeType } from "../types";
+import { NodeType } from "../../../types";
 import React from "react";
+import { Text, StyleProp, TextStyle, } from "react-native";
 
 export const H1 = (props: RenderElementProps) => {
-  const style = {
+  const style: StyleProp<TextStyle> = {
     textAlign:
       props.element.type === NodeType.H1 ? props.element.align : "left",
+    fontSize: 36,
+    lineHeight: 40,
+    fontWeight: "bold",
+    
   };
+
 
   const idAttribute =
     props.element.type === NodeType.H1
@@ -15,21 +21,19 @@ export const H1 = (props: RenderElementProps) => {
         : {}
       : {};
   return (
-    <h1
-      className="text-4xl font-bold"
-      style={style}
-      {...props.attributes}
-      {...idAttribute}
-    >
+    <Text style={style} selectable {...props.attributes} {...idAttribute}>
       {props.children}
-    </h1>
+    </Text>
   );
 };
 
 export const H2 = (props: RenderElementProps) => {
-  const style = {
+  const style: StyleProp<TextStyle> = {
     textAlign:
       props.element.type === NodeType.H2 ? props.element.align : "left",
+    fontSize: 30,
+    lineHeight: 36,
+    fontWeight: "bold",
   };
   const idAttribute =
     props.element.type === NodeType.H2
@@ -38,21 +42,19 @@ export const H2 = (props: RenderElementProps) => {
         : {}
       : {};
   return (
-    <h2
-      className="text-3xl font-bold"
-      style={style}
-      {...props.attributes}
-      {...idAttribute}
-    >
+    <Text style={style} {...props.attributes} {...idAttribute}>
       {props.children}
-    </h2>
+    </Text>
   );
 };
 
 export const H3 = (props: RenderElementProps) => {
-  const style = {
+  const style: StyleProp<TextStyle> = {
     textAlign:
       props.element.type === NodeType.H3 ? props.element.align : "left",
+    fontSize: 24,
+    lineHeight: 32,
+    fontWeight: "bold",
   };
   const idAttribute =
     props.element.type === NodeType.H3
@@ -61,21 +63,24 @@ export const H3 = (props: RenderElementProps) => {
         : {}
       : {};
   return (
-    <h3
-      className="text-2xl font-bold"
+    <Text
       {...props.attributes}
       style={style}
+      selectable
       {...idAttribute}
     >
       {props.children}
-    </h3>
+    </Text>
   );
 };
 
 export const H4 = (props: RenderElementProps) => {
-  const style = {
+  const style: StyleProp<TextStyle> = {
     textAlign:
       props.element.type === NodeType.H4 ? props.element.align : "left",
+      fontSize: 20,
+      lineHeight: 28,
+      fontWeight: "bold",
   };
   const idAttribute =
     props.element.type === NodeType.H4
@@ -84,21 +89,23 @@ export const H4 = (props: RenderElementProps) => {
         : {}
       : {};
   return (
-    <h4
-      className="text-xl font-bold"
+    <Text
       {...props.attributes}
       style={style}
       {...idAttribute}
     >
       {props.children}
-    </h4>
+    </Text>
   );
 };
 
 export const H5 = (props: RenderElementProps) => {
-  const style = {
+  const style: StyleProp<TextStyle> = {
     textAlign:
       props.element.type === NodeType.H5 ? props.element.align : "left",
+      fontSize: 18,
+      lineHeight: 28,
+      fontWeight: "bold",
   };
   const idAttribute =
     props.element.type === NodeType.H5
@@ -107,21 +114,22 @@ export const H5 = (props: RenderElementProps) => {
         : {}
       : {};
   return (
-    <h5
-      className="text-lg font-bold"
+    <Text
       {...props.attributes}
       style={style}
       {...idAttribute}
     >
       {props.children}
-    </h5>
+    </Text>
   );
 };
 
 export const H6 = (props: RenderElementProps) => {
-  const style = {
+  const style: StyleProp<TextStyle> = {
     textAlign:
       props.element.type === NodeType.H6 ? props.element.align : "left",
+      fontSize: 16,
+      fontWeight: "bold",
   };
   const idAttribute =
     props.element.type === NodeType.H6
@@ -130,13 +138,13 @@ export const H6 = (props: RenderElementProps) => {
         : {}
       : {};
   return (
-    <h6
-      className="text-base font-bold"
-      {...props.attributes}
+    <Text
+
+    {...props.attributes}
       style={style}
       {...idAttribute}
     >
       {props.children}
-    </h6>
+    </Text>
   );
 };

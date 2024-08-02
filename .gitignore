@@ -17,7 +17,9 @@ Rubbish/
 /.next/
 /out/
 .next
+analyze
 
+.env
 # production
 /build
 

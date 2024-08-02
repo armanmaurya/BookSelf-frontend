@@ -2,11 +2,14 @@ import { RenderElementProps } from "slate-react";
 
 export const Quote = (props: RenderElementProps) => {
   return (
-    <blockquote
-      className="border-l-4 border-neutral-300 pl-4 my-2 whitespace-pre"
-      {...props.attributes}
-    >
-      {props.children}
-    </blockquote>
+    <div style={{backgroundColor: "black"}} className="my-2">
+      <div
+        className="bg-slate-100 pl-4 p-2 ml-1 whitespace-pre"
+        {...props.attributes}
+        // style={{ borderWidth: 10, borderColor: "blue" }}
+      >
+        {props.children}
+      </div>
+    </div>
   );
 };

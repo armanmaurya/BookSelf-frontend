@@ -3,13 +3,16 @@
   "sideEffects": false,
   "version": "0.0.1",
   "description": "A Rich Text Slate Editor",
+  "main": "src/index.ts",
   "files": [
     "src/**/*"
   ],
   "exports": {
-   "./editor": "./src/editors/WSGIEditor.tsx",
-   "./renderer": "./src/renderer/RenderContent.tsx"
+    "./editor": "./src/editors/WSGIEditor.tsx",
+    "./renderer": "./src/renderer/RenderContent.tsx",
+    "./nativeRenderer": "./src/renderer/NativeRender.tsx"
   },
+  "react-native": "src/index.ts",
   "devDependencies": {
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",
@@ -18,9 +21,11 @@
     "eslint": "^8.57.0",
     "react": "^18",
     "react-dom": "^18",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "@types/react-native": "^0.73.0"
   },
   "dependencies": {
+    "react-native": "^0.74.3",
     "prismjs": "^1.29.0",
     "slate": "^0.103.0",
     "slate-history": "^0.100.0",

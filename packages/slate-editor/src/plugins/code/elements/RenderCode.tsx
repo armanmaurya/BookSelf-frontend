@@ -2,6 +2,7 @@ import { NodeType } from "../../../types";
 import Prism from "prismjs";
 import { RenderElementProps } from "slate-react";
 import { BaseCode } from "./BaseCode";
+import React from "react";
 
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-jsx";

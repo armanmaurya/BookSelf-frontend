@@ -1,6 +1,7 @@
 import { EditorContent, NodeType } from "../types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withHistory } from "slate-history";
+import React from "react";
 import {
   withShortcuts,
   withPaste,
