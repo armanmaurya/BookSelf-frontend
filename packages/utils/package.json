@@ -1,0 +1,12 @@
+{
+  "name": "@repo/utils",
+  "sideEffects": false,
+  "version": "1.0.0",
+  "description": "Shared Utils for the Repo",
+  "main": "src/index.ts",
+  "files": [
+    "src/**/*"
+  ],
+  "react-native": "src/index.ts"
+
+}
