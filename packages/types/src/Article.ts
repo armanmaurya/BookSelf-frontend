@@ -1,8 +1,3 @@
-export interface CustomResponse {
-  data: Article;
-  is_owner: boolean;
-}
-
 export interface Article {
   id: number;
   title: string;

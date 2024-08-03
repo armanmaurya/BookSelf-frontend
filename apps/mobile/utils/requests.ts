@@ -1,4 +1,4 @@
-import { CustomResponse } from "../types";
+import { CustomResponse } from "@repo/types";
 import { API_ENDPOINT } from "./ApiEndpoints";
 
 export async function getData(

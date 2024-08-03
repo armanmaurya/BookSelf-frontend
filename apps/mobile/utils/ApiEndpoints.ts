@@ -1,4 +1,3 @@
-import { CustomResponse } from "../types";
 
 const apiURl = process.env.EXPO_PUBLIC_API_URL;
 

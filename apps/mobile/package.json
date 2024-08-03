@@ -15,6 +15,7 @@
     "@react-navigation/core": "^6.4.17",
     "@react-navigation/elements": "^1.3.31",
     "@repo/slate-editor": "*",
+    "@repo/types": "*",
     "expo": "~51.0.24",
     "expo-constants": "~16.0.2",
     "expo-linking": "~6.3.1",
