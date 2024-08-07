@@ -31,12 +31,13 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" enableSystem>
           <NextTopLoader />
+
           <ContextProvider>
             <AppBar />
-            <div className="flex">
-              <div className="w-full h-full mt-12">
+            <div className="h-full flex">
+              <div className="w-full h-full">
                 <SideBar />
-                <div>{children}</div>
+                <div className="h-full pt-12">{children}</div>
               </div>
             </div>
           </ContextProvider>

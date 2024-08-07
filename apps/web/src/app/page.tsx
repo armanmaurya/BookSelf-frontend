@@ -25,7 +25,7 @@ export default async function Home() {
   // await checklogin();
 
   return (
-    <main className="p-2 w-full flex h-[calc(100vh-48px)]">
+    <main className="h-full flex justify-center items-center">
       <div className="w-full h-full space-y-2 overflow-auto pr-2">
         {data.map(async (articlePromise) => {
           const article = await articlePromise;

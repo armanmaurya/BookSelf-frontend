@@ -5,7 +5,7 @@ import { getData } from "@/app/utils";
 import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
 import { Descendant } from "slate";
-import { RenderEditorStatic } from "@repo/slate-editor/renderer";
+import { RenderContent } from "@repo/slate-editor/renderer";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const cookieStore = cookies();
@@ -33,17 +33,8 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
     <div className="">
       {data.is_owner && <EditButton id={id} />}
       <div className="flex">
-        <div className="px-4 flex-1">
-          <div className="flex items-center justify-center p-1">
-            <h1 className="text-4xl font-semibold">
-              <u>{data.data.title || "Untitled"}</u>
-            </h1>
-          </div>
-          <RenderEditorStatic value={jsonContent} />
-        </div>
-        <div className="p-3 flex-col sm:flex hidden">
-          {/* <RenderTableOfContents value={tableofcontent} /> */}
-        </div>
+        <RenderContent title={data.data.title} value={jsonContent} />
+        
       </div>
     </div>
   );

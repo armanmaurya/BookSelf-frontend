@@ -26,7 +26,7 @@ export const IconBtn = () => {
   });
 
   return (
-    <div className="" ref={ref}>
+    <div ref={ref}>
       <div
         className="bg-black h-8 w-8 rounded-full hover:cursor-pointer"
         onClick={toggle}
@@ -37,7 +37,10 @@ export const IconBtn = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={` flex overflow-hidden ease-in-out absolute transition-all top-14 right-2 z-10 bg-white dark:bg-neutral-800 rounded-2xl shadow-xl w-40 items-center justify-center`}
+            transition={{
+              duration: 0.1,
+            }}
+            className={`flex overflow-hidden ease-in-out fixed top-14 right-2 bg-white dark:bg-neutral-800 rounded-xl border w-40 items-center justify-center`}
           >
             <ul className="space-y-1 p-2 w-full items-center">
               {/* <button
@@ -47,9 +50,13 @@ export const IconBtn = () => {
                 Profile
               </button> */}
               <li className="rounded dark:bg-neutral-700 p-1.5 w-full bg-slate-100 text-center hover:cursor-pointer">
-                <Link href="./settings">
-                Settings
-
+                <Link
+                  href="./settings/info"
+                  onClick={() => {
+                    setIsOpened(false);
+                  }}
+                >
+                  Account
                 </Link>
               </li>
               <li className="rounded p-1.5 dark:bg-neutral-700 w-full bg-slate-100 text-center hover:cursor-pointer">

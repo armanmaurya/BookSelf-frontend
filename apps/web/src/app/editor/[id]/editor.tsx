@@ -8,7 +8,7 @@ import { Store } from "react-notifications-component";
 
 export const Editor = ({
   initialValue,
-  id,
+  id: slug,
 }: {
   id: string;
   initialValue: Article;
@@ -19,7 +19,7 @@ export const Editor = ({
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${slug}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,33 @@ export const Editor = ({
       console.log(error);
     }
   }, []);
+  const DeleteArticle = async () => {
+    const csrf = Cookies.get("csrftoken");
+
+    try {
+      const res = await fetch(
+        `${API_ENDPOINT.article.url}?slug=${slug}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": `${csrf}`,
+          },
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        console.log("Article deleted");
+        const res = await fetch("/api/revalidate?path=/");
+        const ata = await res.json();
+        console.log(ata);
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <WSGIEditor onChange={UpdateContent} editorContent={initialValue} id={id} />
+    <WSGIEditor onChange={UpdateContent} editorContent={initialValue} id={slug} />
   );
 };

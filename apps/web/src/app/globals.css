@@ -11,6 +11,8 @@
   display: none;
 }
 
+
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
@@ -55,4 +57,24 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield; /* Hides the spinners in Firefox */
+}
+
+
+.menu-animation {
+  position: absolute;
+}
+
+.start-my-article {
+  left: 0;
+}
+
+.start-subscription {
+  left: 128px;
+}
+
+.start-home {
+  top: 0;
+}
+.start-security {
+  top: 40px;
 }
