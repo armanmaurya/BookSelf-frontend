@@ -174,7 +174,7 @@ export const WSGIEditor = ({
   // console.log(JSON.parse(initialValue.content));
 
   return (
-    <div className="relative">
+    <div className="">
       <Slate
         editor={editor}
         initialValue={JSON.parse(initialValue.content) || editorValue}
@@ -193,11 +193,18 @@ export const WSGIEditor = ({
         }}
       >
         <SlateToolBar />
-        <div className="w-full px-2  mt-3 h-[calc(100vh-104px)]  overflow-y-scroll">
+        <div className="w-full px-2 pt-12 mt-3  h-[calc(100vh-104px)]  overflow-y-scroll">
+          {/* <div className="w-full">
+            <img
+              src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"
+              className="sm:h-80 w-full object-cover"
+              alt=""
+            />
+          </div> */}
           <input
             ref={titleRef}
             type="text"
-            className="h-10 bg-transparent outline-none text-3xl w-full text-center font-bold "
+            className="text-5xl py-2 font-extrabold bg-transparent h-14"
             onChange={(e) => {
               setTitle(e.target.value);
               debouncedSave(
@@ -226,13 +233,14 @@ export const WSGIEditor = ({
             value={title}
             placeholder="Title"
           />
+
           {/* <TagInput id={id} initialTags={initialValue.tags} /> */}
           <Editable
             decorate={useCallback(decorate, [])}
             spellCheck
             autoFocus
             id="editor"
-            className="pt-2"
+            className=""
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {
@@ -538,4 +546,3 @@ const initialValue2: Descendant[] = [
   //   ],
   // },
 ];
-

@@ -23,6 +23,30 @@ import { RenderImage } from "../plugins/image/elements/RenderImage";
 import { RenderCode } from "../plugins/code/elements/RenderCode";
 import { RenderQuote } from "../plugins/quote/elements/RenderQuote";
 
+export const RenderContent = ({
+  value,
+  title,
+}: {
+  value: Descendant[];
+  title: string;
+}) => {
+  return (
+    <div className="flex flex-col w-full p-2">
+      <div className="w-full">
+        <img
+          src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"
+          className="sm:h-80 w-full object-cover"
+          alt=""
+        />
+      </div>
+      <h1 className="text-5xl font-extrabold h-14 flex items-center">{title || "Untitled"}</h1>
+      <div>
+        <RenderEditorStatic value={value} />
+      </div>
+    </div>
+  );
+};
+
 export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
   return (
     <>
@@ -96,7 +120,3 @@ const ServerElement = (props: RenderElementProps) => {
 const ServerLeaf = (props: RenderLeafProps) => {
   return <Leaf {...props} />;
 };
-
-
-
-

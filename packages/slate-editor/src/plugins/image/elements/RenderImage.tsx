@@ -20,6 +20,7 @@ export const RenderImage = (props: RenderElementProps) => {
         src={element.type === "image" ? (element.url as string) : ""}
         alt="Invalid Image URL"
         className={`rounded-lg`}
+        style={{ maxWidth: "100%" }}
         width={element.type === NodeType.IMAGE ? element.width : 320}
       />
     </div>

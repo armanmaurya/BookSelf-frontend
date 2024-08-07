@@ -51,7 +51,7 @@ export const AlignButton = ({
       <div
         className={`${
           isDropDownActive ? "" : "hidden"
-        } absolute shadow-lg border rounded-md z-10 w-24 flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
+        } absolute shadow-lg border rounded-md w-24 flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
       >
         <ToolbarButton
           onClick={() => {
