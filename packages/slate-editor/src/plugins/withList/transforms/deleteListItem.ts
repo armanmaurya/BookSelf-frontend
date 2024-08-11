@@ -14,9 +14,12 @@ import { outdentList } from "./outdentList";
 export const deleteListItem = (editor: SlateEditor) => {
   if (editor.selection) {
     if (!SlateRange.isCollapsed(editor.selection)) {
+      // If Selection is not Collapsed
       SlateTransforms.delete(editor, { at: editor.selection });
 
     } else {
+      // If Selection is Collapsed
+      
       console.log("Delete list item");
       const [currentListItem] = SlateEditor.nodes(editor, {
         match: (n) => n.type === NodeType.LIST_ITEM,

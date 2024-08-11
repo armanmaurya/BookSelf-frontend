@@ -32,13 +32,13 @@ export const RenderContent = ({
 }) => {
   return (
     <div className="flex flex-col w-full p-2">
-      <div className="w-full">
+      {/* <div className="w-full">
         <img
           src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"
           className="sm:h-80 w-full object-cover"
           alt=""
         />
-      </div>
+      </div> */}
       <h1 className="text-5xl font-extrabold h-14 flex items-center">{title || "Untitled"}</h1>
       <div>
         <RenderEditorStatic value={value} />

@@ -26,7 +26,7 @@ export default async function Home() {
 
   return (
     <main className="h-full flex justify-center items-center">
-      <div className="w-full h-full space-y-2 overflow-auto pr-2">
+      <div className="w-full h-full space-y-2 overflow-auto flex flex-col p-2">
         {data.map(async (articlePromise) => {
           const article = await articlePromise;
           return <ArticleCard key={article.id} data={article} />;

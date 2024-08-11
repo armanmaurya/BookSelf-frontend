@@ -108,12 +108,12 @@ export const handleKeyBoardFormating = (
   if (event.key === "Backspace") {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      mode: "lowest",
+      // mode: "lowest",
     });
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
-      console.log(text);
       if (match[0].type && editor.selection.focus.offset === 0) {
+        // If Caret is at the start of Block
         switch (match[0].type) {
           case NodeType.PARAGRAPH:
             if (text.length === 0) {
