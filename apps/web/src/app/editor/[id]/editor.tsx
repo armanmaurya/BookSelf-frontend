@@ -2,7 +2,7 @@
 import { WSGIEditor } from "@repo/slate-editor/editor";
 import { Article } from "@/app/types";
 import Cookies from "js-cookie";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { Store } from "react-notifications-component";
 
@@ -13,13 +13,14 @@ export const Editor = ({
   id: string;
   initialValue: Article;
 }) => {
+  const [articleSlug, setArticleSlug] = useState<string | null>(slug);
   const UpdateContent = useCallback(async (body: string) => {
     console.log(body);
 
     const csrf = Cookies.get("csrftoken");
 
     try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${slug}`, {
+      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +33,7 @@ export const Editor = ({
         const data: Article = await res.json();
         if (data.slug) {
           window.history.pushState({}, "", `/editor/${data.slug}`);
-          // setArticleSlug(data.slug);
+          setArticleSlug(data.slug);
           const res = await fetch("/api/revalidate?path=/");
           const ata = await res.json();
           console.log(ata);
@@ -58,7 +59,7 @@ export const Editor = ({
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [articleSlug]);
   const DeleteArticle = async () => {
     const csrf = Cookies.get("csrftoken");
 

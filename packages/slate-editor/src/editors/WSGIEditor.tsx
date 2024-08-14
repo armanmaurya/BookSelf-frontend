@@ -65,6 +65,7 @@ import "prismjs/themes/prism-solarizedlight.css";
 // import action from "@/app/actions";
 import { withImage, EditableImage } from "../plugins/image";
 import { EditableQuote } from "../plugins/quote/elements/EditableQuote";
+import { withNormalize } from "../plugins/normalize";
 
 const editorValue: Descendant[] = [
   {
@@ -94,11 +95,13 @@ export const WSGIEditor = ({
 }) => {
   const editor = useMemo(
     () =>
-      withImage(
-        withHeadingId(
-          withKeyCommands(
-            withLinks(
-              withShortcuts(withPaste(withReact(withHistory(createEditor()))))
+      withNormalize(
+        withImage(
+          withHeadingId(
+            withKeyCommands(
+              withLinks(
+                withShortcuts(withPaste(withReact(withHistory(createEditor()))))
+              )
             )
           )
         )
@@ -172,12 +175,13 @@ export const WSGIEditor = ({
   });
 
   // console.log(JSON.parse(initialValue.content));
+  const articleValue: Descendant[] = JSON.parse(initialValue.content);
 
   return (
     <div className="">
       <Slate
         editor={editor}
-        initialValue={JSON.parse(initialValue.content) || editorValue}
+        initialValue={articleValue.length !== 0 ? articleValue : editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
@@ -193,7 +197,7 @@ export const WSGIEditor = ({
         }}
       >
         <SlateToolBar />
-        <div className="w-full px-2 pt-12 mt-3  h-[calc(100vh-104px)]  overflow-y-scroll">
+        <div className="w-full px-2 pt-12 mt-3">
           {/* <div className="w-full">
             <img
               src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"

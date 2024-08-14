@@ -281,7 +281,7 @@ export const SlateToolBar = () => {
         <div className="">
           <div
             ref={ref}
-            className="hover:cursor-pointer h-full flex items-center"
+            className="hover:cursor-pointer h-full flex items-center px-1.5"
             onClick={() => {
               setIsOpened(!isOpened);
             }}

@@ -87,6 +87,33 @@ export default function App() {
         </head>
         <body>
           ${htmlContent}
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
+          Text
           <script>
               function updateHeight() {
                 const height = document.getElementById('content').offsetHeight;
