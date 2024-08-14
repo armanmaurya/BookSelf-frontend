@@ -33,7 +33,7 @@ const SideBar = () => {
       } overflow-hidden fixed top-0 z-20 bg-white dark:bg-neutral-900 shadow-md h-full transition-all ease-in-out`}
     >
       <ul className="p-2 flex flex-col h-full rounded">
-        <li className="p-2 rounded-lg text-center hover:bg-blue-400 hover:bg-opacity-15">
+        <li className="p-2 rounded-lg text-center w-36 hover:bg-blue-400 hover:bg-opacity-15">
           <Link onClick={() => {
             sideBarState.setIsOpen(false);
           }} href="/library/my-article" className="justify-center flex items-center">

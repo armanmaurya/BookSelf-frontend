@@ -61,17 +61,64 @@ import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 // import { TagInput } from "@/components/element/input";
+import "react-tabs/style/react-tabs.css";
 
 // import action from "@/app/actions";
 import { withImage, EditableImage } from "../plugins/image";
 import { EditableQuote } from "../plugins/quote/elements/EditableQuote";
 import { withNormalize } from "../plugins/normalize";
+import {
+  EditableTab,
+  EditableTabList,
+  EditableTabPanel,
+  EditableTabs,
+} from "../plugins/tab-list/elements/editable";
 
 const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
-    children: [{ text: "" }],
+    children: [{ text: "what" }],
+  },
+  {
+    type: NodeType.TABS,
+    children: [
+      {
+        type: NodeType.TAB_LIST,
+        children: [
+          {
+            index: 0,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 1 1" }],
+          },
+          {
+            index: 1,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 2" }],
+          },
+          {
+            index: 2,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 3" }],
+          },
+        ],
+      },
+      {
+        index: 0,
+        type: NodeType.TAB_PANEL,
+        children: [{ text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil repudiandae esse provident praesentium harum, quisquam doloremque animi voluptates vel vero dicta fugit beatae sequi enim iste dolorem eveniet? Possimus, rem." }],
+      },
+      {
+        index: 1,
+        type: NodeType.TAB_PANEL,
+        children: [{ text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias voluptate quisquam delectus ut hic. Tenetur sint odit dignissimos rem, nemo suscipit similique quis voluptatum, eos cupiditate at, praesentium quisquam ea!" }],
+      },
+      {
+        index: 2,
+        type: NodeType.TAB_PANEL,
+        children: [{ text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam deserunt ea similique quod ex? Praesentium aperiam velit deserunt, ipsa enim itaque, earum atque obcaecati rerum perspiciatis ducimus laboriosam dolorum pariatur?" }],
+      },
+    ],
   },
 ];
 
@@ -138,6 +185,14 @@ export const WSGIEditor = ({
         return <EditableQuote {...props} />;
       case NodeType.LINK:
         return <SlateAnchorTag {...props} />;
+      case NodeType.TABS:
+        return <EditableTabs {...props} />;
+      case NodeType.TAB_LIST:
+        return <EditableTabList {...props} />;
+      case NodeType.TAB:
+        return <EditableTab {...props} />;
+      case NodeType.TAB_PANEL:
+        return <EditableTabPanel {...props} />;
       default:
         return <Default {...props} />;
     }
@@ -181,7 +236,8 @@ export const WSGIEditor = ({
     <div className="">
       <Slate
         editor={editor}
-        initialValue={articleValue.length !== 0 ? articleValue : editorValue}
+        // initialValue={articleValue.length !== 0 ? articleValue : editorValue}
+        initialValue={editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type

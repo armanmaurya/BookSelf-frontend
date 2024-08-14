@@ -81,6 +81,28 @@ type Link = {
   children: CustomText[];
 };
 
+type Tabs = {
+  type: "tabs";
+  children: (TabList | TabPanel)[];
+};
+
+type TabList = {
+  type: "tab-list";
+  children: Tab[];
+};
+
+type Tab = {
+  type: "tab";
+  index: number;
+  children: CustomText[];
+};
+
+type TabPanel = {
+  type: "tab-panel";
+  index: number;
+  children: any[];
+};
+
 export type CustomElement =
   | CodeElementType
   | ParagraphElement
@@ -90,7 +112,11 @@ export type CustomElement =
   | UnorderedListElementType
   | ListItemElementType
   | QUOTE
-  | Link;
+  | Link
+  | Tabs
+  | TabList
+  | Tab
+  | TabPanel;
 
 export type FormattedText = {
   text: string;
@@ -144,10 +170,14 @@ export enum NodeType {
   BLOCKQUOTE = "quote",
   LINK = "link",
   IMAGE = "image",
+  TABS = "tabs",
+  TAB_LIST = "tab-list",
+  TAB = "tab",
+  TAB_PANEL = "tab-panel",
 }
 
 export interface EditorContent {
   title: string;
   content: string;
   tags: string[];
-} 
+}

@@ -10,6 +10,8 @@ import { getData } from "@/app/utils";
 import Cookies from "js-cookie";
 import { Editor } from "./editor";
 import { PreviewButton } from "@/components/element/button/PreviewButton";
+import "react-tabs/style/react-tabs.css";
+
 
 export default async function Page({
   params: { id },
