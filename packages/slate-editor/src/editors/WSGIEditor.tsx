@@ -264,7 +264,7 @@ export const WSGIEditor = ({
           <input
             ref={titleRef}
             type="text"
-            className="text-5xl py-2 font-extrabold bg-transparent h-14"
+            className="text-5xl py-2 font-extrabold bg-transparent h-14 w-full"
             onChange={(e) => {
               setTitle(e.target.value);
               debouncedSave(

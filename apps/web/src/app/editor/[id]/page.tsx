@@ -126,7 +126,7 @@ export default async function Page({
   return (
     // <MarkdownEditor/>
     <div>
-      <RNotification />
+      {/* <RNotification /> */}
       {data.is_owner && <PreviewButton id={id} />}
       <Editor initialValue={jsonContent} id={id} />
     </div>

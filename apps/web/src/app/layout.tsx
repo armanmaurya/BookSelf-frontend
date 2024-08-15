@@ -34,11 +34,9 @@ export default function RootLayout({
 
           <ContextProvider>
             <AppBar />
-            <div className="h-full flex">
-              <div className="w-full h-full">
-                <SideBar />
-                <div className="h-full pt-12">{children}</div>
-              </div>
+            <div className="h-full w-full">
+              <SideBar />
+              <div className="h-full pt-12">{children}</div>
             </div>
           </ContextProvider>
         </ThemeProvider>

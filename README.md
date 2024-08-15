@@ -1,7 +1,7 @@
 # Setup
 This portion will guide you to set up project across different apps
 
-Install npm packages at the root level of project
+Run below command at the root level of project
 ```
 yarn install
 ```
