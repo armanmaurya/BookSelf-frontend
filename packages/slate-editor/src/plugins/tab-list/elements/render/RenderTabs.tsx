@@ -4,6 +4,6 @@ import { createContext, useState } from "react";
 import { EditableTabsContext } from "../context";
 import { Tabs } from "../base/Tabs";
 
-export const EditableTabs = (props: RenderElementProps) => {
+export const RenderTabs = (props: RenderElementProps) => {
   return <Tabs {...props} />;
 };

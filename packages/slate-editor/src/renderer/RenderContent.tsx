@@ -22,6 +22,12 @@ import { Descendant, Element } from "slate";
 import { RenderImage } from "../plugins/image/elements/RenderImage";
 import { RenderCode } from "../plugins/code/elements/RenderCode";
 import { RenderQuote } from "../plugins/quote/elements/RenderQuote";
+import {
+  RenderTab,
+  RenderTabList,
+  RenderTabPanel,
+  RenderTabs,
+} from "../plugins/tab-list/elements/render";
 
 export const RenderContent = ({
   value,
@@ -39,7 +45,9 @@ export const RenderContent = ({
           alt=""
         />
       </div> */}
-      <h1 className="text-5xl font-extrabold h-14 flex items-center">{title || "Untitled"}</h1>
+      <h1 className="text-5xl font-extrabold h-14 flex items-center">
+        {title || "Untitled"}
+      </h1>
       <div>
         <RenderEditorStatic value={value} />
       </div>
@@ -112,6 +120,14 @@ const ServerElement = (props: RenderElementProps) => {
       return <RenderQuote {...props} />;
     case NodeType.LINK:
       return <Anchor {...props} />;
+    case NodeType.TABS:
+      return <RenderTabs {...props} />;
+    case NodeType.TAB_LIST:
+      return <RenderTabList {...props} />;
+    case NodeType.TAB:
+      return <RenderTab {...props} />;
+    case NodeType.TAB_PANEL:
+      return <RenderTabPanel {...props} />;
     default:
       return <Default {...props} />;
   }

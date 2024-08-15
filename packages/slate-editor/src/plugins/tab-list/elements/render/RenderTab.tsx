@@ -4,6 +4,6 @@ import { EditableTabsContext } from "../context";
 import { NodeType } from "../../../../types";
 import { Tab } from "../base/Tab";
 
-export const EditableTab = (props: RenderElementProps) => {
+export const RenderTab = (props: RenderElementProps) => {
   return <Tab {...props} />;
 };

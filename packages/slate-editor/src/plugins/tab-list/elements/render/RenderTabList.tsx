@@ -1,6 +1,6 @@
 import { RenderElementProps } from "slate-react";
 import { TabList } from "../base/TabList";
 
-export const EditableTabList = (props: RenderElementProps) => {
+export const RenderTabList = (props: RenderElementProps) => {
   return <TabList {...props} />;
 };
