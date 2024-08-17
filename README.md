@@ -24,4 +24,14 @@ Run with Turbo
 yarn dev --filter=web
 ```
 
+# Git Commands
+Change the Last commit Message
+```
+git commit --amend
+```
+Force Push over the Old commit
+```
+git push --force origin example-branch
+```
+
 

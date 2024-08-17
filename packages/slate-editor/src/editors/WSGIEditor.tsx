@@ -101,22 +101,69 @@ const editorValue: Descendant[] = [
             type: NodeType.TAB,
             children: [{ text: "Tab 3" }],
           },
+          {
+            index: 3,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 4" }],
+          },
+          {
+            index: 4,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 5" }],
+          },
+          {
+            index: 5,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 6" }],
+          },
+          {
+            index: 6,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 7" }],
+          },
+          {
+            index: 7,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 8" }],
+          },
+          {
+            index: 8,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 9" }],
+          },
+          {
+            index: 9,
+            type: NodeType.TAB,
+            children: [{ text: "Tab 10" }],
+          },
         ],
       },
       {
         index: 0,
         type: NodeType.TAB_PANEL,
-        children: [{ text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil repudiandae esse provident praesentium harum, quisquam doloremque animi voluptates vel vero dicta fugit beatae sequi enim iste dolorem eveniet? Possimus, rem." }],
+        children: [
+          {
+            text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil repudiandae esse provident praesentium harum, quisquam doloremque animi voluptates vel vero dicta fugit beatae sequi enim iste dolorem eveniet? Possimus, rem.",
+          },
+        ],
       },
       {
         index: 1,
         type: NodeType.TAB_PANEL,
-        children: [{ text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias voluptate quisquam delectus ut hic. Tenetur sint odit dignissimos rem, nemo suscipit similique quis voluptatum, eos cupiditate at, praesentium quisquam ea!" }],
+        children: [
+          {
+            text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias voluptate quisquam delectus ut hic. Tenetur sint odit dignissimos rem, nemo suscipit similique quis voluptatum, eos cupiditate at, praesentium quisquam ea!",
+          },
+        ],
       },
       {
         index: 2,
         type: NodeType.TAB_PANEL,
-        children: [{ text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam deserunt ea similique quod ex? Praesentium aperiam velit deserunt, ipsa enim itaque, earum atque obcaecati rerum perspiciatis ducimus laboriosam dolorum pariatur?" }],
+        children: [
+          {
+            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam deserunt ea similique quod ex? Praesentium aperiam velit deserunt, ipsa enim itaque, earum atque obcaecati rerum perspiciatis ducimus laboriosam dolorum pariatur?",
+          },
+        ],
       },
     ],
   },

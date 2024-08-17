@@ -13,7 +13,10 @@ export const EditableTab = (props: RenderElementProps) => {
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setIsDragging(true);
-      setStartPos({ x: e.clientX - position.x });
+      const draggableElement = ref.current;
+      if (draggableElement) {
+        setStartPos({ x: draggableElement.getBoundingClientRect().x });
+      }
     },
     [position.x]
   );
@@ -30,6 +33,8 @@ export const EditableTab = (props: RenderElementProps) => {
         setPosition({
           x: newX,
         });
+        const delay = (ms: number) =>
+          new Promise((resolve) => setTimeout(resolve, ms));
 
         // Check for collision
         const draggableElement = ref.current;
@@ -37,80 +42,61 @@ export const EditableTab = (props: RenderElementProps) => {
           const draggableRect = draggableElement.getBoundingClientRect();
           const allDivs = ref.current.parentElement.querySelectorAll("div");
 
-          allDivs.forEach((div) => {
+          allDivs.forEach(async (div) => {
             if (div !== ref.current) {
               const otherRect = div.getBoundingClientRect();
-
-              // console.log(otherRect, draggableRect);
-              if (
-                draggableRect.right >
-                  otherRect.left +
-                    otherRect.width / 2 +
-                    0.25 * otherRect.width &&
-                draggableRect.left <
-                  otherRect.left +
-                    otherRect.width / 2 -
-                    0.25 * otherRect.width &&
-                previousPosition.x - newX < 0
-              ) {
+              if (newX - previousPosition.x > 0) {
                 const currentTransform = window.getComputedStyle(div).transform;
                 const currentTranslateX = parseFloat(
                   currentTransform.split(",")[4]
                 );
-                console.log(currentTranslateX, draggableRect.width);
 
+                // console.log("Forwadring Dragging");
                 div.style.transition = "transform 0.1s";
-                if (currentTranslateX === 0) {
-                  setTimeout(() => {
-                    div.style.transform = `translateX(-${draggableRect.width}px)`;
-                  }, 125);
-                } else if (
-                  Math.round(Math.abs(currentTranslateX)) ===
-                  Math.round(Math.abs(draggableRect.width))
+                if (
+                  draggableRect.right >
+                    otherRect.x +
+                      otherRect.width / 2 +
+                      0.25 * otherRect.width &&
+                  otherRect.x > startPos.x &&
+                  currentTranslateX == 0
                 ) {
-                  setTimeout(() => {
-                    div.style.transform = `translateX(0px)`;
-                  }, 125);
+                  div.style.transform = `translateX(-${draggableRect.width}px)`;
+                } else if (
+                  draggableRect.right > otherRect.left + otherRect.width / 2 &&
+                  otherRect.x - currentTranslateX < startPos.x
+                ) {
+                  div.style.transform = `translateX(0px)`;
                 }
-
-                console.log(currentTransform);
-              } else if (
-                draggableRect.right >
-                  otherRect.left +
-                    otherRect.width / 2 +
-                    0.25 * otherRect.width &&
-                draggableRect.left <
-                  otherRect.left +
-                    otherRect.width / 2 -
-                    0.25 * otherRect.width &&
-                previousPosition.x - newX > 0
-              ) {
+              } else if (newX - previousPosition.x < 0) {
                 const currentTransform = window.getComputedStyle(div).transform;
                 const currentTranslateX = parseFloat(
                   currentTransform.split(",")[4]
                 );
                 div.style.transition = "transform 0.1s";
-                console.log(currentTranslateX, draggableRect.width);
-                if (currentTranslateX === 0) {
-                  setTimeout(() => {
-                    div.style.transform = `translateX(${draggableRect.width}px)`;
-                  }, 125);
-                } else if (
-                  Math.round(Math.abs(currentTranslateX)) ===
-                  Math.round(Math.abs(draggableRect.width))
+                // console.log("Backward Dragging");
+
+                if (
+                  draggableRect.left <
+                    otherRect.x +
+                      (otherRect.width / 2 - 0.25 * otherRect.width) &&
+                  otherRect.x < startPos.x &&
+                  currentTranslateX == 0
                 ) {
-                  setTimeout(() => {
-                    div.style.transform = `translateX(0px)`;
-                  }, 125);
+                  div.style.transform = `translateX(${draggableRect.width}px)`;
+                } else if (
+                  draggableRect.left < otherRect.right - otherRect.width / 2 &&
+                  otherRect.x - currentTranslateX > startPos.x
+                ) {
+                  div.style.transform = `translateX(0px)`;
                 }
-                console.log(currentTransform);
               }
             }
           });
         }
       }
     },
-    [isDragging]
+    [isDragging, position.x]
   );
   const onMouseUp = useCallback(() => {
     if (ref.current && ref.current.parentElement) {
