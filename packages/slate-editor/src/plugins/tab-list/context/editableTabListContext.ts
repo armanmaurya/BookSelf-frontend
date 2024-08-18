@@ -2,10 +2,16 @@
 import { createContext } from "react";
 import { Path } from "slate";
 
+type PathStoredType = Map<number, Path>;
+
 export const EditableTabsListContext = createContext<{
-  dragTabPath: React.MutableRefObject<Path | null>;
-  draggedOverTabPath: React.MutableRefObject<Path | null>;
+  dragStartIndex: number;
+  dragEndIndex: number;
+  setDragStartIndex: (index: number) => void; // Provide the type for setDragStartIndex
+  setDragEndIndex: (index: number) => void; // Provide the type for setDragEndIndex
 }>({
-  dragTabPath: { current: null },
-  draggedOverTabPath: { current: null },
+  dragStartIndex: 0,
+  dragEndIndex: 0,
+  setDragStartIndex: (index: number) => {},
+  setDragEndIndex: (index: number) => {},
 });
