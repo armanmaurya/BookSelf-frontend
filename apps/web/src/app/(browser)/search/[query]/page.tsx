@@ -1,6 +1,6 @@
 import { ArticleCard } from "@/components/blocks/card";
 import { API_ENDPOINT } from "@/app/utils";
-import { Article } from "../../types";
+import { Article } from "../../../types";
 // import { useRouter } from "next/navigation";
 
 

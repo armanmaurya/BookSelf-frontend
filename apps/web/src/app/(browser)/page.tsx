@@ -1,8 +1,8 @@
 import React from "react";
 
-import { ArticleCard } from "../components/blocks/card";
-import { API_ENDPOINT } from "./utils";
-import { Article } from "./types";
+import { ArticleCard } from "../../components/blocks/card";
+import { API_ENDPOINT } from "../utils";
+import { Article } from "../types";
 
 const fetchData = async () => {
   try {

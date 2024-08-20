@@ -7,7 +7,7 @@ export default function Page() {
     <View style={styles.container}>
       <Text style={styles.header}>Natwhat something</Text>
       <StatusBar style="auto" />
-      <Link href="/title-for-you-2">arrticle</Link>
+      <Link href="/hiutle-article-12">arrticle</Link>
     </View>
   );
 }
