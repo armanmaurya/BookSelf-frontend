@@ -143,7 +143,12 @@ const editorValue: Descendant[] = [
         type: NodeType.TAB_PANEL,
         children: [
           {
-            text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil repudiandae esse provident praesentium harum, quisquam doloremque animi voluptates vel vero dicta fugit beatae sequi enim iste dolorem eveniet? Possimus, rem.",
+            type: NodeType.PARAGRAPH,
+            children: [
+              {
+                text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil repudiandae esse provident praesentium harum, quisquam doloremque animi voluptates vel vero dicta fugit beatae sequi enim iste dolorem eveniet? Possimus, rem.",
+              },
+            ],
           },
         ],
       },
@@ -152,7 +157,12 @@ const editorValue: Descendant[] = [
         type: NodeType.TAB_PANEL,
         children: [
           {
-            text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias voluptate quisquam delectus ut hic. Tenetur sint odit dignissimos rem, nemo suscipit similique quis voluptatum, eos cupiditate at, praesentium quisquam ea!",
+            type: NodeType.PARAGRAPH,
+            children: [
+              {
+                text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias voluptate quisquam delectus ut hic. Tenetur sint odit dignissimos rem, nemo suscipit similique quis voluptatum, eos cupiditate at, praesentium quisquam ea!",
+              },
+            ],
           },
         ],
       },
@@ -161,7 +171,8 @@ const editorValue: Descendant[] = [
         type: NodeType.TAB_PANEL,
         children: [
           {
-            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam deserunt ea similique quod ex? Praesentium aperiam velit deserunt, ipsa enim itaque, earum atque obcaecati rerum perspiciatis ducimus laboriosam dolorum pariatur?",
+            type: NodeType.PARAGRAPH,
+            children: [{ text: "Lorem text" }],
           },
         ],
       },

@@ -1,5 +1,5 @@
 "use client";
-import { WSGIEditor } from "@repo/slate-editor/editor";
+import { WSGIEditor } from "@bookself/slate-editor/editor";
 import { Article } from "@/app/types";
 import Cookies from "js-cookie";
 import { useCallback, useState } from "react";
