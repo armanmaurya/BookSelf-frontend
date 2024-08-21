@@ -12,8 +12,8 @@
   "dependencies": {
     "@emotion/css": "^11.11.2",
     "@next/bundle-analyzer": "^14.2.5",
-    "@repo/slate-editor": "*",
-    "@repo/ui": "*",
+    "@bookself/slate-editor": "*",
+    "@bookself/ui": "*",
     "@types/nprogress": "^0.2.3",
     "animate.css": "^4.1.1",
     "emotion": "^11.0.0",

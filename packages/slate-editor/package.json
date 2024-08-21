@@ -1,5 +1,5 @@
 {
-  "name": "@repo/slate-editor",
+  "name": "@bookself/slate-editor",
   "sideEffects": false,
   "version": "0.0.1",
   "description": "A Rich Text Slate Editor",

@@ -1,10 +1,11 @@
 {
-  "name": "frontend",
+  "name": "bookself",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "apps/slate-editor"
   ],
   "repository": {
     "type": "git",
