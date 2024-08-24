@@ -20,6 +20,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   if (!data) {
     return notFound();
   }
+  
 
   const content = data.data.content;
   // console.log();
