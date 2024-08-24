@@ -6,7 +6,7 @@ name: Build And Deploy Web App
 on:
   push:
     branches: [ "main" ]
-    paths: ["apps/web"]
+    paths: ["apps/web/**"]
 jobs:
   build:
     runs-on: ubuntu-latest
