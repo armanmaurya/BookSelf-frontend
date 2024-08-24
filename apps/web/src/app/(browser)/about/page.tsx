@@ -1,6 +1,5 @@
 "use client";
 import { Bars } from "react-loader-spinner";
-import { MyButton } from "@repo/ui";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
