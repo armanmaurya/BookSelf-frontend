@@ -19,6 +19,7 @@ const fetchData = async () => {
   }
 };
 
+
 export default async function Home() {
   const data: Promise<Article>[] = await fetchData();
   // console.log(data);
