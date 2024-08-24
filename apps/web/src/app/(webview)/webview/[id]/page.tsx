@@ -2,7 +2,6 @@
 import { notFound } from "next/navigation";
 import { getData } from "@/app/utils";
 // import { NodeType } from "@/components/slate/types";
-import { EditButton } from "@/components/element/button/EditButton";
 import { cookies } from "next/headers";
 import { Descendant } from "slate";
 import { RenderContent } from "@bookself/slate-editor/renderer";
@@ -20,7 +19,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   if (!data) {
     return notFound();
   }
-  
+
 
   const content = data.data.content;
   // console.log();
