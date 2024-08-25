@@ -6,7 +6,7 @@ name: Build And Deploy Web App
 on:
   push:
     branches: [ "main" ]
-    paths: ["apps/web/**"]
+    paths: ["apps/web/**", "packages/slate-editor/**", "packages/ui/**"]
 
   workflow_dispatch: # Allows manual triggering of the workflow
 jobs:
