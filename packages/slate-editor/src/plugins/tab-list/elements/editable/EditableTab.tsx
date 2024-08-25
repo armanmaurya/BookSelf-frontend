@@ -28,18 +28,26 @@ export const EditableTab = (props: RenderElementProps) => {
 
   const tabContext = useContext(EditableTabsContext);
   const { attributes, children, element } = props;
-  const tabIndex =
-    props.element.type === NodeType.TAB ? props.element.index : null;
+  // const tabIndex =
+    
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setIsDragging(true);
-      tabContext.setActiveIndex(tabIndex as number);
+      tabContext.setActiveIndex((props.element.type === NodeType.TAB ? props.element.index : null) as number);
+      // console.log("Active Index", (props.element.type === NodeType.TAB ? props.element.index : null));
       const draggableElement = ref.current;
-      if (draggableElement) {
+      if (draggableElement && ref.current.parentElement) {
+        const allDivs = ref.current.parentElement.querySelectorAll("div");
+        allDivs.forEach((div, index) => {
+          if (div === ref.current) {
+            tabContext.setActiveIndex(index);
+          } 
+        });
+
         setStartPos({ x: draggableElement.getBoundingClientRect().x });
       }
-      editableTabListContext.setDragStartIndex(tabIndex as number);
+      editableTabListContext.setDragStartIndex((props.element.type === NodeType.TAB ? props.element.index : null) as number);
     },
 
     [position.x]
@@ -208,7 +216,7 @@ export const EditableTab = (props: RenderElementProps) => {
           { at: tab[1], match: (node) => NodeType.TAB === node.type }
         );
         index += 1;
-        console.log("All Tab", tab);
+        // console.log("All Tab", tab);
       }
       index = 0;
       tabContext.setActiveIndex(dragEndIndex);
@@ -219,7 +227,7 @@ export const EditableTab = (props: RenderElementProps) => {
           { at: tabPanel[1], match: (node) => NodeType.TAB_PANEL === node.type }
         );
         index += 1;
-        console.log("All Tab Panel", tabPanel);
+        // console.log("All Tab Panel", tabPanel);
       }
 
       allDivs.forEach((div, index) => {
