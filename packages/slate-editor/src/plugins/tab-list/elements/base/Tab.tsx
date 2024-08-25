@@ -1,5 +1,5 @@
 "use client";
-import { RenderElementProps } from "slate-react";
+import { ReactEditor, RenderElementProps } from "slate-react";
 import { useContext } from "react";
 import { EditableTabsContext } from "../context";
 import { NodeType } from "../../../../types";
@@ -9,6 +9,7 @@ export const Tab = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
   const tabIndex =
     props.element.type === NodeType.TAB ? props.element.index : null;
+  
   return (
     <li
       className={`p-2 hover:cursor-pointer whitespace-nowrap  ${

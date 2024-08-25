@@ -7,6 +7,8 @@ on:
   push:
     branches: [ "main" ]
     paths: ["apps/web/**"]
+
+  workflow_dispatch: # Allows manual triggering of the workflow
 jobs:
   deploy:
     runs-on: self-hosted
@@ -27,8 +29,8 @@ jobs:
         touch apps/web/.env
         echo "${{ secrets.WEB_ENV }}" > apps/web/.env
     - name: Install Dependencies
-      run: yarn install
+      run: yarn install --frozen-lockfile
     - name: Build NextJS Application
       run: yarn workspace web run build
-    - name: Restart PM2
+    - name: Restart APP
       run: pm2 restart frontend-web

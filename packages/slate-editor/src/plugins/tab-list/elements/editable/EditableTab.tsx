@@ -1,10 +1,21 @@
 import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { EditableTabsContext } from "../context";
 import { NodeType } from "../../../../types";
 import { Tab } from "../base/Tab";
 import { EditableTabsListContext } from "../../context/editableTabListContext";
-import { Editor, Path, Transforms } from "slate";
+import {
+  Editor as SlateEditor,
+  Path,
+  Transforms,
+  Element as SlateElement,
+} from "slate";
 
 export const EditableTab = (props: RenderElementProps) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -13,6 +24,7 @@ export const EditableTab = (props: RenderElementProps) => {
   const [previousPosition, setPreviousPosition] = useState({ x: 0 });
   const editableTabListContext = useContext(EditableTabsListContext);
   const editor = useSlateStatic();
+  // console.log(ReactEditor.findPath(editor, props.element));
 
   const tabContext = useContext(EditableTabsContext);
   const { attributes, children, element } = props;
@@ -22,6 +34,7 @@ export const EditableTab = (props: RenderElementProps) => {
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setIsDragging(true);
+      tabContext.setActiveIndex(tabIndex as number);
       const draggableElement = ref.current;
       if (draggableElement) {
         setStartPos({ x: draggableElement.getBoundingClientRect().x });
@@ -135,22 +148,80 @@ export const EditableTab = (props: RenderElementProps) => {
         // if (otherRect.x > startPos.x && currentRect.x > otherRect.x) {
         //   // console.log(otherRect.x, startPos.x);
         //   currentPos += otherRect.width;
-        // } 
+        // }
         // if (otherRect.x < startPos.x) {
         //   currentPos += otherRect.width;
         // }
         // div.style.transform = `translateX(0px)`;
       });
-      console.log(position.x, currentPos);
+      // console.log(position.x, currentPos);
       setPosition({ x: 0 });
       setIsDragging(false);
       const currentpath = ReactEditor.findPath(editor, element);
       const dragEndPath = [...currentpath.slice(0, -1), dragEndIndex];
-      console.log("Current Path", currentpath, "Drag End Path", dragEndPath);
+      // console.log("Current Path", currentpath, "Drag End Path", dragEndPath);
       Transforms.moveNodes(editor, {
         at: currentpath,
         to: dragEndPath as Path,
       });
+      const currentTabPanelPath = [
+        ...currentpath.slice(0, -2),
+        currentpath[currentpath.length - 1] + 1,
+      ];
+      const dragEndTabPanelPath = [
+        ...currentTabPanelPath.slice(0, -1),
+        dragEndIndex + 1,
+      ];
+      console.log(
+        "Current Tab Panel Path",
+        currentTabPanelPath,
+        "Drag End Tab Panel Path",
+        dragEndTabPanelPath
+      );
+      Transforms.moveNodes(editor, {
+        at: currentTabPanelPath,
+        to: dragEndTabPanelPath as Path,
+      });
+
+      const allTab = SlateEditor.nodes(editor, {
+        mode: "lowest",
+        at: Path.parent(currentpath),
+        match(node, path) {
+          return SlateElement.isElement(node) && NodeType.TAB === node.type;
+        },
+      });
+      const allTabPanel = SlateEditor.nodes(editor, {
+        mode: "lowest",
+        at: Path.parent(currentTabPanelPath),
+        match(node, path) {
+          return (
+            SlateElement.isElement(node) && NodeType.TAB_PANEL === node.type
+          );
+        },
+      });
+
+      let index = 0;
+      for (const tab of allTab) {
+        Transforms.setNodes(
+          editor,
+          { index: index },
+          { at: tab[1], match: (node) => NodeType.TAB === node.type }
+        );
+        index += 1;
+        console.log("All Tab", tab);
+      }
+      index = 0;
+      tabContext.setActiveIndex(dragEndIndex);
+      for (const tabPanel of allTabPanel) {
+        Transforms.setNodes(
+          editor,
+          { index: index },
+          { at: tabPanel[1], match: (node) => NodeType.TAB_PANEL === node.type }
+        );
+        index += 1;
+        console.log("All Tab Panel", tabPanel);
+      }
+
       allDivs.forEach((div, index) => {
         const otherRect = div.getBoundingClientRect();
         if (div !== ref.current) {
