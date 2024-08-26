@@ -5,7 +5,7 @@ name: Build And Deploy Web App
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths: ["apps/web/**", "packages/slate-editor/**", "packages/ui/**"]
 
   workflow_dispatch: # Allows manual triggering of the workflow
@@ -19,18 +19,21 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Create .env file
-      run: | 
-        touch apps/web/.env
-        echo "${{ secrets.WEB_ENV }}" > apps/web/.env
-    - name: Install Dependencies
-      run: yarn install --frozen-lockfile
-    - name: Build NextJS Application
-      run: yarn workspace web run build
-    - name: Restart APP
-      run: pm2 restart frontend-web
+      # - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Create .env file
+        run: |
+          touch apps/web/.env
+          echo "${{ secrets.WEB_ENV }}" > apps/web/.env
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Build NextJS Application
+        run: yarn workspace web run build
+      - name: Restart APP
+        run: pm2 restart frontend-web
