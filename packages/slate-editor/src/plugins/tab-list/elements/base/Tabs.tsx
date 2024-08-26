@@ -8,7 +8,7 @@ export const Tabs = (props: RenderElementProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <EditableTabsContext.Provider value={{ activeIndex, setActiveIndex }}>
-      <div className="border rounded-md *:">{children}</div>
-    </EditableTabsContext.Provider>
+      <div className="rounded-md border *:">{children}</div>
+  </EditableTabsContext.Provider>
   );
 };

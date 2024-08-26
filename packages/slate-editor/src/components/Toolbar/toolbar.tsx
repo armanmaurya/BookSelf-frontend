@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MdFormatListNumbered } from "react-icons/md";
 import { toggleList } from "../../plugins/withList/transforms/toggleList";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { PiTabs } from "react-icons/pi";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
@@ -276,6 +277,11 @@ export const SlateToolBar = () => {
             }}
           >
             <FaImage size={20} />
+          </ToolbarButton>
+          <ToolbarButton onClick={() => {
+            SlateCustomEditor.insertTabs(editor);
+          }}>
+            <PiTabs size={25}/>
           </ToolbarButton>
         </div>
         <div className="">

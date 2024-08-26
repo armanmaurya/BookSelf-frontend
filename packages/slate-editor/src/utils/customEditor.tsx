@@ -51,14 +51,11 @@ export const SlateCustomEditor = {
         }
       );
     } else {
-      Transforms.unwrapNodes(
-        editor,
-        {
-          match: (n) =>
-            SlateElement.isElement(n) && n.type === NodeType.BLOCKQUOTE,
-          split: true,
-        },
-      );
+      Transforms.unwrapNodes(editor, {
+        match: (n) =>
+          SlateElement.isElement(n) && n.type === NodeType.BLOCKQUOTE,
+        split: true,
+      });
     }
   },
   toggleMark(editor: SlateEditor, format: string) {
@@ -87,6 +84,59 @@ export const SlateCustomEditor = {
     );
     // Transforms.select(editor, SlateEditor.start(editor, []));
   },
+
+  insertTabs(editor: SlateEditor) {
+    Transforms.insertNodes(editor, {
+      type: NodeType.TABS,
+      children: [
+        {
+          type: NodeType.TAB_LIST,
+          children: [
+            {
+              index: 0,
+              type: NodeType.TAB,
+              children: [{ text: "Tab 1" }],
+            },
+            {
+              index: 1,
+              type: NodeType.TAB,
+              children: [{ text: "Tab 2" }],
+            },
+          ],
+        },
+        {
+          index: 0,
+          type: NodeType.TAB_PANEL,
+          children: [
+            {
+              type: NodeType.PARAGRAPH,
+              children: [
+                {
+                  text: "Tab 111",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          index: 1,
+          type: NodeType.TAB_PANEL,
+          children: [
+            {
+              type: NodeType.PARAGRAPH,
+              children: [
+                {
+                  text: "Tab 222",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  },
+
+
 
   isBlockActive(editor: SlateEditor, format: string) {
     const [match] = SlateEditor.nodes(editor, {
@@ -711,7 +761,9 @@ export const SlateCustomEditor = {
         },
         {
           match: (n) =>
-            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n) && n.type === block,
+            SlateElement.isElement(n) &&
+            SlateEditor.isBlock(editor, n) &&
+            n.type === block,
           at: {
             path: editor.selection.anchor.path,
             offset: text.length,

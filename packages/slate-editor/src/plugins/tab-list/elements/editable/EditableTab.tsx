@@ -1,4 +1,10 @@
-import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
+import {
+  ReactEditor,
+  RenderElementProps,
+  useFocused,
+  useSelected,
+  useSlateStatic,
+} from "slate-react";
 import React, {
   useCallback,
   useContext,
@@ -24,17 +30,22 @@ export const EditableTab = (props: RenderElementProps) => {
   const [previousPosition, setPreviousPosition] = useState({ x: 0 });
   const editableTabListContext = useContext(EditableTabsListContext);
   const editor = useSlateStatic();
+  const selected = useSelected();
+  const focused = useFocused();
   // console.log(ReactEditor.findPath(editor, props.element));
 
   const tabContext = useContext(EditableTabsContext);
   const { attributes, children, element } = props;
   // const tabIndex =
-    
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setIsDragging(true);
-      tabContext.setActiveIndex((props.element.type === NodeType.TAB ? props.element.index : null) as number);
+      tabContext.setActiveIndex(
+        (props.element.type === NodeType.TAB
+          ? props.element.index
+          : null) as number
+      );
       // console.log("Active Index", (props.element.type === NodeType.TAB ? props.element.index : null));
       const draggableElement = ref.current;
       if (draggableElement && ref.current.parentElement) {
@@ -42,12 +53,16 @@ export const EditableTab = (props: RenderElementProps) => {
         allDivs.forEach((div, index) => {
           if (div === ref.current) {
             tabContext.setActiveIndex(index);
-          } 
+          }
         });
 
         setStartPos({ x: draggableElement.getBoundingClientRect().x });
       }
-      editableTabListContext.setDragStartIndex((props.element.type === NodeType.TAB ? props.element.index : null) as number);
+      editableTabListContext.setDragStartIndex(
+        (props.element.type === NodeType.TAB
+          ? props.element.index
+          : null) as number
+      );
     },
 
     [position.x]
@@ -208,27 +223,27 @@ export const EditableTab = (props: RenderElementProps) => {
         },
       });
 
-      let index = 0;
-      for (const tab of allTab) {
-        Transforms.setNodes(
-          editor,
-          { index: index },
-          { at: tab[1], match: (node) => NodeType.TAB === node.type }
-        );
-        index += 1;
-        // console.log("All Tab", tab);
-      }
-      index = 0;
+      // let index = 0;
+      // for (const tab of allTab) {
+      //   Transforms.setNodes(
+      //     editor,
+      //     { index: index },
+      //     { at: tab[1], match: (node) => NodeType.TAB === node.type }
+      //   );
+      //   index += 1;
+      //   // console.log("All Tab", tab);
+      // }
+      // index = 0;
+      // for (const tabPanel of allTabPanel) {
+      //   Transforms.setNodes(
+      //     editor,
+      //     { index: index },
+      //     { at: tabPanel[1], match: (node) => NodeType.TAB_PANEL === node.type }
+      //   );
+      //   index += 1;
+      //   // console.log("All Tab Panel", tabPanel);
+      // }
       tabContext.setActiveIndex(dragEndIndex);
-      for (const tabPanel of allTabPanel) {
-        Transforms.setNodes(
-          editor,
-          { index: index },
-          { at: tabPanel[1], match: (node) => NodeType.TAB_PANEL === node.type }
-        );
-        index += 1;
-        // console.log("All Tab Panel", tabPanel);
-      }
 
       allDivs.forEach((div, index) => {
         const otherRect = div.getBoundingClientRect();
@@ -251,6 +266,30 @@ export const EditableTab = (props: RenderElementProps) => {
   };
 
   useEffect(() => {
+    if (selected) {
+      tabContext.setActiveIndex(
+        (props.element.type === NodeType.TAB
+          ? props.element.index
+          : null) as number
+      );
+      smoothScrollToView(ref);
+    }
+  }, [selected]);
+
+  const smoothScrollToView = (
+    itemRef: React.RefObject<HTMLDivElement>
+  ): void => {
+    if (itemRef.current) {
+      itemRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+
+      });
+    }
+  };
+
+  useEffect(() => {
     if (isDragging) {
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);
@@ -264,6 +303,7 @@ export const EditableTab = (props: RenderElementProps) => {
       window.removeEventListener("mouseup", onMouseUp);
     };
   }, [isDragging, onMouseMove, onMouseUp]);
+
   return (
     <div
       style={{

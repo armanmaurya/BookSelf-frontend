@@ -74,6 +74,7 @@ import {
   EditableTabs,
 } from "../plugins/tab-list/elements/editable";
 import { initialTabs } from "../initialValue/InitialTabs";
+import { withTabs } from "../plugins/tab-list";
 
 const editorValue: Descendant[] = [
   {
@@ -104,12 +105,16 @@ export const WSGIEditor = ({
 }) => {
   const editor = useMemo(
     () =>
-      withNormalize(
-        withImage(
-          withHeadingId(
-            withKeyCommands(
-              withLinks(
-                withShortcuts(withPaste(withReact(withHistory(createEditor()))))
+      withTabs(
+        withNormalize(
+          withImage(
+            withHeadingId(
+              withKeyCommands(
+                withLinks(
+                  withShortcuts(
+                    withPaste(withReact(withHistory(createEditor())))
+                  )
+                )
               )
             )
           )
