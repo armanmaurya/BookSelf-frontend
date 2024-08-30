@@ -24,10 +24,10 @@ export const Tab = (props: RenderElementProps) => {
   return (
     <li
       ref={tabRef}
-      className={`p-2 hover:cursor-pointer mx-1 z-10  ${
+      className={`p-2 hover:cursor-pointer mx-1 whitespace-nowrap ${
         tabContext.activeIndex ===
         (props.element.type === NodeType.TAB ? props.element.index : null)
-          ? "dark:bg-white rounded-md dark:bg-opacity-50 "
+          ? "dark:bg-white rounded-md dark:bg-opacity-50"
           : ""
       }`}
       onMouseDown={(e) => {
@@ -37,7 +37,7 @@ export const Tab = (props: RenderElementProps) => {
             ? props.element.index
             : null) as number)
         ) {
-          e.preventDefault();
+          // e.preventDefault();
           tabContext.setActiveIndex(
             (props.element.type === NodeType.TAB
               ? props.element.index

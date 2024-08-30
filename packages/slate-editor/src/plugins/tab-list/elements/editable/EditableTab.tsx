@@ -23,6 +23,9 @@ import {
   Element as SlateElement,
 } from "slate";
 
+import { IoClose } from "react-icons/io5";
+import { TabEditor } from "../../tab-editor";
+
 export const EditableTab = (props: RenderElementProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0 });
@@ -33,6 +36,7 @@ export const EditableTab = (props: RenderElementProps) => {
   const selected = useSelected();
   const focused = useFocused();
   // console.log(ReactEditor.findPath(editor, props.element));
+  const ref = useRef<HTMLDivElement>(null);
 
   const tabContext = useContext(EditableTabsContext);
   const { attributes, children, element } = props;
@@ -40,6 +44,7 @@ export const EditableTab = (props: RenderElementProps) => {
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      console.log("Mouse Down");
       setIsDragging(true);
       tabContext.setActiveIndex(
         (props.element.type === NodeType.TAB
@@ -63,6 +68,7 @@ export const EditableTab = (props: RenderElementProps) => {
           ? props.element.index
           : null) as number
       );
+      console.log("New Move");
     },
 
     [position.x]
@@ -74,10 +80,9 @@ export const EditableTab = (props: RenderElementProps) => {
   //   path: ReactEditor.findPath(editor, element),
   // });
 
-  const ref = useRef<HTMLDivElement>(null);
-
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
+      console.log("Mouse Move");
       if (isDragging && ref.current) {
         ref.current.style.transition = "none";
 
@@ -86,6 +91,7 @@ export const EditableTab = (props: RenderElementProps) => {
         setPosition({
           x: newX,
         });
+        console.log("Mouse Move");
 
         // Check for collision
         const draggableElement = ref.current;
@@ -273,7 +279,13 @@ export const EditableTab = (props: RenderElementProps) => {
           : null) as number
       );
       smoothScrollToView(ref);
+      window.addEventListener("keydown", keyDownEvent);
+    } else {
+      window.removeEventListener("keydown", keyDownEvent);
     }
+    return () => {
+      window.removeEventListener("keydown", keyDownEvent);
+    };
   }, [selected]);
 
   const smoothScrollToView = (
@@ -284,10 +296,11 @@ export const EditableTab = (props: RenderElementProps) => {
         behavior: "smooth",
         block: "nearest",
         inline: "center",
-
       });
     }
   };
+
+  const onDragButtonClick = () => {};
 
   useEffect(() => {
     if (isDragging) {
@@ -304,6 +317,47 @@ export const EditableTab = (props: RenderElementProps) => {
     };
   }, [isDragging, onMouseMove, onMouseUp]);
 
+  // ########################### Keyboard Event #################################
+  const keyDownEvent = (e: KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      TabEditor.selectPanel(editor);
+    }
+    if (e.shiftKey && e.key === "Enter") {
+      e.preventDefault();
+    }
+    if (e.key === "Delete") {
+      const string = SlateEditor.string(
+        editor,
+        ReactEditor.findPath(editor, element)
+      );
+      if (string.length === 0) {
+        e.preventDefault();
+        TabEditor.removeTab(editor);
+        return;
+      }
+      if (editor.selection?.anchor.offset === string.length) {
+        e.preventDefault();
+      }
+    }
+    if (e.altKey && e.key === "t") {
+      e.preventDefault();
+      TabEditor.insertTab(editor);
+    }
+  };
+  // useEffect(() => {
+  //   if (selected) {
+  //     window.addEventListener("keydown", keyDownEvent);
+  //   } else {
+  //     window.removeEventListener("keydown", keyDownEvent);
+  //   }
+  //   return () => {
+  //     window.removeEventListener("keydown", keyDownEvent);
+  //   };
+  // }, [selected]);
+
+  // ########################### Keyboard Event #################################
+
   return (
     <div
       style={{
@@ -313,10 +367,17 @@ export const EditableTab = (props: RenderElementProps) => {
       ref={ref}
       className="flex"
     >
-      <button contentEditable={false} onMouseDown={onMouseDown}>
+      <button
+        contentEditable={false}
+        onMouseDown={onMouseDown}
+        className="opa"
+        onClick={onDragButtonClick}
+      >
         ⠿
       </button>
       <Tab {...props} />
+
+      {/* <div className="right-2 absolute top-3 bg-black rounded-full"><IoClose/></div> */}
     </div>
   );
 };

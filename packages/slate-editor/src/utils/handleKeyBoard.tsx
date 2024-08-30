@@ -13,6 +13,7 @@ import { insertListItem } from "../plugins/withList/transforms/insertListItem";
 import { outdentList } from "../plugins/withList/transforms/outdentList";
 import { deleteListItem } from "../plugins/withList/transforms/deleteListItem";
 import { ReactEditor } from "slate-react";
+import { TabEditor } from "../plugins/tab-list/tab-editor";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -84,11 +85,18 @@ export const handleKeyBoardFormating = (
         }
     }
   }
+  if (event.altKey) {
+    switch (event.key) {
+      case "Delete":
+        TabEditor.removeTab(editor);
+        break;
+    }
+  }
   if (event.shiftKey) {
     switch (event.key) {
-      case "Enter":
+      case "Enter": 
         event.preventDefault();
-        SlateCustomEditor.insertNewLine(editor);
+        // SlateCustomEditor.insertNewLine(editor);
         break;
       case "Tab":
         event.preventDefault();
@@ -206,16 +214,17 @@ export const handleKeyBoardFormating = (
                 console.log("runned");
                 event.preventDefault();
                 if (text.length === 0) {
-                  SlateCustomEditor.deleteNode(editor);
-                  const tabPanelPath = [
-                    ...match[1].slice(0, -2),
-                    match[1][match[1].length - 1] + 1,
-                  ];
-                  // console.log(SlateEditor.node(editor, tabPanelPath))
-                  Transforms.removeNodes(editor, {
-                    at: tabPanelPath,
-                    match: (n) => n.type === NodeType.TAB_PANEL,
-                  });
+                  // SlateCustomEditor.deleteNode(editor);
+                  // const tabPanelPath = [
+                  //   ...match[1].slice(0, -2),
+                  //   match[1][match[1].length - 1] + 1,
+                  // ];
+                  // // console.log(SlateEditor.node(editor, tabPanelPath))
+                  // Transforms.removeNodes(editor, {
+                  //   at: tabPanelPath,
+                  //   match: (n) => n.type === NodeType.TAB_PANEL,
+                  // });
+                  TabEditor.removeTab(editor);
                 }
                 break;
               default:
@@ -284,22 +293,22 @@ export const handleKeyBoardFormating = (
           event.preventDefault();
           SlateCustomEditor.insertNewLine(editor);
           break;
-        case NodeType.TAB:
-          event.preventDefault();
-          const [currentNode] = SlateEditor.nodes(editor, {
-            match: (n) => n.type === NodeType.TAB,
-            mode: "lowest",
-          });
-          const tabsNode = SlateEditor.nodes(editor, {
-            match: (n) => n.type === NodeType.TABS,
-            mode: "lowest",
-          });
-          const currentTabPanelPath = [
-            ...currentNode[1].slice(0, -2),
-            currentNode[1][currentNode[1].length - 1] + 1,
-          ];
-          const startPath = SlateEditor.start(editor, currentTabPanelPath);
-          Transforms.select(editor, startPath);
+        // case NodeType.TAB:
+        //   event.preventDefault();
+        //   const [currentNode] = SlateEditor.nodes(editor, {
+        //     match: (n) => n.type === NodeType.TAB,
+        //     mode: "lowest",
+        //   });
+        //   const tabsNode = SlateEditor.nodes(editor, {
+        //     match: (n) => n.type === NodeType.TABS,
+        //     mode: "lowest",
+        //   });
+        //   const currentTabPanelPath = [
+        //     ...currentNode[1].slice(0, -2),
+        //     currentNode[1][currentNode[1].length - 1] + 1,
+        //   ];
+        //   const startPath = SlateEditor.start(editor, currentTabPanelPath);
+        //   Transforms.select(editor, startPath);
       }
     }
   }
