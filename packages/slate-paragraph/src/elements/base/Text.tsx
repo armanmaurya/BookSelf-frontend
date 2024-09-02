@@ -1,7 +1,7 @@
 import React from "react";
-import { TextElementProps } from "../../types/text";
+import { ParagraphElementProps } from "../../types/element";
 
-const BaseText = (props: TextElementProps) => {
+const BaseText = (props: ParagraphElementProps) => {
   const { attributes, children, element } = props;
   return <div {...attributes}>{children}</div>;
 };

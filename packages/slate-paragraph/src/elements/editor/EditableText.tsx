@@ -1,10 +1,10 @@
 import BaseText from "../base/Text";
-import { TextElementProps } from "../../types/text";
+import { ParagraphElementProps } from "../../types/element";
 import { useSelected, useSlateStatic } from "slate-react";
 import { useEffect } from "react";
 import { TextEditor } from "../../editor/textEditor";
 
-export const EditableText = (props: TextElementProps) => {
+export const EditableText = (props: ParagraphElementProps) => {
   const selected = useSelected();
   const editor = useSlateStatic();
 

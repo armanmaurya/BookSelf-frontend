@@ -1,6 +1,6 @@
 import { RenderLeafProps } from "slate-react";
 
-export type TextLeafType = {
+export type ParagraphLeafType = {
   type: "text";
   text: string;
   bold?: boolean;
@@ -14,6 +14,6 @@ export type TextLeafType = {
 
 
 
-export type TextLeafProps = Omit<RenderLeafProps, "leaf"> & {
-  leaf: TextLeafType;
+export type ParagraphLeafProps = Omit<RenderLeafProps, "leaf"> & {
+  leaf: ParagraphLeafType;
 };

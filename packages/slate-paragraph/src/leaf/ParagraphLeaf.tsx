@@ -1,7 +1,6 @@
-import { RenderLeafProps } from "slate-react";
-import { TextLeafProps } from "../../types/leaf";
+import { ParagraphLeafProps } from "../types/leaf";
 
-export const TextLeaf = (props: TextLeafProps) => {
+export const ParagraphLeaf = (props: ParagraphLeafProps) => {
   const { text, ...rest } = props.leaf;
   return (
     <span

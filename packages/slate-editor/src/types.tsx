@@ -7,7 +7,7 @@ import {
 } from "slate";
 import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
-import { TextType, TextElementType, TextLeafType } from "@bookself/slate-text";
+import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-text";
 
 // ...
 
@@ -120,9 +120,9 @@ export type CustomElement =
   | TabList
   | Tab
   | TabPanel
-  | TextElementType;
+  | ParagraphElementType;
 
-type CustomText = TextLeafType;
+type CustomText = ParagraphLeafType;
 
 declare module "slate" {
   interface CustomTypes {

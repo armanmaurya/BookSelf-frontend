@@ -1,5 +1,5 @@
 {
-  "name": "@bookself/slate-text",
+  "name": "@bookself/slate-paragraph",
   "version": "1.0.0",
   "description": "A package for handling headings in a Slate editor",
   "main": "dist/index.js",
