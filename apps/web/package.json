@@ -14,7 +14,7 @@
     "@next/bundle-analyzer": "^14.2.5",
     "@bookself/slate-editor": "*",
     "@bookself/ui": "*",
-    "@bookself/slate-text": "*",
+    "@bookself/slate-paragraph": "*",
     "@types/nprogress": "^0.2.3",
     "animate.css": "^4.1.1",
     "emotion": "^11.0.0",

@@ -76,7 +76,7 @@ import {
 import { initialTabs } from "../initialValue/InitialTabs";
 import { withTabs } from "../plugins/tab-list";
 
-import { EditableText, ParagraphLeaf } from "@bookself/slate-text";
+import { EditableText, ParagraphLeaf } from "@bookself/slate-paragraph";
 
 const editorValue: Descendant[] = [
   {
