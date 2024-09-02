@@ -94,7 +94,7 @@ export const handleKeyBoardFormating = (
   }
   if (event.shiftKey) {
     switch (event.key) {
-      case "Enter": 
+      case "Enter":
         event.preventDefault();
         // SlateCustomEditor.insertNewLine(editor);
         break;
@@ -292,6 +292,10 @@ export const handleKeyBoardFormating = (
         case NodeType.CODE:
           event.preventDefault();
           SlateCustomEditor.insertNewLine(editor);
+          break;
+        case NodeType.TEXT:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.TEXT);
           break;
         // case NodeType.TAB:
         //   event.preventDefault();

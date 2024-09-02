@@ -7,6 +7,9 @@ import {
 } from "slate";
 import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
+import { TextType, TextElementType, TextLeafType } from "@bookself/slate-text";
+
+// ...
 
 type CustomEditor = BaseEditor & ReactEditor & CustomEditorType & HistoryEditor;
 type CustomEditorType = { type?: string };
@@ -116,32 +119,10 @@ export type CustomElement =
   | Tabs
   | TabList
   | Tab
-  | TabPanel;
+  | TabPanel
+  | TextElementType;
 
-export type FormattedText = {
-  text: string;
-  bold?: boolean;
-  underlined?: boolean;
-  bold_italic?: boolean;
-  strike?: boolean;
-  title?: boolean;
-  h1?: boolean;
-  h2?: boolean;
-  h3?: boolean;
-  h4?: boolean;
-  h5?: boolean;
-  h6?: boolean;
-
-  italic?: boolean;
-  underline?: boolean;
-  list?: boolean;
-  hr?: boolean;
-  blockquote?: boolean;
-  code?: boolean;
-  type?: string;
-};
-
-type CustomText = FormattedText;
+type CustomText = TextLeafType;
 
 declare module "slate" {
   interface CustomTypes {
@@ -174,6 +155,7 @@ export enum NodeType {
   TAB_LIST = "tab-list",
   TAB = "tab",
   TAB_PANEL = "tab-panel",
+  TEXT = "text",
 }
 
 export interface EditorContent {

@@ -45,6 +45,8 @@ export const EditableTab = (props: RenderElementProps) => {
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       console.log("Mouse Down");
+      e.preventDefault();
+      Transforms.select(editor, SlateEditor.start(editor, ReactEditor.findPath(editor, element)));
       setIsDragging(true);
       tabContext.setActiveIndex(
         (props.element.type === NodeType.TAB
@@ -345,16 +347,6 @@ export const EditableTab = (props: RenderElementProps) => {
       TabEditor.insertTab(editor);
     }
   };
-  // useEffect(() => {
-  //   if (selected) {
-  //     window.addEventListener("keydown", keyDownEvent);
-  //   } else {
-  //     window.removeEventListener("keydown", keyDownEvent);
-  //   }
-  //   return () => {
-  //     window.removeEventListener("keydown", keyDownEvent);
-  //   };
-  // }, [selected]);
 
   // ########################### Keyboard Event #################################
 

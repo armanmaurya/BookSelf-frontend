@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Specify the ECMAScript target version
+    "module": "ES6", // Specify the module system
+    "outDir": "./dist", // Specify the output directory for compiled files
+    "strict": true, // Enable strict type-checking
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES modules
+    "resolveJsonModule": true, // Enable importing JSON files as modules
+    "declaration": true, // Generate declaration files (.d.ts)
+    // "declarationDir": "./types" // Specify the output directory for declaration files
+    "moduleResolution": "node", // Specify module resolution strategy
+    "jsx": "preserve", // Specify JSX code generation
+    "skipLibCheck": true // Skip type checking of all declaration files (*.d.ts)
+  },
+  "include": ["src"], // Specify the source files to be included in the compilation
+  "exclude": ["node_modules"] // Specify the files to be excluded from the compilation
+}
+
+// {
+//     "compilerOptions": {
+//       "allowSyntheticDefaultImports": true,
+//       "composite": true,
+//       "esModuleInterop": true,
+//       "target": "ESNext",
+//       "module": "ESNext",
+//       "moduleResolution": "node",
+//       "resolveJsonModule": true,
+//       "declaration": true,
+//       "declarationMap": true,
+//       // "outDir": "./dist",
+//       // "rootDir": "./src",
+//       "sourceMap": true,
+//       "noImplicitAny": true,
+//       "strict": true,
+//       "allowUnreachableCode": false,
+//       "jsx": "preserve",
+//       "skipLibCheck": true,
+
+//     },
+//     "include": ["src/**/*.ts", "src/**/*.tsx"],
+//     "exclude": ["node_modules"]
+//   }

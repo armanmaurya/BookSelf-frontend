@@ -6,6 +6,7 @@
     "apps/*",
     "packages/*",
     "apps/slate-editor"
+    
   ],
   "repository": {
     "type": "git",
@@ -14,6 +15,7 @@
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web --filter=@bookself/slate-text",
     "build": "turbo run build",
     "lint": "turbo run lint"
   },

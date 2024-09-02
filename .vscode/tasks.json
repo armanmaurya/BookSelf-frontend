@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Start Web Development Server",
+        "type": "shell",
+        "command": "yarn dev:web",
+        "windows": {
+          "command": "yarn dev:web"
+        },
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+      }
+    ]
+  }
+  

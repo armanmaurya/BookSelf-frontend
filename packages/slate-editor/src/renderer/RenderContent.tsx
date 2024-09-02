@@ -8,7 +8,7 @@ import {
   Li,
   Ol,
   Ul,
-  Leaf,
+  DefalutLeaf,
   Default,
   // Image,
   Quote,
@@ -134,5 +134,5 @@ const ServerElement = (props: RenderElementProps) => {
 };
 
 const ServerLeaf = (props: RenderLeafProps) => {
-  return <Leaf {...props} />;
+  return <DefalutLeaf {...props} />;
 };
