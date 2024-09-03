@@ -8,6 +8,7 @@ import {
 import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
 import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-paragraph";
+import { TabLeafType } from "./plugins/tab-list/leaf/TabLeafType";
 
 // ...
 
@@ -122,7 +123,11 @@ export type CustomElement =
   | TabPanel
   | ParagraphElementType;
 
-type CustomText = ParagraphLeafType;
+type DefalutLeafType = {
+  type: "default"
+  text: string
+}
+export type CustomText = ParagraphLeafType | TabLeafType | DefalutLeafType;
 
 declare module "slate" {
   interface CustomTypes {

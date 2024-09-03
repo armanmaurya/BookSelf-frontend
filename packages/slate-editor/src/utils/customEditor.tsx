@@ -11,7 +11,7 @@ import {
   EditorNodesOptions,
   Node,
 } from "slate";
-import { NodeType } from "../types";
+import { CustomText, NodeType } from "../types";
 import { ReactEditor } from "slate-react";
 
 export const SlateCustomEditor = {
@@ -74,7 +74,7 @@ export const SlateCustomEditor = {
         type: NodeType.IMAGE,
         url: "",
         align: "center",
-        children: [{ text: "" }],
+        children: [{ text: "", type: "default" }],
         width: 320,
       },
       {
@@ -95,12 +95,12 @@ export const SlateCustomEditor = {
             {
               index: 0,
               type: NodeType.TAB,
-              children: [{ text: "Tab 1" }],
+              children: [{ text: "Tab 1", type: "tab" }],
             },
             {
               index: 1,
               type: NodeType.TAB,
-              children: [{ text: "Tab 2" }],
+              children: [{ text: "Tab 2", type: "tab" }],
             },
           ],
         },
@@ -145,8 +145,17 @@ export const SlateCustomEditor = {
     return !!match;
   },
   isMarkActive(editor: SlateEditor, format: string) {
-    const marks = SlateEditor.marks(editor);
-    return marks ? marks[format as keyof typeof marks] === true : false;
+    const marks: Omit<Omit<CustomText, "text">, "type"> | null = SlateEditor.marks(editor);
+    // console.log(marks)
+    // return marks marks?.type==="text" ? marks[format as keyof typeof marks]
+    if (marks) {
+      const value = marks[format as keyof typeof marks]
+      console.log(value)
+      return value === true
+
+    }
+    // return marks ? marks[format as keyof typeof marks] === true : false;
+    return false
   },
 
   isHeadingActive(editor: SlateEditor) {
@@ -725,7 +734,7 @@ export const SlateCustomEditor = {
           {
             type: NodeType.LINK,
             url,
-            children: [{ text: "Some Text" }],
+            children: [{ text: "Some Text", type: "default" }],
           },
           { split: true }
         );

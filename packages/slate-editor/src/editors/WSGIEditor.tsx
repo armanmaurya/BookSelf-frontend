@@ -191,7 +191,7 @@ export const WSGIEditor = ({
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     switch (props.leaf.type) {
       case "text":
-        return <ParagraphLeaf {...props} />;
+        return <ParagraphLeaf {...props} leaf={props.leaf}/>;
       default:
         return <DefalutLeaf {...props} />;
     }

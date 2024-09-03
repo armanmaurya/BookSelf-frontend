@@ -18,7 +18,12 @@ export const insertTab = (editor: Editor) => {
       editor,
       {
         type: NodeType.TAB,
-        children: [{ text: "Untitled" }],
+        children: [
+          {
+            type: "tab",
+            text: "Untitled"
+          }
+        ],
         index: currentTabPath[currentTabPath.length - 1] + 1,
       },
       {

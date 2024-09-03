@@ -21,7 +21,7 @@ export const EditableTabList = (props: RenderElementProps) => {
       editor,
       {
         type: NodeType.TAB,
-        children: [{ text: "Untitled" }],
+        children: [{ text: "Untitled", type: "tab" }],
         index: lastchildPath[lastchildPath.length - 1] + 1,
       },
       {
