@@ -28,6 +28,9 @@ import {
   RenderTabPanel,
   RenderTabs,
 } from "../plugins/tab-list/elements/render";
+import { RenderParagraph } from "@bookself/slate-paragraph";
+import { ParagraphLeaf } from "@bookself/slate-paragraph";
+
 
 export const RenderContent = ({
   value,
@@ -92,8 +95,7 @@ export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
 };
 
 const ServerElement = (props: RenderElementProps) => {
-  const { attributes, children, element } = props;
-  switch (element.type) {
+  switch (props.element.type) {
     case NodeType.H1:
       return <H1 {...props} />;
     case NodeType.H2:
@@ -128,11 +130,18 @@ const ServerElement = (props: RenderElementProps) => {
       return <RenderTab {...props} />;
     case NodeType.TAB_PANEL:
       return <RenderTabPanel {...props} />;
+    case NodeType.TEXT:
+      return <RenderParagraph {...props} element={props.element}/>
     default:
       return <Default {...props} />;
   }
 };
 
 const ServerLeaf = (props: RenderLeafProps) => {
-  return <DefalutLeaf {...props} />;
+  switch (props.leaf.type) {
+    case "text":
+      return <ParagraphLeaf {...props} leaf={props.leaf} />
+  default:
+    return <DefalutLeaf {...props} />;
+  }
 };

@@ -1,5 +1,3 @@
 {
     "typescript.tsdk": "node_modules\\typescript\\lib",
-    "editor.cursorSmoothCaretAnimation": "on",
-    "editor.cursorBlinking": "smooth"
 }

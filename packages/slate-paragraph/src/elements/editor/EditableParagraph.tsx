@@ -1,10 +1,10 @@
-import BaseText from "../base/Text";
+import BaseParagraph from "../base/BaseParagraph";
 import { ParagraphElementProps } from "../../types/element";
 import { useSelected, useSlateStatic } from "slate-react";
 import { useEffect } from "react";
 import { TextEditor } from "../../editor/textEditor";
 
-export const EditableText = (props: ParagraphElementProps) => {
+export const EditableParagraph = (props: ParagraphElementProps) => {
   const selected = useSelected();
   const editor = useSlateStatic();
 
@@ -30,6 +30,6 @@ export const EditableText = (props: ParagraphElementProps) => {
   // ########################### KEYDOWN EVENT ###########################
 
   
-  return <BaseText {...props} />;
+  return <BaseParagraph {...props} />;
 };
 

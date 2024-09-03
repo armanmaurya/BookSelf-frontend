@@ -76,7 +76,8 @@ import {
 import { initialTabs } from "../initialValue/InitialTabs";
 import { withTabs } from "../plugins/tab-list";
 
-import { EditableText, ParagraphLeaf } from "@bookself/slate-paragraph";
+import { ParagraphLeaf } from "@bookself/slate-paragraph";
+import {EditableParagraph} from "@bookself/slate-paragraph"
 
 const editorValue: Descendant[] = [
   {
@@ -94,7 +95,6 @@ const editorValue: Descendant[] = [
         text: "what",
         bold: true,
         italic: true,
-        strike: true,
         underline: true,
         fontSize: 30,
       },
@@ -183,7 +183,7 @@ export const WSGIEditor = ({
       case NodeType.TAB_PANEL:
         return <EditableTabPanel {...props} />;
       case NodeType.TEXT:
-        return <EditableText {...props} element={props.element} />;
+        return <EditableParagraph {...props} element={props.element} />;
       default:
         return <Default {...props} />;
     }

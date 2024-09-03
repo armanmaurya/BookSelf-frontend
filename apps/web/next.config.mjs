@@ -7,6 +7,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  experimental: {
+    optimizePackageImports: ['@bookself/slate-editor', "@bookself/slate-paragraph", "slate", "slate-react"]
+  }
 };
 
 export default withBundleAnalyzer(nextConfig);

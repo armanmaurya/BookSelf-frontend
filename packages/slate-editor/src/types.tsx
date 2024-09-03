@@ -108,7 +108,7 @@ type TabPanel = {
 };
 
 export type CustomElement =
-  | CodeElementType
+  CodeElementType
   | ParagraphElement
   | HeadingElement
   | ImageElementType
