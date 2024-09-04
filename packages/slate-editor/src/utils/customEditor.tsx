@@ -676,7 +676,7 @@ export const SlateCustomEditor = {
         {
           type: NodeType.PARAGRAPH,
           align: "left",
-          children: [{ text: "" }],
+          children: [{ text: "", type: "text" }],
         },
         {
           at: nextNode,
@@ -765,7 +765,7 @@ export const SlateCustomEditor = {
         editor,
         {
           type: NodeType.PARAGRAPH,
-          children: [{ text: "" }],
+          children: [{ text: "", type: "text" }],
           align: "left",
         },
         {

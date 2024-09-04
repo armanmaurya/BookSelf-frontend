@@ -28,11 +28,6 @@ type HeadingElement = {
   align: "left" | "center" | "right" | "justify";
   children: CustomText[];
 };
-type ParagraphElement = {
-  type: NodeType.PARAGRAPH | null;
-  align: "left" | "center" | "right" | "justify";
-  children: any[];
-};
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 
 type CodeElementType = {
@@ -109,7 +104,6 @@ type TabPanel = {
 
 export type CustomElement =
   CodeElementType
-  | ParagraphElement
   | HeadingElement
   | ImageElementType
   | OrderedListElementType
@@ -139,7 +133,7 @@ declare module "slate" {
 }
 
 export enum NodeType {
-  PARAGRAPH = "paragraph",
+  // PARAGRAPH = "paragraph",
   H1 = "heading-one",
   H2 = "heading-two",
   H3 = "heading-three",
@@ -160,7 +154,7 @@ export enum NodeType {
   TAB_LIST = "tab-list",
   TAB = "tab",
   TAB_PANEL = "tab-panel",
-  TEXT = "text",
+  PARAGRAPH = "text",
 }
 
 export interface EditorContent {

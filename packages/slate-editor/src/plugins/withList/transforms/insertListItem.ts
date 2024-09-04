@@ -29,7 +29,7 @@ export const insertListItem = (editor: SlateEditor) => {
         {
           type: NodeType.PARAGRAPH,
           align: "left",
-          children: [{ text: "" }],
+          children: [{ text: "", type: "text" }],
         },
         {
           at: nextNode,

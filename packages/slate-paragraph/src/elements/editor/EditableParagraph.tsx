@@ -2,7 +2,7 @@ import BaseParagraph from "../base/BaseParagraph";
 import { ParagraphElementProps } from "../../types/element";
 import { useSelected, useSlateStatic } from "slate-react";
 import { useEffect } from "react";
-import { TextEditor } from "../../editor/textEditor";
+import { ParagraphEditor } from "../../editor/paragraphEditor";
 
 export const EditableParagraph = (props: ParagraphElementProps) => {
   const selected = useSelected();
@@ -23,8 +23,27 @@ export const EditableParagraph = (props: ParagraphElementProps) => {
     if (e.shiftKey) {
       switch (e.key) {
         case "Enter":
-          TextEditor.insertNewLine(editor);
+          ParagraphEditor.insertNewLine(editor);
       }
+    } 
+    if (e.ctrlKey) {
+      switch(e.key) {
+        case "b" :
+          e.preventDefault();
+          ParagraphEditor.toggleMark(editor, "bold");
+          break;
+        case "u":
+          e.preventDefault();
+          ParagraphEditor.toggleMark(editor, "underline");
+          break;
+        case "i":
+          e.preventDefault();
+          ParagraphEditor.toggleMark(editor, "italic")
+      }
+    }
+    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+      e.preventDefault();
+      
     }
   };
   // ########################### KEYDOWN EVENT ###########################

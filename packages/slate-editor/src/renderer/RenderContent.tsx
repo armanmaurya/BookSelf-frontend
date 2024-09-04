@@ -130,7 +130,7 @@ const ServerElement = (props: RenderElementProps) => {
       return <RenderTab {...props} />;
     case NodeType.TAB_PANEL:
       return <RenderTabPanel {...props} />;
-    case NodeType.TEXT:
+    case NodeType.PARAGRAPH:
       return <RenderParagraph {...props} element={props.element}/>
     default:
       return <Default {...props} />;

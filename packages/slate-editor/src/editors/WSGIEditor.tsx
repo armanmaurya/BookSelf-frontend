@@ -83,28 +83,28 @@ const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
-    children: [{ text: "what" }],
+    children: [{ text: "Write Something", type: "text" }],
   },
   // ...initialTabs,
-  {
-    type: NodeType.TEXT,
-    align: "left",
-    children: [
-      {
-        type: "text",
-        text: "what",
-        bold: true,
-        italic: true,
-        underline: true,
-        fontSize: 30,
-      },
-      {
-        type: "text",
-        text: "small",
-        fontSize: 18,
-      },
-    ],
-  },
+  // {
+  //   type: NodeType.TEXT,
+  //   align: "left",
+  //   children: [
+  //     {
+  //       type: "text",
+  //       text: "what",
+  //       bold: true,
+  //       italic: true,
+  //       underline: true,
+  //       fontSize: 30,
+  //     },
+  //     {
+  //       type: "text",
+  //       text: "small",
+  //       fontSize: 18,
+  //     },
+  //   ],
+  // },
 ];
 
 const isFocusAtStart = (path: number[]) => {
@@ -182,7 +182,7 @@ export const WSGIEditor = ({
         return <EditableTab {...props} />;
       case NodeType.TAB_PANEL:
         return <EditableTabPanel {...props} />;
-      case NodeType.TEXT:
+      case NodeType.PARAGRAPH:
         return <EditableParagraph {...props} element={props.element} />;
       default:
         return <Default {...props} />;
@@ -232,8 +232,8 @@ export const WSGIEditor = ({
     <div className="">
       <Slate
         editor={editor}
-        // initialValue={articleValue.length !== 0 ? articleValue : editorValue}
-        initialValue={editorValue}
+        initialValue={articleValue ? articleValue.length !== 0 ? articleValue : editorValue : editorValue}
+        // initialValue={editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type

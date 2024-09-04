@@ -46,7 +46,7 @@ export const withTabs = (editor: Editor) => {
           editor,
           {
             type: NodeType.PARAGRAPH,
-            children: [{ text: "" }],
+            children: [{ text: "", type: "text" }],
             align: "left",
           },
           {

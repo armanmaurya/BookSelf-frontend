@@ -49,18 +49,18 @@ export const handleKeyBoardFormating = (
         event.preventDefault();
         SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
         break;
-      case "b":
-        event.preventDefault();
-        SlateCustomEditor.toggleMark(editor, "bold");
-        break;
-      case "i":
-        event.preventDefault();
-        SlateCustomEditor.toggleMark(editor, "italic");
-        break;
-      case "u":
-        event.preventDefault();
-        SlateCustomEditor.toggleMark(editor, "underline");
-        break;
+      // case "b":
+      //   event.preventDefault();
+      //   SlateCustomEditor.toggleMark(editor, "bold");
+      //   break;
+      // case "i":
+      //   event.preventDefault();
+      //   SlateCustomEditor.toggleMark(editor, "italic");
+      //   break;
+      // case "u":
+      //   event.preventDefault();
+      //   SlateCustomEditor.toggleMark(editor, "underline");
+      //   break;
       case "d":
         event.preventDefault();
         SlateCustomEditor.toggleMark(editor, "code");
@@ -125,12 +125,12 @@ export const handleKeyBoardFormating = (
       if (match[0].type && editor.selection.focus.offset === 0) {
         // If Caret is at the start of Block
         switch (match[0].type) {
-          case NodeType.PARAGRAPH:
-            if (text.length === 0) {
-              event.preventDefault();
-              SlateCustomEditor.deleteNode(editor);
-            }
-            break;
+          // case NodeType.PARAGRAPH:
+          //   if (text.length === 0) {
+          //     event.preventDefault();
+          //     SlateCustomEditor.deleteNode(editor);
+          //   }
+          //   break;
           case NodeType.H1:
             if (text.length === 0) {
               event.preventDefault();
@@ -287,15 +287,15 @@ export const handleKeyBoardFormating = (
           break;
         case NodeType.BLOCKQUOTE:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
+          // SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
           break;
         case NodeType.CODE:
           event.preventDefault();
           SlateCustomEditor.insertNewLine(editor);
           break;
-        case NodeType.TEXT:
+        case NodeType.PARAGRAPH:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.TEXT);
+          // SlateCustomEditor.insertParagraph(editor, NodeType.TEXT);
           break;
         // case NodeType.TAB:
         //   event.preventDefault();
