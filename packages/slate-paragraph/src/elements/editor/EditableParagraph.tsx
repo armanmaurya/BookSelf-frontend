@@ -20,13 +20,13 @@ export const EditableParagraph = (props: ParagraphElementProps) => {
     };
   }, [selected]);
   const keyDownEvent = (e: KeyboardEvent) => {
-    if (e.shiftKey) {
+    if (e.shiftKey && !e.ctrlKey) {
       switch (e.key) {
         case "Enter":
           ParagraphEditor.insertNewLine(editor);
       }
     } 
-    if (e.ctrlKey) {
+    if (e.ctrlKey && !e.shiftKey) {
       switch(e.key) {
         case "b" :
           e.preventDefault();
@@ -41,10 +41,39 @@ export const EditableParagraph = (props: ParagraphElementProps) => {
           ParagraphEditor.toggleMark(editor, "italic")
       }
     }
-    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
-      e.preventDefault();
-      
+    if (e.ctrlKey && e.shiftKey) {
+      const key = e.key.toLowerCase(); // Normalize the key to lowercase
+      switch (key) {
+        case "l":
+          e.preventDefault();
+          ParagraphEditor.alignNode(editor, "left")
+          break;
+        case "e":
+          e.preventDefault();
+          ParagraphEditor.alignNode(editor, "center")
+          break;
+        case "r":
+          e.preventDefault();
+          ParagraphEditor.alignNode(editor, "right")
+          break;
+        case "j": 
+          e.preventDefault();
+          ParagraphEditor.alignNode(editor, "justify")
+          break;
+        case ">":
+          e.preventDefault();
+          ParagraphEditor.increaseFontSize(editor);
+          break;
+        case "<":
+          e.preventDefault();
+          ParagraphEditor.decreaseFontSize(editor);
+          break;
+      }
     }
+    // if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+    //   e.preventDefault();
+    //   ParagraphEditor.insertParagraph(editor);
+    // }
   };
   // ########################### KEYDOWN EVENT ###########################
 

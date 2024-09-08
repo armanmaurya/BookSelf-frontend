@@ -29,6 +29,7 @@ import { MdFormatListNumbered } from "react-icons/md";
 import { toggleList } from "../../plugins/withList/transforms/toggleList";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiTabs } from "react-icons/pi";
+import { AdjustFontSize } from "@bookself/slate-paragraph";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
@@ -66,16 +67,16 @@ export const SlateToolBar = () => {
   return (
     <div
       className="fixed z-10 w-full px-2"
-      onMouseDown={(e) => {
-        e.preventDefault();
-      }}
+      // onMouseDown={(e) => {
+      //   e.preventDefault();
+      // }}
     >
       <div className="w-full border justify-between rounded-full bg-neutral-700 bg-opacity-80 backdrop-blur-sm flex">
         <div
           className="toolbar flex space-x-1"
-          onMouseDown={(e) => {
-            e.preventDefault();
-          }}
+          // onMouseDown={(e) => {
+          //   e.preventDefault();
+          // }}
         >
           <ToolbarButton
             onClick={() => SlateCustomEditor.toggleMark(editor, NodeType.BOLD)}
@@ -283,6 +284,7 @@ export const SlateToolBar = () => {
           }}>
             <PiTabs size={25}/>
           </ToolbarButton>
+          <AdjustFontSize/>
         </div>
         <div className="">
           <div

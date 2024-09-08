@@ -8,7 +8,8 @@ export type ParagraphLeafType = {
   strike?: boolean;
   italic?: boolean;
   code?: boolean;
-  fontSize?: number;
+  fontSize: number;
+  blueSelect?: boolean
 };
 
 

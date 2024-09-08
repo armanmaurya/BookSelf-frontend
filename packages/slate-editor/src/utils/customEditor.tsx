@@ -150,7 +150,7 @@ export const SlateCustomEditor = {
     // return marks marks?.type==="text" ? marks[format as keyof typeof marks]
     if (marks) {
       const value = marks[format as keyof typeof marks]
-      console.log(value)
+      // console.log(value)
       return value === true
 
     }
@@ -676,7 +676,7 @@ export const SlateCustomEditor = {
         {
           type: NodeType.PARAGRAPH,
           align: "left",
-          children: [{ text: "", type: "text" }],
+          children: [{ text: "", type: "text", fontSize: 16 }],
         },
         {
           at: nextNode,
@@ -765,7 +765,7 @@ export const SlateCustomEditor = {
         editor,
         {
           type: NodeType.PARAGRAPH,
-          children: [{ text: "", type: "text" }],
+          children: [{ text: "", type: "text", fontSize: 16 }],
           align: "left",
         },
         {

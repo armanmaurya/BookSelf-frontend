@@ -26,7 +26,7 @@ type HeadingElement = {
     | NodeType.H6
     | null;
   align: "left" | "center" | "right" | "justify";
-  children: CustomText[];
+  children: DefalutLeafType[];
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 

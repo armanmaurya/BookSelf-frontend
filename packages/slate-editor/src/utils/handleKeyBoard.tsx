@@ -14,75 +14,90 @@ import { outdentList } from "../plugins/withList/transforms/outdentList";
 import { deleteListItem } from "../plugins/withList/transforms/deleteListItem";
 import { ReactEditor } from "slate-react";
 import { TabEditor } from "../plugins/tab-list/tab-editor";
+import { ParagraphEditor } from "@bookself/slate-paragraph";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
   editor: SlateEditor
 ) => {
-  if (event.ctrlKey) {
-    switch (event.key) {
-      case "1":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-        break;
-      case "2":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.H2);
-        break;
-      case "3":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.H3);
-        break;
-      case "4":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.H4);
-        break;
-      case "5":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.H5);
-        break;
-      case "6":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.H6);
-        break;
-      case "`":
-        event.preventDefault();
-        SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
-        break;
-      // case "b":
-      //   event.preventDefault();
-      //   SlateCustomEditor.toggleMark(editor, "bold");
-      //   break;
-      // case "i":
-      //   event.preventDefault();
-      //   SlateCustomEditor.toggleMark(editor, "italic");
-      //   break;
-      // case "u":
-      //   event.preventDefault();
-      //   SlateCustomEditor.toggleMark(editor, "underline");
-      //   break;
-      case "d":
-        event.preventDefault();
-        SlateCustomEditor.toggleMark(editor, "code");
-        break;
-      case "Enter":
-        const [match] = SlateEditor.nodes(editor, {
-          match: (n) =>
-            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-        });
+  if (editor.selection) {
+    if (event.ctrlKey && event.shiftKey) {
+      const text = ParagraphEditor.string(editor);
+      switch (event.key) {
+        case "!":
+          event.preventDefault();
+          // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.H1,
+            id: "1",
+            align: "left",
+            children: [{
+              type: "default",
+              text: text
+            }]
+          })
+          console.log(text)
+          break;
+        case "2":
+          event.preventDefault();
+          SlateCustomEditor.toggleBlock(editor, NodeType.H2);
+          break;
+        case "3":
+          event.preventDefault();
+          SlateCustomEditor.toggleBlock(editor, NodeType.H3);
+          break;
+        case "4":
+          event.preventDefault();
+          SlateCustomEditor.toggleBlock(editor, NodeType.H4);
+          break;
+        case "5":
+          event.preventDefault();
+          SlateCustomEditor.toggleBlock(editor, NodeType.H5);
+          break;
+        case "6":
+          event.preventDefault();
+          SlateCustomEditor.toggleBlock(editor, NodeType.H6);
+          break;
+        case "`":
+          event.preventDefault();
+          SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
+          break;
+        // case "b":
+        //   event.preventDefault();
+        //   SlateCustomEditor.toggleMark(editor, "bold");
+        //   break;
+        // case "i":
+        //   event.preventDefault();
+        //   SlateCustomEditor.toggleMark(editor, "italic");
+        //   break;
+        // case "u":
+        //   event.preventDefault();
+        //   SlateCustomEditor.toggleMark(editor, "underline");
+        //   break;
+        case "d":
+          event.preventDefault();
+          SlateCustomEditor.toggleMark(editor, "code");
+          break;
+        case "Enter":
+          const [match] = SlateEditor.nodes(editor, {
+            match: (n) =>
+              SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+          });
 
-        if (match[0].type) {
-          switch (match[0].type) {
-            case NodeType.CODE:
-              event.preventDefault();
-              SlateCustomEditor.insertParagraph(editor, NodeType.CODE);
-              break;
-            case NodeType.BLOCKQUOTE:
-              event.preventDefault();
-              SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
-              break;
+          if (match[0].type) {
+            switch (match[0].type) {
+              case NodeType.CODE:
+                event.preventDefault();
+                SlateCustomEditor.insertParagraph(editor, NodeType.CODE);
+                break;
+              case NodeType.BLOCKQUOTE:
+                event.preventDefault();
+                SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
+                break;
+            }
           }
-        }
+      }
     }
   }
   if (event.altKey) {
@@ -122,6 +137,8 @@ export const handleKeyBoardFormating = (
     console.log(match[0].type);
     if (editor.selection) {
       const text = SlateEditor.string(editor, editor.selection.anchor.path);
+      console.log(text);
+
       if (match[0].type && editor.selection.focus.offset === 0) {
         // If Caret is at the start of Block
         switch (match[0].type) {
@@ -296,6 +313,7 @@ export const handleKeyBoardFormating = (
         case NodeType.PARAGRAPH:
           event.preventDefault();
           // SlateCustomEditor.insertParagraph(editor, NodeType.TEXT);
+          ParagraphEditor.insertParagraph(editor);
           break;
         // case NodeType.TAB:
         //   event.preventDefault();

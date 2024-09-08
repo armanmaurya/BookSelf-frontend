@@ -11,6 +11,10 @@
   display: none;
 }
 
+span:empty::before {
+  content: "\200b"; /* Zero-width space to ensure span has some height */
+}
+
 
 
 ::-webkit-scrollbar-track {

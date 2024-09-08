@@ -76,14 +76,14 @@ import {
 import { initialTabs } from "../initialValue/InitialTabs";
 import { withTabs } from "../plugins/tab-list";
 
-import { ParagraphLeaf } from "@bookself/slate-paragraph";
+import { EditableParagraphLeaf, ParagraphLeaf } from "@bookself/slate-paragraph";
 import {EditableParagraph} from "@bookself/slate-paragraph"
 
 const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
-    children: [{ text: "Write Something", type: "text" }],
+    children: [{ text: "Write Something", type: "text", fontSize: 16 }],
   },
   // ...initialTabs,
   // {
@@ -191,7 +191,8 @@ export const WSGIEditor = ({
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     switch (props.leaf.type) {
       case "text":
-        return <ParagraphLeaf {...props} leaf={props.leaf}/>;
+        // return <ParagraphLeaf {...props} leaf={props.leaf}/>;
+        return <EditableParagraphLeaf {...props} leaf={props.leaf}/>
       default:
         return <DefalutLeaf {...props} />;
     }
