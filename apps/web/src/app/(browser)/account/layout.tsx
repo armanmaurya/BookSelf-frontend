@@ -16,11 +16,12 @@ const Layout = ({
       return "start-security";
     }
   };
+  console.log(currentPath)
   return (
     <div className="h-full w-full flex flex-grow mt-5">
       <div className="w-80 h-full relative">
         <div className={`p-2 h-10 text-center`}>
-          <Link className="cursor-pointer " href="info/">
+          <Link className="cursor-pointer " href="personal-info/">
             Personal info
           </Link>
         </div>

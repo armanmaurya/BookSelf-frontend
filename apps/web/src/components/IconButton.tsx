@@ -51,7 +51,7 @@ export const IconBtn = () => {
               </button> */}
               <li className="rounded dark:bg-neutral-700 p-1.5 w-full bg-slate-100 text-center hover:cursor-pointer">
                 <Link
-                  href="./settings/info"
+                  href="./account/personal-info"
                   onClick={() => {
                     setIsOpened(false);
                   }}

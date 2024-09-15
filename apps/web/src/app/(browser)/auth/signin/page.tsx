@@ -38,7 +38,7 @@ export default async function Login() {
       <div className="flex flex-col items-center justify-center h-full">
         <div className="m-4">
           <Suspense>
-            <GoolgeAuth redirect_path="/account/signin" />
+            <GoolgeAuth redirect_path="/auth/signin" />
           </Suspense>
         </div>
         <div className="w-80 my-3 rounded-full">

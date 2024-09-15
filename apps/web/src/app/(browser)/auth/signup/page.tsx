@@ -11,7 +11,7 @@ export default async function Register() {
       <div className="flex flex-col items-center justify-center h-full">
         <div className="m-4">
           <Suspense>
-            <GoolgeAuth redirect_path="/account/signup" />
+            <GoolgeAuth redirect_path="/auth/signup" />
           </Suspense>
         </div>
         <div className="w-80 my-3 rounded-full">
