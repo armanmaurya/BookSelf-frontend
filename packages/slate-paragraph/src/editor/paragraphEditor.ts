@@ -203,7 +203,7 @@ export const ParagraphEditor = {
         Path.equals(editor.selection.anchor.path, editor.selection.focus.path)
       ) {
         if (marks) {
-          // const currentFontSize: number = marks["fontSize" as keyof typeof marks]
+          return marks["fontSize" as keyof typeof marks]
           // return currentFontSize
         }
       }
