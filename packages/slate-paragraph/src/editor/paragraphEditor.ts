@@ -138,52 +138,58 @@ export const ParagraphEditor = {
     });
   },
   decreaseFontSize(editor: SlateEditor) {
-    if (editor.selection) {
-      if (Range.isExpanded(editor.selection)) {
-        const nodes = SlateEditor.nodes(editor, {
-          match: (n) => Text.isText(n),
-        });
-        for (let node of nodes) {
-          if (node[0].type === ParagraphType) {
-            const anchor: BasePoint = {
-              path: node[1],
-              offset: Path.equals(node[1], editor.selection.anchor.path)
-                ? editor.selection.anchor.offset
-                : 0,
-            };
-            const focus: BasePoint = {
-              path: node[1],
-              offset: Path.isAfter(node[1], editor.selection.focus.path)
-                ? node[0].text.length
-                : editor.selection.focus.offset,
-            };
-            let selection: Range = {
-              anchor: anchor,
-              focus: focus,
-            };
-            Transforms.setNodes(
-              editor,
-              {
-                fontSize: node[0].fontSize - 1,
-              },
-              {
-                at: selection,
-                match: (n) => Text.isText(n),
-                split: true,
-              }
-            );
+    SlateEditor.withoutNormalizing(editor, () => {
+      if (editor.selection) {
+        if (Range.isExpanded(editor.selection)) {
+          const nodes = SlateEditor.nodes(editor, {
+            match: (n) => Text.isText(n),
+          });
+          const rangeRef = SlateEditor.rangeRef(editor, editor.selection, {
+            affinity: "inward",
+          });
+          const [start, end] = Range.edges(editor.selection);
+          const splitMode = "highest";
+          const endAtEndOfNode = SlateEditor.isEnd(editor, end, end.path);
+          Transforms.splitNodes(editor, {
+            match: (n) => Text.isText(n),
+            at: end,
+            mode: splitMode,
+            always: !endAtEndOfNode,
+          });
+          const startAtStartOfNode = SlateEditor.isStart(
+            editor,
+            start,
+            start.path
+          );
+          Transforms.splitNodes(editor, {
+            at: start,
+            mode: splitMode,
+            match: (n) => Text.isText(n),
+            always: !startAtStartOfNode,
+          });
+
+          editor.selection = rangeRef.unref()!;
+          
+
+          for (let node of nodes) {
+            if (node[0].type === ParagraphType) {
+              const properties: Partial<Node> = {};
+              // FIXME: is this correct?
+              const newProperties: Partial<Node> & { [key: string]: unknown } =
+                {
+                  fontSize: node[0].fontSize - 1
+                };
+              editor.apply({
+                type: "set_node",
+                path: node[1],
+                properties,
+                newProperties,
+              });
+            }
           }
         }
-      } else {
       }
-    }
-    // if (marks) {
-    //   let currentFontSize: number = marks["fontSize" as keyof typeof marks]
-    //   if (!currentFontSize) {
-    //     currentFontSize = 16
-    //   }
-    //   SlateEditor.addMark(editor, "fontSize", (currentFontSize - 1))
-    // }
+    });
   },
 
   setFontSize(editor: SlateEditor, size: number) {
