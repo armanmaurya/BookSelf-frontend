@@ -4,9 +4,9 @@ export const ParagraphLeaf = (props: ParagraphLeafProps) => {
   const { text, ...rest } = props.leaf;
   return (
     <span
-      style={{ fontSize: props.leaf.fontSize }}
+      style={{ fontSize: props.leaf.fontSize}}
       {...props.attributes}
-      className={`${props.leaf.bold ? " font-bold " : ""}${
+      className={`transition-all ${props.leaf.bold ? " font-bold " : ""}${
         props.leaf.italic ? " italic " : ""
       }${props.leaf.underline ? " underline " : ""}${
         props.leaf.code

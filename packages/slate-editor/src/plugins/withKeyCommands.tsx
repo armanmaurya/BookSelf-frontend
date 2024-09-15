@@ -33,7 +33,7 @@ export const withKeyCommands = (editor: Editor) => {
 
       if (isVoid(parentNode as CustomElement)) {
         const nextPath = Path.next(parentPath);
-        Transforms.insertNodes(editor,{type: NodeType.PARAGRAPH, align:"left", children: [{text: "", type: "text"}]}, {
+        Transforms.insertNodes(editor,{type: NodeType.PARAGRAPH, align:"left", children: [{text: "", type: "text", fontSize:16}]}, {
           at: nextPath,
           select: true,
         });

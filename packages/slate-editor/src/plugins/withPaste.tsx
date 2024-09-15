@@ -31,7 +31,7 @@ export const withPaste = (editor: SlateEditor) => {
       textlist.forEach((text) => {
         fragement.push({
           type: NodeType.PARAGRAPH,
-          children: [{ text, type: "text" }],
+          children: [{ text, type: "text", fontSize: 16 }],
           align: "left",
         });
       });

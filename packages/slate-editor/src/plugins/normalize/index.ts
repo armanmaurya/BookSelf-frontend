@@ -11,7 +11,7 @@ export const withNormalize = (editor: Editor) => {
       Editor.insertNode(editor, {
         type: NodeType.PARAGRAPH,
         align: "left",
-        children: [{ text: "", type: "text"}],
+        children: [{ text: "", type: "text", fontSize: 16}],
       });
     }
 

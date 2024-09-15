@@ -230,7 +230,7 @@ export const WSGIEditor = ({
   const articleValue: Descendant[] = JSON.parse(initialValue.content);
 
   return (
-    <div className="">
+    <div className="transition-all">
       <Slate
         editor={editor}
         initialValue={articleValue ? articleValue.length !== 0 ? articleValue : editorValue : editorValue}

@@ -6,7 +6,7 @@ const BaseParagraph = (props: ParagraphElementProps) => {
     textAlign: props.element.type === ParagraphType ? props.element.align : "left"
   }
   const { attributes, children, element } = props;
-  return <div style={style} {...attributes} className="whitespace-pre-wrap">{children}</div>;
+  return <div style={style} {...attributes} className="whitespace-pre-wrap paragrah">{children}</div>;
 };
 
 export default BaseParagraph;
