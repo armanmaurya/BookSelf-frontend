@@ -15,6 +15,7 @@ import { deleteListItem } from "../plugins/withList/transforms/deleteListItem";
 import { ReactEditor } from "slate-react";
 import { TabEditor } from "../plugins/tab-list/tab-editor";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
+import { ListEditor } from "../plugins/withList/editor/ListEditor";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -39,29 +40,92 @@ export const handleKeyBoardFormating = (
           })
           console.log(text)
           break;
-        case "2":
+        case "@":
           event.preventDefault();
-          SlateCustomEditor.toggleBlock(editor, NodeType.H2);
+          // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.H2,
+            id: "1",
+            align: "left",
+            children: [{
+              type: "default",
+              text: text
+            }]
+          })
           break;
-        case "3":
+        case "#":
           event.preventDefault();
-          SlateCustomEditor.toggleBlock(editor, NodeType.H3);
+          // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.H3,
+            id: "1",
+            align: "left",
+            children: [{
+              type: "default",
+              text: text
+            }]
+          })
           break;
-        case "4":
+        case "$":
           event.preventDefault();
-          SlateCustomEditor.toggleBlock(editor, NodeType.H4);
+          // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.H4,
+            id: "1",
+            align: "left",
+            children: [{
+              type: "default",
+              text: text
+            }]
+          })
           break;
-        case "5":
+        case "%":
           event.preventDefault();
-          SlateCustomEditor.toggleBlock(editor, NodeType.H5);
+          // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.H5,
+            id: "1",
+            align: "left",
+            children: [{
+              type: "default",
+              text: text
+            }]
+          })
           break;
-        case "6":
+        case "^":
           event.preventDefault();
-          SlateCustomEditor.toggleBlock(editor, NodeType.H6);
+          // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.H6,
+            id: "1",
+            align: "left",
+            children: [{
+              type: "default",
+              text: text
+            }]
+          })
           break;
-        case "`":
+        case "~":
           event.preventDefault();
-          SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
+          console.log("runned")
+          Transforms.removeNodes(editor);
+          Transforms.insertNodes(editor, {
+            type: NodeType.CODE,
+            children: [
+              {
+                text: text,
+                type: "default"
+              }
+            ],
+            language: ""
+
+          })
+          // SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
           break;
         // case "b":
         //   event.preventDefault();
@@ -124,6 +188,7 @@ export const handleKeyBoardFormating = (
     if (editor.selection) {
       event.preventDefault();
       const indentInfo = getIndentPath(editor);
+      console.log(indentInfo)
       if (indentInfo) {
         indentList(editor, indentInfo.to, indentInfo.from, indentInfo.type);
       }
@@ -265,7 +330,7 @@ export const handleKeyBoardFormating = (
   if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-      mode: "lowest",
+      // mode: "lowest",
     });
     console.log(match[0].type);
     if (match[0].type) {
@@ -296,11 +361,12 @@ export const handleKeyBoardFormating = (
           break;
         case NodeType.UNORDERED_LIST:
           event.preventDefault();
-          insertListItem(editor);
+          // insertListItem(editor);
+          ListEditor.insertListItem(editor)
           break;
         case NodeType.ORDERED_LIST:
           event.preventDefault();
-          insertListItem(editor);
+          ListEditor.insertListItem(editor)
           break;
         case NodeType.BLOCKQUOTE:
           event.preventDefault();
@@ -369,7 +435,7 @@ const handleBackspace: IHandleEnterKey = {
   "heading-four": SlateCustomEditor.deleteNode,
   "heading-five": SlateCustomEditor.deleteNode,
   "heading-six": SlateCustomEditor.deleteNode,
-  "list-item": SlateCustomEditor.toggleListBlock,
+  // "list-item": SlateCustomEditor.toggleListBlock,
   // "code": SlateCustomEditor.toggleBlock( NodeType.CODE),
 };
 

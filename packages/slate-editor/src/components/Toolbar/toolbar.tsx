@@ -29,7 +29,9 @@ import { MdFormatListNumbered } from "react-icons/md";
 import { toggleList } from "../../plugins/withList/transforms/toggleList";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiTabs } from "react-icons/pi";
-import { AdjustFontSize } from "@bookself/slate-paragraph";
+import { AdjustFontSize, ParagraphEditor } from "@bookself/slate-paragraph";
+import { ListEditor } from "../../plugins/withList/editor/ListEditor";
+import { Editor } from "slate";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
@@ -67,16 +69,16 @@ export const SlateToolBar = () => {
   return (
     <div
       className="fixed z-10 w-full px-2"
-      // onMouseDown={(e) => {
-      //   e.preventDefault();
-      // }}
+    // onMouseDown={(e) => {
+    //   e.preventDefault();
+    // }}
     >
       <div className="w-full border justify-between rounded-full bg-neutral-700 bg-opacity-80 backdrop-blur-sm flex">
         <div
           className="toolbar flex space-x-1"
-          // onMouseDown={(e) => {
-          //   e.preventDefault();
-          // }}
+        // onMouseDown={(e) => {
+        //   e.preventDefault();
+        // }}
         >
           <ToolbarButton
             onClick={() => SlateCustomEditor.toggleMark(editor, NodeType.BOLD)}
@@ -202,25 +204,22 @@ export const SlateToolBar = () => {
             }}
           >
             <div
-              className={`flex space-x-1 p-1 rounded dark:bg-opacity-15 bg-opacity-15  ${
-                isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
-              }`}
+              className={`flex space-x-1 p-1 rounded dark:bg-opacity-15 bg-opacity-15  ${isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
+                }`}
             >
               <AlignIconSwitcher
                 align={`${SlateCustomEditor.getAlignment(editor)}`}
               />
               <div
-                className={`${
-                  isDropDownActive ? "-rotate-180" : "rotate-0"
-                } transition transform-gpu`}
+                className={`${isDropDownActive ? "-rotate-180" : "rotate-0"
+                  } transition transform-gpu`}
               >
                 <IoIosArrowDown />
               </div>
             </div>
             <div
-              className={`${
-                isDropDownActive ? "" : "hidden"
-              } absolute shadow-lg border rounded-md w-24 flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
+              className={`${isDropDownActive ? "" : "hidden"
+                } absolute shadow-lg border rounded-md w-24 flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
             >
               <ToolbarButton
                 onClick={() => {
@@ -260,14 +259,31 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              toggleList(editor, NodeType.ORDERED_LIST);
+              // toggleList(editor, NodeType.ORDERED_LIST);
+              if (editor.selection) {
+                const currentNode = Editor.node(editor, editor.selection)
+                if (currentNode[0].type === NodeType.PARAGRAPH) {
+                  const text = ParagraphEditor.string(editor)
+                  if (text) {
+                    ListEditor.initializeList(editor, NodeType.ORDERED_LIST, text)
+                  }
+                }
+              }
             }}
           >
             <MdFormatListNumbered size={20} />
           </ToolbarButton>
           <ToolbarButton
             onClick={() => {
-              toggleList(editor, NodeType.UNORDERED_LIST);
+              if (editor.selection) {
+                const currentNode = Editor.node(editor, editor.selection)
+                if (currentNode[0].type === NodeType.PARAGRAPH) {
+                  const text = ParagraphEditor.string(editor)
+                  if (text) {
+                    ListEditor.initializeList(editor, NodeType.UNORDERED_LIST, text)
+                  }
+                }
+              }
             }}
           >
             <FaListUl size={20} />
@@ -282,9 +298,9 @@ export const SlateToolBar = () => {
           <ToolbarButton onClick={() => {
             SlateCustomEditor.insertTabs(editor);
           }}>
-            <PiTabs size={25}/>
+            <PiTabs size={25} />
           </ToolbarButton>
-          <AdjustFontSize/>
+          <AdjustFontSize />
         </div>
         <div className="">
           <div
@@ -307,7 +323,7 @@ export const SlateToolBar = () => {
               >
                 <button
                   className="h-12 hover:bg-red-500 w-full border"
-                  // onClick={onDelete}
+                // onClick={onDelete}
                 >
                   Delete
                 </button>

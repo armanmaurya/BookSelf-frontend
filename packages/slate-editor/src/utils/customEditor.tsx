@@ -441,217 +441,217 @@ export const SlateCustomEditor = {
     }
   },
 
-  toggleListBlock(editor: SlateEditor, format?: string) {
-    const isActive = SlateCustomEditor.isListActive(editor);
-    const { selection } = editor;
-    if (!isActive && format) {
-      if (selection) {
-        Transforms.wrapNodes(editor, {
-          type: NodeType.LIST_ITEM,
-          children: [],
-        });
-        Transforms.wrapNodes(
-          editor,
-          {
-            type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
-            children: [],
-          },
-          {
-            match: (n) => n.type === NodeType.LIST_ITEM,
-          }
-        );
+  // toggleListBlock(editor: SlateEditor, format?: string) {
+  //   const isActive = SlateCustomEditor.isListActive(editor);
+  //   const { selection } = editor;
+  //   if (!isActive && format) {
+  //     if (selection) {
+  //       Transforms.wrapNodes(editor, {
+  //         type: NodeType.LIST_ITEM,
+  //         children: [],
+  //       });
+  //       Transforms.wrapNodes(
+  //         editor,
+  //         {
+  //           type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+  //           children: [],
+  //         },
+  //         {
+  //           match: (n) => n.type === NodeType.LIST_ITEM,
+  //         }
+  //       );
 
-        const [match] = SlateEditor.nodes(editor, {
-          match: (n) =>
-            SlateElement.isElement(n) &&
-            SlateEditor.isBlock(editor, n) &&
-            (n.type === NodeType.UNORDERED_LIST ||
-              n.type === NodeType.ORDERED_LIST),
-        });
+  //       const [match] = SlateEditor.nodes(editor, {
+  //         match: (n) =>
+  //           SlateElement.isElement(n) &&
+  //           SlateEditor.isBlock(editor, n) &&
+  //           (n.type === NodeType.UNORDERED_LIST ||
+  //             n.type === NodeType.ORDERED_LIST),
+  //       });
 
-        let beforeNode;
-        try {
-          const beforeNodePath = Path.previous(match[1]);
-          beforeNode = SlateEditor.node(editor, beforeNodePath);
-        } catch (error) {
-          console.log("Can't Find Before Node");
-        }
+  //       let beforeNode;
+  //       try {
+  //         const beforeNodePath = Path.previous(match[1]);
+  //         beforeNode = SlateEditor.node(editor, beforeNodePath);
+  //       } catch (error) {
+  //         console.log("Can't Find Before Node");
+  //       }
 
-        let afterNode;
-        try {
-          const afterNodePath = Path.next(match[1]);
-          afterNode = SlateEditor.node(editor, afterNodePath);
-        } catch (error) {
-          console.log("Can't Find Before Node");
-        }
+  //       let afterNode;
+  //       try {
+  //         const afterNodePath = Path.next(match[1]);
+  //         afterNode = SlateEditor.node(editor, afterNodePath);
+  //       } catch (error) {
+  //         console.log("Can't Find Before Node");
+  //       }
 
-        let range: BaseRange | undefined;
-        let toSelect: Point | undefined;
+  //       let range: BaseRange | undefined;
+  //       let toSelect: Point | undefined;
 
-        if (beforeNode) {
-          if (
-            beforeNode[0].type === format &&
-            SlateElement.isElement(beforeNode[0])
-          ) {
-            toSelect = {
-              path: [beforeNode[1][0], beforeNode[0].children.length, 0, 0],
-              offset: 0,
-            };
-            range = {
-              anchor: { path: [beforeNode[1][0], 0, 0, 0], offset: 0 },
-              focus: {
-                path: selection.focus.path,
-                offset: 0,
-              },
-            };
-            Transforms.select(editor, range);
-          }
-        }
+  //       if (beforeNode) {
+  //         if (
+  //           beforeNode[0].type === format &&
+  //           SlateElement.isElement(beforeNode[0])
+  //         ) {
+  //           toSelect = {
+  //             path: [beforeNode[1][0], beforeNode[0].children.length, 0, 0],
+  //             offset: 0,
+  //           };
+  //           range = {
+  //             anchor: { path: [beforeNode[1][0], 0, 0, 0], offset: 0 },
+  //             focus: {
+  //               path: selection.focus.path,
+  //               offset: 0,
+  //             },
+  //           };
+  //           Transforms.select(editor, range);
+  //         }
+  //       }
 
-        if (afterNode) {
-          if (
-            afterNode[0].type === format &&
-            SlateElement.isElement(afterNode[0])
-          ) {
-            const listLastItemLength =
-              afterNode[0].children[afterNode[0].children.length - 1]
-                .children[0].children[0].text.length;
-            console.log(listLastItemLength);
+  //       if (afterNode) {
+  //         if (
+  //           afterNode[0].type === format &&
+  //           SlateElement.isElement(afterNode[0])
+  //         ) {
+  //           const listLastItemLength =
+  //             afterNode[0].children[afterNode[0].children.length - 1]
+  //               .children[0].children[0].text.length;
+  //           console.log(listLastItemLength);
 
-            if (range) {
-              if (!Range.isCollapsed(range)) {
-                Transforms.setSelection(editor, {
-                  focus: {
-                    path: [
-                      afterNode[1][0],
-                      afterNode[0].children.length - 1,
-                      0,
-                      0,
-                    ],
-                    offset: listLastItemLength,
-                  },
-                });
-              }
-            } else {
-              toSelect = {
-                path: [selection.anchor.path[0], 0, 0, 0],
-                offset: 0,
-              };
-              Transforms.select(editor, {
-                anchor: {
-                  path: [selection.anchor.path[0], 0, 0, 0],
-                  offset: 0,
-                },
-                focus: {
-                  path: [
-                    afterNode[1][0],
-                    afterNode[0].children.length - 1,
-                    0,
-                    0,
-                  ],
-                  offset: listLastItemLength,
-                },
-              });
-            }
-          }
-        }
+  //           if (range) {
+  //             if (!Range.isCollapsed(range)) {
+  //               Transforms.setSelection(editor, {
+  //                 focus: {
+  //                   path: [
+  //                     afterNode[1][0],
+  //                     afterNode[0].children.length - 1,
+  //                     0,
+  //                     0,
+  //                   ],
+  //                   offset: listLastItemLength,
+  //                 },
+  //               });
+  //             }
+  //           } else {
+  //             toSelect = {
+  //               path: [selection.anchor.path[0], 0, 0, 0],
+  //               offset: 0,
+  //             };
+  //             Transforms.select(editor, {
+  //               anchor: {
+  //                 path: [selection.anchor.path[0], 0, 0, 0],
+  //                 offset: 0,
+  //               },
+  //               focus: {
+  //                 path: [
+  //                   afterNode[1][0],
+  //                   afterNode[0].children.length - 1,
+  //                   0,
+  //                   0,
+  //                 ],
+  //                 offset: listLastItemLength,
+  //               },
+  //             });
+  //           }
+  //         }
+  //       }
 
-        Transforms.unwrapNodes(editor, {
-          match: (n) =>
-            n.type === NodeType.UNORDERED_LIST ||
-            n.type === NodeType.ORDERED_LIST,
-        });
-        Transforms.wrapNodes(
-          editor,
-          {
-            type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
-            children: [],
-          },
-          {
-            match: (n) => n.type === NodeType.LIST_ITEM,
-          }
-        );
-        if (toSelect) {
-          Transforms.select(editor, toSelect);
-        }
+  //       Transforms.unwrapNodes(editor, {
+  //         match: (n) =>
+  //           n.type === NodeType.UNORDERED_LIST ||
+  //           n.type === NodeType.ORDERED_LIST,
+  //       });
+  //       Transforms.wrapNodes(
+  //         editor,
+  //         {
+  //           type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+  //           children: [],
+  //         },
+  //         {
+  //           match: (n) => n.type === NodeType.LIST_ITEM,
+  //         }
+  //       );
+  //       if (toSelect) {
+  //         Transforms.select(editor, toSelect);
+  //       }
 
-        return;
-      }
-    } else {
-      if (editor.selection) {
-        const [beforeMatch] = SlateEditor.nodes(editor, {
-          match: (n) =>
-            SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
-          mode: "lowest",
-        });
+  //       return;
+  //     }
+  //   } else {
+  //     if (editor.selection) {
+  //       const [beforeMatch] = SlateEditor.nodes(editor, {
+  //         match: (n) =>
+  //           SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+  //         mode: "lowest",
+  //       });
 
-        if (
-          beforeMatch[0].type === NodeType.LIST_ITEM &&
-          SlateElement.isElement(beforeMatch[0])
-        ) {
-          const lastChildNode =
-            beforeMatch[0].children[beforeMatch[0].children.length - 1];
-          if (
-            lastChildNode.type === NodeType.UNORDERED_LIST ||
-            lastChildNode.type === NodeType.ORDERED_LIST
-          ) {
-          }
-        }
+  //       if (
+  //         beforeMatch[0].type === NodeType.LIST_ITEM &&
+  //         SlateElement.isElement(beforeMatch[0])
+  //       ) {
+  //         const lastChildNode =
+  //           beforeMatch[0].children[beforeMatch[0].children.length - 1];
+  //         if (
+  //           lastChildNode.type === NodeType.UNORDERED_LIST ||
+  //           lastChildNode.type === NodeType.ORDERED_LIST
+  //         ) {
+  //         }
+  //       }
 
-        let beforeNode;
-        try {
-          const beforeNodePath = Path.previous(beforeMatch[1]);
-          beforeNode = SlateEditor.node(editor, beforeNodePath);
-        } catch (error) {
-          console.log("Can't Find Before Node");
-        }
+  //       let beforeNode;
+  //       try {
+  //         const beforeNodePath = Path.previous(beforeMatch[1]);
+  //         beforeNode = SlateEditor.node(editor, beforeNodePath);
+  //       } catch (error) {
+  //         console.log("Can't Find Before Node");
+  //       }
 
-        if (beforeNode) {
-          if (beforeNode[0].type === NodeType.LIST_ITEM && beforeNode) {
-            Transforms.splitNodes(editor, {
-              at: Path.next(beforeNode[1]),
-            });
-          }
-        }
+  //       if (beforeNode) {
+  //         if (beforeNode[0].type === NodeType.LIST_ITEM && beforeNode) {
+  //           Transforms.splitNodes(editor, {
+  //             at: Path.next(beforeNode[1]),
+  //           });
+  //         }
+  //       }
 
-        // -----------------------------------------------
-        const [afterMatch] = SlateEditor.nodes(editor, {
-          match: (n) =>
-            SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
-          mode: "lowest",
-        });
+  //       // -----------------------------------------------
+  //       const [afterMatch] = SlateEditor.nodes(editor, {
+  //         match: (n) =>
+  //           SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+  //         mode: "lowest",
+  //       });
 
-        let afterNode;
-        try {
-          const afterNodePath = Path.next(afterMatch[1]);
-          afterNode = SlateEditor.node(editor, afterNodePath);
-          console.log(afterNode);
-        } catch (error) {
-          console.log("Can't Find After Node");
-        }
+  //       let afterNode;
+  //       try {
+  //         const afterNodePath = Path.next(afterMatch[1]);
+  //         afterNode = SlateEditor.node(editor, afterNodePath);
+  //         console.log(afterNode);
+  //       } catch (error) {
+  //         console.log("Can't Find After Node");
+  //       }
 
-        if (afterNode) {
-          if (afterNode[0].type === NodeType.LIST_ITEM) {
-            Transforms.splitNodes(editor, {
-              at: afterNode[1],
-            });
-          }
-        }
+  //       if (afterNode) {
+  //         if (afterNode[0].type === NodeType.LIST_ITEM) {
+  //           Transforms.splitNodes(editor, {
+  //             at: afterNode[1],
+  //           });
+  //         }
+  //       }
 
-        // -----------------------------------------------
+  //       // -----------------------------------------------
 
-        Transforms.unwrapNodes(editor, {
-          match: (n) => n.type === NodeType.LIST_ITEM,
-        });
+  //       Transforms.unwrapNodes(editor, {
+  //         match: (n) => n.type === NodeType.LIST_ITEM,
+  //       });
 
-        Transforms.unwrapNodes(editor, {
-          match: (n) =>
-            n.type === NodeType.UNORDERED_LIST ||
-            n.type === NodeType.ORDERED_LIST,
-        });
-      }
-    }
-  },
+  //       Transforms.unwrapNodes(editor, {
+  //         match: (n) =>
+  //           n.type === NodeType.UNORDERED_LIST ||
+  //           n.type === NodeType.ORDERED_LIST,
+  //       });
+  //     }
+  //   }
+  // },
 
   insertListBlock(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isListActive(editor);

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { NodeType } from "../types";
-import { Element as SlateElement, Node as SlateNode } from "slate";
+import { range, Element as SlateElement, Node as SlateNode } from "slate";
 import Prism, { Token } from "prismjs";
 
 export const decorate = ([node, path]: [SlateNode, number[]]) => {
@@ -8,6 +8,7 @@ export const decorate = ([node, path]: [SlateNode, number[]]) => {
 
   if (node.type === NodeType.CODE && SlateElement.isElement(node)) {
     const text = SlateNode.string(node);
+    console.log(text)
     const language = node.language;
 
     if (language) {
@@ -51,6 +52,7 @@ export const decorate = ([node, path]: [SlateNode, number[]]) => {
 
       generateRanges(tokens);
     }
+    console.log(ranges)
 
     return ranges;
   }

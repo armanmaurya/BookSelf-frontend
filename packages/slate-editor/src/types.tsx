@@ -58,7 +58,7 @@ type UnorderedListElementType = {
 
 type ListItemElementType = {
   type: NodeType.LIST_ITEM | null;
-  children: any[];
+  children: ParagraphElementType[];
 };
 
 export type ImageElementType = {

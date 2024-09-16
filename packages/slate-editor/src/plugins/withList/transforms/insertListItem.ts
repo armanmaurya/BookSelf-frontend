@@ -28,8 +28,8 @@ export const insertListItem = (editor: SlateEditor) => {
         editor,
         {
           type: NodeType.PARAGRAPH,
-          align: "left",
           children: [{ text: "", type: "text", fontSize: 16 }],
+          align: "left"
         },
         {
           at: nextNode,
