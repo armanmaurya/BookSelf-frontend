@@ -11,6 +11,9 @@ import {
   BasePoint,
   BaseRange,
   node,
+  NodeMatch,
+  RangeMode,
+  
 } from "slate";
 import { ParagraphElementType, ParagraphType } from "../types/element";
 import { ReactEditor } from "slate-react";
@@ -40,7 +43,7 @@ export const ParagraphEditor = {
     Transforms.insertText(editor, "\n");
   },
 
-  insertParagraph(editor: SlateEditor) {
+  insertParagraph(editor: SlateEditor, options?:NodeInsertNodesOptions<Node>) {
     Transforms.insertNodes(editor, {
       type: "text",
       children: [
@@ -51,7 +54,7 @@ export const ParagraphEditor = {
         },
       ],
       align: "left",
-    });
+    },  options);
   },
   string(editor: SlateEditor): string {
     if (editor.selection) {
@@ -211,3 +214,14 @@ export const ParagraphEditor = {
     }
   },
 };
+
+
+export interface NodeInsertNodesOptions<T extends Node> {
+  at?: Location;
+  match?: NodeMatch<T>;
+  mode?: RangeMode;
+  hanging?: boolean;
+  select?: boolean;
+  voids?: boolean;
+  batchDirty?: boolean;
+}

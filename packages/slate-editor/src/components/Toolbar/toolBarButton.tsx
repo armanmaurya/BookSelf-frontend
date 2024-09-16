@@ -1,11 +1,17 @@
+const defaultonMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  e.preventDefault();
+}
+
 export const ToolbarButton = ({
   isActive,
   onClick,
   children,
+  onMouseDown = defaultonMouseDown
 }: {
   isActive?: boolean;
   onClick: () => void;
   children?: React.ReactNode;
+  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }) => {
   return (
     <button
@@ -18,6 +24,7 @@ export const ToolbarButton = ({
         event.preventDefault();
         onClick();
       }}
+      onMouseDown={onMouseDown}
     >
       {children}
     </button>

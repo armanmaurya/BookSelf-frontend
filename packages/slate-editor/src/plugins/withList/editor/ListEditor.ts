@@ -20,6 +20,7 @@ export const ListEditor = {
       match: (n) => n.type === NodeType.PARAGRAPH && Element.isElement(n),
       at: currentPath
     });
+    console.log(match[0].children.length)
     SlateTransforms.insertNodes(editor, {
       type: (type as NodeType.ORDERED_LIST) || NodeType.UNORDERED_LIST,
       children: [
@@ -35,6 +36,7 @@ export const ListEditor = {
         },
       ],
     }, {
+      select: true,
       at: currentPath
     });
   },

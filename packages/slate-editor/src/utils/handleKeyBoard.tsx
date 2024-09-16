@@ -148,7 +148,7 @@ export const handleKeyBoardFormating = (
             match: (n) =>
               SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
           });
-
+          console.log(match[0].type)
           if (match[0].type) {
             switch (match[0].type) {
               case NodeType.CODE:
@@ -157,11 +157,32 @@ export const handleKeyBoardFormating = (
                 break;
               case NodeType.BLOCKQUOTE:
                 event.preventDefault();
-                SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
+                // SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
+                console.log("runned")
+                ParagraphEditor.insertParagraph(editor, {
+                  match: (n) => n.type === NodeType.BLOCKQUOTE
+                })
                 break;
             }
           }
       }
+    }
+  }
+
+  if (event.ctrlKey && !event.shiftKey && event.key === "Enter") {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) =>
+        SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+    });
+    console.log(match[0].type)
+    switch (match[0].type) {
+      case NodeType.BLOCKQUOTE:
+        event.preventDefault();
+        // SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
+        console.log("runned")
+        ParagraphEditor.insertParagraph(editor, {
+          match: (n) => n.type === NodeType.BLOCKQUOTE
+        })
     }
   }
   if (event.altKey) {
@@ -371,6 +392,7 @@ export const handleKeyBoardFormating = (
         case NodeType.BLOCKQUOTE:
           event.preventDefault();
           // SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
+          ParagraphEditor.insertParagraph(editor)
           break;
         case NodeType.CODE:
           event.preventDefault();
@@ -425,18 +447,6 @@ export const handleKeyBoardFormating = (
       }
     }
   }
-};
-
-const handleBackspace: IHandleEnterKey = {
-  paragraph: SlateCustomEditor.deleteNode,
-  "heading-one": SlateCustomEditor.deleteNode,
-  "heading-two": SlateCustomEditor.deleteNode,
-  "heading-three": SlateCustomEditor.deleteNode,
-  "heading-four": SlateCustomEditor.deleteNode,
-  "heading-five": SlateCustomEditor.deleteNode,
-  "heading-six": SlateCustomEditor.deleteNode,
-  // "list-item": SlateCustomEditor.toggleListBlock,
-  // "code": SlateCustomEditor.toggleBlock( NodeType.CODE),
 };
 
 interface IHandleEnterKey {

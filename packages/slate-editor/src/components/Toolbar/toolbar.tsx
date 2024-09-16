@@ -263,10 +263,8 @@ export const SlateToolBar = () => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
                 if (currentNode[0].type === NodeType.PARAGRAPH) {
-                  const text = ParagraphEditor.string(editor)
-                  if (text) {
-                    ListEditor.initializeList(editor, NodeType.ORDERED_LIST, text)
-                  }
+                    ListEditor.initializeList(editor, NodeType.ORDERED_LIST)
+                  
                 }
               }
             }}
@@ -278,10 +276,8 @@ export const SlateToolBar = () => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
                 if (currentNode[0].type === NodeType.PARAGRAPH) {
-                  const text = ParagraphEditor.string(editor)
-                  if (text) {
-                    ListEditor.initializeList(editor, NodeType.UNORDERED_LIST, text)
-                  }
+                    ListEditor.initializeList(editor, NodeType.UNORDERED_LIST)
+                  
                 }
               }
             }}
