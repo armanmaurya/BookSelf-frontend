@@ -28,87 +28,43 @@ export const handleKeyBoardFormating = (
         case "!":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          Transforms.removeNodes(editor);
-          Transforms.insertNodes(editor, {
-            type: NodeType.H1,
-            id: "1",
-            align: "left",
-            children: [{
-              type: "default",
-              text: text
-            }]
-          })
-          console.log(text)
+          // Transforms.removeNodes(editor);
+          // Transforms.insertNodes(editor, {
+          //   type: NodeType.H1,
+          //   id: "1",
+          //   align: "left",
+          //   children: [{
+          //     type: "default",
+          //     text: text
+          //   }]
+          // })
+          // console.log(text)
+          SlateCustomEditor.toggleHeading(editor, NodeType.H1, text)
           break;
         case "@":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          Transforms.removeNodes(editor);
-          Transforms.insertNodes(editor, {
-            type: NodeType.H2,
-            id: "1",
-            align: "left",
-            children: [{
-              type: "default",
-              text: text
-            }]
-          })
+          SlateCustomEditor.toggleHeading(editor, NodeType.H2, text);
           break;
         case "#":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          Transforms.removeNodes(editor);
-          Transforms.insertNodes(editor, {
-            type: NodeType.H3,
-            id: "1",
-            align: "left",
-            children: [{
-              type: "default",
-              text: text
-            }]
-          })
+          SlateCustomEditor.toggleHeading(editor, NodeType.H3, text);
           break;
         case "$":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          Transforms.removeNodes(editor);
-          Transforms.insertNodes(editor, {
-            type: NodeType.H4,
-            id: "1",
-            align: "left",
-            children: [{
-              type: "default",
-              text: text
-            }]
-          })
+          SlateCustomEditor.toggleHeading(editor, NodeType.H4, text);
           break;
         case "%":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          Transforms.removeNodes(editor);
-          Transforms.insertNodes(editor, {
-            type: NodeType.H5,
-            id: "1",
-            align: "left",
-            children: [{
-              type: "default",
-              text: text
-            }]
-          })
+          SlateCustomEditor.toggleHeading(editor, NodeType.H5, text);
           break;
         case "^":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          Transforms.removeNodes(editor);
-          Transforms.insertNodes(editor, {
-            type: NodeType.H6,
-            id: "1",
-            align: "left",
-            children: [{
-              type: "default",
-              text: text
-            }]
-          })
+          SlateCustomEditor.toggleHeading(editor, NodeType.H6, text);
           break;
         case "~":
           event.preventDefault();

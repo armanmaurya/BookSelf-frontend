@@ -13,6 +13,7 @@ import {
 } from "slate";
 import { CustomText, NodeType } from "../types";
 import { ReactEditor } from "slate-react";
+import { ParagraphEditor } from "@bookself/slate-paragraph";
 
 export const SlateCustomEditor = {
   toggleBlock(editor: SlateEditor, format: string) {
@@ -136,8 +137,6 @@ export const SlateCustomEditor = {
     });
   },
 
-
-
   isBlockActive(editor: SlateEditor, format: string) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === format,
@@ -145,17 +144,17 @@ export const SlateCustomEditor = {
     return !!match;
   },
   isMarkActive(editor: SlateEditor, format: string) {
-    const marks: Omit<Omit<CustomText, "text">, "type"> | null = SlateEditor.marks(editor);
+    const marks: Omit<Omit<CustomText, "text">, "type"> | null =
+      SlateEditor.marks(editor);
     // console.log(marks)
     // return marks marks?.type==="text" ? marks[format as keyof typeof marks]
     if (marks) {
-      const value = marks[format as keyof typeof marks]
+      const value = marks[format as keyof typeof marks];
       // console.log(value)
-      return value === true
-
+      return value === true;
     }
     // return marks ? marks[format as keyof typeof marks] === true : false;
-    return false
+    return false;
   },
 
   isHeadingActive(editor: SlateEditor) {
@@ -719,6 +718,50 @@ export const SlateCustomEditor = {
       //   type: NodeType.LIST_ITEM,
       //   children: [],
       // });
+    }
+  },
+
+  toggleHeading(editor: SlateEditor, type: string, text: string) {
+    if (editor.selection) {
+      const [match] = SlateEditor.nodes(editor, {
+        match: (n) =>
+          SlateElement.isElement(n) &&
+          (n.type === NodeType.H1 ||
+            n.type === NodeType.H2 ||
+            n.type === NodeType.H3 ||
+            n.type === NodeType.H4 ||
+            n.type === NodeType.H5 ||
+            n.type === NodeType.H6 ||
+            n.type === NodeType.PARAGRAPH)
+      });
+      if (match) {
+        if (match[0].type === type) {
+          Transforms.removeNodes(editor);
+          ParagraphEditor.insertParagraph(editor, {}, text)
+          return;
+        }
+        Transforms.removeNodes(editor);
+        Transforms.insertNodes(editor, {
+          type:
+            (type as NodeType.H1) ||
+            NodeType.H2 ||
+            NodeType.H3 ||
+            NodeType.H4 ||
+            NodeType.H5 ||
+            NodeType.H6,
+          id: "1",
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: text,
+            },
+          ],
+        });
+      } 
+      // else {
+      //   ParagraphEditor.insertParagraph(editor, {}, text);
+      // }
     }
   },
 

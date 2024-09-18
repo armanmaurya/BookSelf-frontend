@@ -43,12 +43,12 @@ export const ParagraphEditor = {
     Transforms.insertText(editor, "\n");
   },
 
-  insertParagraph(editor: SlateEditor, options?:NodeInsertNodesOptions<Node>) {
+  insertParagraph(editor: SlateEditor, options?:NodeInsertNodesOptions<Node>, text?:string) {
     Transforms.insertNodes(editor, {
       type: "text",
       children: [
         {
-          text: "",
+          text: text ? text : "",
           type: "text",
           fontSize: 16,
         },
