@@ -13,6 +13,7 @@ import {
   node,
   NodeMatch,
   RangeMode,
+  Editor,
   
 } from "slate";
 import { ParagraphElementType, ParagraphType } from "../types/element";
@@ -136,7 +137,25 @@ export const ParagraphEditor = {
               });
             }
           }
+        } else {
+          const [currentNode] = SlateEditor.nodes(editor, {
+            match: (n) => Text.isText(n)
+          })
+          
+          console.log(currentNode[0])
+          const old_marks = Editor.marks(editor)
+          if (old_marks) {
+            const marks: any = {
+              ...old_marks,
+              ["fontSize"]: old_marks?.fontSize + 1
+            }
+            console.log(marks);
+            
+            editor.marks = marks;
+            editor.onChange()
+          }
         }
+
       }
     });
   },
@@ -189,6 +208,23 @@ export const ParagraphEditor = {
                 newProperties,
               });
             }
+          }
+        } else {
+          const [currentNode] = SlateEditor.nodes(editor, {
+            match: (n) => Text.isText(n)
+          })
+          
+          console.log(currentNode[0])
+          const old_marks = Editor.marks(editor)
+          if (old_marks) {
+            const marks: any = {
+              ...old_marks,
+              ["fontSize"]: old_marks?.fontSize + 1
+            }
+            console.log(marks);
+            
+            editor.marks = marks;
+            editor.onChange()
           }
         }
       }
