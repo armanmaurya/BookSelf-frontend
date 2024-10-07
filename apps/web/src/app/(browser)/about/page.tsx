@@ -11,7 +11,7 @@ export default function Loading() {
     <div className="px-40 pt-12">
       <Image src={binaryBustersLogo} alt="binary Busters Logo" height={200} className="rounded-xl my-2"/>
       <h1 className="text-3xl pb-2">Binary Busters</h1>
-      <p>We're <b>Binary Busters</b> a group of enthusiastic college freshmen eager to innovate and solve problems. Combining deverse skills in coding, design, and strategy, we're driven by curiosity and collaboration. Ready to dive into collaborationn. Ready to dive into challlenges and create impactful solutions, let's make something amazing together!</p>
+      <p>We are <b>Binary Busters</b> a group of enthusiastic college freshmen eager to innovate and solve problems. Combining deverse skills in coding, design, and strategy, we are driven by curiosity and collaboration. Ready to dive into collaborationn. Ready to dive into challlenges and create impactful solutions, lets make something amazing together!</p>
 
       <h1 className="text-3xl pt-6 pb-2">Out Team Consists</h1>
       <ul className="pl-10">
