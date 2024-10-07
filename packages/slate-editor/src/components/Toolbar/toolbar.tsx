@@ -31,7 +31,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiTabs } from "react-icons/pi";
 import { AdjustFontSize, ParagraphEditor } from "@bookself/slate-paragraph";
 import { ListEditor } from "../../plugins/withList/editor/ListEditor";
-import { Editor } from "slate";
+import { Editor, Transforms } from "slate";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
@@ -117,7 +117,8 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleBlock(editor, NodeType.H1);
+              const text = ParagraphEditor.string(editor);
+              SlateCustomEditor.toggleHeading(editor, NodeType.H1, text);
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H1)}
           >
@@ -126,7 +127,8 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleBlock(editor, NodeType.H2);
+              const text = ParagraphEditor.string(editor);
+              SlateCustomEditor.toggleHeading(editor, NodeType.H2, text);
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H2)}
           >
@@ -135,7 +137,8 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleBlock(editor, NodeType.H3);
+              const text = ParagraphEditor.string(editor);
+              SlateCustomEditor.toggleHeading(editor, NodeType.H3, text);
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H3)}
           >
@@ -144,7 +147,8 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleBlock(editor, NodeType.H4);
+              const text = ParagraphEditor.string(editor);
+              SlateCustomEditor.toggleHeading(editor, NodeType.H4, text);
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H4)}
           >
@@ -153,7 +157,8 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleBlock(editor, NodeType.H5);
+              const text = ParagraphEditor.string(editor);
+              SlateCustomEditor.toggleHeading(editor, NodeType.H5, text);
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H5)}
           >
@@ -162,14 +167,29 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleBlock(editor, NodeType.H6);
+              const text = ParagraphEditor.string(editor);
+              SlateCustomEditor.toggleHeading(editor, NodeType.H6, text);
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H6)}
           >
             <LuHeading6 size={23} />
           </ToolbarButton>
           <ToolbarButton
-            onClick={() => SlateCustomEditor.toggleBlock(editor, NodeType.CODE)}
+            onClick={() => {
+              const text = ParagraphEditor.string(editor);
+              Transforms.removeNodes(editor);
+              Transforms.insertNodes(editor, {
+                type: NodeType.CODE,
+                children: [
+                  {
+                    text: text,
+                    type: "default"
+                  }
+                ],
+                language: ""
+
+              })
+            }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.CODE)}
           >
             <FaCode />
@@ -263,8 +283,8 @@ export const SlateToolBar = () => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
                 if (currentNode[0].type === NodeType.PARAGRAPH) {
-                    ListEditor.initializeList(editor, NodeType.ORDERED_LIST)
-                  
+                  ListEditor.initializeList(editor, NodeType.ORDERED_LIST)
+
                 }
               }
             }}
@@ -276,8 +296,8 @@ export const SlateToolBar = () => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
                 if (currentNode[0].type === NodeType.PARAGRAPH) {
-                    ListEditor.initializeList(editor, NodeType.UNORDERED_LIST)
-                  
+                  ListEditor.initializeList(editor, NodeType.UNORDERED_LIST)
+
                 }
               }
             }}
@@ -286,7 +306,7 @@ export const SlateToolBar = () => {
           </ToolbarButton>
           <ToolbarButton
             onClick={() => {
-              SlateCustomEditor.toggleImage(editor);
+              SlateCustomEditor.insertImage(editor);
             }}
           >
             <FaImage size={20} />

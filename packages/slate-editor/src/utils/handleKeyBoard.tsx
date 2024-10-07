@@ -184,12 +184,12 @@ export const handleKeyBoardFormating = (
       if (match[0].type && editor.selection.focus.offset === 0) {
         // If Caret is at the start of Block
         switch (match[0].type) {
-          // case NodeType.PARAGRAPH:
-          //   if (text.length === 0) {
-          //     event.preventDefault();
-          //     SlateCustomEditor.deleteNode(editor);
-          //   }
-          //   break;
+          case NodeType.PARAGRAPH:
+            if (text.length === 0) {
+              event.preventDefault();
+              SlateCustomEditor.deleteNode(editor);
+            }
+            break;
           case NodeType.H1:
             if (text.length === 0) {
               event.preventDefault();

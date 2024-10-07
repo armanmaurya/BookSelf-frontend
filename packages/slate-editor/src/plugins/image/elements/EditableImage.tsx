@@ -54,7 +54,7 @@ export const EditableImage = (props: RenderElementProps) => {
             <span className="px-2">Add Image</span>
           </div>
           {selected && (
-            <div className="absolute justify-center top-10">
+            <div className="absolute justify-center top-10 z-10">
               <div className="rounded bg-neutral-600">
                 <input
                   type="text"
@@ -143,6 +143,12 @@ export const EditableImage = (props: RenderElementProps) => {
                       name="Replace"
                       onClick={() => {
                         setIsOpen(true);
+                      }}
+                    />
+                    <MenuItem
+                      name="Delete"
+                      onClick={() => {
+                        Transforms.removeNodes(editor, { at: path });
                       }}
                     />
                   </ThreeDotsMenu>

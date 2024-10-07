@@ -2,29 +2,31 @@ import { Article } from "@/app/types";
 import { API_ENDPOINT } from "@/app/utils";
 import { ArticleCard } from "@/components/blocks";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import React from "react";
 
 const fetchData = async () => {
   const cookieStore = cookies();
 
-  try {
-    const res = await fetch(`${API_ENDPOINT.article.url}myarticles/`, {
-      headers: {
-        Cookie: `${cookieStore.get("sessionid")?.name}=${
-          cookieStore.get("sessionid")?.value
+  const res = await fetch(`${API_ENDPOINT.article.url}myarticles/`, {
+    headers: {
+      Cookie: `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value
         }`,
-      },
-    });
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    // Handle the error here, e.g. show an error message to the user
-    throw error; // Rethrow the error to propagate it to the caller
+    },
+  });
+  if (!res.ok) {
+    return null;
   }
+  return res.json();
+
+
 };
 
 const Page = async () => {
   const data: Promise<Article>[] = await fetchData();
+  if (!data) {
+    redirect("/auth/signin");
+  }
 
   return (
     <div className="w-full h-full space-y-2 overflow-auto flex flex-col p-2">

@@ -1,17 +1,38 @@
+import { cookies } from "next/headers";
 import React from "react";
 
-const Page = () => {
+interface PersonalInfo {
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
+const Page = async () => {
+  const cookieStore = cookies();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/personal-info/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Cookie: `${cookieStore.get("sessionid")?.name}=${
+        cookieStore.get("sessionid")?.value
+      }`,
+    },
+  });
+  const data: PersonalInfo = await res.json();
+  
+
   return (
-    <div className="flex flex-col space-y-3 items-center">
-      <div className="border rounded-lg p-2 w-[900px] border-gray-600">
+    <div className="flex flex-col space-y-3 lg:items-center">
+      <div className="border rounded-lg p-2 w-full lg:w-[900px] border-gray-600">
         <div className="text-2xl font-bold text-start">Basic info</div>
         <div className="flex flex-col">
           <Item>
             <Label>Name:</Label>
-            <Value>Arman Maurya</Value>
+            <Value>{data.first_name} {data.last_name}</Value>
           </Item>
-          <Devider />
-          <Item>
+          {/* <Devider /> */}
+          {/* <Item>
             <Label>
               Age:
             </Label>
@@ -27,25 +48,25 @@ const Page = () => {
             <Value>
               Male
             </Value>
-          </Item>
+          </Item> */}
         </div>
       </div>
-      <div className="border rounded-lg p-2 w-[900px] border-gray-600">
+      <div className="border rounded-lg p-2 w-full lg:w-[900px] border-gray-600">
       <div className="text-2xl font-bold text-start">Contact info</div>
 
         <Item>
           <Label>Email:</Label>
-          <Value>armanmarya6@gmail.com</Value>
+          <Value>{data.email}</Value>
         </Item>
-        <Devider />
-        <Item>
+        {/* <Devider /> */}
+        {/* <Item>
           <Label>
             Phone
           </Label>
           <Value>
             12345678
           </Value>
-        </Item>
+        </Item> */}
       </div>
       <div className=""></div>
     </div>

@@ -22,7 +22,7 @@ const Layout = ({
     <div className="h-full flex flex-col pt-2 px-2 text-sm">
       <div className="w-80 relative flex font-light">
         <div className={`p-2 h-10 text-center w-32`}>
-          <Link className="cursor-pointer " href="my-article/">
+          <Link className="cursor-pointer " href="my-article/"> 
             My Article
           </Link>
         </div>

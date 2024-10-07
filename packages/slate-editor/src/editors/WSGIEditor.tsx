@@ -76,7 +76,7 @@ import {
 import { initialTabs } from "../initialValue/InitialTabs";
 import { withTabs } from "../plugins/tab-list";
 
-import { EditableParagraphLeaf, ParagraphLeaf } from "@bookself/slate-paragraph";
+import { EditableParagraphLeaf, ParagraphEditor, ParagraphLeaf } from "@bookself/slate-paragraph";
 import {EditableParagraph} from "@bookself/slate-paragraph"
 
 const editorValue: Descendant[] = [
@@ -334,8 +334,13 @@ export const WSGIEditor = ({
           <div
             onMouseDown={(e) => {
               e.preventDefault();
+              ParagraphEditor.insertParagraph(editor, {
+                at: [editor.children.length],
+                select: true,
+              });
             }}
-            ref={ref}
+            // ref={ref}
+            
             className="h-96"
           ></div>
         </div>

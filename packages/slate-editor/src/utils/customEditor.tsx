@@ -68,21 +68,48 @@ export const SlateCustomEditor = {
     }
   },
 
-  toggleImage(editor: SlateEditor) {
-    Transforms.setNodes(
-      editor,
-      {
-        type: NodeType.IMAGE,
-        url: "",
-        align: "center",
-        children: [{ text: "", type: "default" }],
-        width: 320,
-      },
-      {
+  insertImage(editor: SlateEditor) {
+    if (editor.selection) {
+      const [match] = SlateEditor.nodes(editor, {
         match: (n) =>
-          SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+          SlateElement.isElement(n),
+      });
+      console.log(match[0].type)
+      const text = SlateEditor.string(editor, editor.selection.focus.path);
+      if (text.length === 0) {
+        Transforms.removeNodes(editor, { at: match[1] });
+        Transforms.insertNodes(editor, {
+          type: NodeType.IMAGE,
+          url: "",
+          align: "center",
+          children: [{ text: "", type: "default" }],
+          width: 320,
+        })
+      } else {
+        Transforms.insertNodes(editor, {
+          type: NodeType.IMAGE,
+          url: "",
+          align: "center",
+          children: [{ text: "", type: "default" }],
+          width: 320,
+        })
       }
-    );
+
+    }
+    // Transforms.setNodes(
+    //   editor,
+    //   {
+    //     type: NodeType.IMAGE,
+    //     url: "",
+    //     align: "center",
+    //     children: [{ text: "", type: "default" }],
+    //     width: 320,
+    //   },
+    //   {
+    //     match: (n) =>
+    //       SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+    //   }
+    // );
     // Transforms.select(editor, SlateEditor.start(editor, []));
   },
 
@@ -758,7 +785,7 @@ export const SlateCustomEditor = {
             },
           ],
         });
-      } 
+      }
       // else {
       //   ParagraphEditor.insertParagraph(editor, {}, text);
       // }

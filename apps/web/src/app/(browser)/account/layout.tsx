@@ -10,29 +10,39 @@ const Layout = ({
 }) => {
   const currentPath = usePathname();
   const getCurrentPathClass = () => {
-    if (currentPath.includes("info")) {
-      return "start-home";
-    } else if (currentPath.includes("security")) {
-      return "start-security";
+    console.log(window.innerWidth);
+    if (window.innerWidth > 1024) {
+      if (currentPath.includes("info")) {
+        return "start-home";
+      } else if (currentPath.includes("security")) {
+        return "start-security";
+      }
+    } else {
+      if (currentPath.includes("info")) {
+        return "start-my-article";
+      } else if (currentPath.includes("security")) {
+        return "start-subscription";
+      }
     }
+    
   };
   console.log(currentPath)
   return (
-    <div className="h-full w-full flex flex-grow mt-5">
-      <div className="w-80 h-full relative">
-        <div className={`p-2 h-10 text-center`}>
+    <div className="w-full flex flex-grow mt-5 flex-col lg:flex-row">
+      <div className="w-80 h-full relative flex items-center flex-row lg:flex-col">
+        <div className={`p-2 h-10 w-32 text-center`}>
           <Link className="cursor-pointer " href="personal-info/">
             Personal info
           </Link>
         </div>
-        <div className={`p-2 h-10 text-center`}>
+        <div className={`p-2 h-10 w-32 text-center`}>
           <Link href="security/">Security</Link>
         </div>
         <div
-          className={`menu-animation ${getCurrentPathClass()} transition-all absolute h-10 w-full p-2 bg-slate-300 -z-10 bg-opacity-15 rounded-r-full`}
+          className={`menu-animation ${getCurrentPathClass()} transition-all absolute h-10 w-32 lg:w-full p-2 border-b-2 lg:border-0 lg:bg-slate-300 -z-10 lg:bg-opacity-15 lg:rounded-r-full`}
         ></div>
       </div>
-      <div className="h-full w-full text-center">{children}</div>
+      <div className="h-full w-full text-center p-4">{children}</div>
     </div>
   );
 };

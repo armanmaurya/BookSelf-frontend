@@ -33,6 +33,7 @@ export const AdjustFontSize = () => {
 
 
     function preventNonNumericalInput(e: React.KeyboardEvent<HTMLInputElement>) {
+        
         if (
             e.key === 'Backspace' ||
             e.key === 'Delete' ||
@@ -66,16 +67,15 @@ export const AdjustFontSize = () => {
 
     return (
         <div contentEditable={false} className="flex space-x-1">
-            <button onMouseDown={increaseFontSize}>+</button>
+            <button className={`${!fontSize ? "text-gray-600": ""}`} disabled={!fontSize ? true : false} onMouseDown={increaseFontSize}>+</button>
             <div className="flex justify-center items-center">
-                <input className="w-10 rounded-md bg-transparent border h-6"  type="number" inputMode="numeric" value={size} pattern="\d*" onChange={(e) => {
+                <input className={`w-10 rounded-md bg-transparent border h-6 ${!fontSize ? "border-gray-600": "border" }`}  type="number" inputMode="numeric" value={size} pattern="\d*" onChange={(e) => {
                     setSize(e.currentTarget.value)
                 }} onKeyDown={preventNonNumericalInput} onMouseDown={(e) => {
-
-                }} />
+                }} disabled={!fontSize ? true : false}/>
             </div>
 
-            <button onMouseDown={decreaseFontSize}>-</button>
+            <button disabled={!fontSize ? true : false} className={`${!fontSize ? "text-gray-600": ""}`} onMouseDown={decreaseFontSize}>-</button>
         </div>
     )
 }
