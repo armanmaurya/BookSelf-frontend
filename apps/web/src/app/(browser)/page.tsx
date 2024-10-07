@@ -3,6 +3,7 @@ import React from "react";
 import { ArticleCard } from "../../components/blocks/card";
 import { API_ENDPOINT } from "../utils";
 import { Article } from "../types";
+import { NewArticleButton } from "@/components/newArticleBtn";
 
 const fetchData = async () => {
   try {
@@ -20,8 +21,6 @@ const fetchData = async () => {
 };
 
 
-
-
 export default async function Home() {
   const data: Promise<Article>[] = await fetchData();
   // console.log(data);
@@ -35,6 +34,7 @@ export default async function Home() {
           return <ArticleCard key={article.id} data={article} />;
         })}
       </div>
+      <NewArticleButton/>
       {/* <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
         Latest Article
       </div> */}
