@@ -35,10 +35,10 @@ const Page = async () => {
       {data.map(async (articlePromise) => {
         const article = await articlePromise;
         return (
-          <div className="w-full flex flex-col overflow-auto relative">
+          <div key={article.id} className="w-full flex flex-col overflow-auto relative">
             {" "}
             <DeleteButton slug={article.slug}/>
-            <ArticleCard key={article.id} data={article} />
+            <ArticleCard data={article} />
           </div>
         );
       })}
