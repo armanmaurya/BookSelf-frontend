@@ -53,9 +53,9 @@ export const AdjustFontSize = () => {
             }
     
         }
-    })
+    }, [])
 
-    // console.log("isDisabled", disabled)
+    console.log("isDisabled", disabled)
 
 
 
