@@ -73,7 +73,7 @@ export const SlateToolBar = () => {
     //   e.preventDefault();
     // }}
     >
-      <div className="w-full border justify-between rounded-full bg-neutral-700 bg-opacity-80 backdrop-blur-sm flex">
+      <div className="w-full border justify-between rounded-full bg-slate-100 dark:bg-neutral-700 bg-opacity-80 backdrop-blur-sm flex">
         <div
           className="toolbar flex space-x-1"
         // onMouseDown={(e) => {

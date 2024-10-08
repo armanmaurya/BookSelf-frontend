@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useCallback, useState } from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { Store } from "react-notifications-component";
+import { PreviewButton } from "@/components/element/button/PreviewButton";
 
 export const Editor = ({
   initialValue,
@@ -87,6 +88,10 @@ export const Editor = ({
     }
   };
   return (
-    <WSGIEditor onChange={UpdateContent} editorContent={initialValue} id={slug} />
+    <div>
+      <PreviewButton id={articleSlug} />
+
+      <WSGIEditor onChange={UpdateContent} editorContent={initialValue} id={slug} />
+    </div>
   );
 };

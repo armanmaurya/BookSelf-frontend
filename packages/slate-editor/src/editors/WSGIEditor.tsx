@@ -83,7 +83,7 @@ const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
-    children: [{ text: "Write Something", type: "text", fontSize: 16 }],
+    children: [{ text: "", type: "text", fontSize: 16 }],
   },
   // ...initialTabs,
   // {
@@ -293,6 +293,7 @@ export const WSGIEditor = ({
 
           {/* <TagInput id={id} initialTags={initialValue.tags} /> */}
           <Editable
+          placeholder="Start Writing..."
             decorate={useCallback(decorate, [])}
             spellCheck
             autoFocus

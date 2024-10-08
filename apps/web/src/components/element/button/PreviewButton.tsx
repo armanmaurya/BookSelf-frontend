@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const PreviewButton = ({ id }: { id: string }) => {
+export const PreviewButton = ({ id }: { id: string|null }) => {
   return (
     <>
       <Link

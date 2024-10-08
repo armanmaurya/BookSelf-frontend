@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from "react"
 import { ReactEditor, useSlate, useSlateStatic } from "slate-react"
 import { ParagraphEditor } from "../editor/paragraphEditor";
+import { Editor, Element } from "slate";
 
 export const AdjustFontSize = () => {
     const editor = useSlateStatic();
-    const fontSize = ParagraphEditor.getFontSize(editor) 
+    const fontSize = ParagraphEditor.getFontSize(editor)
     const [size, setSize] = useState(`${fontSize}`)
+    const [disabled, setIsDisabled] = useState(false)
     const increaseFontSize = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         ParagraphEditor.increaseFontSize(editor)
@@ -30,10 +32,35 @@ export const AdjustFontSize = () => {
         ParagraphEditor.setFontSize(editor, size);
     }
 
+    const nodes = Editor.nodes(
+        editor, {
+        match: n => Element.isElement(n),
+        mode: "lowest"
+    }
+    )
+
+    useEffect(() => {
+        for (const [node, path] of nodes) {
+            // console.log("node", node)
+            if (node.type !== "text") {
+                if (!disabled) {
+                    setIsDisabled(true);
+                } 
+            } else {
+                if (disabled) {
+                    setIsDisabled(false);
+                }
+            }
+    
+        }
+    })
+
+    // console.log("isDisabled", disabled)
+
 
 
     function preventNonNumericalInput(e: React.KeyboardEvent<HTMLInputElement>) {
-        
+
         if (
             e.key === 'Backspace' ||
             e.key === 'Delete' ||
@@ -59,7 +86,7 @@ export const AdjustFontSize = () => {
     }
 
     useEffect(() => {
-        console.log("fontSize", fontSize)
+        // console.log("fontSize", fontSize)
         setSize(`${fontSize}`)
     }, [fontSize])
 
@@ -67,15 +94,15 @@ export const AdjustFontSize = () => {
 
     return (
         <div contentEditable={false} className="flex space-x-1">
-            <button className={`${!fontSize ? "text-gray-600": ""}`} disabled={!fontSize ? true : false} onMouseDown={increaseFontSize}>+</button>
+            <button className={`${disabled ? "text-gray-600" : ""}`} disabled={disabled} onMouseDown={increaseFontSize}>+</button>
             <div className="flex justify-center items-center">
-                <input className={`w-10 rounded-md bg-transparent border h-6 ${!fontSize ? "border-gray-600": "border" }`}  type="number" inputMode="numeric" value={size} pattern="\d*" onChange={(e) => {
+                <input className={`w-10 rounded-md bg-transparent border h-6 ${disabled ? "border-gray-600" : "border"}`} type="number" inputMode="numeric" value={size} pattern="\d*" onChange={(e) => {
                     setSize(e.currentTarget.value)
                 }} onKeyDown={preventNonNumericalInput} onMouseDown={(e) => {
-                }} disabled={!fontSize ? true : false}/>
+                }} disabled={disabled} />
             </div>
 
-            <button disabled={!fontSize ? true : false} className={`${!fontSize ? "text-gray-600": ""}`} onMouseDown={decreaseFontSize}>-</button>
+            <button disabled={disabled} className={`${disabled ? "text-gray-600" : ""}`} onMouseDown={decreaseFontSize}>-</button>
         </div>
     )
 }
