@@ -34,4 +34,7 @@ Force Push over the Old commit
 git push --force origin example-branch
 ```
 
+# TO-DO
+- [ ] Math Support
+- [ ] Mermaid Support
 
