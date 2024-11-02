@@ -15,6 +15,7 @@
   "react-native": "src/index.ts",
   "devDependencies": {
     "@bookself/slate-paragraph": "*",
+    "@bookself/slate-code": "*",
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.0",

@@ -1,10 +1,8 @@
-import { ParagraphEditor } from "./editor/paragraphEditor";
-
-// #########################Components######################
-export {EditableParagraph} from "./elements/editor/EditableParagraph";
-export {RenderParagraph} from "./elements/render/RenderParagraph"
+// Components
+export { EditableParagraph } from "./elements/editor/EditableParagraph";
+export { RenderParagraph } from "./elements/render/RenderParagraph";
 export { ParagraphLeaf } from "./leaf/ParagraphLeaf";
-export {EditableParagraphLeaf} from "./leaf/editor/EditableParagraphLeaf"
+export { EditableParagraphLeaf } from "./leaf/editor/EditableParagraphLeaf";
 // ##########################################################
 
 // Types
@@ -13,7 +11,7 @@ export { ParagraphLeafType, ParagraphLeafProps } from "./types/leaf";
 // #################
 
 // Editor
-export { ParagraphEditor } from "./editor/paragraphEditor"
+export { ParagraphEditor } from "./editor/paragraphEditor";
 // ##########################################
 
 // ToolBar

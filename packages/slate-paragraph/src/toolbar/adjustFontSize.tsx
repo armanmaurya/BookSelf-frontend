@@ -40,8 +40,9 @@ export const AdjustFontSize = () => {
     )
 
     useEffect(() => {
+        console.log("HIIIIIII");
         for (const [node, path] of nodes) {
-            // console.log("node", node)
+            console.log("node", node)
             if (node.type !== "text") {
                 if (!disabled) {
                     setIsDisabled(true);
@@ -53,7 +54,7 @@ export const AdjustFontSize = () => {
             }
     
         }
-    }, [])
+    }, [nodes])
 
     console.log("isDisabled", disabled)
 

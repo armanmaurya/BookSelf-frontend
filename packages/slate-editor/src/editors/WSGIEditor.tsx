@@ -37,7 +37,7 @@ import {
   Anchor,
 } from "../elements";
 
-import { EditableCode } from "../plugins/code/elements";
+// import { EditableCode } from "../plugins/code/elements";
 import {
   Node as SlateNode,
   Descendant,
@@ -78,6 +78,7 @@ import { withTabs } from "../plugins/tab-list";
 
 import { EditableParagraphLeaf, ParagraphEditor, ParagraphLeaf } from "@bookself/slate-paragraph";
 import {EditableParagraph} from "@bookself/slate-paragraph"
+import { EditableCode } from "@bookself/slate-code";
 
 const editorValue: Descendant[] = [
   {
@@ -161,7 +162,7 @@ export const WSGIEditor = ({
       case NodeType.H6:
         return <H6 {...props} />;
       case NodeType.CODE:
-        return <EditableCode {...props} />;
+        return <EditableCode {...props} element={props.element} />;
       case NodeType.ORDERED_LIST:
         return <Ol {...props} />;
       case NodeType.UNORDERED_LIST:

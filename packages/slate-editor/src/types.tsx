@@ -9,6 +9,7 @@ import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
 import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-paragraph";
 import { TabLeafType } from "./plugins/tab-list/leaf/TabLeafType";
+import { CodeElementType } from "@bookself/slate-code";
 
 // ...
 
@@ -30,11 +31,11 @@ type HeadingElement = {
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 
-type CodeElementType = {
-  type: NodeType.CODE | null;
-  language: string | null;
-  children: CustomText[];
-};
+// type CodeElementType = {
+//   type: NodeType.CODE | null;
+//   language: string | null;
+//   children: CustomText[];
+// };
 
 type OrderedListElementType = {
   type: NodeType.ORDERED_LIST | null;

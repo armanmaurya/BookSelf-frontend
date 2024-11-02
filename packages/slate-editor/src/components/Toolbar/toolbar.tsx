@@ -183,7 +183,7 @@ export const SlateToolBar = () => {
                 children: [
                   {
                     text: text,
-                    type: "default"
+                    type: "code"
                   }
                 ],
                 language: ""
