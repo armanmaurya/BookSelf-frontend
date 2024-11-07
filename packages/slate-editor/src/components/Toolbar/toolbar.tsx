@@ -31,7 +31,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiTabs } from "react-icons/pi";
 import { AdjustFontSize, ParagraphEditor } from "@bookself/slate-paragraph";
 import { ListEditor } from "../../plugins/withList/editor/ListEditor";
-import { Editor, Transforms } from "slate";
+import { Editor, Element, Transforms } from "slate";
+import { CodeEditor } from "@bookself/slate-code";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
@@ -176,19 +177,17 @@ export const SlateToolBar = () => {
           </ToolbarButton>
           <ToolbarButton
             onClick={() => {
-              const text = ParagraphEditor.string(editor);
-              Transforms.removeNodes(editor);
-              Transforms.insertNodes(editor, {
-                type: NodeType.CODE,
-                children: [
-                  {
-                    text: text,
-                    type: "code"
-                  }
-                ],
-                language: ""
+              if (CodeEditor.isBlockActive(editor)) {
+                const text = CodeEditor.text(editor);
+                Transforms.removeNodes(editor, {
+                  match: (n) => Element.isElement(n) && n.type === NodeType.CODE,
+                  mode: "highest"
+                });
+                ParagraphEditor.insertParagraph(editor, {}, text);
+              } else {
 
-              })
+                CodeEditor.insertCode(editor, NodeType.PARAGRAPH);
+              }
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.CODE)}
           >
@@ -316,7 +315,7 @@ export const SlateToolBar = () => {
           }}>
             <PiTabs size={25} />
           </ToolbarButton>
-          <AdjustFontSize />
+          {/* <AdjustFontSize /> */}
         </div>
         <div className="">
           <div
