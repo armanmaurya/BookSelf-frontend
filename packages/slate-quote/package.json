@@ -1,0 +1,32 @@
+{
+  "name": "@bookself/slate-code",
+  "sideEffects": false,
+  "version": "0.0.1",
+  "description": "A Plugin for Slate Editor to add code blocks",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "files": [
+    "src/**/*"
+  ],
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc"
+  },
+  "author": "Arman Maurya",
+  "devDependencies": {
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.57.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "prismjs": "^1.29.0",
+    "slate": "^0.103.0",
+    "slate-react": "^0.104.0"
+  }
+}
