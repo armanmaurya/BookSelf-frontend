@@ -73,6 +73,10 @@ export const API_ENDPOINT = {
     url: `${apiURl}/article/upload/`,
     method: "POST",
   },
+  newNotebook: {
+    url: `${apiURl}/notebooks`,
+    method: "POST",
+  }
 };
 
 export const getGoogleAuthUrl = (redirect_path: string) => {

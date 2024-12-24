@@ -1,5 +1,5 @@
 {
-  "name": "@bookself/slate-code",
+  "name": "@bookself/slate-quote",
   "sideEffects": false,
   "version": "0.0.1",
   "description": "A Plugin for Slate Editor to add code blocks",
