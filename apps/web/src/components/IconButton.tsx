@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { NewArticleBtn, LogoutBtn } from "./element/button";
+import { LogoutBtn } from "./element/button/LogoutBtn";
+import { NewArticleBtn } from "./element/button/NewArticleBtn";
 import { motion, AnimationControls, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -23,7 +24,7 @@ export const IconBtn = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <div ref={ref}>

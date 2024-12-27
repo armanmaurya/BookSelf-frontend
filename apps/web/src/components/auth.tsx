@@ -30,9 +30,12 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
           credentials: "include",
         }
       );
-      if (response.ok) {
+      if (response.status == 200) {
         window.location.href = "/";
-      } else {
+      } else if (response.status == 201) {
+        window.location.href = "/signup/username";
+      }
+      else {
         console.log("Registration failed");
         Store.addNotification({
           title: "Error",

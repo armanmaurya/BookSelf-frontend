@@ -23,11 +23,11 @@ const ProfileIcon = async () => {
       <li className="flex space-x-3 justify-center items-center mr-2">
         <a
           className="border p-1.5 bg-sky-500 text-slate-50 rounded-2xl md:block h-10 hidden"
-          href="/auth/signup"
+          href="/signup"
         >
           Create
         </a>
-        <Link className="text-sky-500" href="/auth/signin">
+        <Link className="text-sky-500" href="/signin">
           Login
         </Link>
       </li>

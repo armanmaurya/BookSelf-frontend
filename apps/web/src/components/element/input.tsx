@@ -1,7 +1,7 @@
 "use client";
 import { API_ENDPOINT } from "@/app/utils";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 
 export const EmailInput = ({
@@ -126,7 +126,7 @@ export const TagInput = ({
     const newTag = event.currentTarget.value;
     if (tags.includes(newTag)) {
       setHighlightedTag(newTag); // Highlight the tag instead of adding it
-      setTimeout(() => setHighlightedTag(''), 1500); // Reset highlightedTag after 3 seconds
+      setTimeout(() => setHighlightedTag(""), 1500); // Reset highlightedTag after 3 seconds
       return;
     }
     setTags([...tags, event.currentTarget.value]);
@@ -161,7 +161,12 @@ export const TagInput = ({
       </div>
       <div className="">
         {tags.map((tag, index) => (
-          <Tag key={index} tag={tag} onClick={() => removeTag(index)} isHighlighted={tag === highlightedTag}/>
+          <Tag
+            key={index}
+            tag={tag}
+            onClick={() => removeTag(index)}
+            isHighlighted={tag === highlightedTag}
+          />
         ))}
       </div>
       <input
@@ -197,7 +202,7 @@ export const Tag = ({
 }) => {
   return (
     <span className="m-1 dark:bg-neutral-600 rounded p-1">
-      <span className={`${isHighlighted ? 'text-yellow-300' : ''}`} >{tag}</span>
+      <span className={`${isHighlighted ? "text-yellow-300" : ""}`}>{tag}</span>
       <img
         onClick={onClick}
         src="https://img.icons8.com/?size=100&id=9433&format=png&color=000000"
@@ -205,5 +210,20 @@ export const Tag = ({
         className="h-4 inline hover:cursor-pointer hover:bg-gray-500 m-0.5 rounded-md"
       />
     </span>
+  );
+};
+
+export const Input = (
+  InputProp: React.InputHTMLAttributes<HTMLInputElement>
+) => {
+  
+  return (
+    <input
+      {...InputProp}
+      style={{
+        padding: "0.5rem",
+      }}
+      className={`rounded-md ${InputProp.className || ""}`}
+    />
   );
 };

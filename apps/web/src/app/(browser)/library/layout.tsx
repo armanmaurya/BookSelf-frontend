@@ -1,11 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Layout = ({
-  children, // will be a page or nested layout
+  children, 
 }: {
   children: React.ReactNode;
 }) => {
@@ -16,7 +15,6 @@ const Layout = ({
   });
 
   useEffect(() => {
-    console.log("Runned");
     const menu = document.getElementById(`${path.split("/").pop()}`);
     if (menu) {
       setMenuPosWidth({
