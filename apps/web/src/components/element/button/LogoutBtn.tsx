@@ -14,7 +14,7 @@ export const LogoutBtn = () => {
 
       if (res.ok) {
         console.log("Logout successful");
-        window.location.href = "/auth/signin";
+        window.location.href = "/signin";
       }
     } catch (error) {
       console.log("Network error");

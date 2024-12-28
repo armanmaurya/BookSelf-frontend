@@ -7,8 +7,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Store } from "react-notifications-component";
 import { API_ENDPOINT } from "../app/utils";
+import { ConverLoading } from "./converLoading";
+import { useRouter } from "next/navigation";
 
 export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
+  const router = useRouter();
   const googleAuthUrl = getGoogleAuthUrl(redirect_path);
   const searchParams = useSearchParams();
   const code = searchParams.get("code");
@@ -18,7 +21,6 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
     if (!code) {
       return;
     }
-    // setIsChecking(true);
     try {
       const response = await fetch(
         `${API_ENDPOINT.googleAuth.url}?code=${code}&redirect_path=${redirect_path}`,
@@ -32,10 +34,11 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
       );
       if (response.status == 200) {
         window.location.href = "/";
+        // router.push("/");
       } else if (response.status == 201) {
-        window.location.href = "/signup/username";
-      }
-      else {
+        // window.location.href = "/signup/username";
+        router.push("/signup/username");
+      } else {
         console.log("Registration failed");
         Store.addNotification({
           title: "Error",
@@ -62,16 +65,19 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   });
 
   return (
-    <a
-      className="border hover:cursor-pointer h-11 relative rounded-md w-80 flex justify-center items-center"
-      href={googleAuthUrl}
-    >
-      <div className="h-full w-10 flex items-center justify-center absolute left-0">
-        {isChecking && <Oval color="#000" height={20} width={20} />}
-      </div>
+    <div>
+      {isChecking && <ConverLoading />}
+      <a
+        className="border hover:cursor-pointer h-11 relative rounded-md w-80 flex justify-center items-center"
+        href={googleAuthUrl}
+      >
+        {/* <div className="h-full w-10 flex items-center justify-center absolute left-0">
+          {isChecking && <Oval color="#000" height={20} width={20} />}
+        </div> */}
 
-      <Image src={googleImg} alt="google" height={32} />
-      <span className="text-base">Continue with Google</span>
-    </a>
+        <Image src={googleImg} alt="google" height={32} />
+        <span className="text-base">Continue with Google</span>
+      </a>
+    </div>
   );
 };
