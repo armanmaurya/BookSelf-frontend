@@ -50,7 +50,7 @@ export const API_ENDPOINT = {
     method: "GET",
   },
   googleAuth: {
-    url: `${apiURl}/account/google-auth/`,
+    url: `${apiURl}/account/`,
     method: "GET",
   },
   sendcode: {

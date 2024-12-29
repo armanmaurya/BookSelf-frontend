@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { IconBtn } from "./IconButton";
+import { YourProfileButton } from "./element/button/YourProfileButton";
 
 const ProfileIcon = async () => {
   const cookieStore = cookies();
@@ -17,7 +18,9 @@ const ProfileIcon = async () => {
   });
   if (res.ok) {
     console.log("Success", res);
-    return <IconBtn />;
+    return <IconBtn>
+      Hi
+    </IconBtn>;
   } else {
     return (
       <li className="flex space-x-3 justify-center items-center mr-2">

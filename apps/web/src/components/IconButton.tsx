@@ -4,8 +4,11 @@ import { LogoutBtn } from "./element/button/LogoutBtn";
 import { NewArticleBtn } from "./element/button/NewArticleBtn";
 import { motion, AnimationControls, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { YourProfileButton } from "./element/button/YourProfileButton";
 
-export const IconBtn = () => {
+export const IconBtn = ({children}: {
+  children: React.ReactNode
+}) => {
   const [isOpened, setIsOpened] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -51,14 +54,15 @@ export const IconBtn = () => {
                 Profile
               </button> */}
               <li className="rounded dark:bg-neutral-700 p-1.5 w-full bg-slate-100 text-center hover:cursor-pointer">
-                <Link
+                {/* <Link
                   href="/account/personal-info"
                   onClick={() => {
                     setIsOpened(false);
                   }}
                 >
                   Account
-                </Link>
+                </Link> */}
+                {children}
               </li>
               <li className="rounded dark:bg-neutral-700 p-1.5 w-full bg-slate-100 text-center hover:cursor-pointer">
                 <Link href="/about" onClick={() => {
