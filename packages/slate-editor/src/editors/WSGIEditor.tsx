@@ -1,3 +1,4 @@
+"use client";
 import { EditorContent, NodeType } from "../types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withHistory } from "slate-history";
@@ -117,14 +118,13 @@ const isFocusAtStart = (path: number[]) => {
 };
 
 export const WSGIEditor = ({
-  editorContent: initialValue,
-  id,
+  initialValue,
   onChange,
+  title,
 }: {
-  editorContent: EditorContent;
+  initialValue: string;
   title?: string;
-  id: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 }) => {
   const editor = useMemo(
     () =>
@@ -145,7 +145,7 @@ export const WSGIEditor = ({
       ),
     []
   );
-  const [title, setTitle] = useState(initialValue.title || "");
+  const [pageTitle, setTitle] = useState(title || "");
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -207,7 +207,7 @@ export const WSGIEditor = ({
     };
   };
   const debouncedSave = useMemo(() => {
-    return debounce((body: string) => onChange(body), 3000);
+    return debounce((body: string) => onChange && onChange(body), 3000);
   }, [onChange]);
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -228,7 +228,7 @@ export const WSGIEditor = ({
   });
 
   // console.log(JSON.parse(initialValue.content));
-  const articleValue: Descendant[] = JSON.parse(initialValue.content);
+  const articleValue: Descendant[] = JSON.parse(initialValue);
 
   return (
     <div className="transition-all">
@@ -243,22 +243,15 @@ export const WSGIEditor = ({
           if (isAstChange) {
             debouncedSave(
               JSON.stringify({
-                title: title,
+                title: pageTitle,
                 content: JSON.stringify(value),
               })
             );
           }
         }}
       >
-        <SlateToolBar />
-        <div className="w-full px-2 pt-12 mt-3">
-          {/* <div className="w-full">
-            <img
-              src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"
-              className="sm:h-80 w-full object-cover"
-              alt=""
-            />
-          </div> */}
+        {/* <SlateToolBar /> */}
+        <div className="w-full px-2">
           <input
             ref={titleRef}
             type="text"
@@ -288,14 +281,14 @@ export const WSGIEditor = ({
                   break;
               }
             }}
-            value={title}
+            value={pageTitle}
             placeholder="Title"
           />
 
           {/* <TagInput id={id} initialTags={initialValue.tags} /> */}
           <Editable
           placeholder="Start Writing..."
-            decorate={useCallback(decorate, [])}
+            decorate={useCallback(decorate, [])}  
             spellCheck
             autoFocus
             id="editor"
@@ -323,9 +316,9 @@ export const WSGIEditor = ({
                 //   })
                 // );
 
-                onChange(
+                onChange && onChange(
                   JSON.stringify({
-                    title: title,
+                    title: pageTitle,
                     content: JSON.stringify(editor.children),
                   })
                 );

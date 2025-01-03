@@ -1,5 +1,5 @@
 import React from 'react'
-import { API_ENDPOINT } from '../utils';
+import { API_ENDPOINT } from '@/app/utils';
 
 const AllNoteBookPage = async () => {
     const res = await fetch(`${API_ENDPOINT.notebook.url}`);

@@ -1,5 +1,6 @@
+import { Article } from '@/app/types';
 import { API_ENDPOINT } from '@/app/utils';
-import React from 'react'
+import { NotebookOverview, NotebookOverviewProps } from '@/components/blocks/NotebookOverview';
 
 const Page = async ({
     params,
@@ -9,9 +10,9 @@ const Page = async ({
     const { username, notebook } = await params;
 
     const res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}`, );
-    const data = await res.text();
+    const data: NotebookOverviewProps = await res.json();
     return (
-        <div>{data}</div>
+        <NotebookOverview data={data} />
     )
 }
 

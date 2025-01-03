@@ -7,7 +7,7 @@ import ThemeSwitcher from "./element/button/ThemeSwitchButton";
 
 const AppBar = () => {
   return (
-    <header className="shadow-md z-20 fixed dark:bg-neutral-800 bg-white w-full h-12">
+    <header className="shadow-md fixed dark:bg-neutral-800 bg-white w-full h-12">
       <nav className=" flex justify-between items-center  pr-2">
         <div className="flex flex-1 space-x-2 w-full items-center justify-between">
           <div className="flex items-center">

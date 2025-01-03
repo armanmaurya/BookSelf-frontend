@@ -37,6 +37,10 @@ export const API_ENDPOINT = {
     url: `${apiURl}/notebook`,
     method: "GET",
   },
+  article: {
+    url: `${apiURl}/article`,
+    method: "GET",
+  },
   login: {
     url: `${apiURl}/account/login/`,
     method: "POST",
@@ -64,10 +68,6 @@ export const API_ENDPOINT = {
   verifycode: {
     url: `${apiURl}/account/verifycode/`,
     method: "POST",
-  },
-  article: {
-    url: `${apiURl}/article/`,
-    methods: ["GET", "POST"],
   },
   articleCheckOwner: {
     url: `${apiURl}/article/checkowner/`,

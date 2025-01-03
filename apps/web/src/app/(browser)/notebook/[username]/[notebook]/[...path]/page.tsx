@@ -11,7 +11,7 @@ const Page = async ({
 
     const res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join('/')}`);
 
-    const data = await res.text();
+    const data = await res.json();
     console.log(data);
     return (
         <div>{data}</div>
