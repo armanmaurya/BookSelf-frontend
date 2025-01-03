@@ -38,7 +38,14 @@ export default async function RootLayout({
         }`,
     },
   });
-  const data = await res.json();
+  let data = {
+    username: ""
+  };
+  if (res.ok) {
+    data = await res.json();
+  } else {
+    console.log("Error", res);
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -56,7 +63,7 @@ export default async function RootLayout({
                   <IoLibrary size={20} className="" />
                   <span className="pl-3">Library</span>
                 </SideBarElement>
-                
+
                 <SideBarElement href={`/notebook/${data.username}/`}>
                   <IoBookOutline size={20} className="" />
                   <span className="pl-3">Your Notebook</span>

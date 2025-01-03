@@ -10,7 +10,7 @@ const User = async ({ params }: { params: Promise<{ username: string }> }) => {
   console.log(data.length);
   return (
     <div className="h-full">
-      <NewNotebookBtn/>
+      <NewNotebookBtn username={username}/>
       {data.length == 0 ? (
         <div className="h-full w-full flex items-center justify-center">
           {/* <NoContent/> */}

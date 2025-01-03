@@ -91,7 +91,7 @@ export const Editor = ({
     <div>
       <PreviewButton id={articleSlug} />
 
-      <WSGIEditor onChange={UpdateContent} editorContent={initialValue} id={slug} />
+      <WSGIEditor onChange={UpdateContent} initialValue={initialValue.content} />
     </div>
   );
 };
