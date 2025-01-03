@@ -2,7 +2,7 @@
 import { use, useEffect, useRef, useState } from "react";
 import { FloatingBtn } from "../element/button";
 import { FaBook } from "react-icons/fa";
-import { motion, AnimationControls, AnimatePresence } from "framer-motion";
+import { motion, AnimationControls, AnimatePresence, AnimationProps } from "framer-motion";
 
 export const NewNotebookBtn = () => {
     const [showModal, setShowModal] = useState(false);
@@ -12,6 +12,24 @@ export const NewNotebookBtn = () => {
             setShowModal(false);
         }
     };
+
+    const varients = {
+        collapsed: {
+            padding: "6px",
+            right: "1%",
+            bottom: "1%",
+            width: "inherit",
+            height: "inherit",
+            transform: "translate(0%, 0%)"
+        },
+        expanded: {
+            right: "50%",
+            bottom: "50%",
+            width: "inherit",
+            height: "inherit",
+            transform: "translate(50%, 50%)"
+        }
+    }
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -24,38 +42,36 @@ export const NewNotebookBtn = () => {
         <div>
             <AnimatePresence>
                 {showModal && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                            duration: 0.2,
-                        }}
-                        className="absolute h-full w-full dark:bg-neutral-700 dark:bg-opacity-40 top-0 flex items-center justify-center"
-                    >
-                        <motion.div
-                            ref={modelRef}
-                            initial={{ scale: 0.8 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0.8 }}
-                            transition={{
-                                duration: 0.2,
-                            }}
-                            className="h-1/2 w-1/4 flex items-center justify-center dark:bg-neutral-900 shadow-lg rounded-lg"
-                        >
-                            Model
-                        </motion.div>
+                    <motion.div className="absolute w-full h-full dark:bg-neutral-700 dark:bg-opacity-50 top-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     </motion.div>
                 )}
             </AnimatePresence>
-            {
-                !showModal && (
-                    <FloatingBtn className="hover:scale-110 transition" onClick={() => setShowModal(!showModal)}>
+            <motion.div
+                variants={varients}
+                ref={modelRef}
+                className="absolute rounded-md bg-neutral-900"
+                initial="collapsed"
+                transition={{
+                    duration: 0.3,
+                    ease: "easeInOut",
+                    type: "tween"
+                }}
+                animate={showModal ? "expanded" : "collapsed"}
+            >
+                {showModal ? (
+                    <div className="flex flex-col items-center">
+                        <h1 className="text-3xl">New Notebook</h1>
+                        <input type="text" placeholder="Notebook Name" />
+                        <button>Create</button>
+                    </div>
+                ) : (
+                    <button className="flex items-center gap-1" onClick={() => setShowModal(true)}>
                         <FaBook />
-                        <span className="px-1">New</span>
-                    </FloatingBtn>
-                )
-            }
+                        <span>New</span>
+                    </button>
+                )}
+            </motion.div>
+
         </div>
     );
 };
