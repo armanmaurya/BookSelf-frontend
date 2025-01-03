@@ -1,6 +1,7 @@
 import { API_ENDPOINT } from "@/app/utils";
 import React from "react";
 import { NoContent } from "@/components/blocks/noContent";
+import { NewNotebookBtn } from "@/components/blocks/NewNotebookBtn";
 
 const User = async ({ params }: { params: Promise<{ username: string }> }) => {
   const { username } = await params;
@@ -9,9 +10,10 @@ const User = async ({ params }: { params: Promise<{ username: string }> }) => {
   console.log(data.length);
   return (
     <div className="h-full">
+      <NewNotebookBtn/>
       {data.length == 0 ? (
         <div className="h-full w-full flex items-center justify-center">
-          <NoContent/>
+          {/* <NoContent/> */}
         </div>
       ) : (
         data.map((notebook: any) => {

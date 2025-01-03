@@ -10,4 +10,13 @@ export const Button = (buttonProp: React.DetailedHTMLProps<ButtonHTMLAttributes<
     )
 }
 
+export const FloatingBtn = (props: React.DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => {
+    return (
+        <button {...props} className={`absolute flex items-center bottom-5 right-6 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-400 ${props.className}`}>
+            {props.children}
+        </button>
+
+    )
+}
+
 // export cosnt YourProfileBtn()
