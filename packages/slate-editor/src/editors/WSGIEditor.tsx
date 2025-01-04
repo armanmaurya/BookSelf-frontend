@@ -228,7 +228,7 @@ export const WSGIEditor = ({
   });
 
   // console.log(JSON.parse(initialValue.content));
-  const articleValue: Descendant[] = JSON.parse(initialValue);
+  const articleValue: Descendant[] = JSON.parse(initialValue == "" ? "[]": initialValue);
 
   return (
     <div className="transition-all">
