@@ -14,6 +14,7 @@ const Page = async ({
     const data = await res.json();
     console.log(data);
     return (
+        
         <div>{data}</div>
     )
 }

@@ -12,6 +12,7 @@ import { IoBookOutline, IoLibrary, IoPaperPlane } from "react-icons/io5";
 import { cookies } from "next/headers";
 import { API_ENDPOINT } from "../utils";
 import { SlNote } from "react-icons/sl";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,7 +64,6 @@ export default async function RootLayout({
                   <IoLibrary size={20} className="" />
                   <span className="pl-3">Library</span>
                 </SideBarElement>
-
                 <SideBarElement href={`/notebook/${data.username}/`}>
                   <IoBookOutline size={20} className="" />
                   <span className="pl-3">Your Notebook</span>

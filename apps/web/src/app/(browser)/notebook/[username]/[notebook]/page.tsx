@@ -1,4 +1,3 @@
-import { Article } from '@/app/types';
 import { API_ENDPOINT } from '@/app/utils';
 import { NotebookOverview, NotebookOverviewProps } from '@/components/blocks/NotebookOverview';
 
