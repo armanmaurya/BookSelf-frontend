@@ -9,16 +9,20 @@ import { PreviewButton } from "@/components/element/button/PreviewButton";
 
 export const RichTextEditor = ({
   initialValue,
-  id: slug,
-  title
+  title,
 }: {
-  id: string;
   initialValue: string;
   title: string;
 }) => {
   return (
     <div>
-      {/* <WSGIEditor initialValue={initialValue} title={title} /> */}
+      <WSGIEditor
+        onChange={(value) => {
+          console.log(value);
+        }}
+        initialValue={initialValue}
+        title={title}
+      />
     </div>
   );
 };

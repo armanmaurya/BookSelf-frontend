@@ -77,8 +77,12 @@ import {
 import { initialTabs } from "../initialValue/InitialTabs";
 import { withTabs } from "../plugins/tab-list";
 
-import { EditableParagraphLeaf, ParagraphEditor, ParagraphLeaf } from "@bookself/slate-paragraph";
-import {EditableParagraph} from "@bookself/slate-paragraph"
+import {
+  EditableParagraphLeaf,
+  ParagraphEditor,
+  ParagraphLeaf,
+} from "@bookself/slate-paragraph";
+import { EditableParagraph } from "@bookself/slate-paragraph";
 import { EditableCode } from "@bookself/slate-code";
 
 const editorValue: Descendant[] = [
@@ -193,7 +197,7 @@ export const WSGIEditor = ({
     switch (props.leaf.type) {
       case "text":
         // return <ParagraphLeaf {...props} leaf={props.leaf}/>;
-        return <EditableParagraphLeaf {...props} leaf={props.leaf}/>
+        return <EditableParagraphLeaf {...props} leaf={props.leaf} />;
       default:
         return <DefalutLeaf {...props} />;
     }
@@ -228,13 +232,21 @@ export const WSGIEditor = ({
   });
 
   // console.log(JSON.parse(initialValue.content));
-  const articleValue: Descendant[] = JSON.parse(initialValue == "" ? "[]": initialValue);
+  const articleValue: Descendant[] = JSON.parse(
+    initialValue == "" ? "[]" : initialValue
+  );
 
   return (
     <div className="transition-all">
       <Slate
         editor={editor}
-        initialValue={articleValue ? articleValue.length !== 0 ? articleValue : editorValue : editorValue}
+        initialValue={
+          articleValue
+            ? articleValue.length !== 0
+              ? articleValue
+              : editorValue
+            : editorValue
+        }
         // initialValue={editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
@@ -242,10 +254,7 @@ export const WSGIEditor = ({
           );
           if (isAstChange) {
             debouncedSave(
-              JSON.stringify({
-                title: pageTitle,
-                content: JSON.stringify(value),
-              })
+              JSON.stringify(value),
             );
           }
         }}
@@ -287,8 +296,8 @@ export const WSGIEditor = ({
 
           {/* <TagInput id={id} initialTags={initialValue.tags} /> */}
           <Editable
-          placeholder="Start Writing..."
-            decorate={useCallback(decorate, [])}  
+            placeholder="Start Writing..."
+            decorate={useCallback(decorate, [])}
             spellCheck
             autoFocus
             id="editor"
@@ -316,12 +325,13 @@ export const WSGIEditor = ({
                 //   })
                 // );
 
-                onChange && onChange(
-                  JSON.stringify({
-                    title: pageTitle,
-                    content: JSON.stringify(editor.children),
-                  })
-                );
+                onChange &&
+                  onChange(
+                    JSON.stringify({
+                      title: pageTitle,
+                      content: JSON.stringify(editor.children),
+                    })
+                  );
               }
             }}
           />
@@ -335,12 +345,12 @@ export const WSGIEditor = ({
               });
             }}
             // ref={ref}
-            
+
             className="h-96"
           ></div>
         </div>
       </Slate>
-    </div>
+    </div >
   );
 };
 
