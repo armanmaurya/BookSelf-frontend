@@ -1,4 +1,4 @@
-import React from 'react'
+import { NoteBookResponse } from "@bookself/types";
 
 const page = () => {
   return (
@@ -6,4 +6,4 @@ const page = () => {
   )
 }
 
-export default page
+export default page;

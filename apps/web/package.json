@@ -10,11 +10,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@bookself/slate-editor": "*",
+    "@bookself/slate-paragraph": "*",
+    "@bookself/ui": "*",
     "@emotion/css": "^11.11.2",
     "@next/bundle-analyzer": "^14.2.5",
-    "@bookself/slate-editor": "*",
-    "@bookself/ui": "*",
-    "@bookself/slate-paragraph": "*",
     "@types/nprogress": "^0.2.3",
     "animate.css": "^4.1.1",
     "emotion": "^11.0.0",
@@ -45,6 +45,7 @@
     "slate-soft-break": "^0.9.0"
   },
   "devDependencies": {
+    "@bookself/types": "*",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/prismjs": "^1.26.4",
