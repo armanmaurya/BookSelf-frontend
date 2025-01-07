@@ -23,8 +23,7 @@ export const RenderNavBar = ({
   notebookurl: string;
 }) => {
   const [children, setChildren] = useState<PageResponse[]>([]);
-  const [isExapaned, setIsExpanded] = useState(false);
-  const [initiallyExpanded, setInitiallyExpanded] = useState(false);
+  // const [isExpaned, setIsExpanded] = useState(false);
   const getChildren = useCallback(async (url: string) => {
     let res = await fetch(url);
     const data: PageResponse[] = await res.json();
@@ -39,59 +38,70 @@ export const RenderNavBar = ({
     )}?children`;
   }
   useEffect(() => {
-    getChildren(url).then((data) => setChildren(data));
+    getChildren(url).then((data) => {
+      setChildren(data);
+    });
+
   }, [url]);
   return (
     <div>
       {children.map((child) => {
         let newPath = [...path, child.slug];
-        const currentSlug = activepath[0];
-        if (currentSlug == child.slug && !initiallyExpanded && !isExapaned && child.has_children && activepath.length > 1) {
-          setInitiallyExpanded(true);
-          setIsExpanded(true);
-        }
         return (
           <div key={child.id} className="">
-            <div
-              className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${activepath.join("/") === child.slug ? "dark:bg-blue-500" : "dark:bg-neutral-900"
-                }`}
-            >
-              <div className="flex gap-1 px-1">
-                {
-                  child.has_children && (
-                    <div className="flex items-center cursor-pointer" onClick={() => {
-                      setIsExpanded(!isExapaned);
-                      setInitiallyExpanded(true);
-                    }}>
-                      <IoIosArrowBack className="-scale-100" />
-
-                    </div>
-                  )
-                }
-                <Link href={`${notebookurl}/${newPath.join("/")}`}>
-                  {child.title}
-                </Link>
-              </div>
-            </div>
-            <AnimatePresence>
-              {(child.has_children && isExapaned && initiallyExpanded) && (
-                <motion.div initial={{height: 0}} animate={{height: 30}} exit={{height: 0}} className="overflow-hidden p-0">
-                  <div className="ml-4">
-                    <RenderNavBar
-                      activepath={activepath.slice(1, activepath.length)}
-                      username={username}
-                      notebook={notebook}
-                      path={newPath}
-                      root={false}
-                      notebookurl={notebookurl}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {(
+              <ChildItems
+                activepath={activepath}
+                username={username}
+                notebook={notebook}
+                path={newPath}
+                child={child}
+                notebookurl={notebookurl}
+              />
+            )}
           </div>
         );
       })}
     </div>
   );
 };
+
+
+const ChildItems = ({ child, activepath, notebookurl, username, notebook, path }: { child: PageResponse, activepath: string[], notebookurl: string, username: string, notebook: string, path: string[] }) => {
+  const [isExpaned, setIsExpanded] = useState(false);
+  const currentSlug = activepath[0];
+  console.log(child.slug, currentSlug);
+  if (child.slug === currentSlug && !isExpaned) {
+    setIsExpanded(true);
+  }
+  return (
+    <div>
+      <div className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${
+        activepath.join("/") === child.slug ? "bg-blue-400 bg-opacity-15" : ""
+      }`} onClick={() => {
+        setIsExpanded(!isExpaned);
+      }}>
+        <div className="flex gap-1 px-1">
+          {
+            child.has_children && (
+              <div className="flex items-center cursor-pointer">
+                <IoIosArrowBack className={`-scale-100 transition ${isExpaned ? "rotate-90" : "rotate-0"}`} />
+              </div>
+            )
+          }
+          <Link href={`${notebookurl}/${path.join("/")}`}>
+            {child.title}
+          </Link>
+        </div>
+
+      </div>
+      {
+        child.has_children && isExpaned && (
+          <div className="ml-8 border-l-2 border-gray-300">
+            <RenderNavBar activepath={activepath.slice(1, activepath.length)} username={username} notebook={notebook} path={path} root={false} notebookurl={notebookurl} />
+          </div>
+        )
+      }
+    </div>
+  )
+}

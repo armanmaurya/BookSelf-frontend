@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation"
 import { RenderNavBar } from "./RenderSideNavBar"
 import { API_ENDPOINT } from "@/app/utils";
+import { AnimatePresence } from "framer-motion";
 
 export const NoteBookNavBar = () => {
   const path = usePathname();
@@ -14,6 +15,11 @@ export const NoteBookNavBar = () => {
   const notebookurl = `/notebook/${username}/edit/${notebook}`;
 
   return (
-    <RenderNavBar root={true} notebookurl={notebookurl} username={username} notebook={notebook} activepath={activepath}/>
+    <div>
+
+
+      < RenderNavBar root={true} notebookurl={notebookurl} username={username} notebook={notebook} activepath={activepath} />
+    </div>
+
   )
 }
