@@ -29,10 +29,6 @@ const Layout = ({
       menuBottomBar.classList.remove("hidden");
     }
 
-    
-
-
-
   }, [path]);
 
 

@@ -56,9 +56,9 @@ export default async function RootLayout({
           <NextTopLoader />
 
           <ContextProvider>
-            <AppBar />
+            {/* <AppBar /> */}
             <div className="h-full w-full">
-              <div className="h-full pt-12">{children}</div>
+              <div className="h-full">{children}</div>
               <SideBar>
                 <SideBarElement href="/library/my-article">
                   <IoLibrary size={20} className="" />

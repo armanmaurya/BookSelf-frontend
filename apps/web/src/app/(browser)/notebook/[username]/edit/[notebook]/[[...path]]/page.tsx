@@ -1,7 +1,8 @@
+
 import { API_ENDPOINT } from "@/app/utils";
 import { RichTextEditor } from "@/components/blocks/RichTextEditor";
-import { WSGIEditor } from "@bookself/slate-editor/editor";
 import React from "react";
+
 
 type PageResponse = {
   title: string;
@@ -14,15 +15,18 @@ const Page = async ({
   params: Promise<{ username: string; notebook: string; path: string[] }>;
 }) => {
   const { username, notebook, path } = await params;
-
-  const res = await fetch(
-    `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`
-  );
+  let res;
+  if (path) {
+    res = await fetch(
+      `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`
+    );
+  } else {
+    res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}`);
+  }
 
   const data: PageResponse = await res.json();
-  console.log(data);
   return (
-    <RichTextEditor initialValue={data.content} title={data.title}/>
+    <RichTextEditor initialValue={data.content} title={data.title} />
   );
 };
 

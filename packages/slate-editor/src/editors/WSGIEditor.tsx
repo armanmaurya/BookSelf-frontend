@@ -126,7 +126,7 @@ export const WSGIEditor = ({
   onChange,
   title,
 }: {
-  initialValue: string;
+  initialValue?: string;
   title?: string;
   onChange?: (value: string) => void;
 }) => {
@@ -232,20 +232,16 @@ export const WSGIEditor = ({
   });
 
   // console.log(JSON.parse(initialValue.content));
-  const articleValue: Descendant[] = JSON.parse(
-    initialValue == "" ? "[]" : initialValue
-  );
+  // const articleValue: Descendant[] = JSON.parse(
+  //   initialValue == "" ? "[]" : initialValue
+  // );
 
   return (
     <div className="transition-all">
       <Slate
         editor={editor}
         initialValue={
-          articleValue
-            ? articleValue.length !== 0
-              ? articleValue
-              : editorValue
-            : editorValue
+          editorValue
         }
         // initialValue={editorValue}
         onChange={(value) => {

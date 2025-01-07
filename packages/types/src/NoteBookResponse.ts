@@ -4,4 +4,5 @@ export interface NoteBookResponse {
     slug: string;
     overview: string;
     created_at: string;
+    index_page: string;
 }
