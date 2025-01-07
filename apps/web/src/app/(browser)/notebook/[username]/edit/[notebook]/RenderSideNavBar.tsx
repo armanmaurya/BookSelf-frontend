@@ -70,7 +70,6 @@ export const RenderNavBar = ({
 const ChildItems = ({ child, activepath, notebookurl, username, notebook, path }: { child: PageResponse, activepath: string[], notebookurl: string, username: string, notebook: string, path: string[] }) => {
   const [isExpaned, setIsExpanded] = useState(false);
   const currentSlug = activepath[0];
-  console.log(child.slug, currentSlug);
   useEffect(() => {
     if (child.slug === currentSlug) {
       setIsExpanded(true);
@@ -79,13 +78,13 @@ const ChildItems = ({ child, activepath, notebookurl, username, notebook, path }
   return (
     <div>
       <div className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${activepath.join("/") === child.slug ? "bg-blue-400 bg-opacity-15" : ""
-        }`} onClick={() => {
-          setIsExpanded(!isExpaned);
-        }}>
+        }`}>
         <div className="flex gap-1 px-1">
           {
             child.has_children && (
-              <div className="flex items-center cursor-pointer">
+              <div className="flex items-center cursor-pointer" onClick={() => {
+                setIsExpanded(!isExpaned);
+              }}>
                 <IoIosArrowBack className={`-scale-100 transition ${isExpaned ? "rotate-90" : "rotate-0"}`} />
               </div>
             )
