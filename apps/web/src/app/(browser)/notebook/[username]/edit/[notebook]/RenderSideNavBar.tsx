@@ -71,16 +71,17 @@ const ChildItems = ({ child, activepath, notebookurl, username, notebook, path }
   const [isExpaned, setIsExpanded] = useState(false);
   const currentSlug = activepath[0];
   console.log(child.slug, currentSlug);
-  if (child.slug === currentSlug && !isExpaned) {
-    setIsExpanded(true);
-  }
+  useEffect(() => {
+    if (child.slug === currentSlug) {
+      setIsExpanded(true);
+    }
+  }, [child.slug, currentSlug]);
   return (
     <div>
-      <div className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${
-        activepath.join("/") === child.slug ? "bg-blue-400 bg-opacity-15" : ""
-      }`} onClick={() => {
-        setIsExpanded(!isExpaned);
-      }}>
+      <div className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${activepath.join("/") === child.slug ? "bg-blue-400 bg-opacity-15" : ""
+        }`} onClick={() => {
+          setIsExpanded(!isExpaned);
+        }}>
         <div className="flex gap-1 px-1">
           {
             child.has_children && (
