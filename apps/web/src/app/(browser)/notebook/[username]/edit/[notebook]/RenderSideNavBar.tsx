@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { motion, AnimationControls, AnimatePresence } from "framer-motion";
+import { useContextMenu } from "@bookself/context-menu";
 
 
 export const RenderNavBar = ({
@@ -69,6 +70,7 @@ export const RenderNavBar = ({
 
 const ChildItems = ({ child, activepath, notebookurl, username, notebook, path }: { child: PageResponse, activepath: string[], notebookurl: string, username: string, notebook: string, path: string[] }) => {
   const [isExpaned, setIsExpanded] = useState(false);
+  const menu = useContextMenu();
   const currentSlug = activepath[0];
   useEffect(() => {
     if (child.slug === currentSlug) {
@@ -77,7 +79,15 @@ const ChildItems = ({ child, activepath, notebookurl, username, notebook, path }
   }, [child.slug, currentSlug]);
   return (
     <div>
-      <div className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${activepath.join("/") === child.slug ? "bg-blue-400 bg-opacity-15" : ""
+      <div onContextMenu={(e) => {
+        e.preventDefault();
+        console.log("right click");
+        menu.setClicked(true);
+        menu.setPoint({ x: e.clientX, y: e.clientY });
+        menu.setData({
+          path: path.join("/"),
+        });
+      }} className={`m-1 dark:bg-opacity-50 overflow-hidden rounded-md ${activepath.join("/") === child.slug ? "bg-blue-400 bg-opacity-15" : ""
         }`}>
         <div className="flex gap-1 px-1">
           {

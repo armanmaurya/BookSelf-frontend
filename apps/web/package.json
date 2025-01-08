@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@bookself/context-menu": "*",
     "@bookself/slate-editor": "*",
     "@bookself/slate-paragraph": "*",
     "@bookself/ui": "*",
