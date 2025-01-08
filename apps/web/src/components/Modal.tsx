@@ -20,7 +20,7 @@ export const Modal = ({ children, onClose }: {
         }
     }, []);
     return (
-        <div ref={ref} className="bg-white">
+        <div ref={ref} className="">
             {children}
         </div>
     )

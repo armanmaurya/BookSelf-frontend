@@ -1,13 +1,21 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import { RenderNavBar } from "./RenderSideNavBar"
+import { usePathname } from "next/navigation";
+import { RenderNavBar } from "./RenderSideNavBar";
 import { API_ENDPOINT } from "@/app/utils";
 import { AnimatePresence } from "framer-motion";
-import { ContextMenu, ContextMenuItem, MenuProvider, useContextMenu } from "@bookself/context-menu";
+import {
+  ContextMenu,
+  ContextMenuItem,
+  MenuProvider,
+  useContextMenu,
+} from "@bookself/context-menu";
 import { PageResponse } from "@bookself/types";
 import { useState } from "react";
-import { Modal } from "@/components/Modal";
+// import { NewPageBtn } from "@/components/blocks/NewPageBtn";
+import { Modal } from "@bookself/react-modal";
+import { NewPageBtn } from "@/components/blocks/NewPageBtn";
+import { Store } from "react-notifications-component";
 
 export const NoteBookNavBar = () => {
   const path = usePathname();
@@ -21,46 +29,71 @@ export const NoteBookNavBar = () => {
   const [isCreateModelOpen, setIsCreateModelOpen] = useState(false);
 
   const menu = useContextMenu<any>();
-  const createPage = async (path: string) => {
-    const res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: "New Page",
-        content: ""
-      })
-    });
+  const createPage = async (path: string, title: string) => {
+
+    console.log(path, title);
+    const res = await fetch(
+      `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: "New Page",
+          content: "",
+        }),
+      }
+    );
     const data: PageResponse = await res.json();
-  }
+    if (res.ok) {
+      console.log("Page created", data);
+      // Store.addNotification({
+      //   title: "Success",
+      //   message: "Page created",
+      //   type: "success",
+      //   insert: "top",
+      //   container: "top-center",
+      //   animationIn: ["animate__animated", "animate__fadeIn"],
+      //   animationOut: ["animate__animated", "animate__fadeOut"],
+      //   dismiss: {
+      //     duration: 5000,
+      //   },
+      // })
+    }
+  };
   return (
     <div>
-      < RenderNavBar root={true} notebookurl={notebookurl} username={username} notebook={notebook} activepath={activepath} />
+      <RenderNavBar
+        root={true}
+        notebookurl={notebookurl}
+        username={username}
+        notebook={notebook}
+        activepath={activepath}
+      />
       <div>
-        {
-          isCreateModelOpen && (
-            <Modal onClose={() => {
-              setIsCreateModelOpen(false);
-            }}>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white">
-                <input type="text" />
-                <button onClick={() => {
-                  // createPage("new-page");
-                }}>Create</button>
-              </div>
-            </Modal>
-          )
-        }
+        <Modal
+          onRequestClose={() => {
+            setIsCreateModelOpen(false);
+          }}
+          isOpen={isCreateModelOpen}
+          className="h-1/2 w-1/2 absolute bg-neutral-900 rounded-lg shadow-md top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        >
+          <NewPageBtn onCreate={(title) => {
+            createPage(menu.data.path, title);
+            setIsCreateModelOpen(false);
+          }}/>
+        </Modal>
         <ContextMenu>
-          <ContextMenuItem onClick={() => {
-            setIsCreateModelOpen(true);
-          }}>
+          <ContextMenuItem
+            onClick={() => {
+              setIsCreateModelOpen(true);
+            }}
+          >
             New Page
           </ContextMenuItem>
         </ContextMenu>
       </div>
     </div>
-
-  )
-}
+  );
+};
