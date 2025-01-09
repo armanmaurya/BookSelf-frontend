@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { RenderNavBar } from "./RenderSideNavBar";
+import { NavTree } from "./RenderSideNavBar";
 import { API_ENDPOINT } from "@/app/utils";
 import { AnimatePresence } from "framer-motion";
 import {
@@ -40,31 +40,18 @@ export const NoteBookNavBar = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: "New Page",
-          content: "",
+          title: `${title}`,
         }),
       }
     );
     const data: PageResponse = await res.json();
     if (res.ok) {
       console.log("Page created", data);
-      // Store.addNotification({
-      //   title: "Success",
-      //   message: "Page created",
-      //   type: "success",
-      //   insert: "top",
-      //   container: "top-center",
-      //   animationIn: ["animate__animated", "animate__fadeIn"],
-      //   animationOut: ["animate__animated", "animate__fadeOut"],
-      //   dismiss: {
-      //     duration: 5000,
-      //   },
-      // })
     }
   };
   return (
     <div>
-      <RenderNavBar
+      <NavTree
         root={true}
         notebookurl={notebookurl}
         username={username}
@@ -82,6 +69,7 @@ export const NoteBookNavBar = () => {
           <NewPageBtn onCreate={(title) => {
             createPage(menu.data.path, title);
             setIsCreateModelOpen(false);
+            menu.data.setIsChanged((prev: boolean) => !prev);
           }}/>
         </Modal>
         <ContextMenu>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 export const NewPageBtn = ({ onCreate }: {
-    onCreate: (title:string) => void
+    onCreate: (title: string) => void
 }) => {
     const [title, setTitle] = useState("");
     return (
@@ -11,6 +11,10 @@ export const NewPageBtn = ({ onCreate }: {
             </div>
             <div className="p-4">
                 <input
+                    value={title}
+                    onChange={(e) => {
+                        setTitle(e.target.value);
+                    }}
                     type="text"
                     placeholder="Page Title"
                     className="w-full p-2 border border-gray-300 rounded"
