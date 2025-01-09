@@ -1,6 +1,7 @@
 
 import { API_ENDPOINT } from "@/app/utils";
 import { RichTextEditor } from "@/components/blocks/RichTextEditor";
+import { notFound } from "next/navigation";
 import React from "react";
 
 
@@ -24,7 +25,16 @@ const Page = async ({
     res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}`);
   }
 
-  const data: PageResponse = await res.json();
+  // console.log("res", )
+  let data: PageResponse;
+  if (res.ok) {
+    data = await res.json();
+  } else {
+    return notFound();
+  }
+
+
+  // console.log("data", res.status);
   return (
     <RichTextEditor initialValue={data.content} title={data.title} />
   );
