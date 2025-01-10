@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, FloatingBtn } from "../element/button";
 import { FaBook } from "react-icons/fa";
 import { useRouter } from "next/navigation";

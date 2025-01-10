@@ -22,6 +22,7 @@ export const NavTree = ({
   activepath,
   notebookurl,
   item,
+  parentRefetch
 }: {
   item: PageResponse;
   username: string;
@@ -30,6 +31,7 @@ export const NavTree = ({
   root: boolean;
   activepath: string[];
   notebookurl: string;
+  parentRefetch?: () => void;
 }) => {
   const [isExpaned, setIsExpanded] = useState(false);
   const { data, error, loading, refetch } = useFetch<PageResponse[]>(`${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}?children`);
@@ -43,18 +45,21 @@ export const NavTree = ({
     }
   }, [item.slug, currentSlug]);
 
-  const handleAddNewPage = () => {
+  const handleChange = () => {
     console.log("Add new page", `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}?children`);
     refetch();
   }
+
+
 
   return (
     <div className="my-1">
       <div className="" onContextMenu={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         menu.setClicked(true);
         menu.setPoint({ x: e.clientX, y: e.clientY });
-        menu.setData({ call: handleAddNewPage, path: path.join("/") });
+        menu.setData({ call: handleChange, path: path.join("/"), parentRefetch: parentRefetch });
       }}>
         <div className="flex gap-1 px-1 items-center bg-neutral-900 rounded-md">
           {
@@ -93,6 +98,7 @@ export const NavTree = ({
                       path={newPath}
                       root={false}
                       notebookurl={notebookurl}
+                      parentRefetch={refetch}
                     />
                   </div>
                 );

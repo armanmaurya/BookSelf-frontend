@@ -4,6 +4,12 @@ import { useContextMenu } from "./useContextMenu";
 export const ContextMenu = ({ children }: {
     children: React.ReactNode;
 }) => {
+
+    const closeWithEsc = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+            menu.setClicked(false);
+        }
+    }
     const menu = useContextMenu();
     useEffect(() => {
         if (menu.clicked) {
@@ -11,7 +17,11 @@ export const ContextMenu = ({ children }: {
                 menu.setClicked(false);
             };
             window.addEventListener("click", closeMenu);
-            return () => window.removeEventListener("click", closeMenu);
+            window.addEventListener("keydown", closeWithEsc);
+            return () => {
+                window.removeEventListener("click", closeMenu);
+                window.removeEventListener("keydown", closeWithEsc);
+            };
         }
     })
     return (

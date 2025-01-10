@@ -53,24 +53,46 @@ export const NoteBookNavBar = () => {
     }
   };
 
+  const handleDelete = async (path: string) => {
+    console.log("Delete", path);
+    const res = await fetch(
+      `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (res.ok) {
+      console.log("Deleted", path);
+      menu.data.parentRefetch();
+    }
+  }
+
   // console.log("data", data);
 
   return (
-    <div>
-      {
-        data && data.map((item) => {
-          return (
-            <NavTree item={item} activepath={activepath}
-              username={username}
-              notebook={notebook}
-              path={[item.slug]}
-              root={true}
-              notebookurl={notebookurl}
-              key={item.id}
-            />
-          )
-        })
-      }
+    <div className="h-full">
+      <div className="mx-2 h-full overflow-scroll" onContextMenu={(e) => {
+        e.preventDefault();
+        menu.setClicked(true);
+        menu.setPoint({ x: e.clientX, y: e.clientY });
+        menu.setData({ call: refetch, path: "" });
+      }}>
+        {
+          data && data.map((item) => {
+            return (
+              <NavTree item={item} activepath={activepath}
+                username={username}
+                notebook={notebook}
+                path={[item.slug]}
+                root={true}
+                notebookurl={notebookurl}
+                key={item.id}
+                parentRefetch={refetch}
+              />
+            )
+          })
+        }
+      </div>
       <div>
         <Modal
           onRequestClose={() => {
@@ -94,6 +116,13 @@ export const NoteBookNavBar = () => {
             }}
           >
             New Page
+          </ContextMenuItem>
+          <ContextMenuItem
+            onClick={() => {
+              handleDelete(menu.data.path);
+            }}
+          >
+            Delete
           </ContextMenuItem>
         </ContextMenu>
       </div>
