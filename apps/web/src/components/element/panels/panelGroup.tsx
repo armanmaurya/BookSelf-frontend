@@ -1,12 +1,12 @@
 "use client";
 import React from 'react'
-import { PanelGroupProps, PanelGroup as ReactPanelGroup } from "react-resizable-panels";
+import { PanelGroupProps, PanelGroup } from "react-resizable-panels";
 
 
-export const PanelGroup = (prop: PanelGroupProps) => {
+export const ReactPanelGroup = (prop: PanelGroupProps) => {
     return (
-        <ReactPanelGroup {...prop}>
+        <PanelGroup {...prop}>
             {prop.children}
-        </ReactPanelGroup>
+        </PanelGroup>
     )
 }

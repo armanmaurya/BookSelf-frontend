@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { NavTree } from "./RenderSideNavBar";
+import { NavTree } from "./NavTree";
 import { API_ENDPOINT } from "@/app/utils";
 import { AnimatePresence } from "framer-motion";
 import {

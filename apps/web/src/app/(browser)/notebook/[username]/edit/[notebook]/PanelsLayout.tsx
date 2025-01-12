@@ -1,7 +1,7 @@
 "use client";
-import { Panel } from "@/components/element/panels/panel";
-import { PanelGroup } from "@/components/element/panels/panelGroup";
-import { PanelResizeHandler } from "@/components/element/panels/PanelResizeHandler";
+import { ReactPanel } from "@/components/element/panels/panel";
+import { ReactPanelGroup } from "@/components/element/panels/panelGroup";
+import { ReactPanelResizeHandler } from "@/components/element/panels/PanelResizeHandler";
 import { NoteBookNavBar } from "./NoteBookNavBar";
 import { MenuProvider } from "@bookself/context-menu";
 import { PageResponse } from "@bookself/types";
@@ -14,16 +14,16 @@ export const PanelsLayout = ({
     children: React.ReactNode
 }) => {
     return (
-        <PanelGroup direction="horizontal">
-            <Panel defaultSize={30} minSize={15}>
+        <ReactPanelGroup direction="horizontal">
+            <ReactPanel defaultSize={30} minSize={15}>
                 <MenuProvider>
                     <NoteBookNavBar/>
                 </MenuProvider>
-            </Panel>
-            <PanelResizeHandler className="bg-white" style={{ width: "1px" }} />
-            <Panel defaultSize={70}>
+            </ReactPanel>
+            <ReactPanelResizeHandler className="bg-white" style={{ width: "1px" }} />
+            <ReactPanel defaultSize={70}>
                 {children}
-            </Panel>
-        </PanelGroup>
+            </ReactPanel>
+        </ReactPanelGroup>
     )
 }
