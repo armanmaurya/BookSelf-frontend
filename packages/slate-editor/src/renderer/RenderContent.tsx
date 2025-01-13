@@ -35,12 +35,14 @@ import { ParagraphLeaf } from "@bookself/slate-paragraph";
 export const RenderContent = ({
   value,
   title,
+  children,
 }: {
   value: Descendant[];
   title: string;
+  children?: React.ReactNode;
 }) => {
   return (
-    <div className="flex flex-col w-full p-2">
+    <div className="flex flex-col w-full p-2 h-full">
       {/* <div className="w-full">
         <img
           src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"
@@ -51,9 +53,18 @@ export const RenderContent = ({
       <h1 className="text-5xl font-extrabold h-14 flex items-center">
         {title || "Untitled"}
       </h1>
-      <div>
-        <RenderEditorStatic value={value} />
-      </div>
+      {
+        value.length === 0 ? (
+          <div className="h-full">
+            {children}
+          </div>
+        ) : (
+          <div className="">
+            <RenderEditorStatic value={value} />
+          </div>
+        )
+      }
+
     </div>
   );
 };
@@ -131,7 +142,7 @@ const ServerElement = (props: RenderElementProps) => {
     case NodeType.TAB_PANEL:
       return <RenderTabPanel {...props} />;
     case NodeType.PARAGRAPH:
-      return <RenderParagraph {...props} element={props.element}/>
+      return <RenderParagraph {...props} element={props.element} />
     default:
       return <Default {...props} />;
   }
@@ -141,7 +152,7 @@ const ServerLeaf = (props: RenderLeafProps) => {
   switch (props.leaf.type) {
     case "text":
       return <ParagraphLeaf {...props} leaf={props.leaf} />
-  default:
-    return <DefalutLeaf {...props} />;
+    default:
+      return <DefalutLeaf {...props} />;
   }
 };

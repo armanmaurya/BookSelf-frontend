@@ -12,6 +12,18 @@
 span:empty::before {
   content: "\200b"; /* Zero-width space to ensure span has some height */
 }
+.color-change-div {
+  transition: opacity 0.5s;
+  opacity: 0;
+}
+.hover-div {
+  cursor: pointer;
+}
+
+
+.hover-div:hover > .color-change-div {
+  opacity: 1;
+}
 
 
 

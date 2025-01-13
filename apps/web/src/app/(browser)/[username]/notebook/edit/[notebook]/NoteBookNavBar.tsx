@@ -20,10 +20,10 @@ export const NoteBookNavBar = () => {
   const path = usePathname();
   console.log("url", path);
   const pathArray = path.split("/");
-  const username = pathArray[2];
+  const username = pathArray[1];
   const notebook = pathArray[4];
   const activepath = pathArray.slice(5, pathArray.length);
-  const notebookurl = `/notebook/${username}/edit/${notebook}`;
+  const notebookurl = `/${username}/notebook/edit/${notebook}`;
 
   const { data, error, loading, refetch } = useFetch<PageResponse[]>(
     `${API_ENDPOINT.notebook.url}/${username}/${notebook}?children`

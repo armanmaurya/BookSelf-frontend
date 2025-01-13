@@ -34,9 +34,10 @@ const Page = async ({
   }
 
 
-  // console.log("data", res.status);
+
+  console.log("data", data);
   return (
-    <RichTextEditor initialValue={data.content} title={data.title} />
+    <RichTextEditor username={username} notebook={notebook} path={path} initialValue={data.content} title={data.title} />
   );
 };
 

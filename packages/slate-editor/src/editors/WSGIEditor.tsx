@@ -241,7 +241,7 @@ export const WSGIEditor = ({
       <Slate
         editor={editor}
         initialValue={
-          editorValue
+          initialValue ? JSON.parse(initialValue) : editorValue
         }
         // initialValue={editorValue}
         onChange={(value) => {
@@ -323,10 +323,11 @@ export const WSGIEditor = ({
 
                 onChange &&
                   onChange(
-                    JSON.stringify({
-                      title: pageTitle,
-                      content: JSON.stringify(editor.children),
-                    })
+                    // JSON.stringify({
+                    //   // title: pageTitle,
+                    //   content: JSON.stringify(editor.children),
+                    // })
+                    JSON.stringify(editor.children)
                   );
               }
             }}

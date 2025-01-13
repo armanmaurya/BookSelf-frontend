@@ -1,3 +1,4 @@
+"use client";
 export const ContextMenuItem = ({ children, onClick, disabled, className, style, }: {
     children: React.ReactNode;
     onClick: () => void;

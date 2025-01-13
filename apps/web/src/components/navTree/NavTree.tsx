@@ -61,7 +61,7 @@ export const NavTree = ({
         menu.setPoint({ x: e.clientX, y: e.clientY });
         menu.setData({ call: handleChange, path: path.join("/"), parentRefetch: parentRefetch });
       }}>
-        <div className="flex gap-1 px-1 items-center bg-neutral-900 rounded-md">
+        <div className="flex gap-1 p-1 items-center bg-neutral-900 rounded-md">
           {
             data && data.length > 0 && (
               <div className="cursor-pointer" onClick={() => {

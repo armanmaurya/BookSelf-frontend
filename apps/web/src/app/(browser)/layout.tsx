@@ -13,6 +13,7 @@ import { cookies } from "next/headers";
 import { API_ENDPOINT } from "../utils";
 import { SlNote } from "react-icons/sl";
 import Link from "next/link";
+import { ProfileIconContainer } from "@/components/ProfileIcon/ProfileIconContainer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -57,6 +58,8 @@ export default async function RootLayout({
 
           <ContextProvider>
             {/* <AppBar /> */}
+            <ProfileIconContainer/>
+
             <div className="h-full w-full">
               <div className="h-full">{children}</div>
               <SideBar>

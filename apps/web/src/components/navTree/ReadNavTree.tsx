@@ -10,10 +10,10 @@ export const ReadNavTree = () => {
   const path = usePathname();
 
   const pathArray = path.split("/");
-  const username = pathArray[2];
+  const username = pathArray[1];
   const notebook = pathArray[3];
   const activepath = pathArray.slice(4, pathArray.length);
-  const notebookurl = `/notebook/${username}/${notebook}`;
+  const notebookurl = `/${username}/notebook/${notebook}`;
   const { data, error, loading, refetch } = useFetch<PageResponse[]>(
     `${API_ENDPOINT.notebook.url}/${username}/${notebook}?children`
   );

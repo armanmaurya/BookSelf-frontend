@@ -1,7 +1,13 @@
 "use client";
 import { API_ENDPOINT } from "@/app/utils";
 
-export const LogoutBtn = () => {
+export const LogoutBtn = ({
+  className,
+  children,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
   const logout = async () => {
     try {
       const res = await fetch(API_ENDPOINT.logout.url, {
@@ -21,8 +27,8 @@ export const LogoutBtn = () => {
     }
   };
   return (
-    <button onClick={logout} className=" dark:bg-neutral-700 bg-slate-100 rounded p-1.5 w-full">
-      Logout
+    <button onClick={logout} className={`${className}`}>
+      {children}
     </button>
   );
 };

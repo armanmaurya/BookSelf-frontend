@@ -1,7 +1,7 @@
 export interface PageResponse {
     id: number;
     title: string;
-    content: string;
+    content: any;
     created_at: string;
     updated_at: string;
     notebook: number;
