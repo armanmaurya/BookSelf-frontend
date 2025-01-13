@@ -64,6 +64,7 @@ export const NoteBookNavBar = () => {
     if (res.ok) {
       console.log("Deleted", path);
       menu.data.parentRefetch();
+      menu.data.routeToParent();
     }
   }
 

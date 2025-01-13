@@ -58,11 +58,11 @@ export default async function RootLayout({
 
           <ContextProvider>
             {/* <AppBar /> */}
-            <ProfileIconContainer/>
+            <ProfileIconContainer />
 
             <div className="h-full w-full">
               <div className="h-full">{children}</div>
-              <SideBar>
+              {/* <SideBar>
                 <SideBarElement href="/library/my-article">
                   <IoLibrary size={20} className="" />
                   <span className="pl-3">Library</span>
@@ -75,8 +75,10 @@ export default async function RootLayout({
                   <SlNote size={20} className="" />
                   <span className="pl-3">Your Articles</span>
                 </SideBarElement>
-              </SideBar>
+              </SideBar> */}
             </div>
+            <ProfileIconContainer />
+
           </ContextProvider>
         </ThemeProvider>
       </body>

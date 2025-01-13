@@ -19,10 +19,12 @@ const Page = async ({
   let res;
   if (path) {
     res = await fetch(
-      `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`
+      `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`, {
+        cache: "no-store",
+      }
     );
   } else {
-    res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}`);
+    res = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}`, { cache: "no-store" });
   }
 
   // console.log("res", )

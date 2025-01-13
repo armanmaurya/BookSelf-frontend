@@ -14,21 +14,36 @@ const page = async ({
   const { username, notebook, path } = await params;
 
   if (!path) {
-
-    const getIndexPage = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}?index`);
+    const getIndexPage = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}?index`, {
+      cache: "no-store",
+    });
     const data: PageResponse = await getIndexPage.json();
     redirect(`/${username}/notebook/${notebook}/${data.slug}`);
   }
 
+  console.log("path", `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`);
+
   const res = await fetch(
-    `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`
+    `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`, {
+
+
+      cache: "no-store",
+    }
   );
 
+  if (!res.ok) {
+    redirect(`/${username}/notebook/${notebook}`);
+  }
+
   const data: PageResponse = await res.json();
+  console.log("data", data.content);
+  console.log("runned");
 
   return (
     <div className='h-full'>
-      <RenderContent value={data.content} title={data.title}>
+      <RenderContent value={
+        JSON.parse(data.content == "" ? "[]" : data.content) as Descendant[]
+      } title={data.title}>
         <div className='h-full flex justify-center items-center'>
           <NoContent height={400} />
         </div>

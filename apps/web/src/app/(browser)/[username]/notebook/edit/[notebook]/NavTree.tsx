@@ -13,6 +13,7 @@ import { PageResponse } from "@bookself/types";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useContextMenu } from "@bookself/context-menu";
+import { useRouter } from "next/navigation";
 
 export const NavTree = ({
   username,
@@ -36,6 +37,7 @@ export const NavTree = ({
   const [isExpaned, setIsExpanded] = useState(false);
   const { data, error, loading, refetch } = useFetch<PageResponse[]>(`${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}?children`);
   const currentSlug = activepath[0];
+  const router = useRouter();
 
   const menu = useContextMenu<any>();
 
@@ -50,6 +52,10 @@ export const NavTree = ({
     refetch();
   }
 
+  const RouteToParent = () => {
+    router.push(`${notebookurl}/${path.slice(0, path.length - 1).join("/")}`);
+  }
+
 
 
   return (
@@ -59,9 +65,9 @@ export const NavTree = ({
         e.stopPropagation();
         menu.setClicked(true);
         menu.setPoint({ x: e.clientX, y: e.clientY });
-        menu.setData({ call: handleChange, path: path.join("/"), parentRefetch: parentRefetch });
+        menu.setData({ call: handleChange, path: path.join("/"), parentRefetch: parentRefetch, routeToParent: RouteToParent });
       }}>
-        <div className="flex gap-1 items-center bg-neutral-900 rounded-md">
+        <div className="flex gap-1 p-2 items-center bg-neutral-900 rounded-md">
           {
             data && data.length > 0 && (
               <div className="cursor-pointer" onClick={() => {

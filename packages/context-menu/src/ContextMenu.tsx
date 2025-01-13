@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useContextMenu } from "./useContextMenu";
+import { motion } from "framer-motion";
 
 export const ContextMenu = ({ children }: {
     children: React.ReactNode;
@@ -29,11 +30,19 @@ export const ContextMenu = ({ children }: {
         <>
             {
                 menu.clicked && (
-                    <div className="bg-neutral-600 rounded-md overflow-hidden min-w-48 shadow-md"
-                        style={{ position: "absolute", top: menu.point.y, left: menu.point.x }}
-                    >
-                        {children}
-                    </div>
+                    <motion.div
+                    initial={{ opacity: 0.5, translateY: -5 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    exit={{ opacity: 0.5, translateY: -5 }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
+                    style={{ position: "absolute", top: menu.point.y, left: menu.point.x + 5 }}                    >
+
+                        <div className="bg-neutral-600 rounded-md overflow-hidden min-w-48 shadow-md"
+                            // style={{ position: "absolute", top: menu.point.y, left: menu.point.x }}
+                        >
+                            {children}
+                        </div>
+                    </motion.div>
                 )
             }
         </>
