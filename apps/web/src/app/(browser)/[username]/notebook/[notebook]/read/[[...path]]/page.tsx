@@ -1,5 +1,6 @@
 import { API_ENDPOINT } from '@/app/utils';
-import { NoContent } from '@/components/blocks/noContent';
+import { EditButton } from '@/components/element/button/EditButton';
+// import { NoContent } from '@/components/blocks/noContent';
 import { RenderContent } from '@bookself/slate-editor/renderer';
 import { PageResponse } from '@bookself/types';
 import { redirect } from 'next/navigation';
@@ -45,9 +46,13 @@ const page = async ({
         JSON.parse(data.content == "" ? "[]" : data.content) as Descendant[]
       } title={data.title}>
         <div className='h-full flex justify-center items-center'>
-          <NoContent height={400} />
+          {/* <NoContent height={400} /> */}
+          No Content
         </div>
       </RenderContent>
+      <EditButton href={
+        `/${username}/notebook/${notebook}/edit/${path.join("/")}`
+      }/>
     </div>
   )
 }

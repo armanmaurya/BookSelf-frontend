@@ -42,7 +42,7 @@ export const RenderContent = ({
   children?: React.ReactNode;
 }) => {
   return (
-    <div className="flex flex-col w-full p-2 h-full">
+    <div className="flex flex-col w-full h-full">
       {/* <div className="w-full">
         <img
           src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*kyhNfzNWquucFB7EQBubPg.jpeg"

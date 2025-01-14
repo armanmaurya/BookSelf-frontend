@@ -31,7 +31,7 @@ export const RichTextEditor = ({
   }
   console.log("initialValue", initialValue);
   return (
-    <div>
+    <div className="">
       <WSGIEditor
         onChange={(value) => {
           updatePage(value);

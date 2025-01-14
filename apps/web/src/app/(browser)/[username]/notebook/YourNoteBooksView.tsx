@@ -23,14 +23,14 @@ export const YourNoteBooksView = ({ data, username }: { data: any, username: str
         const getIndexPage = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${contextMenu.data.notebook.slug}?index`);
         const data = await getIndexPage.json();
         nProgress.start();
-        router.push(`notebook/edit/${contextMenu.data.notebook.slug}/${data.slug}`);
+        router.push(`notebook/${contextMenu.data.notebook.slug}/edit/${data.slug}`);
     }
     return (
         <div>
             {data.map((notebook: any) => {
                 return (
                     <div key={notebook.id} className="p-2 border rounded-md m-2 flex items-center justify-between hover-div" onContextMenu={(e) => handleClick(e, notebook)}>
-                        <Link href={`notebook/${notebook.slug}/${notebook.index ? notebook.index : ""}`}>{notebook.name}</Link>
+                        <Link href={`notebook/${notebook.slug}/read/${notebook.index ? notebook.index : ""}`}>{notebook.name}</Link>
                         <div className="color-change-div" onClick={(e) => handleClick(e, notebook)}>
                             <HiDotsVertical />
                         </div>
