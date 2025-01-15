@@ -15,6 +15,7 @@
     "@bookself/context-menu": "*",
     "@bookself/slate-editor": "*",
     "@bookself/slate-paragraph": "*",
+    "@bookself/slate-command-menu": "*",
     "@bookself/ui": "*",
     "@emotion/css": "^11.11.2",
     "@next/bundle-analyzer": "^14.2.5",

@@ -1,0 +1,16 @@
+{
+  "name": "@bookself/slate-command-menu",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "slate": "^0.103.0",
+    "slate-react": "^0.104.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }, 
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
+  }
+}

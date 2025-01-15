@@ -21,10 +21,10 @@ export const EditableParagraph = (props: ParagraphElementProps) => {
   }, [selected]);
   const keyDownEvent = (e: KeyboardEvent) => {
     if (e.shiftKey && !e.ctrlKey) {
-      switch (e.key) {
-        case "Enter":
-          ParagraphEditor.insertNewLine(editor);
-      }
+      // switch (e.key) {
+      //   case "Enter":
+      //     ParagraphEditor.insertNewLine(editor);
+      // }
     } 
     if (e.ctrlKey && !e.shiftKey) {
       switch(e.key) {

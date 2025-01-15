@@ -1,6 +1,7 @@
 
 import { API_ENDPOINT } from "@/app/utils";
 import { RichTextEditor } from "@/components/blocks/RichTextEditor";
+import { FloatingButton } from "@/components/element/button/EditButton";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -39,7 +40,17 @@ const Page = async ({
 
   console.log("data", data);
   return (
-    <RichTextEditor username={username} notebook={notebook} path={path} initialValue={data.content} title={data.title} />
+    <div>
+
+      <RichTextEditor username={username} notebook={notebook} path={path} initialValue={data.content} title={data.title} />
+      <FloatingButton href={
+        `/${username}/notebook/${notebook}/read/${path ? path.join("/") : ""}`
+      }>
+        Read
+      </FloatingButton>
+    </div>
+    
+    
   );
 };
 

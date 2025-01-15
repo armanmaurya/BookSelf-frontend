@@ -1,5 +1,5 @@
 import { ReactPanelResizeHandler, ReactPanel, ReactPanelGroup } from "@/components/element/panels";
-import { EditNavTree } from "@/components/navTree/EditNavTree";
+import { RenderNavTree } from "@/components/navTree/EditNavTree";
 import { MenuProvider } from "@bookself/context-menu";
 
 const layout = ({ children }: {
@@ -9,7 +9,7 @@ const layout = ({ children }: {
         <ReactPanelGroup direction="horizontal">
             <ReactPanel defaultSize={20} minSize={15}>
                 <MenuProvider>
-                    <EditNavTree />
+                    <RenderNavTree />
                 </MenuProvider>
             </ReactPanel>
             <ReactPanelResizeHandler className="bg-white" style={{ width: "1px" }} />

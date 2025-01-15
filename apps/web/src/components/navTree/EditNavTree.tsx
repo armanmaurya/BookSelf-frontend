@@ -13,14 +13,15 @@ import { act, useState } from "react";
 import { Modal } from "@bookself/react-modal";
 import { NewPageBtn } from "@/components/blocks/NewPageBtn";
 import { useFetch } from "@bookself/react-hooks";
-export const EditNavTree = () => {
+export const RenderNavTree = () => {
   const path = usePathname();
   console.log("url", path);
   const pathArray = path.split("/");
   const username = pathArray[1];
   const notebook = pathArray[3];
+  const mode = pathArray[4];
   const activepath = pathArray.slice(5, pathArray.length);
-  const notebookurl = `/${username}/notebook/edit/${notebook}`;
+  const notebookurl = `/${username}/notebook/${notebook}/${mode}`;
 
   console.log("username", username, "notebook", notebook, "activepath", activepath, "notebookurl", notebookurl);
 

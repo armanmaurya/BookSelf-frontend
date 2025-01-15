@@ -64,6 +64,8 @@ import "prismjs/themes/prism-solarizedlight.css";
 // import { TagInput } from "@/components/element/input";
 import "react-tabs/style/react-tabs.css";
 
+import { CommandMenu, Commands } from "@bookself/slate-command-menu";
+
 // import action from "@/app/actions";
 import { withImage, EditableImage } from "../plugins/image";
 import { EditableQuote } from "../plugins/quote/elements/EditableQuote";
@@ -193,6 +195,102 @@ export const WSGIEditor = ({
         return <Default {...props} />;
     }
   }, []);
+
+  const commands: Commands[] = [
+    {
+      name: "bold",
+      command: () => {
+        console.log("bold");
+      },
+    },
+    {
+      name: "heading 1",
+      command: () => {
+        console.log("heading");
+      },
+    },
+    {
+      name: "heading 2",
+      command: () => {
+        console.log("heading");
+      },
+    },
+    {
+      name: "heading 3",
+      command: () => {
+        console.log("heading");
+      },
+    },
+    {
+      name: "heading 4",
+      command: () => {
+        console.log("heading");
+      },
+    },
+    {
+      name: "heading 5",
+      command: () => {
+        console.log("heading");
+      },
+    },
+    {
+      name: "heading 6",
+      command: () => {
+        console.log("heading");
+      },
+    },
+    {
+      name: "quote",
+      command: () => {
+        console.log("quote");
+      },
+    },
+    {
+      name: "code",
+      command: () => {
+        console.log("code");
+      },
+    },
+    {
+      name: "link",
+      command: () => {
+        console.log("link");
+      },
+    },
+    {
+      name: "image",
+      command: () => {
+        console.log("image");
+      },
+    },
+    {
+      name: "unordered list",
+      command: () => {
+        console.log("unordered list");
+      },
+    },
+    {
+      name: "ordered list",
+      command: () => {
+        console.log("ordered list");
+      },
+    },
+    {
+      name: "tab",
+      command: () => {
+        console.log("tab");
+      },
+    },
+    {
+      name: "tab list",
+      command: () => {
+        console.log("tab list");
+      },
+    },
+  ]
+
+  const [isCommendMenuOpen, setIsCommendMenuOpen] = useState(false);
+
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     switch (props.leaf.type) {
       case "text":
@@ -272,18 +370,18 @@ export const WSGIEditor = ({
             }}
             onKeyDown={(e) => {
               switch (e.key) {
-                case "Enter":
-                  e.preventDefault();
-                  ReactEditor.focus(editor);
-                  break;
-                case "ArrowDown":
-                  e.preventDefault();
-                  ReactEditor.focus(editor);
-                  break;
-                case "ArrowUp":
-                  e.preventDefault();
-                default:
-                  break;
+                // case "Enter":
+                //   e.preventDefault();
+                //   ReactEditor.focus(editor);
+                //   break;
+                // case "ArrowDown":
+                //   e.preventDefault();
+                //   ReactEditor.focus(editor);
+                //   break;
+                // case "ArrowUp":
+                //   e.preventDefault();
+                // default:
+                //   break;
               }
             }}
             value={pageTitle}
@@ -302,17 +400,17 @@ export const WSGIEditor = ({
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {
               handleKeyBoardFormating(event, editor);
-              if (
-                event.key === "ArrowUp" &&
-                isFocusAtStart(editor.selection?.anchor.path || [])
-              ) {
-                if (titleRef.current) {
-                  event.preventDefault();
-                  titleRef.current.focus();
-                  const length = titleRef.current.value.length;
-                  titleRef.current.setSelectionRange(length, length);
-                }
-              }
+              // if (
+              //   event.key === "ArrowUp" &&
+              //   isFocusAtStart(editor.selection?.anchor.path || [])
+              // ) {
+              //   if (titleRef.current) {
+              //     event.preventDefault();
+              //     titleRef.current.focus();
+              //     const length = titleRef.current.value.length;
+              //     titleRef.current.setSelectionRange(length, length);
+              //   }
+              // }
               if (event.ctrlKey && event.key === "s") {
                 event.preventDefault();
                 // UpdateContent(
@@ -346,6 +444,7 @@ export const WSGIEditor = ({
             className="h-96"
           ></div>
         </div>
+        <CommandMenu commands={commands} isCommandMenuOpen={isCommendMenuOpen} setIsCommandMenuOpen={setIsCommendMenuOpen} />
       </Slate>
     </div >
   );

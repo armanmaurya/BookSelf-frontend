@@ -23,7 +23,7 @@ export const YourNoteBooksView = ({ data, username }: { data: any, username: str
         const getIndexPage = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${contextMenu.data.notebook.slug}?index`);
         const data = await getIndexPage.json();
         nProgress.start();
-        router.push(`notebook/${contextMenu.data.notebook.slug}/edit/${data.slug}`);
+        router.push(`notebook/${contextMenu.data.notebook.slug}/read/${data.slug}`);
     }
     return (
         <div>
