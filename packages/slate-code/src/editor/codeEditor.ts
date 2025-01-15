@@ -7,7 +7,7 @@ import {
 } from "slate";
 
 export const CodeEditor = {
-  insertCode(editor: SlateEditor, type: string) {
+  insertCode(editor: SlateEditor, type: string, initialText?: string) {
     if (!editor.selection) {
       return;
     }
@@ -18,13 +18,13 @@ export const CodeEditor = {
       mode: "lowest",
     });
 
-    for (const node of nodes) {
-      if (node[0].type !== type) {
-        console.log("Not a given block");
-        return;
-      }
-      //   console.log(editor.selection);
-    }
+    // for (const node of nodes) {
+    //   if (node[0].type !== type) {
+    //     console.log("Not a given block");
+    //     return;
+    //   }
+    //   //   console.log(editor.selection);
+    // }
 
     const edges = Range.edges(editor.selection);
 
@@ -37,12 +37,16 @@ export const CodeEditor = {
       match: (n) => SlateElement.isElement(n),
     });
 
-    const text = getText(editor);
+    let text = getText(editor);
+    if (initialText != null) {
+      text = initialText;
+    }
 
     Transforms.removeNodes(editor, {
       at: editor.selection,
     });
 
+    console.log("text", text);
     Transforms.insertNodes(editor, {
       type: "code",
       children: [

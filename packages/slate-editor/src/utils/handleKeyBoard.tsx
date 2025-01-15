@@ -19,7 +19,8 @@ import { ListEditor } from "../plugins/withList/editor/ListEditor";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
-  editor: SlateEditor
+  editor: SlateEditor,
+  isCommandMenuOpen: boolean,
 ) => {
   if (editor.selection) {
     if (event.ctrlKey && event.shiftKey) {
@@ -304,80 +305,80 @@ export const handleKeyBoardFormating = (
       }
     }
   }
-  // if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
-  //   const [match] = SlateEditor.nodes(editor, {
-  //     match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-  //     // mode: "lowest",
-  //   });
-  //   console.log(match[0].type);
-  //   if (match[0].type) {
-  //     switch (match[0].type) {
-  //       case NodeType.H1:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertParagraph(editor, NodeType.H1);
-  //         break;
-  //       case NodeType.H2:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertParagraph(editor, NodeType.H2);
-  //         break;
-  //       case NodeType.H3:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertParagraph(editor, NodeType.H3);
-  //         break;
-  //       case NodeType.H4:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertParagraph(editor, NodeType.H4);
-  //         break;
-  //       case NodeType.H5:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertParagraph(editor, NodeType.H5);
-  //         break;
-  //       case NodeType.H6:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertParagraph(editor, NodeType.H6);
-  //         break;
-  //       case NodeType.UNORDERED_LIST:
-  //         event.preventDefault();
-  //         // insertListItem(editor);
-  //         ListEditor.insertListItem(editor)
-  //         break;
-  //       case NodeType.ORDERED_LIST:
-  //         event.preventDefault();
-  //         ListEditor.insertListItem(editor)
-  //         break;
-  //       case NodeType.BLOCKQUOTE:
-  //         event.preventDefault();
-  //         // SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
-  //         ParagraphEditor.insertParagraph(editor)
-  //         break;
-  //       case NodeType.CODE:
-  //         event.preventDefault();
-  //         SlateCustomEditor.insertNewLine(editor);
-  //         break;
-  //       case NodeType.PARAGRAPH:
-  //         event.preventDefault();
-  //         // SlateCustomEditor.insertParagraph(editor, NodeType.TEXT);
-  //         ParagraphEditor.insertParagraph(editor);
-  //         break;
-  //       // case NodeType.TAB:
-  //       //   event.preventDefault();
-  //       //   const [currentNode] = SlateEditor.nodes(editor, {
-  //       //     match: (n) => n.type === NodeType.TAB,
-  //       //     mode: "lowest",
-  //       //   });
-  //       //   const tabsNode = SlateEditor.nodes(editor, {
-  //       //     match: (n) => n.type === NodeType.TABS,
-  //       //     mode: "lowest",
-  //       //   });
-  //       //   const currentTabPanelPath = [
-  //       //     ...currentNode[1].slice(0, -2),
-  //       //     currentNode[1][currentNode[1].length - 1] + 1,
-  //       //   ];
-  //       //   const startPath = SlateEditor.start(editor, currentTabPanelPath);
-  //       //   Transforms.select(editor, startPath);
-  //     }
-  //   }
-  // }
+  if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey && !isCommandMenuOpen) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      // mode: "lowest",
+    });
+    console.log(match[0].type);
+    if (match[0].type) {
+      switch (match[0].type) {
+        case NodeType.H1:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.H1);
+          break;
+        case NodeType.H2:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.H2);
+          break;
+        case NodeType.H3:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.H3);
+          break;
+        case NodeType.H4:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.H4);
+          break;
+        case NodeType.H5:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.H5);
+          break;
+        case NodeType.H6:
+          event.preventDefault();
+          SlateCustomEditor.insertParagraph(editor, NodeType.H6);
+          break;
+        case NodeType.UNORDERED_LIST:
+          event.preventDefault();
+          // insertListItem(editor);
+          ListEditor.insertListItem(editor)
+          break;
+        case NodeType.ORDERED_LIST:
+          event.preventDefault();
+          ListEditor.insertListItem(editor)
+          break;
+        case NodeType.BLOCKQUOTE:
+          event.preventDefault();
+          // SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
+          ParagraphEditor.insertParagraph(editor)
+          break;
+        case NodeType.CODE:
+          event.preventDefault();
+          SlateCustomEditor.insertNewLine(editor);
+          break;
+        case NodeType.PARAGRAPH:
+          event.preventDefault();
+          // SlateCustomEditor.insertParagraph(editor, NodeType.TEXT);
+          ParagraphEditor.insertParagraph(editor);
+          break;
+        // case NodeType.TAB:
+        //   event.preventDefault();
+        //   const [currentNode] = SlateEditor.nodes(editor, {
+        //     match: (n) => n.type === NodeType.TAB,
+        //     mode: "lowest",
+        //   });
+        //   const tabsNode = SlateEditor.nodes(editor, {
+        //     match: (n) => n.type === NodeType.TABS,
+        //     mode: "lowest",
+        //   });
+        //   const currentTabPanelPath = [
+        //     ...currentNode[1].slice(0, -2),
+        //     currentNode[1][currentNode[1].length - 1] + 1,
+        //   ];
+        //   const startPath = SlateEditor.start(editor, currentTabPanelPath);
+        //   Transforms.select(editor, startPath);
+      }
+    }
+  }
   if (event.key === " ") {
     if (editor.selection) {
       const [match] = SlateEditor.nodes(editor, {

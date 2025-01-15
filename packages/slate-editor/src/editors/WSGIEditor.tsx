@@ -45,6 +45,7 @@ import {
   createEditor,
   Element as SlateElement,
   Transforms,
+  Editor,
 } from "slate";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
 import { SlateCustomEditor } from "../utils/customEditor";
@@ -85,7 +86,7 @@ import {
   ParagraphLeaf,
 } from "@bookself/slate-paragraph";
 import { EditableParagraph } from "@bookself/slate-paragraph";
-import { EditableCode } from "@bookself/slate-code";
+import { CodeEditor, EditableCode } from "@bookself/slate-code";
 
 const editorValue: Descendant[] = [
   {
@@ -206,49 +207,55 @@ export const WSGIEditor = ({
     {
       name: "heading 1",
       command: () => {
-        console.log("heading");
+        const text = ParagraphEditor.string(editor);
+        SlateCustomEditor.toggleHeading(editor, NodeType.H1, text);
       },
     },
     {
       name: "heading 2",
       command: () => {
-        console.log("heading");
+        const text = ParagraphEditor.string(editor);
+        SlateCustomEditor.toggleHeading(editor, NodeType.H2, text);
       },
     },
     {
       name: "heading 3",
       command: () => {
-        console.log("heading");
+        const text = ParagraphEditor.string(editor);
+        SlateCustomEditor.toggleHeading(editor, NodeType.H3, text);
       },
     },
     {
       name: "heading 4",
       command: () => {
-        console.log("heading");
+        const text = ParagraphEditor.string(editor);
+        SlateCustomEditor.toggleHeading(editor, NodeType.H4, text);
       },
     },
     {
       name: "heading 5",
       command: () => {
-        console.log("heading");
+        const text = ParagraphEditor.string(editor);
+        SlateCustomEditor.toggleHeading(editor, NodeType.H5, text);
       },
     },
     {
       name: "heading 6",
       command: () => {
-        console.log("heading");
+        const text = ParagraphEditor.string(editor);
+        SlateCustomEditor.toggleHeading(editor, NodeType.H6, text);
       },
     },
     {
       name: "quote",
       command: () => {
-        console.log("quote");
+        SlateCustomEditor.toggleBlockQuote(editor);
       },
     },
     {
       name: "code",
       command: () => {
-        console.log("code");
+        CodeEditor.insertCode(editor, NodeType.PARAGRAPH, "");
       },
     },
     {
@@ -399,7 +406,7 @@ export const WSGIEditor = ({
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {
-              handleKeyBoardFormating(event, editor);
+              handleKeyBoardFormating(event, editor, isCommendMenuOpen);
               // if (
               //   event.key === "ArrowUp" &&
               //   isFocusAtStart(editor.selection?.anchor.path || [])
@@ -487,225 +494,3 @@ const SlateAnchorTag = (props: RenderElementProps) => {
     </span>
   );
 };
-
-// const initialValue2: Descendant[] = [
-//   {
-//     id: "heading-one",
-//     type: NodeType.H1,
-//     align: "center",
-//     children: [
-//       {
-//         text: "Heading One",
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.UNORDERED_LIST,
-//     children: [
-//       {
-//         type: NodeType.LIST_ITEM,
-//         children: [
-//           {
-//             text: "List Item 1",
-//           },
-//         ],
-//       },
-//       {
-//         type: NodeType.LIST_ITEM,
-//         children: [
-//           {
-//             text: "List Item 2",
-//           },
-//         ],
-//       },
-//       {
-//         type: NodeType.ORDERED_LIST,
-//         children: [
-//           {
-//             type: NodeType.LIST_ITEM,
-//             children: [
-//               {
-//                 text: "List Item 1",
-//               },
-//             ],
-//           },
-//           {
-//             type: NodeType.LIST_ITEM,
-//             children: [
-//               {
-//                 text: "List Item 2",
-//               },
-//             ],
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.ORDERED_LIST,
-//     children: [
-//       {
-//         type: NodeType.LIST_ITEM,
-//         children: [
-//           {
-//             text: "List Item 1",
-//           },
-//         ],
-//       },
-//       {
-//         type: NodeType.LIST_ITEM,
-//         children: [
-//           {
-//             text: "List Item 2",
-//           },
-//         ],
-//       },
-//       {
-//         type: NodeType.ORDERED_LIST,
-//         children: [
-//           {
-//             type: NodeType.LIST_ITEM,
-//             children: [
-//               {
-//                 text: "List Item 1",
-//               },
-//             ],
-//           },
-//           {
-//             type: NodeType.LIST_ITEM,
-//             children: [
-//               {
-//                 text: "List Item 2",
-//               },
-//             ],
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     id: "heading-on-1e",
-//     type: NodeType.H1,
-//     align: "center",
-//     children: [
-//       {
-//         text: "Heading One",
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.UNORDERED_LIST,
-//     children: [
-//       {
-//         type: NodeType.LIST_ITEM,
-//         children: [{ text: "List Item 1" }],
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.PARAGRAPH,
-//     align: "left",
-//     children: [
-//       {
-//         text: "Heading Two",
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.PARAGRAPH,
-//     align: "center",
-//     children: [
-//       {
-//         text: "A line of text in a paragraph.",
-//         bold: true,
-//       },
-//       {
-//         text: "Bold",
-//         bold: true,
-//       },
-//       {
-//         text: " Some More Text ",
-//       },
-//       {
-//         text: "Italic",
-//         italic: true,
-//       },
-//       {
-//         text: " Some more text ",
-//       },
-//       {
-//         text: "Underlined",
-//         underline: true,
-//       },
-//       {
-//         text: " Some more text ",
-//       },
-//       {
-//         text: "Bold Italic",
-//         bold: true,
-//         italic: true,
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.CODE,
-//     language: "javascript",
-//     children: [
-//       {
-//         text: "const a = 5;",
-//       },
-//       {
-//         text: "const b = 10;",
-//       },
-//     ],
-//   },
-//   {
-//     type: NodeType.PARAGRAPH,
-//     align: "right",
-//     children: [
-//       {
-//         text: "A line of text \nin a paragraph.",
-//         // bold: true,
-//       },
-//       {
-//         text: "Bold",
-//         bold: true,
-//       },
-//       {
-//         text: " Some More Text ",
-//       },
-//       {
-//         text: "Italic",
-//         italic: true,
-//       },
-//       {
-//         text: " Some more text ",
-//       },
-//       {
-//         text: "Underlined",
-//         underline: true,
-//       },
-//       {
-//         text: " Some more text ",
-//       },
-//       {
-//         text: "Bold Italic",
-//         bold: true,
-//         italic: true,
-//       },
-//     ],
-//   },
-
-//   // {
-//   //   type: "code",
-//   //   language: "javascript",
-//   //   children: [
-//   //     {
-//   //       text: "const a = 5;",
-//   //     },
-//   //     {
-//   //       text: "const b = 10;",
-//   //     },
-//   //   ],
-//   // },
-// ];

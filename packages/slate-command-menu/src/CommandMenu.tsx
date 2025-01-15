@@ -25,25 +25,16 @@ export const CommandMenu = ({
 
   const handleKeyDown = (event: KeyboardEvent) => {
     // console.log(event.key);
-    if (event.key === "ArrowDown") {
-      event.preventDefault();
-      if (selectCommand < MenuCommands.length - 1) {
-        setSelectCommand(selectCommand + 1);
-      }
-    } else if (event.key === "ArrowUp") {
-      event.preventDefault();
-      if (selectCommand > 0) {
-        setSelectCommand(selectCommand - 1);
-      }
-    } else if (event.key === "Enter") {
-      event.preventDefault();
-      MenuCommands[selectCommand].command();
-    } else if (event.key === "Escape") {
+    if (event.key === "Escape") {
       event.preventDefault();
       setIsCommandMenuOpen(false);
     } else if (event.key === "/") {
       if (editor.selection && Range.isCollapsed(editor.selection)) {
-        const isStart = Editor.isStart(editor, editor.selection.anchor, editor.selection.anchor.path);
+        const isStart = Editor.isStart(
+          editor,
+          editor.selection.anchor,
+          editor.selection.anchor.path
+        );
         if (isStart) {
           setIsCommandMenuOpen(true);
           const domSelection = window.getSelection();
@@ -91,7 +82,7 @@ export const CommandMenu = ({
       setIsCommandMenuOpen(false);
     }
     sortMenuCommands(text.slice(1));
-  }, [text])
+  }, [text]);
   // useEffect(() => {
   //   if (editor.selection) {
   //     text = editor.string(editor.selection.anchor.path);
@@ -126,6 +117,7 @@ export const CommandMenu = ({
   // }, [text]);
 
   const handleNavigation = (event: KeyboardEvent) => {
+    console.log(event.key);
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (selectCommand < MenuCommands.length - 1) {
@@ -141,7 +133,7 @@ export const CommandMenu = ({
       MenuCommands[selectCommand].command();
       setIsCommandMenuOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!isCommandMenuOpen) {
@@ -149,7 +141,9 @@ export const CommandMenu = ({
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
       };
-    } else {
+    }
+
+    if (isCommandMenuOpen) {
       window.addEventListener("keydown", handleNavigation);
       return () => {
         window.removeEventListener("keydown", handleNavigation);
@@ -160,10 +154,14 @@ export const CommandMenu = ({
   return (
     <>
       {isCommandMenuOpen && (
-        <div ref={ref} style={{
-          top: pos.top,
-          left: pos.left
-        }} className="absolute p-2 bg-neutral-700 rounded-lg mt-6">
+        <div
+          ref={ref}
+          style={{
+            top: pos.top,
+            left: pos.left,
+          }}
+          className="absolute p-2 bg-neutral-700 rounded-lg mt-6"
+        >
           {MenuCommands.map((command, index) => {
             return (
               <div
