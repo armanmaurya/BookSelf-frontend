@@ -1,1 +1,1 @@
-export { CommandMenu, Commands } from "./CommandMenu";
+export * from "./CommandMenu";

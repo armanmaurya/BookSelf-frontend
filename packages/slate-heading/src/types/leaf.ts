@@ -1,7 +1,7 @@
 import { RenderLeafProps } from "slate-react";
 
 export type HeadingLeafType = {
-  type: "heading";
+  type: "heading" | "default";
   text: string;
 };
 

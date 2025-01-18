@@ -10,12 +10,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@bookself/context-menu": "*",
     "@bookself/react-hooks": "*",
     "@bookself/react-modal": "*",
-    "@bookself/context-menu": "*",
+    "@bookself/slate-command-menu": "*",
     "@bookself/slate-editor": "*",
     "@bookself/slate-paragraph": "*",
-    "@bookself/slate-command-menu": "*",
     "@bookself/ui": "*",
     "@emotion/css": "^11.11.2",
     "@next/bundle-analyzer": "^14.2.5",
@@ -44,9 +44,9 @@
     "react-resizable-panels": "^2.1.7",
     "react-syntax-highlighter": "^15.5.0",
     "react-tabs": "^6.0.2",
-    "slate": "^0.103.0",
-    "slate-history": "^0.100.0",
-    "slate-react": "^0.104.0",
+    "slate": "^0.112.0",
+    "slate-history": "^0.110.3",
+    "slate-react": "^0.112.0",
     "slate-soft-break": "^0.9.0"
   },
   "devDependencies": {

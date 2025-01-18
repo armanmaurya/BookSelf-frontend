@@ -4,7 +4,7 @@ import { useFocused, useSlate } from "slate-react";
 
 export interface Commands {
   name: string;
-  command: () => void;
+  command: (editor: Editor) => void;
 }
 
 export const CommandMenu = ({
@@ -24,7 +24,6 @@ export const CommandMenu = ({
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    // console.log(event.key);
     if (event.key === "Escape") {
       event.preventDefault();
       setIsCommandMenuOpen(false);
@@ -38,7 +37,7 @@ export const CommandMenu = ({
         if (isStart) {
           setIsCommandMenuOpen(true);
           const domSelection = window.getSelection();
-          if (domSelection) {
+          if (domSelection && domSelection.rangeCount > 0) {
             setSelectCommand(0);
             const range = domSelection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
@@ -50,74 +49,44 @@ export const CommandMenu = ({
   };
 
   const sortMenuCommands = (command: string) => {
-    const sortedCommands = MenuCommands.sort((a, b) => {
-      const getMatchScore = (name: string, command: string) => {
-        let score = 0;
-        let commandIndex = 0;
-        for (let i = 0; i < name.length; i++) {
-          if (name[i] === command[commandIndex]) {
-            score++;
-            commandIndex++;
+    if (MenuCommands) {
+      const sortedCommands = [...MenuCommands].sort((a, b) => {
+        const getMatchScore = (name: string, command: string) => {
+          let score = 0;
+          let commandIndex = 0;
+          for (let i = 0; i < name.length; i++) {
+            if (name[i] === command[commandIndex]) {
+              score++;
+              commandIndex++;
+            }
+            if (commandIndex === command.length) break;
           }
-          if (commandIndex === command.length) break;
-        }
-        return score;
-      };
+          return score;
+        };
 
-      const aScore = getMatchScore(a.name.toLowerCase(), command.toLowerCase());
-      const bScore = getMatchScore(b.name.toLowerCase(), command.toLowerCase());
+        const aScore = getMatchScore(a.name.toLowerCase(), command.toLowerCase());
+        const bScore = getMatchScore(b.name.toLowerCase(), command.toLowerCase());
 
-      return bScore - aScore;
-    });
-    setMenuCommands(sortedCommands);
+        return bScore - aScore;
+      });
+      setMenuCommands(sortedCommands);
+    }
   };
 
   let text = "";
   if (editor.selection) {
-    text = editor.string(editor.selection.anchor.path);
+    text = Editor.string(editor, editor.selection.anchor.path);
   }
 
   useEffect(() => {
-    if (text == "") {
+    if (text === "") {
       setIsCommandMenuOpen(false);
+    } else {
+      sortMenuCommands(text.slice(1));
     }
-    sortMenuCommands(text.slice(1));
   }, [text]);
-  // useEffect(() => {
-  //   if (editor.selection) {
-  //     text = editor.string(editor.selection.anchor.path);
-  //     if (text.startsWith("/")) {
-  //       if (!isCommandMenuOpen) {
-  //         setIsCommandMenuOpen(true);
-  //       }
-
-  //       const domSelection = window.getSelection();
-  //       if (domSelection) {
-  //         setSelectCommand(0);
-  //         const range = domSelection.getRangeAt(0);
-  //         const rect = range.getBoundingClientRect();
-  //         console.log(rect.top, rect.left);
-  //         // ref.current?.setAttribute(
-  //         //   "style",
-  //         //   `top: ${rect.top}px; left: ${rect.left}px;`
-  //         // );
-  //         setPos({ top: rect.top, left: rect.left });
-  //         console.log("Show Command Menu");
-  //       }
-  //       // Remove the / from the text
-  //       const command = text.slice(1);
-  //       sortMenuCommands(command);
-  //       console.log(command);
-  //     } else {
-  //       if (isCommandMenuOpen) {
-  //         setIsCommandMenuOpen(false);
-  //       }
-  //     }
-  //   }
-  // }, [text]);
 
   const handleNavigation = (event: KeyboardEvent) => {
-    console.log(event.key);
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (selectCommand < MenuCommands.length - 1) {
@@ -130,25 +99,17 @@ export const CommandMenu = ({
       }
     } else if (event.key === "Enter") {
       event.preventDefault();
-      MenuCommands[selectCommand].command();
+      MenuCommands[selectCommand].command(editor);
       setIsCommandMenuOpen(false);
     }
   };
 
   useEffect(() => {
-    if (!isCommandMenuOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }
-
-    if (isCommandMenuOpen) {
-      window.addEventListener("keydown", handleNavigation);
-      return () => {
-        window.removeEventListener("keydown", handleNavigation);
-      };
-    }
+    const keyDownHandler = isCommandMenuOpen ? handleNavigation : handleKeyDown;
+    window.addEventListener("keydown", keyDownHandler);
+    return () => {
+      window.removeEventListener("keydown", keyDownHandler);
+    };
   }, [isCommandMenuOpen, selectCommand]);
 
   return (
@@ -166,12 +127,11 @@ export const CommandMenu = ({
             return (
               <div
                 key={index}
-                className={`p-1 cursor-pointer hover:bg-neutral-600 rounded-md ${
-                  index === selectCommand ? "bg-neutral-600" : ""
-                }`}
+                className={`p-1 cursor-pointer hover:bg-neutral-600 rounded-md ${index === selectCommand ? "bg-neutral-600" : ""
+                  }`}
                 onClick={() => {
                   if (isFocused) {
-                    command.command();
+                    command.command(editor);
                   }
                 }}
               >

@@ -10,6 +10,7 @@ import { HistoryEditor } from "slate-history";
 import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-paragraph";
 import { TabLeafType } from "./plugins/tab-list/leaf/TabLeafType";
 import { CodeElementType } from "@bookself/slate-code";
+import { HeadingElementType } from "@bookself/slate-heading";
 
 // ...
 
@@ -105,7 +106,7 @@ type TabPanel = {
 
 export type CustomElement =
   CodeElementType
-  | HeadingElement
+  | HeadingElementType
   | ImageElementType
   | OrderedListElementType
   | UnorderedListElementType

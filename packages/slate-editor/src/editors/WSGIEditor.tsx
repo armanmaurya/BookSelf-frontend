@@ -23,12 +23,6 @@ import {
 } from "slate-react";
 
 import {
-  H1,
-  H2,
-  H3,
-  H4,
-  H5,
-  H6,
   Ol,
   Ul,
   Li,
@@ -38,6 +32,8 @@ import {
   Anchor,
 } from "../elements";
 
+import { EditorHeading1, EditorHeading2, EditorHeading3, EditorHeading4, EditorHeading5, EditorHeading6, HeadingEditor, HeadingElementType } from "@bookself/slate-heading";
+
 // import { EditableCode } from "../plugins/code/elements";
 import {
   Node as SlateNode,
@@ -46,6 +42,7 @@ import {
   Element as SlateElement,
   Transforms,
   Editor,
+  Element,
 } from "slate";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
 import { SlateCustomEditor } from "../utils/customEditor";
@@ -87,6 +84,7 @@ import {
 } from "@bookself/slate-paragraph";
 import { EditableParagraph } from "@bookself/slate-paragraph";
 import { CodeEditor, EditableCode } from "@bookself/slate-code";
+import { HeadingType } from "@bookself/slate-heading/src/types/type";
 
 const editorValue: Descendant[] = [
   {
@@ -124,6 +122,8 @@ const isFocusAtStart = (path: number[]) => {
   return true;
 };
 
+export type SlateNodeType = HeadingType | NodeType;
+
 export const WSGIEditor = ({
   initialValue,
   onChange,
@@ -156,18 +156,18 @@ export const WSGIEditor = ({
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
-      case NodeType.H1:
-        return <H1 {...props} />;
-      case NodeType.H2:
-        return <H2 {...props} />;
-      case NodeType.H3:
-        return <H3 {...props} />;
-      case NodeType.H4:
-        return <H4 {...props} />;
-      case NodeType.H5:
-        return <H5 {...props} />;
-      case NodeType.H6:
-        return <H6 {...props} />;
+      case HeadingType.H1:
+        return <EditorHeading1 {...props} />;
+      case HeadingType.H2:
+        return <EditorHeading2 {...props} />;
+      case HeadingType.H3:
+        return <EditorHeading3 {...props} />;
+      case HeadingType.H4:
+        return <EditorHeading4 {...props} />;
+      case HeadingType.H5:
+        return <EditorHeading5 {...props} />;
+      case HeadingType.H6:
+        return <EditorHeading6 {...props} />;
       case NodeType.CODE:
         return <EditableCode {...props} element={props.element} />;
       case NodeType.ORDERED_LIST:
@@ -197,63 +197,241 @@ export const WSGIEditor = ({
     }
   }, []);
 
+  const getCurrentNodeType = (editor: Editor) => {
+    if (editor.selection) {
+      const [node] = Editor.node(editor, editor.selection);
+      if (Element.isElement(node) && node.type) {
+        return node.type as NodeType;
+      }
+    }
+    return null;
+  };
+
   const commands: Commands[] = [
     {
       name: "bold",
-      command: () => {
-        console.log("bold");
+      command: (editor) => {
+
       },
     },
     {
-      name: "heading 1",
-      command: () => {
-        const text = ParagraphEditor.string(editor);
-        SlateCustomEditor.toggleHeading(editor, NodeType.H1, text);
+      name: "Text",
+      command: (editor) => {
+        const [match] = Editor.nodes(editor, {
+          match: (n) => SlateElement.isElement(n),
+        });
+        const currentNode = match[0].type as SlateNodeType;
+        switch (currentNode) {
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, {
+              type: NodeType.PARAGRAPH,
+              align: "left",
+              children: [
+                {
+                  type: "text",
+                  text: "",
+                  fontSize: 16,
+                }
+              ]
+            })
+
+        }
+      }
+    },
+    {
+      name: "Heading 1",
+      command: (editor) => {
+        const heading1: HeadingElementType = {
+          type: HeadingType.H1,
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: ""
+            }
+          ]
+        }
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        switch (currentNode) {
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading1)
+            break;
+        }
       },
     },
     {
-      name: "heading 2",
+      name: "Heading 2",
       command: () => {
-        const text = ParagraphEditor.string(editor);
-        SlateCustomEditor.toggleHeading(editor, NodeType.H2, text);
+        const heading2: HeadingElementType = {
+          type: HeadingType.H2,
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: ""
+            }
+          ]
+        }
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        switch (currentNode) {
+          case NodeType.PARAGRAPH:
+            const text = ParagraphEditor.string(editor);
+            SlateCustomEditor.replaceBlock(editor, currentNode, {
+              type: HeadingType.H2,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: text
+                }
+              ]
+            })
+            break;
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading2)
+        }
       },
     },
     {
-      name: "heading 3",
-      command: () => {
-        const text = ParagraphEditor.string(editor);
-        SlateCustomEditor.toggleHeading(editor, NodeType.H3, text);
+      name: "Heading 3",
+      command: (editor) => {
+        const heading3: HeadingElementType = {
+          type: HeadingType.H3,
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: ""
+            }
+          ]
+        }
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        switch (currentNode) {
+          case NodeType.PARAGRAPH:
+            const text = ParagraphEditor.string(editor);
+            SlateCustomEditor.replaceBlock(editor, currentNode, {
+              type: HeadingType.H3,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: text
+                }
+              ]
+            })
+            break;
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading3)
+        }
       },
     },
     {
-      name: "heading 4",
-      command: () => {
-        const text = ParagraphEditor.string(editor);
-        SlateCustomEditor.toggleHeading(editor, NodeType.H4, text);
+      name: "Heading 4",
+      command: (editor) => {
+        const heading4: HeadingElementType = {
+          type: HeadingType.H4,
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: ""
+            }
+          ]
+        }
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        switch (currentNode) {
+          case NodeType.PARAGRAPH:
+            const text = ParagraphEditor.string(editor);
+            SlateCustomEditor.replaceBlock(editor, currentNode, {
+              type: HeadingType.H4,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: text
+                }
+              ]
+            })
+            break;
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading4)
+        }
       },
     },
     {
-      name: "heading 5",
-      command: () => {
-        const text = ParagraphEditor.string(editor);
-        SlateCustomEditor.toggleHeading(editor, NodeType.H5, text);
+      name: "Heading 5",
+      command: (editor) => {
+        const heading5: HeadingElementType = {
+          type: HeadingType.H5,
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: ""
+            }
+          ]
+        }
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        switch (currentNode) {
+          case NodeType.PARAGRAPH:
+            const text = ParagraphEditor.string(editor);
+            SlateCustomEditor.replaceBlock(editor, currentNode, {
+              type: HeadingType.H5,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: text
+                }
+              ]
+            })
+            break;
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading5)
+        }
       },
     },
     {
-      name: "heading 6",
-      command: () => {
-        const text = ParagraphEditor.string(editor);
-        SlateCustomEditor.toggleHeading(editor, NodeType.H6, text);
+      name: "Heading 6",
+      command: (editor) => {
+        const heading6: HeadingElementType = {
+          type: HeadingType.H6,
+          align: "left",
+          children: [
+            {
+              type: "default",
+              text: ""
+            }
+          ]
+        }
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        switch (currentNode) {
+          case NodeType.PARAGRAPH:
+            const text = ParagraphEditor.string(editor);
+            SlateCustomEditor.replaceBlock(editor, currentNode, {
+              type: HeadingType.H6,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: text
+                }
+              ]
+            })
+            break;
+          default:
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading6)
+        }
       },
     },
     {
-      name: "quote",
+      name: "Quote",
       command: () => {
         SlateCustomEditor.toggleBlockQuote(editor);
       },
     },
     {
-      name: "code",
+      name: "Code",
       command: () => {
         CodeEditor.insertCode(editor, NodeType.PARAGRAPH, "");
       },

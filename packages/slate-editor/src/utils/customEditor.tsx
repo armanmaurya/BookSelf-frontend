@@ -14,8 +14,16 @@ import {
 import { CustomText, NodeType } from "../types";
 import { ReactEditor } from "slate-react";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
+import { SlateNodeType } from "../editors/WSGIEditor";
 
 export const SlateCustomEditor = {
+  getCurrentBlockType(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n),
+    });
+    const currentNode = match[0].type as SlateNodeType;
+    return currentNode;
+  },
   toggleBlock(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isBlockActive(editor, format);
     const { selection } = editor;
@@ -443,6 +451,20 @@ export const SlateCustomEditor = {
           SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
       }
     );
+  },
+
+  replaceBlock(editor: SlateEditor, from: string, to: Node) {
+    if (editor.selection) {
+      const currentSelection = editor.selection.anchor;
+      Transforms.insertNodes(editor, to);
+      Transforms.removeNodes(editor, {
+        at: currentSelection.path,
+        mode: "highest",
+        match: (n) => {
+          return (n as SlateElement).type === from;
+        },
+      })
+    }
   },
 
   getAlignment(editor: SlateEditor) {

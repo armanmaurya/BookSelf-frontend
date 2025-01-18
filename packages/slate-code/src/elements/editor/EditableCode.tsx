@@ -1,4 +1,3 @@
-// import { NodeType } from "../../../types";
 import { Transforms } from "slate";
 import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
 import { BaseCode } from "../base/baseCode";

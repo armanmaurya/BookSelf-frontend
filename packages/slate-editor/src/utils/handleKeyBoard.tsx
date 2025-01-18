@@ -16,6 +16,7 @@ import { ReactEditor } from "slate-react";
 import { TabEditor } from "../plugins/tab-list/tab-editor";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
 import { ListEditor } from "../plugins/withList/editor/ListEditor";
+import { HeadingType } from "@bookself/slate-heading/src/types/type";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -313,29 +314,29 @@ export const handleKeyBoardFormating = (
     console.log(match[0].type);
     if (match[0].type) {
       switch (match[0].type) {
-        case NodeType.H1:
+        case HeadingType.H1:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.H1);
+          SlateCustomEditor.insertParagraph(editor, HeadingType.H1);
           break;
-        case NodeType.H2:
+        case HeadingType.H2:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.H2);
+          SlateCustomEditor.insertParagraph(editor, HeadingType.H2);
           break;
-        case NodeType.H3:
+        case HeadingType.H3:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.H3);
+          SlateCustomEditor.insertParagraph(editor, HeadingType.H3);
           break;
-        case NodeType.H4:
+        case HeadingType.H4:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.H4);
+          SlateCustomEditor.insertParagraph(editor, HeadingType.H4);
           break;
-        case NodeType.H5:
+        case HeadingType.H5:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.H5);
+          SlateCustomEditor.insertParagraph(editor, HeadingType.H5);
           break;
-        case NodeType.H6:
+        case HeadingType.H6:
           event.preventDefault();
-          SlateCustomEditor.insertParagraph(editor, NodeType.H6);
+          SlateCustomEditor.insertParagraph(editor, HeadingType.H6);
           break;
         case NodeType.UNORDERED_LIST:
           event.preventDefault();
@@ -405,7 +406,3 @@ export const handleKeyBoardFormating = (
     }
   }
 };
-
-interface IHandleEnterKey {
-  [key: string]: (editor: SlateEditor) => void | null;
-}
