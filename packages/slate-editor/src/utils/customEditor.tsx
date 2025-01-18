@@ -20,8 +20,10 @@ export const SlateCustomEditor = {
   getCurrentBlockType(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n),
+      mode: "lowest"
     });
     const currentNode = match[0].type as SlateNodeType;
+    console.log("Current Node", currentNode);
     return currentNode;
   },
   toggleBlock(editor: SlateEditor, format: string) {

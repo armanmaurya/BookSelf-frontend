@@ -85,6 +85,7 @@ import {
 import { EditableParagraph } from "@bookself/slate-paragraph";
 import { CodeEditor, EditableCode } from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
+import { cursorTo } from "readline";
 
 const editorValue: Descendant[] = [
   {
@@ -275,17 +276,7 @@ export const WSGIEditor = ({
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
         switch (currentNode) {
           case NodeType.PARAGRAPH:
-            const text = ParagraphEditor.string(editor);
-            SlateCustomEditor.replaceBlock(editor, currentNode, {
-              type: HeadingType.H2,
-              align: "left",
-              children: [
-                {
-                  type: "default",
-                  text: text
-                }
-              ]
-            })
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading2)
             break;
           default:
             SlateCustomEditor.replaceBlock(editor, currentNode, heading2)
@@ -308,17 +299,7 @@ export const WSGIEditor = ({
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
         switch (currentNode) {
           case NodeType.PARAGRAPH:
-            const text = ParagraphEditor.string(editor);
-            SlateCustomEditor.replaceBlock(editor, currentNode, {
-              type: HeadingType.H3,
-              align: "left",
-              children: [
-                {
-                  type: "default",
-                  text: text
-                }
-              ]
-            })
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading3)
             break;
           default:
             SlateCustomEditor.replaceBlock(editor, currentNode, heading3)
@@ -341,17 +322,7 @@ export const WSGIEditor = ({
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
         switch (currentNode) {
           case NodeType.PARAGRAPH:
-            const text = ParagraphEditor.string(editor);
-            SlateCustomEditor.replaceBlock(editor, currentNode, {
-              type: HeadingType.H4,
-              align: "left",
-              children: [
-                {
-                  type: "default",
-                  text: text
-                }
-              ]
-            })
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading4)
             break;
           default:
             SlateCustomEditor.replaceBlock(editor, currentNode, heading4)
@@ -374,17 +345,7 @@ export const WSGIEditor = ({
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
         switch (currentNode) {
           case NodeType.PARAGRAPH:
-            const text = ParagraphEditor.string(editor);
-            SlateCustomEditor.replaceBlock(editor, currentNode, {
-              type: HeadingType.H5,
-              align: "left",
-              children: [
-                {
-                  type: "default",
-                  text: text
-                }
-              ]
-            })
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading5)
             break;
           default:
             SlateCustomEditor.replaceBlock(editor, currentNode, heading5)
@@ -408,16 +369,7 @@ export const WSGIEditor = ({
         switch (currentNode) {
           case NodeType.PARAGRAPH:
             const text = ParagraphEditor.string(editor);
-            SlateCustomEditor.replaceBlock(editor, currentNode, {
-              type: HeadingType.H6,
-              align: "left",
-              children: [
-                {
-                  type: "default",
-                  text: text
-                }
-              ]
-            })
+            SlateCustomEditor.replaceBlock(editor, currentNode, heading6)
             break;
           default:
             SlateCustomEditor.replaceBlock(editor, currentNode, heading6)
@@ -427,7 +379,39 @@ export const WSGIEditor = ({
     {
       name: "Quote",
       command: () => {
-        SlateCustomEditor.toggleBlockQuote(editor);
+        if (editor.selection) {
+          const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+          SlateCustomEditor.replaceBlock(editor, currentNode, {
+            type: NodeType.BLOCKQUOTE,
+            children: [{
+              type: NodeType.PARAGRAPH,
+              align: "left",
+              children: [
+                {
+                  type: "text",
+                  text: "Some Text",
+                  fontSize: 16,
+                }
+              ]
+            }],
+          })
+          // Transforms.insertNodes(editor, {
+          //   type: NodeType.BLOCKQUOTE,
+          //   children: [{
+          //     type: NodeType.PARAGRAPH,
+          //     align: "left",
+          //     children: [
+          //       {
+          //         type: "text",
+          //         text: "Some Text",
+          //         fontSize: 16,
+          //       }
+          //     ]
+          //   }],
+          // }, {
+          //   at: editor.selection.anchor,
+          // })
+        }
       },
     },
     {
@@ -520,7 +504,7 @@ export const WSGIEditor = ({
   // );
 
   return (
-    <div className="transition-all">
+    <div className="transition-all h-screen overflow-y-scroll">
       <Slate
         editor={editor}
         initialValue={

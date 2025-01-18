@@ -127,22 +127,22 @@ export const handleKeyBoardFormating = (
     }
   }
 
-  // if (event.ctrlKey && !event.shiftKey && event.key === "Enter") {
-  //   const [match] = SlateEditor.nodes(editor, {
-  //     match: (n) =>
-  //       SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-  //   });
-  //   console.log(match[0].type)
-  //   switch (match[0].type) {
-  //     case NodeType.BLOCKQUOTE:
-  //       event.preventDefault();
-  //       // SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
-  //       console.log("runned")
-  //       ParagraphEditor.insertParagraph(editor, {
-  //         match: (n) => n.type === NodeType.BLOCKQUOTE
-  //       })
-  //   }
-  // }
+  if (event.ctrlKey && !event.shiftKey && event.key === "Enter") {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) =>
+        SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+    });
+    console.log(match[0].type)
+    switch (match[0].type) {
+      case NodeType.BLOCKQUOTE:
+        event.preventDefault();
+        // SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
+        console.log("runned")
+        ParagraphEditor.insertParagraph(editor, {
+          match: (n) => n.type === NodeType.BLOCKQUOTE
+        })
+    }
+  }
   if (event.altKey) {
     switch (event.key) {
       case "Delete":
