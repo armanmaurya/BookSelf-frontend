@@ -1,13 +1,10 @@
 import {
   Transforms,
-  BaseRange,
-  Point,
   Path,
   NodeEntry,
   Element as SlateElement,
   Editor as SlateEditor,
   Range,
-  Location as SlateLocation,
   EditorNodesOptions,
   Node,
 } from "slate";
@@ -15,17 +12,29 @@ import { CustomText, NodeType } from "../types";
 import { ReactEditor } from "slate-react";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
 import { SlateNodeType } from "../editors/WSGIEditor";
+import { HeadingType } from "@bookself/slate-heading/src/types/type";
 
 export const SlateCustomEditor = {
+  /**
+   * Gets the current block type in the editor.
+   * @param editor - The editor instance.
+   * @returns The current block type.
+   */
   getCurrentBlockType(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n),
-      mode: "lowest"
+      mode: "lowest",
     });
-    const currentNode = match[0].type as SlateNodeType;
+    const currentNode = match ? (match[0].type as SlateNodeType) : null;
     console.log("Current Node", currentNode);
     return currentNode;
   },
+
+  /**
+   * Toggles the block type in the editor.
+   * @param editor - The editor instance.
+   * @param format - The block format to toggle.
+   */
   toggleBlock(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isBlockActive(editor, format);
     const { selection } = editor;
@@ -41,12 +50,14 @@ export const SlateCustomEditor = {
               SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
           }
         );
-      } else {
-        // selection is not collapsed
       }
     }
   },
 
+  /**
+   * Toggles the block quote in the editor.
+   * @param editor - The editor instance.
+   */
   toggleBlockQuote(editor: SlateEditor) {
     const isActive = SlateCustomEditor.isBlockActive(
       editor,
@@ -69,6 +80,12 @@ export const SlateCustomEditor = {
       });
     }
   },
+
+  /**
+   * Toggles the mark type in the editor.
+   * @param editor - The editor instance.
+   * @param format - The mark format to toggle.
+   */
   toggleMark(editor: SlateEditor, format: string) {
     const isActive = SlateCustomEditor.isMarkActive(editor, format);
     if (isActive) {
@@ -78,13 +95,15 @@ export const SlateCustomEditor = {
     }
   },
 
+  /**
+   * Inserts an image block in the editor.
+   * @param editor - The editor instance.
+   */
   insertImage(editor: SlateEditor) {
     if (editor.selection) {
       const [match] = SlateEditor.nodes(editor, {
-        match: (n) =>
-          SlateElement.isElement(n),
+        match: (n) => SlateElement.isElement(n),
       });
-      console.log(match[0].type)
       const text = SlateEditor.string(editor, editor.selection.focus.path);
       if (text.length === 0) {
         Transforms.removeNodes(editor, { at: match[1] });
@@ -94,7 +113,7 @@ export const SlateCustomEditor = {
           align: "center",
           children: [{ text: "", type: "default" }],
           width: 320,
-        })
+        });
       } else {
         Transforms.insertNodes(editor, {
           type: NodeType.IMAGE,
@@ -102,27 +121,15 @@ export const SlateCustomEditor = {
           align: "center",
           children: [{ text: "", type: "default" }],
           width: 320,
-        })
+        });
       }
-
     }
-    // Transforms.setNodes(
-    //   editor,
-    //   {
-    //     type: NodeType.IMAGE,
-    //     url: "",
-    //     align: "center",
-    //     children: [{ text: "", type: "default" }],
-    //     width: 320,
-    //   },
-    //   {
-    //     match: (n) =>
-    //       SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
-    //   }
-    // );
-    // Transforms.select(editor, SlateEditor.start(editor, []));
   },
 
+  /**
+   * Inserts a tabs block in the editor.
+   * @param editor - The editor instance.
+   */
   insertTabs(editor: SlateEditor) {
     Transforms.insertNodes(editor, {
       type: NodeType.TABS,
@@ -174,47 +181,71 @@ export const SlateCustomEditor = {
     });
   },
 
+  /**
+   * Checks if a block type is active in the editor.
+   * @param editor - The editor instance.
+   * @param format - The block format to check.
+   * @returns True if the block type is active, false otherwise.
+   */
   isBlockActive(editor: SlateEditor, format: string) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === format,
     });
     return !!match;
   },
+
+  /**
+   * Checks if a mark type is active in the editor.
+   * @param editor - The editor instance.
+   * @param format - The mark format to check.
+   * @returns True if the mark type is active, false otherwise.
+   */
   isMarkActive(editor: SlateEditor, format: string) {
     const marks: Omit<Omit<CustomText, "text">, "type"> | null =
       SlateEditor.marks(editor);
-    // console.log(marks)
-    // return marks marks?.type==="text" ? marks[format as keyof typeof marks]
     if (marks) {
       const value = marks[format as keyof typeof marks];
-      // console.log(value)
       return value === true;
     }
-    // return marks ? marks[format as keyof typeof marks] === true : false;
     return false;
   },
 
+  /**
+   * Checks if a heading type is active in the editor.
+   * @param editor - The editor instance.
+   * @returns True if a heading type is active, false otherwise.
+   */
   isHeadingActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
         SlateElement.isElement(n) &&
-        (n.type === NodeType.H1 ||
-          n.type === NodeType.H2 ||
-          n.type === NodeType.H3 ||
-          n.type === NodeType.H4 ||
-          n.type === NodeType.H5 ||
-          n.type === NodeType.H6),
+        (n.type === HeadingType.H1 ||
+          n.type === HeadingType.H2 ||
+          n.type === HeadingType.H3 ||
+          n.type === HeadingType.H4 ||
+          n.type === HeadingType.H5 ||
+          n.type === HeadingType.H6),
     });
     return !!match;
   },
 
+  /**
+   * Checks if a code block is active in the editor.
+   * @param editor - The editor instance.
+   * @returns True if a code block is active, false otherwise.
+   */
   isCodeBlockActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "code",
+      match: (n) => SlateElement.isElement(n) && n.type === NodeType.CODE,
     });
     return !!match;
   },
 
+  /**
+   * Checks if an ordered list is active in the editor.
+   * @param editor - The editor instance.
+   * @returns True if an ordered list is active, false otherwise.
+   */
   isOrderedListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
@@ -223,33 +254,35 @@ export const SlateCustomEditor = {
     return !!match;
   },
 
+  /**
+   * Adds an ID to a heading block in the editor.
+   * @param editor - The editor instance.
+   */
   addHeadingId(editor: SlateEditor) {
     const { selection } = editor;
     if (selection) {
       const isHeading = SlateCustomEditor.isHeadingActive(editor);
       if (isHeading) {
         const nodetext = SlateEditor.string(editor, selection.anchor.path);
-        console.log(nodetext);
-
         const allNodes = SlateEditor.nodes(editor, {
           mode: "all",
           at: [],
-          match(node, path) {
+          match(node) {
             return (
               SlateElement.isElement(node) &&
-              (node.type === NodeType.H1 ||
-                node.type === NodeType.H2 ||
-                node.type === NodeType.H3 ||
-                node.type === NodeType.H4 ||
-                node.type === NodeType.H5 ||
-                node.type === NodeType.H6) &&
+              (node.type === HeadingType.H1 ||
+                node.type === HeadingType.H2 ||
+                node.type === HeadingType.H3 ||
+                node.type === HeadingType.H4 ||
+                node.type === HeadingType.H5 ||
+                node.type === HeadingType.H6) &&
               node.children[0].text.toLowerCase() === nodetext.toLowerCase()
             );
           },
         });
 
         const id = nodetext.trim().toLowerCase().replace(/\s/g, "-");
-        let numberOfDuplicates: number = 0;
+        let numberOfDuplicates = 0;
 
         for (const value of allNodes) {
           Transforms.setNodes(
@@ -268,6 +301,11 @@ export const SlateCustomEditor = {
     }
   },
 
+  /**
+   * Gets the outdent information for a list item in the editor.
+   * @param editor - The editor instance.
+   * @returns The outdent information.
+   */
   outdentInfo(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
@@ -283,17 +321,11 @@ export const SlateCustomEditor = {
     };
   },
 
-  outdentList(editor: SlateEditor, from: Path, to: Path) {
-    // Transforms.unwrapNodes(editor, {
-    //   match: (n) => n.type === NodeType.ORDERED_LIST || n.type === NodeType.UNORDERED_LIST,
-    // })
-    // const afterNodes = SlateEditor
-    // Transforms.moveNodes(editor, {
-    //   at: from,
-    //   to: to,
-    // });
-  },
-
+  /**
+   * Gets the indent information for a list item in the editor.
+   * @param editor - The editor instance.
+   * @returns The indent information.
+   */
   indentInfo(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
@@ -337,6 +369,14 @@ export const SlateCustomEditor = {
       };
     }
   },
+
+  /**
+   * Indents a list item in the editor.
+   * @param editor - The editor instance.
+   * @param to - The path to move the list item to.
+   * @param from - The path to move the list item from.
+   * @param type - The list type.
+   */
   indentList(editor: SlateEditor, to: Path, from: Path, type: string) {
     Transforms.wrapNodes(
       editor,
@@ -351,10 +391,14 @@ export const SlateCustomEditor = {
     Transforms.moveNodes(editor, {
       at: from,
       to: to,
-      // match: (n) => n.type === NodeType.LIST_ITEM,
     });
   },
 
+  /**
+   * Checks if a list item is active in the editor.
+   * @param editor - The editor instance.
+   * @returns True if a list item is active, false otherwise.
+   */
   isListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
@@ -362,6 +406,11 @@ export const SlateCustomEditor = {
     return !!match;
   },
 
+  /**
+   * Splits nodes at both edges in the editor.
+   * @param editor - The editor instance.
+   * @param options - The options for splitting nodes.
+   */
   splitNodesDoubleEdge(
     editor: SlateEditor,
     options?: EditorNodesOptions<Node>
@@ -391,6 +440,11 @@ export const SlateCustomEditor = {
     }
   },
 
+  /**
+   * Merges the previous and after nodes in the editor.
+   * @param editor - The editor instance.
+   * @param options - The options for merging nodes.
+   */
   mergePreviousAfterNodes(
     editor: SlateEditor,
     options?: EditorNodesOptions<Node>
@@ -425,6 +479,11 @@ export const SlateCustomEditor = {
     }
   },
 
+  /**
+   * Sets the alignment of a block in the editor.
+   * @param editor - The editor instance.
+   * @param alignment - The alignment to set.
+   */
   setAlignment(
     editor: SlateEditor,
     alignment: "left" | "center" | "right" | "justify"
@@ -433,12 +492,12 @@ export const SlateCustomEditor = {
       match: (n) =>
         SlateElement.isElement(n) &&
         (n.type === NodeType.PARAGRAPH ||
-          n.type === NodeType.H1 ||
-          n.type === NodeType.H2 ||
-          n.type === NodeType.H3 ||
-          n.type === NodeType.H4 ||
-          n.type === NodeType.H5 ||
-          n.type === NodeType.H6),
+          n.type === HeadingType.H1 ||
+          n.type === HeadingType.H2 ||
+          n.type === HeadingType.H3 ||
+          n.type === HeadingType.H4 ||
+          n.type === HeadingType.H5 ||
+          n.type === HeadingType.H6),
     });
 
     if (!match) {
@@ -455,6 +514,12 @@ export const SlateCustomEditor = {
     );
   },
 
+  /**
+   * Replaces a block in the editor.
+   * @param editor - The editor instance.
+   * @param from - The block type to replace.
+   * @param to - The new block to insert.
+   */
   replaceBlock(editor: SlateEditor, from: string, to: Node) {
     if (editor.selection) {
       const currentSelection = editor.selection.anchor;
@@ -465,10 +530,15 @@ export const SlateCustomEditor = {
         match: (n) => {
           return (n as SlateElement).type === from;
         },
-      })
+      });
     }
   },
 
+  /**
+   * Gets the alignment of a block in the editor.
+   * @param editor - The editor instance.
+   * @returns The alignment of the block.
+   */
   getAlignment(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n),
@@ -480,239 +550,23 @@ export const SlateCustomEditor = {
 
     if (
       match[0].type === NodeType.PARAGRAPH ||
-      match[0].type === NodeType.H1 ||
-      match[0].type === NodeType.H2 ||
-      match[0].type === NodeType.H3 ||
-      match[0].type === NodeType.H4 ||
-      match[0].type === NodeType.H5 ||
-      match[0].type === NodeType.H6
+      match[0].type === HeadingType.H1 ||
+      match[0].type === HeadingType.H2 ||
+      match[0].type === HeadingType.H3 ||
+      match[0].type === HeadingType.H4 ||
+      match[0].type === HeadingType.H5 ||
+      match[0].type === HeadingType.H6
     ) {
       return match[0].align;
     }
   },
 
-  // toggleListBlock(editor: SlateEditor, format?: string) {
-  //   const isActive = SlateCustomEditor.isListActive(editor);
-  //   const { selection } = editor;
-  //   if (!isActive && format) {
-  //     if (selection) {
-  //       Transforms.wrapNodes(editor, {
-  //         type: NodeType.LIST_ITEM,
-  //         children: [],
-  //       });
-  //       Transforms.wrapNodes(
-  //         editor,
-  //         {
-  //           type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
-  //           children: [],
-  //         },
-  //         {
-  //           match: (n) => n.type === NodeType.LIST_ITEM,
-  //         }
-  //       );
-
-  //       const [match] = SlateEditor.nodes(editor, {
-  //         match: (n) =>
-  //           SlateElement.isElement(n) &&
-  //           SlateEditor.isBlock(editor, n) &&
-  //           (n.type === NodeType.UNORDERED_LIST ||
-  //             n.type === NodeType.ORDERED_LIST),
-  //       });
-
-  //       let beforeNode;
-  //       try {
-  //         const beforeNodePath = Path.previous(match[1]);
-  //         beforeNode = SlateEditor.node(editor, beforeNodePath);
-  //       } catch (error) {
-  //         console.log("Can't Find Before Node");
-  //       }
-
-  //       let afterNode;
-  //       try {
-  //         const afterNodePath = Path.next(match[1]);
-  //         afterNode = SlateEditor.node(editor, afterNodePath);
-  //       } catch (error) {
-  //         console.log("Can't Find Before Node");
-  //       }
-
-  //       let range: BaseRange | undefined;
-  //       let toSelect: Point | undefined;
-
-  //       if (beforeNode) {
-  //         if (
-  //           beforeNode[0].type === format &&
-  //           SlateElement.isElement(beforeNode[0])
-  //         ) {
-  //           toSelect = {
-  //             path: [beforeNode[1][0], beforeNode[0].children.length, 0, 0],
-  //             offset: 0,
-  //           };
-  //           range = {
-  //             anchor: { path: [beforeNode[1][0], 0, 0, 0], offset: 0 },
-  //             focus: {
-  //               path: selection.focus.path,
-  //               offset: 0,
-  //             },
-  //           };
-  //           Transforms.select(editor, range);
-  //         }
-  //       }
-
-  //       if (afterNode) {
-  //         if (
-  //           afterNode[0].type === format &&
-  //           SlateElement.isElement(afterNode[0])
-  //         ) {
-  //           const listLastItemLength =
-  //             afterNode[0].children[afterNode[0].children.length - 1]
-  //               .children[0].children[0].text.length;
-  //           console.log(listLastItemLength);
-
-  //           if (range) {
-  //             if (!Range.isCollapsed(range)) {
-  //               Transforms.setSelection(editor, {
-  //                 focus: {
-  //                   path: [
-  //                     afterNode[1][0],
-  //                     afterNode[0].children.length - 1,
-  //                     0,
-  //                     0,
-  //                   ],
-  //                   offset: listLastItemLength,
-  //                 },
-  //               });
-  //             }
-  //           } else {
-  //             toSelect = {
-  //               path: [selection.anchor.path[0], 0, 0, 0],
-  //               offset: 0,
-  //             };
-  //             Transforms.select(editor, {
-  //               anchor: {
-  //                 path: [selection.anchor.path[0], 0, 0, 0],
-  //                 offset: 0,
-  //               },
-  //               focus: {
-  //                 path: [
-  //                   afterNode[1][0],
-  //                   afterNode[0].children.length - 1,
-  //                   0,
-  //                   0,
-  //                 ],
-  //                 offset: listLastItemLength,
-  //               },
-  //             });
-  //           }
-  //         }
-  //       }
-
-  //       Transforms.unwrapNodes(editor, {
-  //         match: (n) =>
-  //           n.type === NodeType.UNORDERED_LIST ||
-  //           n.type === NodeType.ORDERED_LIST,
-  //       });
-  //       Transforms.wrapNodes(
-  //         editor,
-  //         {
-  //           type: format as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
-  //           children: [],
-  //         },
-  //         {
-  //           match: (n) => n.type === NodeType.LIST_ITEM,
-  //         }
-  //       );
-  //       if (toSelect) {
-  //         Transforms.select(editor, toSelect);
-  //       }
-
-  //       return;
-  //     }
-  //   } else {
-  //     if (editor.selection) {
-  //       const [beforeMatch] = SlateEditor.nodes(editor, {
-  //         match: (n) =>
-  //           SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
-  //         mode: "lowest",
-  //       });
-
-  //       if (
-  //         beforeMatch[0].type === NodeType.LIST_ITEM &&
-  //         SlateElement.isElement(beforeMatch[0])
-  //       ) {
-  //         const lastChildNode =
-  //           beforeMatch[0].children[beforeMatch[0].children.length - 1];
-  //         if (
-  //           lastChildNode.type === NodeType.UNORDERED_LIST ||
-  //           lastChildNode.type === NodeType.ORDERED_LIST
-  //         ) {
-  //         }
-  //       }
-
-  //       let beforeNode;
-  //       try {
-  //         const beforeNodePath = Path.previous(beforeMatch[1]);
-  //         beforeNode = SlateEditor.node(editor, beforeNodePath);
-  //       } catch (error) {
-  //         console.log("Can't Find Before Node");
-  //       }
-
-  //       if (beforeNode) {
-  //         if (beforeNode[0].type === NodeType.LIST_ITEM && beforeNode) {
-  //           Transforms.splitNodes(editor, {
-  //             at: Path.next(beforeNode[1]),
-  //           });
-  //         }
-  //       }
-
-  //       // -----------------------------------------------
-  //       const [afterMatch] = SlateEditor.nodes(editor, {
-  //         match: (n) =>
-  //           SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
-  //         mode: "lowest",
-  //       });
-
-  //       let afterNode;
-  //       try {
-  //         const afterNodePath = Path.next(afterMatch[1]);
-  //         afterNode = SlateEditor.node(editor, afterNodePath);
-  //         console.log(afterNode);
-  //       } catch (error) {
-  //         console.log("Can't Find After Node");
-  //       }
-
-  //       if (afterNode) {
-  //         if (afterNode[0].type === NodeType.LIST_ITEM) {
-  //           Transforms.splitNodes(editor, {
-  //             at: afterNode[1],
-  //           });
-  //         }
-  //       }
-
-  //       // -----------------------------------------------
-
-  //       Transforms.unwrapNodes(editor, {
-  //         match: (n) => n.type === NodeType.LIST_ITEM,
-  //       });
-
-  //       Transforms.unwrapNodes(editor, {
-  //         match: (n) =>
-  //           n.type === NodeType.UNORDERED_LIST ||
-  //           n.type === NodeType.ORDERED_LIST,
-  //       });
-  //     }
-  //   }
-  // },
-
-  insertListBlock(editor: SlateEditor, format: string) {
-    const isActive = SlateCustomEditor.isListActive(editor);
-  },
-
-  insertNewLine(editor: SlateEditor) {
-    Transforms.insertText(editor, "\n");
-  },
-
-  insertListItem(editor: SlateEditor, at: SlateLocation | null = null) {
-    // const isActive = SlateCustomEditor.isListActive(editor);
+  /**
+   * Inserts a list item in the editor.
+   * @param editor - The editor instance.
+   * @param at - The path to insert the list item at.
+   */
+  insertListItem(editor: SlateEditor, at: null = null) {
     if (editor.selection) {
       const [currentListItem] = SlateEditor.nodes(editor, {
         match: (n) =>
@@ -738,68 +592,43 @@ export const SlateCustomEditor = {
         type: NodeType.LIST_ITEM,
         children: [],
       });
-      // const text = SlateEditor.string(editor, editor.selection.focus.path);
-      // if (text.length === 0) {
-      //   SlateCustomEditor.toggleListBlock(editor);
-      //   // Transforms.unwrapNodes(editor);
-      //   return;
-      // }
-
-      // const [match] = SlateEditor.nodes(editor, {
-      //   match: (n) =>
-      //     SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
-      // });
-
-      // const nextPath = Path.next(match[1]);
-      // Transforms.insertNodes(
-      //   editor,
-      //   {
-      //     type: NodeType.PARAGRAPH,
-      //     align: "left",
-      //     children: [{ text: "" }],
-      //   },
-      //   {
-      //     at: nextPath,
-      //   }
-      // );
-
-      // Transforms.select(editor, nextPath);
-
-      // Transforms.wrapNodes(editor, {
-      //   type: NodeType.LIST_ITEM,
-      //   children: [],
-      // });
     }
   },
 
+  /**
+   * Toggles the heading type in the editor.
+   * @param editor - The editor instance.
+   * @param type - The heading type to toggle.
+   * @param text - The text to insert in the heading.
+   */
   toggleHeading(editor: SlateEditor, type: string, text: string) {
     if (editor.selection) {
       const [match] = SlateEditor.nodes(editor, {
         match: (n) =>
           SlateElement.isElement(n) &&
-          (n.type === NodeType.H1 ||
-            n.type === NodeType.H2 ||
-            n.type === NodeType.H3 ||
-            n.type === NodeType.H4 ||
-            n.type === NodeType.H5 ||
-            n.type === NodeType.H6 ||
-            n.type === NodeType.PARAGRAPH)
+          (n.type === HeadingType.H1 ||
+            n.type === HeadingType.H2 ||
+            n.type === HeadingType.H3 ||
+            n.type === HeadingType.H4 ||
+            n.type === HeadingType.H5 ||
+            n.type === HeadingType.H6 ||
+            n.type === NodeType.PARAGRAPH),
       });
       if (match) {
         if (match[0].type === type) {
           Transforms.removeNodes(editor);
-          ParagraphEditor.insertParagraph(editor, {}, text)
+          ParagraphEditor.insertParagraph(editor, {}, text);
           return;
         }
         Transforms.removeNodes(editor);
         Transforms.insertNodes(editor, {
           type:
-            (type as NodeType.H1) ||
-            NodeType.H2 ||
-            NodeType.H3 ||
-            NodeType.H4 ||
-            NodeType.H5 ||
-            NodeType.H6,
+            (type as HeadingType.H1) ||
+            HeadingType.H2 ||
+            HeadingType.H3 ||
+            HeadingType.H4 ||
+            HeadingType.H5 ||
+            HeadingType.H6,
           id: "1",
           align: "left",
           children: [
@@ -810,12 +639,14 @@ export const SlateCustomEditor = {
           ],
         });
       }
-      // else {
-      //   ParagraphEditor.insertParagraph(editor, {}, text);
-      // }
     }
   },
 
+  /**
+   * Inserts a link in the editor.
+   * @param editor - The editor instance.
+   * @param url - The URL of the link.
+   */
   insertLink(editor: SlateEditor, url?: string | null) {
     if (!url) {
       return;
@@ -837,12 +668,20 @@ export const SlateCustomEditor = {
     }
   },
 
+  /**
+   * Deletes a node in the editor.
+   * @param editor - The editor instance.
+   */
   deleteNode(editor: SlateEditor) {
     Transforms.delete(editor, { reverse: true });
   },
 
+  /**
+   * Inserts a paragraph block in the editor.
+   * @param editor - The editor instance.
+   * @param block - The block type to insert.
+   */
   insertParagraph(editor: SlateEditor, block: string) {
-    // const isParagraphActive = SlateCustomEditor.isParagraphActive(editor);
     const isListItemActive = SlateCustomEditor.isOrderedListActive(editor);
     const isCodeBlockActive = SlateCustomEditor.isCodeBlockActive(editor);
     if (editor.selection && (!isListItemActive || !isCodeBlockActive)) {
@@ -874,7 +713,6 @@ export const SlateCustomEditor = {
         }
       );
 
-      // console.log(editor.selection.anchor.path[0] + 1, 0);
       const nextNode = SlateEditor.after(editor, editor.selection.anchor.path);
       if (nextNode) {
         Transforms.select(editor, {
@@ -885,10 +723,14 @@ export const SlateCustomEditor = {
     }
   },
 
+  /**
+   * Gets the node before the current selection in the editor.
+   * @param editor - The editor instance.
+   * @returns The node before the current selection.
+   */
   beforeNode(editor: SlateEditor) {
     const { selection } = editor;
     if (selection) {
-      console.log(selection.anchor.path);
       let beforeNode: NodeEntry | undefined;
       let beforePath: Path;
       try {
@@ -898,7 +740,7 @@ export const SlateCustomEditor = {
       }
 
       try {
-        const beforeNode = SlateEditor.node(editor, beforePath);
+        beforeNode = SlateEditor.node(editor, beforePath);
         return beforeNode;
       } catch {
         console.log("Can't Find Before Node");
@@ -906,6 +748,12 @@ export const SlateCustomEditor = {
       return beforeNode;
     }
   },
+
+  /**
+   * Gets the node after the current selection in the editor.
+   * @param editor - The editor instance.
+   * @returns The node after the current selection.
+   */
   afterNode(editor: SlateEditor) {
     const { selection } = editor;
     if (selection) {
@@ -920,4 +768,7 @@ export const SlateCustomEditor = {
       return afterNode;
     }
   },
+  insertNewLine(editor: SlateEditor) {
+    Transforms.insertText(editor, "\n");
+  }
 };

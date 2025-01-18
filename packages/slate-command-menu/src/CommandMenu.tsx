@@ -24,6 +24,7 @@ export const CommandMenu = ({
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    // console.log(event.key);
     if (event.key === "Escape") {
       event.preventDefault();
       setIsCommandMenuOpen(false);
@@ -37,7 +38,7 @@ export const CommandMenu = ({
         if (isStart) {
           setIsCommandMenuOpen(true);
           const domSelection = window.getSelection();
-          if (domSelection && domSelection.rangeCount > 0) {
+          if (domSelection) {
             setSelectCommand(0);
             const range = domSelection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
@@ -50,7 +51,7 @@ export const CommandMenu = ({
 
   const sortMenuCommands = (command: string) => {
     if (MenuCommands) {
-      const sortedCommands = [...MenuCommands].sort((a, b) => {
+      const sortedCommands = MenuCommands.sort((a, b) => {
         const getMatchScore = (name: string, command: string) => {
           let score = 0;
           let commandIndex = 0;
@@ -75,18 +76,50 @@ export const CommandMenu = ({
 
   let text = "";
   if (editor.selection) {
-    text = Editor.string(editor, editor.selection.anchor.path);
+    text = editor.string(editor.selection.anchor.path);
   }
 
   useEffect(() => {
-    if (text === "") {
+    if (text == "") {
       setIsCommandMenuOpen(false);
-    } else {
-      sortMenuCommands(text.slice(1));
     }
+    sortMenuCommands(text.slice(1));
   }, [text]);
+  // useEffect(() => {
+  //   if (editor.selection) {
+  //     text = editor.string(editor.selection.anchor.path);
+  //     if (text.startsWith("/")) {
+  //       if (!isCommandMenuOpen) {
+  //         setIsCommandMenuOpen(true);
+  //       }
+
+  //       const domSelection = window.getSelection();
+  //       if (domSelection) {
+  //         setSelectCommand(0);
+  //         const range = domSelection.getRangeAt(0);
+  //         const rect = range.getBoundingClientRect();
+  //         console.log(rect.top, rect.left);
+  //         // ref.current?.setAttribute(
+  //         //   "style",
+  //         //   `top: ${rect.top}px; left: ${rect.left}px;`
+  //         // );
+  //         setPos({ top: rect.top, left: rect.left });
+  //         console.log("Show Command Menu");
+  //       }
+  //       // Remove the / from the text
+  //       const command = text.slice(1);
+  //       sortMenuCommands(command);
+  //       console.log(command);
+  //     } else {
+  //       if (isCommandMenuOpen) {
+  //         setIsCommandMenuOpen(false);
+  //       }
+  //     }
+  //   }
+  // }, [text]);
 
   const handleNavigation = (event: KeyboardEvent) => {
+    console.log(event.key);
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (selectCommand < MenuCommands.length - 1) {
@@ -105,11 +138,19 @@ export const CommandMenu = ({
   };
 
   useEffect(() => {
-    const keyDownHandler = isCommandMenuOpen ? handleNavigation : handleKeyDown;
-    window.addEventListener("keydown", keyDownHandler);
-    return () => {
-      window.removeEventListener("keydown", keyDownHandler);
-    };
+    if (!isCommandMenuOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+
+    if (isCommandMenuOpen) {
+      window.addEventListener("keydown", handleNavigation);
+      return () => {
+        window.removeEventListener("keydown", handleNavigation);
+      };
+    }
   }, [isCommandMenuOpen, selectCommand]);
 
   return (

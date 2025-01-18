@@ -32,9 +32,8 @@ import {
   Anchor,
 } from "../elements";
 
-import { EditorHeading1, EditorHeading2, EditorHeading3, EditorHeading4, EditorHeading5, EditorHeading6, HeadingEditor, HeadingElementType } from "@bookself/slate-heading";
+import { EditorHeading1, EditorHeading2, EditorHeading3, EditorHeading4, EditorHeading5, EditorHeading6, HeadingElementType } from "@bookself/slate-heading";
 
-// import { EditableCode } from "../plugins/code/elements";
 import {
   Node as SlateNode,
   Descendant,
@@ -44,7 +43,6 @@ import {
   Editor,
   Element,
 } from "slate";
-import { SlateToolBar } from "../components/Toolbar/toolbar";
 import { SlateCustomEditor } from "../utils/customEditor";
 import { handleKeyBoardFormating } from "../utils/handleKeyBoard";
 import { decorate } from "../utils/decorate";
@@ -59,12 +57,10 @@ import "prismjs/components/prism-php";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
-// import { TagInput } from "@/components/element/input";
 import "react-tabs/style/react-tabs.css";
 
 import { CommandMenu, Commands } from "@bookself/slate-command-menu";
 
-// import action from "@/app/actions";
 import { withImage, EditableImage } from "../plugins/image";
 import { EditableQuote } from "../plugins/quote/elements/EditableQuote";
 import { withNormalize } from "../plugins/normalize";
@@ -80,51 +76,42 @@ import { withTabs } from "../plugins/tab-list";
 import {
   EditableParagraphLeaf,
   ParagraphEditor,
-  ParagraphLeaf,
 } from "@bookself/slate-paragraph";
 import { EditableParagraph } from "@bookself/slate-paragraph";
 import { CodeEditor, EditableCode } from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
-import { cursorTo } from "readline";
 
+/**
+ * Initial value for the editor.
+ */
 const editorValue: Descendant[] = [
   {
     type: NodeType.PARAGRAPH,
     align: "left",
     children: [{ text: "", type: "text", fontSize: 16 }],
   },
-  // ...initialTabs,
-  // {
-  //   type: NodeType.TEXT,
-  //   align: "left",
-  //   children: [
-  //     {
-  //       type: "text",
-  //       text: "what",
-  //       bold: true,
-  //       italic: true,
-  //       underline: true,
-  //       fontSize: 30,
-  //     },
-  //     {
-  //       type: "text",
-  //       text: "small",
-  //       fontSize: 18,
-  //     },
-  //   ],
-  // },
 ];
 
+/**
+ * Checks if the focus is at the start of the path.
+ * @param path - The path to check.
+ * @returns True if the focus is at the start, false otherwise.
+ */
 const isFocusAtStart = (path: number[]) => {
   for (let i = 0; i < path.length; i++) {
     if (path[i] !== 0) return false;
   }
-
   return true;
 };
 
 export type SlateNodeType = HeadingType | NodeType;
 
+/**
+ * WSGIEditor component.
+ * @param initialValue - The initial value of the editor.
+ * @param onChange - Callback function to handle changes in the editor.
+ * @param title - The title of the editor.
+ */
 export const WSGIEditor = ({
   initialValue,
   onChange,
@@ -155,6 +142,11 @@ export const WSGIEditor = ({
   );
   const [pageTitle, setTitle] = useState(title || "");
 
+  /**
+   * Renders the elements in the editor.
+   * @param props - The properties of the element to render.
+   * @returns The rendered element.
+   */
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
       case HeadingType.H1:
@@ -198,21 +190,14 @@ export const WSGIEditor = ({
     }
   }, []);
 
-  const getCurrentNodeType = (editor: Editor) => {
-    if (editor.selection) {
-      const [node] = Editor.node(editor, editor.selection);
-      if (Element.isElement(node) && node.type) {
-        return node.type as NodeType;
-      }
-    }
-    return null;
-  };
-
+  /**
+   * Commands for the command menu.
+   */
   const commands: Commands[] = [
     {
       name: "bold",
       command: (editor) => {
-
+        SlateCustomEditor.toggleMark(editor, "bold");
       },
     },
     {
@@ -221,23 +206,21 @@ export const WSGIEditor = ({
         const [match] = Editor.nodes(editor, {
           match: (n) => SlateElement.isElement(n),
         });
-        const currentNode = match[0].type as SlateNodeType;
-        switch (currentNode) {
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, {
-              type: NodeType.PARAGRAPH,
-              align: "left",
-              children: [
-                {
-                  type: "text",
-                  text: "",
-                  fontSize: 16,
-                }
-              ]
-            })
-
+        const currentNode = match ? (match[0].type as SlateNodeType) : null;
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, {
+            type: NodeType.PARAGRAPH,
+            align: "left",
+            children: [
+              {
+                type: "text",
+                text: "",
+                fontSize: 16,
+              },
+            ],
+          });
         }
-      }
+      },
     },
     {
       name: "Heading 1",
@@ -248,38 +231,32 @@ export const WSGIEditor = ({
           children: [
             {
               type: "default",
-              text: ""
-            }
-          ]
-        }
+              text: "",
+            },
+          ],
+        };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        switch (currentNode) {
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading1)
-            break;
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, heading1);
         }
       },
     },
     {
       name: "Heading 2",
-      command: () => {
+      command: (editor) => {
         const heading2: HeadingElementType = {
           type: HeadingType.H2,
           align: "left",
           children: [
             {
               type: "default",
-              text: ""
-            }
-          ]
-        }
+              text: "",
+            },
+          ],
+        };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        switch (currentNode) {
-          case NodeType.PARAGRAPH:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading2)
-            break;
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading2)
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, heading2);
         }
       },
     },
@@ -292,17 +269,13 @@ export const WSGIEditor = ({
           children: [
             {
               type: "default",
-              text: ""
-            }
-          ]
-        }
+              text: "",
+            },
+          ],
+        };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        switch (currentNode) {
-          case NodeType.PARAGRAPH:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading3)
-            break;
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading3)
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, heading3);
         }
       },
     },
@@ -315,17 +288,13 @@ export const WSGIEditor = ({
           children: [
             {
               type: "default",
-              text: ""
-            }
-          ]
-        }
+              text: "",
+            },
+          ],
+        };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        switch (currentNode) {
-          case NodeType.PARAGRAPH:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading4)
-            break;
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading4)
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, heading4);
         }
       },
     },
@@ -338,17 +307,13 @@ export const WSGIEditor = ({
           children: [
             {
               type: "default",
-              text: ""
-            }
-          ]
-        }
+              text: "",
+            },
+          ],
+        };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        switch (currentNode) {
-          case NodeType.PARAGRAPH:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading5)
-            break;
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading5)
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, heading5);
         }
       },
     },
@@ -361,115 +326,97 @@ export const WSGIEditor = ({
           children: [
             {
               type: "default",
-              text: ""
-            }
-          ]
-        }
+              text: "",
+            },
+          ],
+        };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        switch (currentNode) {
-          case NodeType.PARAGRAPH:
-            const text = ParagraphEditor.string(editor);
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading6)
-            break;
-          default:
-            SlateCustomEditor.replaceBlock(editor, currentNode, heading6)
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, heading6);
         }
       },
     },
     {
       name: "Quote",
-      command: () => {
-        if (editor.selection) {
-          const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-          SlateCustomEditor.replaceBlock(editor, currentNode, {
-            type: NodeType.BLOCKQUOTE,
-            children: [{
-              type: NodeType.PARAGRAPH,
-              align: "left",
-              children: [
-                {
-                  type: "text",
-                  text: "Some Text",
-                  fontSize: 16,
-                }
-              ]
-            }],
-          })
-          // Transforms.insertNodes(editor, {
-          //   type: NodeType.BLOCKQUOTE,
-          //   children: [{
-          //     type: NodeType.PARAGRAPH,
-          //     align: "left",
-          //     children: [
-          //       {
-          //         type: "text",
-          //         text: "Some Text",
-          //         fontSize: 16,
-          //       }
-          //     ]
-          //   }],
-          // }, {
-          //   at: editor.selection.anchor,
-          // })
-        }
+      command: (editor) => {
+        SlateCustomEditor.toggleBlockQuote(editor);
       },
     },
     {
       name: "Code",
-      command: () => {
-        CodeEditor.insertCode(editor, NodeType.PARAGRAPH, "");
+      command: (editor) => {
+
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, {
+            type: NodeType.CODE,
+            children: [{ text: "", type: "default" }],
+            language: ""
+          })
+        }
       },
     },
     {
       name: "link",
-      command: () => {
+      command: (editor) => {
         console.log("link");
       },
     },
     {
       name: "image",
-      command: () => {
+      command: (editor) => {
         console.log("image");
       },
     },
     {
       name: "unordered list",
-      command: () => {
+      command: (editor) => {
         console.log("unordered list");
       },
     },
     {
       name: "ordered list",
-      command: () => {
+      command: (editor) => {
         console.log("ordered list");
       },
     },
     {
       name: "tab",
-      command: () => {
+      command: (editor) => {
         console.log("tab");
       },
     },
     {
       name: "tab list",
-      command: () => {
+      command: (editor) => {
         console.log("tab list");
       },
     },
-  ]
+  ];
 
   const [isCommendMenuOpen, setIsCommendMenuOpen] = useState(false);
 
+  /**
+   * Renders the leaves in the editor.
+   * @param props - The properties of the leaf to render.
+   * @returns The rendered leaf.
+   */
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     switch (props.leaf.type) {
       case "text":
-        // return <ParagraphLeaf {...props} leaf={props.leaf}/>;
         return <EditableParagraphLeaf {...props} leaf={props.leaf} />;
       default:
         return <DefalutLeaf {...props} />;
     }
   }, []);
 
+  /**
+   * Debounces a callback function.
+   * @param callback - The callback function to debounce.
+   * @param delay - The delay in milliseconds.
+   * @returns The debounced function.
+   */
   const debounce = (callback: any, delay: number) => {
     let timeout: string | number | NodeJS.Timeout | undefined;
     return (...args: any) => {
@@ -482,9 +429,12 @@ export const WSGIEditor = ({
   }, [onChange]);
 
   const titleRef = useRef<HTMLInputElement>(null);
-
   const ref = useRef<HTMLDivElement>(null);
 
+  /**
+   * Handles click events outside the editor.
+   * @param event - The mouse event.
+   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && ref.current.contains(event.target as Node)) {
@@ -498,10 +448,14 @@ export const WSGIEditor = ({
     };
   });
 
-  // console.log(JSON.parse(initialValue.content));
-  // const articleValue: Descendant[] = JSON.parse(
-  //   initialValue == "" ? "[]" : initialValue
-  // );
+  const [match] = Editor.nodes(editor, {
+    match: (n) => Element.isElement(n),
+    mode: "lowest",
+  });
+
+  const currentNode = match ? (match[0].type as string) : null;
+
+
 
   return (
     <div className="transition-all h-screen overflow-y-scroll">
@@ -510,7 +464,6 @@ export const WSGIEditor = ({
         initialValue={
           initialValue ? JSON.parse(initialValue) : editorValue
         }
-        // initialValue={editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
@@ -522,7 +475,6 @@ export const WSGIEditor = ({
           }
         }}
       >
-        {/* <SlateToolBar /> */}
         <div className="w-full">
           <input
             ref={titleRef}
@@ -537,27 +489,9 @@ export const WSGIEditor = ({
                 })
               );
             }}
-            onKeyDown={(e) => {
-              switch (e.key) {
-                // case "Enter":
-                //   e.preventDefault();
-                //   ReactEditor.focus(editor);
-                //   break;
-                // case "ArrowDown":
-                //   e.preventDefault();
-                //   ReactEditor.focus(editor);
-                //   break;
-                // case "ArrowUp":
-                //   e.preventDefault();
-                // default:
-                //   break;
-              }
-            }}
             value={pageTitle}
             placeholder="Title"
           />
-
-          {/* <TagInput id={id} initialTags={initialValue.tags} /> */}
           <Editable
             placeholder="Start Writing..."
             decorate={useCallback(decorate, [])}
@@ -569,37 +503,13 @@ export const WSGIEditor = ({
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {
               handleKeyBoardFormating(event, editor, isCommendMenuOpen);
-              // if (
-              //   event.key === "ArrowUp" &&
-              //   isFocusAtStart(editor.selection?.anchor.path || [])
-              // ) {
-              //   if (titleRef.current) {
-              //     event.preventDefault();
-              //     titleRef.current.focus();
-              //     const length = titleRef.current.value.length;
-              //     titleRef.current.setSelectionRange(length, length);
-              //   }
-              // }
               if (event.ctrlKey && event.key === "s") {
                 event.preventDefault();
-                // UpdateContent(
-                //   JSON.stringify({
-                //     content: JSON.stringify(editor.children),
-                //   })
-                // );
-
                 onChange &&
-                  onChange(
-                    // JSON.stringify({
-                    //   // title: pageTitle,
-                    //   content: JSON.stringify(editor.children),
-                    // })
-                    JSON.stringify(editor.children)
-                  );
+                  onChange(JSON.stringify(editor.children));
               }
             }}
           />
-
           <div
             onMouseDown={(e) => {
               e.preventDefault();
@@ -608,17 +518,20 @@ export const WSGIEditor = ({
                 select: true,
               });
             }}
-            // ref={ref}
-
             className="h-96"
           ></div>
         </div>
         <CommandMenu commands={commands} isCommandMenuOpen={isCommendMenuOpen} setIsCommandMenuOpen={setIsCommendMenuOpen} />
       </Slate>
-    </div >
+    </div>
   );
 };
 
+/**
+ * Renders an anchor tag in the editor.
+ * @param props - The properties of the element to render.
+ * @returns The rendered anchor tag.
+ */
 const SlateAnchorTag = (props: RenderElementProps) => {
   const editor = useSlateStatic();
   const selected = useSelected();
@@ -640,7 +553,7 @@ const SlateAnchorTag = (props: RenderElementProps) => {
           className="absolute top-4 left-0 pt-4 hover:cursor-pointer bg-neutral-800"
           contentEditable={false}
         >
-          <span className=" border p-2 underline text-blue-500 rounded">
+          <span className="border p-2 underline text-blue-500 rounded">
             <a
               href={
                 props.element.type === NodeType.LINK ? props.element.url : ""
