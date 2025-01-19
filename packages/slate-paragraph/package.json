@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
-  
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc"
@@ -15,7 +14,6 @@
     "editor",
     "heading"
   ],
-  
   "author": "Arman Maurya",
   "devDependencies": {
     "@types/eslint": "^8.56.5",
@@ -29,8 +27,8 @@
   },
   "dependencies": {
     "prismjs": "^1.29.0",
-    "slate": "^0.103.0",
-    "slate-history": "^0.100.0",
-    "slate-react": "^0.104.0"
+    "slate": "^0.112.0",
+    "slate-react": "^0.112.0",
+    "slate-history": "^0.100.0"
   }
 }

@@ -45,6 +45,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-tabs": "^6.0.2",
     "slate": "^0.112.0",
+    "slate-dom": "^0.111.0",
     "slate-history": "^0.110.3",
     "slate-react": "^0.112.0",
     "slate-soft-break": "^0.9.0"

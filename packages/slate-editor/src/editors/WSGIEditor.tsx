@@ -22,7 +22,7 @@ import {
   useSelected,
 } from "slate-react";
 
-import { Ol, Ul, Li, DefalutLeaf, Default, Quote, Anchor } from "../elements";
+import { DefalutLeaf, Default, Quote, Anchor } from "../elements";
 
 import {
   EditorHeading1,
@@ -34,12 +34,12 @@ import {
   HeadingElementType,
 } from "@bookself/slate-heading";
 
+import { ListItem, ListType, OrderedList, UnorderedList } from "@bookself/slate-list";
+
 import {
-  Node as SlateNode,
   Descendant,
   createEditor,
   Element as SlateElement,
-  Transforms,
   Editor,
   Element,
 } from "slate";
@@ -104,7 +104,7 @@ const isFocusAtStart = (path: number[]) => {
   return true;
 };
 
-export type SlateNodeType = HeadingType | NodeType;
+export type SlateNodeType = HeadingType | NodeType | ListType;
 
 /**
  * WSGIEditor component.
@@ -163,12 +163,12 @@ export const WSGIEditor = ({
         return <EditorHeading6 {...props} />;
       case NodeType.CODE:
         return <EditableCode {...props} element={props.element} />;
-      case NodeType.ORDERED_LIST:
-        return <Ol {...props} />;
-      case NodeType.UNORDERED_LIST:
-        return <Ul {...props} />;
-      case NodeType.LIST_ITEM:
-        return <Li {...props} />;
+      case ListType.ORDERED_LIST:
+        return <OrderedList {...props} element={props.element}/>;
+      case ListType.UNORDERED_LIST:
+        return <UnorderedList {...props} element={props.element}/>;
+      case ListType.LIST_ITEM:
+        return <ListItem {...props} element={props.element}/>;
       case NodeType.IMAGE:
         return <EditableImage {...props} />;
       case NodeType.BLOCKQUOTE:
@@ -342,12 +342,14 @@ export const WSGIEditor = ({
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
         if (currentNode) {
           SlateCustomEditor.replaceBlock(editor, currentNode, {
-            type: NodeType.UNORDERED_LIST,
-            children: [{ type: NodeType.LIST_ITEM, children: [{
-              type: "text",
-              children: [{ text: "", type: "text", fontSize: 16 }],
-              align: "left",
-            }] }],
+            type: ListType.UNORDERED_LIST,
+            children: [{
+              type: ListType.LIST_ITEM, children: [{
+                type: "text",
+                children: [{ text: "", type: "text", fontSize: 16 }],
+                align: "left",
+              }]
+            }],
           });
         }
       },

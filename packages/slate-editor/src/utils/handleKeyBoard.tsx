@@ -7,15 +7,10 @@ import {
   Range as SlateRange,
 } from "slate";
 import { NodeType } from "../types";
-import { getIndentPath } from "../plugins/withList/queries/getIndentPath";
-import { indentList } from "../plugins/withList/transforms/indentList";
-import { insertListItem } from "../plugins/withList/transforms/insertListItem";
-import { outdentList } from "../plugins/withList/transforms/outdentList";
-import { deleteListItem } from "../plugins/withList/transforms/deleteListItem";
 import { ReactEditor } from "slate-react";
 import { TabEditor } from "../plugins/tab-list/tab-editor";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
-import { ListEditor } from "../plugins/withList/editor/ListEditor";
+import { ListEditor, ListType } from "@bookself/slate-list";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 
 export const handleKeyBoardFormating = (
@@ -234,28 +229,28 @@ export const handleKeyBoardFormating = (
             if (SlateRange.isCollapsed(editor.selection)) {
               if (text.length === 0) {
                 event.preventDefault();
-                deleteListItem(editor);
+                // deleteListItem(editor);
               } else {
                 event.preventDefault();
-                outdentList(editor);
+                // outdentList(editor);
               }
             } else {
               event.preventDefault();
-              deleteListItem(editor);
+              // deleteListItem(editor);
             }
             break;
           case NodeType.ORDERED_LIST:
             if (SlateRange.isCollapsed(editor.selection)) {
               if (text.length === 0) {
                 event.preventDefault();
-                deleteListItem(editor);
+                // deleteListItem(editor);
               } else {
                 event.preventDefault();
-                outdentList(editor);
+                // outdentList(editor);
               }
             } else {
               event.preventDefault();
-              deleteListItem(editor);
+              // deleteListItem(editor);
             }
             break;
           case NodeType.CODE:
@@ -356,15 +351,40 @@ export const handleKeyBoardFormating = (
           event.preventDefault();
           SlateCustomEditor.insertParagraph(editor, HeadingType.H6);
           break;
-        case NodeType.UNORDERED_LIST:
+        case ListType.UNORDERED_LIST:
           event.preventDefault();
           console.log("Runnnned");
+          const insertingChild = [
+            {
+              type: NodeType.PARAGRAPH,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: "",
+                },
+              ],
+            },
+          ]
+          ListEditor.insertListItem(editor, insertingChild);
           // insertListItem(editor);
-          ListEditor.insertListItem(editor)
+          // ListEditor.(editor)
           break;
         case NodeType.ORDERED_LIST:
           event.preventDefault();
-          ListEditor.insertListItem(editor)
+          const children = [
+            {
+              type: NodeType.PARAGRAPH,
+              align: "left",
+              children: [
+                {
+                  type: "default",
+                  text: "",
+                },
+              ],
+            },
+          ]
+          ListEditor.insertListItem(editor, children);
           break;
         case NodeType.BLOCKQUOTE:
           event.preventDefault();

@@ -11,6 +11,7 @@ import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-paragra
 import { TabLeafType } from "./plugins/tab-list/leaf/TabLeafType";
 import { CodeElementType } from "@bookself/slate-code";
 import { HeadingElementType } from "@bookself/slate-heading";
+import { ListItemElementType, OrderedListElementType, UnorderedListElementType } from "@bookself/slate-list";
 
 // ...
 
@@ -38,30 +39,39 @@ export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
 //   children: CustomText[];
 // };
 
-type OrderedListElementType = {
-  type: NodeType.ORDERED_LIST | null;
-  //   children: (OrderedListElementType | CustomText)[]
-  children: (
-    | OrderedListElementType
-    | ListItemElementType
-    | UnorderedListElementType
-  )[];
-};
+// type OrderedListElementType = {
+//   type: NodeType.ORDERED_LIST | null;
+//   //   children: (OrderedListElementType | CustomText)[]
+//   children: (
+//     | OrderedListElementType
+//     | ListItemElementType
+//     | UnorderedListElementType
+//   )[];
+// };
 
-type UnorderedListElementType = {
-  type: NodeType.UNORDERED_LIST | null;
-  //   children: (UnorderedListElementType | CustomText)[]
-  children: (
-    | UnorderedListElementType
-    | ListItemElementType
-    | OrderedListElementType
-  )[];
-};
+// type UnorderedListElementType = {
+//   type: NodeType.UNORDERED_LIST | null;
+//   //   children: (UnorderedListElementType | CustomText)[]
+//   children: (
+//     | UnorderedListElementType
+//     | ListItemElementType
+//     | OrderedListElementType
+//   )[];
+// };
 
-type ListItemElementType = {
-  type: NodeType.LIST_ITEM | null;
-  children: ParagraphElementType[];
-};
+// type ListItemElementType = {
+//   type: NodeType.LIST_ITEM | null;
+//   children: ParagraphElementType[];
+// };
+
+
+declare module "@bookself/slate-command-menu" {
+  interface CustomTypes {
+    Editor: CustomEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
 
 export type ImageElementType = {
   type: "image" | null;

@@ -1,6 +1,7 @@
+import React from "react";
 import { RenderElementProps } from "slate-react";
 
-export const Ol = (props: RenderElementProps) => {
+export const OrderedList = (props: RenderElementProps) => {
   return (
     <ol {...props.attributes} className="font-sans list-decimal ml-8">
       {props.children}
@@ -8,7 +9,7 @@ export const Ol = (props: RenderElementProps) => {
   );
 };
 
-export const Ul = (props: RenderElementProps) => {
+export const UnorderedList = (props: RenderElementProps) => {
   return (
     <ul {...props.attributes} className="list-disc ml-8">
       {props.children}
@@ -16,7 +17,7 @@ export const Ul = (props: RenderElementProps) => {
   );
 };
 
-export const Li = (props: RenderElementProps) => {
+export const ListItem = (props: RenderElementProps) => {
   return (
     <li className="" {...props.attributes}>
       {props.children}

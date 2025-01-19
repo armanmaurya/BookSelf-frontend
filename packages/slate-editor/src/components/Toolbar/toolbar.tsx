@@ -26,11 +26,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 import { MdFormatListNumbered } from "react-icons/md";
-import { toggleList } from "../../plugins/withList/transforms/toggleList";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiTabs } from "react-icons/pi";
 import { AdjustFontSize, ParagraphEditor } from "@bookself/slate-paragraph";
-import { ListEditor } from "../../plugins/withList/editor/ListEditor";
+import { ListEditor } from "@bookself/slate-list";
 import { Editor, Element, Transforms } from "slate";
 import { CodeEditor } from "@bookself/slate-code";
 
@@ -282,7 +281,7 @@ export const SlateToolBar = () => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
                 if (currentNode[0].type === NodeType.PARAGRAPH) {
-                  ListEditor.initializeList(editor, NodeType.ORDERED_LIST)
+                  // ListEditor.initializeList(editor, NodeType.ORDERED_LIST)
 
                 }
               }
@@ -295,7 +294,7 @@ export const SlateToolBar = () => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
                 if (currentNode[0].type === NodeType.PARAGRAPH) {
-                  ListEditor.initializeList(editor, NodeType.UNORDERED_LIST)
+                  // ListEditor.initializeList(editor, NodeType.UNORDERED_LIST)
 
                 }
               }

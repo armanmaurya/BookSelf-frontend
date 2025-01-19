@@ -5,9 +5,6 @@ import {
   H4,
   H5,
   H6,
-  Li,
-  Ol,
-  Ul,
   DefalutLeaf,
   Default,
   // Image,
@@ -30,6 +27,8 @@ import {
 } from "../plugins/tab-list/elements/render";
 import { RenderParagraph } from "@bookself/slate-paragraph";
 import { ParagraphLeaf } from "@bookself/slate-paragraph";
+import { HeadingType } from "@bookself/slate-heading";
+import { ListItem, ListType, OrderedList, UnorderedList, } from "@bookself/slate-list";
 
 
 export const RenderContent = ({
@@ -107,26 +106,26 @@ export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
 
 const ServerElement = (props: RenderElementProps) => {
   switch (props.element.type) {
-    case NodeType.H1:
+    case HeadingType.H1:
       return <H1 {...props} />;
-    case NodeType.H2:
+    case HeadingType.H2:
       return <H2 {...props} />;
-    case NodeType.H3:
+    case HeadingType.H3:
       return <H3 {...props} />;
-    case NodeType.H4:
+    case HeadingType.H4:
       return <H4 {...props} />;
-    case NodeType.H5:
+    case HeadingType.H5:
       return <H5 {...props} />;
-    case NodeType.H6:
+    case HeadingType.H6:
       return <H6 {...props} />;
     case NodeType.CODE:
       return <RenderCode {...props} />;
-    case NodeType.ORDERED_LIST:
-      return <Ol {...props} />;
-    case NodeType.UNORDERED_LIST:
-      return <Ul {...props} />;
-    case NodeType.LIST_ITEM:
-      return <Li {...props} />;
+    case ListType.ORDERED_LIST:
+      return <OrderedList {...props} />;
+    case ListType.UNORDERED_LIST:
+      return <UnorderedList {...props} />;
+    case ListType.LIST_ITEM:
+      return <ListItem {...props} />;
     case NodeType.IMAGE:
       return <RenderImage {...props} />;
     case NodeType.BLOCKQUOTE:
