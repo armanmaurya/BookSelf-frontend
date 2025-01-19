@@ -7,5 +7,5 @@ export {
   EditorHeading6,
 } from "./elements/editor/EditorHeading";
 
-export { HeadingEditor } from "./editor/HeadingEditor";
-export { HeadingElementType } from "./types/element";
+export * from "./editor/HeadingEditor";
+export * from "./types/element";

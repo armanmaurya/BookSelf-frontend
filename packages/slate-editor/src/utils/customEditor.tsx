@@ -534,6 +534,14 @@ export const SlateCustomEditor = {
     }
   },
 
+  getChildrenLength(editor: SlateEditor) {
+    const [match] = SlateEditor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n),
+      mode: "highest",
+    });
+    return match[0].children.length;
+  },
+
   /**
    * Gets the alignment of a block in the editor.
    * @param editor - The editor instance.

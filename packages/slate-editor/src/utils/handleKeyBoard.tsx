@@ -158,20 +158,21 @@ export const handleKeyBoardFormating = (
         break;
       case "Tab":
         event.preventDefault();
-        // const outdentInfo = getOutdentPath(editor);
-        outdentList(editor);
+        ListEditor.outdentListItem(editor);
     }
   }
   if (event.key === "Tab" && !event.shiftKey) {
     // event.preventDefault();
-    if (editor.selection) {
-      event.preventDefault();
-      const indentInfo = getIndentPath(editor);
-      console.log(indentInfo)
-      if (indentInfo) {
-        indentList(editor, indentInfo.to, indentInfo.from, indentInfo.type);
-      }
-    }
+    // if (editor.selection) {
+    //   event.preventDefault();
+    //   const indentInfo = getIndentPath(editor);
+    //   console.log(indentInfo)
+    //   if (indentInfo) {
+    //     indentList(editor, indentInfo.to, indentInfo.from, indentInfo.type);
+    //   }
+    // }
+    event.preventDefault();
+    ListEditor.indentListItem(editor);
   }
   if (event.key === "Backspace") {
     const [match] = SlateEditor.nodes(editor, {
@@ -185,6 +186,7 @@ export const handleKeyBoardFormating = (
 
       if (match[0].type && editor.selection.focus.offset === 0) {
         // If Caret is at the start of Block
+        console.log("Type");
         switch (match[0].type) {
           case NodeType.PARAGRAPH:
             if (text.length === 0) {
@@ -262,15 +264,31 @@ export const handleKeyBoardFormating = (
             break;
           case NodeType.BLOCKQUOTE:
             event.preventDefault();
-            SlateCustomEditor.toggleBlock(editor, NodeType.BLOCKQUOTE);
+            const childLength = SlateCustomEditor.getChildrenLength(editor);
+            console.log("Child Length", childLength);
+            if (childLength === 1) {
+              SlateCustomEditor.toggleBlockQuote(editor);
+              break;
+              // event.preventDefault();
+            }
+            const [nestedMatch] = SlateEditor.nodes(editor, {
+              match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+              mode: "lowest",
+            });
+            switch(nestedMatch[0].type) {
+              case NodeType.PARAGRAPH:
+                event.preventDefault();
+                SlateCustomEditor.deleteNode(editor);
+                break;
+            }
             break;
           case NodeType.TABS:
-            const [match] = SlateEditor.nodes(editor, {
+            const [TabsMatch] = SlateEditor.nodes(editor, {
               match: (n) =>
                 SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
               mode: "lowest",
             });
-            switch (match[0].type) {
+            switch (TabsMatch[0].type) {
               case NodeType.TAB:
                 console.log("runned");
                 event.preventDefault();
@@ -292,7 +310,7 @@ export const handleKeyBoardFormating = (
                 try {
                   const beforeNode = SlateEditor.node(
                     editor,
-                    Path.previous(match[1])
+                    Path.previous(TabsMatch[1])
                   );
                 } catch (error) {
                   event.preventDefault();
@@ -311,7 +329,7 @@ export const handleKeyBoardFormating = (
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
       // mode: "lowest",
     });
-    console.log(match[0].type);
+    console.log("Type", match[0].type);
     if (match[0].type) {
       switch (match[0].type) {
         case HeadingType.H1:
@@ -340,6 +358,7 @@ export const handleKeyBoardFormating = (
           break;
         case NodeType.UNORDERED_LIST:
           event.preventDefault();
+          console.log("Runnnned");
           // insertListItem(editor);
           ListEditor.insertListItem(editor)
           break;

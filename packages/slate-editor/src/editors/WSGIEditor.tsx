@@ -22,17 +22,17 @@ import {
   useSelected,
 } from "slate-react";
 
-import {
-  Ol,
-  Ul,
-  Li,
-  DefalutLeaf,
-  Default,
-  Quote,
-  Anchor,
-} from "../elements";
+import { Ol, Ul, Li, DefalutLeaf, Default, Quote, Anchor } from "../elements";
 
-import { EditorHeading1, EditorHeading2, EditorHeading3, EditorHeading4, EditorHeading5, EditorHeading6, HeadingElementType } from "@bookself/slate-heading";
+import {
+  EditorHeading1,
+  EditorHeading2,
+  EditorHeading3,
+  EditorHeading4,
+  EditorHeading5,
+  EditorHeading6,
+  HeadingElementType,
+} from "@bookself/slate-heading";
 
 import {
   Node as SlateNode,
@@ -337,6 +337,22 @@ export const WSGIEditor = ({
       },
     },
     {
+      name: "Unordered List",
+      command(editor) {
+        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        if (currentNode) {
+          SlateCustomEditor.replaceBlock(editor, currentNode, {
+            type: NodeType.UNORDERED_LIST,
+            children: [{ type: NodeType.LIST_ITEM, children: [{
+              type: "text",
+              children: [{ text: "", type: "text", fontSize: 16 }],
+              align: "left",
+            }] }],
+          });
+        }
+      },
+    },
+    {
       name: "Quote",
       command: (editor) => {
         SlateCustomEditor.toggleBlockQuote(editor);
@@ -345,15 +361,14 @@ export const WSGIEditor = ({
     {
       name: "Code",
       command: (editor) => {
-
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
 
         if (currentNode) {
           SlateCustomEditor.replaceBlock(editor, currentNode, {
             type: NodeType.CODE,
             children: [{ text: "", type: "default" }],
-            language: ""
-          })
+            language: "",
+          });
         }
       },
     },
@@ -367,12 +382,6 @@ export const WSGIEditor = ({
       name: "image",
       command: (editor) => {
         console.log("image");
-      },
-    },
-    {
-      name: "unordered list",
-      command: (editor) => {
-        console.log("unordered list");
       },
     },
     {
@@ -455,23 +464,17 @@ export const WSGIEditor = ({
 
   const currentNode = match ? (match[0].type as string) : null;
 
-
-
   return (
     <div className="transition-all h-screen overflow-y-scroll">
       <Slate
         editor={editor}
-        initialValue={
-          initialValue ? JSON.parse(initialValue) : editorValue
-        }
+        initialValue={initialValue ? JSON.parse(initialValue) : editorValue}
         onChange={(value) => {
           const isAstChange = editor.operations.some(
             (op) => "set_selection" !== op.type
           );
           if (isAstChange) {
-            debouncedSave(
-              JSON.stringify(value),
-            );
+            debouncedSave(JSON.stringify(value));
           }
         }}
       >
@@ -505,8 +508,7 @@ export const WSGIEditor = ({
               handleKeyBoardFormating(event, editor, isCommendMenuOpen);
               if (event.ctrlKey && event.key === "s") {
                 event.preventDefault();
-                onChange &&
-                  onChange(JSON.stringify(editor.children));
+                onChange && onChange(JSON.stringify(editor.children));
               }
             }}
           />
@@ -521,7 +523,11 @@ export const WSGIEditor = ({
             className="h-96"
           ></div>
         </div>
-        <CommandMenu commands={commands} isCommandMenuOpen={isCommendMenuOpen} setIsCommandMenuOpen={setIsCommendMenuOpen} />
+        <CommandMenu
+          commands={commands}
+          isCommandMenuOpen={isCommendMenuOpen}
+          setIsCommandMenuOpen={setIsCommendMenuOpen}
+        />
       </Slate>
     </div>
   );
