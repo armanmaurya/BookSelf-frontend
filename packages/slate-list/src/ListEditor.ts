@@ -1,4 +1,12 @@
-import { Element, Path, Editor, Transforms, Range, Node } from "slate";
+import {
+  Element,
+  Path,
+  Editor,
+  Transforms,
+  Range,
+  Node,
+  EditorNodesOptions,
+} from "slate";
 import { ListType } from "./types";
 import { ReactEditor } from "slate-react";
 
@@ -19,16 +27,19 @@ export const ListEditor = {
 
   // Indent the current list item
   indentListItem(editor: Editor) {
-    try {
-      const [match] = Editor.nodes(editor, {
-        match: (n) => Element.isElement(n) && n.type === ListType.LIST_ITEM,
-        mode: "lowest",
-      });
+    const [currentListItem] = Editor.nodes(editor, {
+      match: (n) => Element.isElement(n) && n.type === ListType.LIST_ITEM,
+      mode: "lowest",
+    });
 
-      const fromPath = match[1];
-      const previousPath = Path.previous(fromPath);
-      const toPath = [...previousPath, 1];
+    const fromPath = currentListItem[1];
+    if (Path.hasPrevious(fromPath)) {
+      const previousListItemPath = Path.previous(fromPath);
+      const previousListItemChildLength = (
+        Editor.node(editor, previousListItemPath)[0] as Element
+      ).children.length;
 
+      const toPath = [...previousListItemPath, previousListItemChildLength];
       // Wrap the current list item in a new unordered list
       Transforms.wrapNodes(
         editor,
@@ -46,9 +57,24 @@ export const ListEditor = {
         at: fromPath,
         to: toPath,
       });
-    } catch (err) {
-      console.log("Cannot indent further");
+
+      // -------------- Operations after moving Nodes -----------------------------
+
+      // If the previous node is also the List then merge it with current
+      const previousNode = Editor.node(editor, Path.previous(toPath));
+      if (Element.isElement(previousNode[0]) && previousNode[0].type === ListType.UNORDERED_LIST) {
+        Transforms.mergeNodes(editor, {
+          at: toPath,
+        });
+      }
+      
+      // -----------------------Operations For Moving Children----------------------
+      // TO-DO implement is later
     }
+
+    // // Merge the current list item with the previous
+
+    // outdentChildren(toPath);
   },
 
   // Outdent the current list item
@@ -64,7 +90,11 @@ export const ListEditor = {
     const parentListItem = Editor.parent(editor, currentList[1]);
 
     // If there is no parent list item, cannot outdent further
-    if (!parentListItem || !Element.isElement(parentListItem[0]) || parentListItem[0].type !== ListType.LIST_ITEM) {
+    if (
+      !parentListItem ||
+      !Element.isElement(parentListItem[0]) ||
+      parentListItem[0].type !== ListType.LIST_ITEM
+    ) {
       console.log("Cannot outdent further");
       return;
     }
@@ -85,7 +115,9 @@ export const ListEditor = {
         Transforms.wrapNodes(
           editor,
           {
-            type: currentList[0].type as ListType.ORDERED_LIST | ListType.UNORDERED_LIST,
+            type: currentList[0].type as
+              | ListType.ORDERED_LIST
+              | ListType.UNORDERED_LIST,
             children: [],
           },
           {
@@ -111,7 +143,8 @@ export const ListEditor = {
     if (!Path.hasPrevious(currentListItemPath)) {
       Transforms.removeNodes(editor, {
         at: currentList[1],
-        match: (n) => Element.isElement(n) && n.type === (currentList[0] as Element).type,
+        match: (n) =>
+          Element.isElement(n) && n.type === (currentList[0] as Element).type,
       });
     }
   },
