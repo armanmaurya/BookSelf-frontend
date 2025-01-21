@@ -3,8 +3,8 @@ import { HeadingType } from "../types/type";
 import { HeadingElementType } from "../types/element";
 
 export interface HeadingEditor {
-  replaceWithHeading: (from: string, to: string) => void,
-  isHeadingActive: (editor: Editor, type: string) => void
+  replaceWithHeading: (from: string, to: string) => void;
+  isHeadingActive: (editor: Editor, type: string) => void;
 }
 
 export const HeadingEditor = {
@@ -30,26 +30,39 @@ export const HeadingEditor = {
   //   }
   // },
 
+  getHeadingType(editor: Editor) {
+    const [match] = Editor.nodes(editor, {
+      match: (n) =>
+        Element.isElement(n) &&
+        (n.type === HeadingType.H1 ||
+          n.type === HeadingType.H2 ||
+          n.type === HeadingType.H3 ||
+          n.type === HeadingType.H4 ||
+          n.type === HeadingType.H5 ||
+          n.type === HeadingType.H6),
+      mode: "lowest"
+    });
+    return (match[0] as Element).type;
+  },
+
   toggleHeading(editor: Editor, type: string) {
-    const isActive = HeadingEditor.isHeadingActive(editor, type);
     if (editor.selection && Range.isCollapsed(editor.selection)) {
       Transforms.setNodes(
         editor,
         {
-          type: type as HeadingType
+          type: type as HeadingType,
         },
         {
-          match: (n) => Element.isElement(n)
+          match: (n) => Element.isElement(n),
         }
-      )
+      );
     }
   },
 
-  isHeadingActive(editor: Editor, type: string) {
-      const [match] = Editor.nodes(editor, {
-        match: (n) => Element.isElement(n) && n.type === type,
-      });
-      return !!match;
-  }
-
+  isHeadingActive(editor: Editor) {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => Element.isElement(n) && (n.type === HeadingType.H1 || n.type === HeadingType.H2 || n.type === HeadingType.H3 || n.type === HeadingType.H4 || n.type === HeadingType.H5 || n.type === HeadingType.H6),
+    });
+    return !!match;
+  },
 };

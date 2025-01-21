@@ -2,32 +2,47 @@ import { Editor, Transforms, Range, Element } from "slate";
 import { HeadingEditor } from "./editor/HeadingEditor";
 import { HeadingType } from "./types/type";
 
-export const withHeading = (types: string, editor: Editor) => {
+export const withHeading = (type: string, editor: Editor) => {
   const { insertText } = editor;
   editor.insertText = (text) => {
     if (editor.selection && Range.isCollapsed(editor.selection)) {
       insertText(text);
+      let fromtype = type;
+      const isActive = HeadingEditor.isHeadingActive(editor);
+      if (isActive) {
+         fromtype = HeadingEditor.getHeadingType(editor);
+      }
       const blockText = editor.string(editor.selection?.anchor.path);
-      // console.log("blockText", blockText);
-      // Parse the Text and get # or ## or ### or ####
       switch (blockText) {
         case "# ":
-          editor.replaceWithHeading(types, HeadingType.H1);
+          if (fromtype !== HeadingType.H1) {
+            editor.replaceWithHeading(type, HeadingType.H1);
+          }
           break;
         case "## ":
-          editor.replaceWithHeading(types, HeadingType.H2);
+          if (fromtype !== HeadingType.H2) {
+            editor.replaceWithHeading(type, HeadingType.H2);
+          }
           break;
         case "### ":
-          editor.replaceWithHeading(types, HeadingType.H3);
+          if (fromtype !== HeadingType.H3) {
+            editor.replaceWithHeading(type, HeadingType.H3);
+          }
           break;
         case "#### ":
-          editor.replaceWithHeading(types, HeadingType.H4);
+          if (fromtype !== HeadingType.H4) {
+            editor.replaceWithHeading(type, HeadingType.H4);
+          }
           break;
         case "##### ":
-          editor.replaceWithHeading(types, HeadingType.H5);
+          if (fromtype !== HeadingType.H5) {
+            editor.replaceWithHeading(type, HeadingType.H5);
+          }
           break;
         case "###### ":
-          editor.replaceWithHeading(types, HeadingType.H6);
+          if (fromtype !== HeadingType.H6) {
+            editor.replaceWithHeading(type, HeadingType.H6);
+          }
           break;
       }
     }
