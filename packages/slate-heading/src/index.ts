@@ -10,3 +10,4 @@ export {
 export * from "./editor/HeadingEditor";
 export * from "./types/element";
 export * from "./types/type";
+export * from "./withHeading"

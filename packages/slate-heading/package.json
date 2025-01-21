@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "prismjs": "^1.29.0",
-    "slate": "^0.103.0",
-    "slate-react": "^0.104.0"
+    "slate": "^0.112.0",
+    "slate-react": "^0.112.0"
   }
 }
