@@ -4,7 +4,7 @@ import "../globals.css";
 // import 'react-notifications-component/dist/theme.css'
 // import 'animate.css/animate.min.css';
 import AppBar from "../../components/AppBar";
-import { SideBar, SideBarElement } from "@/components/blocks/Sidebar";
+import { SideBar, SideBarElement, SideBarProvider } from "@bookself/react-sidebar";
 import { ContextProvider } from "../../components/context";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "next-themes";
@@ -57,27 +57,29 @@ export default async function RootLayout({
           <NextTopLoader />
 
           <ContextProvider>
-            {/* <AppBar /> */}
-            <ProfileIconContainer />
+            <SideBarProvider>
+              <AppBar />
+              {/* <ProfileIconContainer /> */}
 
-            <div className="h-full w-full">
-              <div className="h-full">{children}</div>
-              {/* <SideBar>
-                <SideBarElement href="/library/my-article">
-                  <IoLibrary size={20} className="" />
-                  <span className="pl-3">Library</span>
-                </SideBarElement>
-                <SideBarElement href={`/notebook/${data.username}/`}>
-                  <IoBookOutline size={20} className="" />
-                  <span className="pl-3">Your Notebook</span>
-                </SideBarElement>
-                <SideBarElement href={`/article/${data.username}/`}>
-                  <SlNote size={20} className="" />
-                  <span className="pl-3">Your Articles</span>
-                </SideBarElement>
-              </SideBar> */}
-            </div>
-            <ProfileIconContainer />
+              <div className="h-full w-full">
+                <div className="h-full">{children}</div>
+                <SideBar>
+                  <SideBarElement className="flex">
+                    <IoLibrary size={20} className="" />
+                    <span className="pl-3">Library</span>
+                  </SideBarElement>
+                  <SideBarElement className="flex">
+                    <IoBookOutline size={20} className="" />
+                    <span className="pl-3">Your Notebook</span>
+                  </SideBarElement>
+                  <SideBarElement className="flex">
+                    <SlNote size={20} className="" />
+                    <span className="pl-3">Your Articles</span>
+                  </SideBarElement>
+                </SideBar>
+              </div>
+              <ProfileIconContainer />
+            </SideBarProvider>
 
           </ContextProvider>
         </ThemeProvider>

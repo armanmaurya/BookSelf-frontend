@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AppContext } from "./context";
 import { Divide as Hamburger } from "hamburger-react";
 import Link from "next/link";
+import { useSideBar } from "@bookself/react-sidebar";
 export const Divider = () => {
   return (
     <div className="w-full flex h-full justify-center items-center">
@@ -14,14 +15,14 @@ export const Divider = () => {
 };
 
 export const HamburgerIcon = () => {
-  const sideBarState = useContext(AppContext);
+  const sideBarState = useSideBar();
   return (
-    <div ref={sideBarState.hamburderButtonRef}>
+    <div>
       {sideBarState && (
         <Hamburger
           size={20}
           toggled={sideBarState.isOpen}
-          toggle={sideBarState.setIsOpen}
+          toggle={sideBarState.open}
         />
       )}
     </div>
