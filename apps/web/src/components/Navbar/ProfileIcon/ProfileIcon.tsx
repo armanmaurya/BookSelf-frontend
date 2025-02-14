@@ -1,11 +1,11 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { SlNotebook } from "react-icons/sl";
-import { LogoutBtn } from "../element/button/LogoutBtn";
+import { LogoutBtn } from "../../element/button/LogoutBtn";
 
 export const ProfileIcon = ({ username }: { username: string }) => {
   const [isClick, setIsClick] = useState(false);
@@ -14,10 +14,33 @@ export const ProfileIcon = ({ username }: { username: string }) => {
     setIsClick(!isClick);
   };
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (ref.current && !ref.current.contains(e.target as Node)) {
+      setIsClick(false);
+    }
+  }
+
+  const handleEsc = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setIsClick(false);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleEsc);
+    window.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isClick]);
+
   return (
-    <div>
+    <div ref={ref}>
       <div
-        className="absolute top-2 right-2 rounded-full border cursor-pointer shadow-md"
+        className="rounded-full border cursor-pointer shadow-md"
         onClick={toggleClick}
       >
         <img

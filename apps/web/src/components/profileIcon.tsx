@@ -23,14 +23,14 @@ const ProfileIcon = async () => {
     </IconBtn>;
   } else {
     return (
-      <li className="flex space-x-3 justify-center items-center mr-2">
+      <li className="flex justify-center items-center rounded-xl overflow-hidden bg-sky-600">
         <a
-          className="border p-1.5 bg-sky-500 text-slate-50 rounded-2xl md:block h-10 hidden"
+          className="bg-sky-500 text-slate-50 md:block hidden rounded-r-md h-full p-2 shadow-[4px_4px_10px_rgba(0,0,0,0.4)]"
           href="/signup"
         >
           Create
         </a>
-        <Link className="text-sky-500" href="/signin">
+        <Link className="h-full p-2 text-slate-200" href="/signin">
           Login
         </Link>
       </li>

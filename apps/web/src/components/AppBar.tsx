@@ -4,6 +4,7 @@ import { HamburgerIcon } from "./decoration";
 import ProfileIcon from "./profileIcon";
 import { SearchInput } from "./element/input";
 import ThemeSwitcher from "./element/button/ThemeSwitchButton";
+import { ProfileIconContainer } from "./Navbar/ProfileIcon/ProfileIconContainer";
 
 const AppBar = () => {
   return (
@@ -19,7 +20,9 @@ const AppBar = () => {
           <SearchInput />
           <div className="flex">
             <ThemeSwitcher />
-            <ProfileIcon />
+            {/* <ProfileIcon /> */}
+            <ProfileIconContainer />
+
           </div>
         </div>
       </nav>
