@@ -32,6 +32,7 @@ import {
   EditorHeading5,
   EditorHeading6,
   HeadingElementType,
+  withHeading,
 } from "@bookself/slate-heading";
 
 import { ListItem, ListType, OrderedList, UnorderedList } from "@bookself/slate-list";
@@ -114,29 +115,27 @@ export type SlateNodeType = HeadingType | NodeType | ListType;
  */
 export const WSGIEditor = ({
   initialValue,
-  onChange,
+  onContentChange,
   title,
+  onTitleChange,
 }: {
   initialValue?: string;
   title?: string;
-  onChange?: (value: string) => void;
+  onContentChange?: (value: string) => void;
+  onTitleChange?: (value: string) => void;
 }) => {
   const editor = useMemo(
     () =>
-      withTabs(
-        withNormalize(
-          withImage(
-            withHeadingId(
-              withKeyCommands(
-                withLinks(
-                  withShortcuts(
-                    withPaste(withReact(withHistory(createEditor())))
-                  )
-                )
+      withHeading(NodeType.PARAGRAPH,
+        withTabs(
+          withNormalize(
+            withImage(
+              withLinks(
+                withPaste(withReact(withHistory(createEditor())))
               )
             )
           )
-        )
+        ),
       ),
     []
   );
@@ -164,11 +163,11 @@ export const WSGIEditor = ({
       case NodeType.CODE:
         return <EditableCode {...props} element={props.element} />;
       case ListType.ORDERED_LIST:
-        return <OrderedList {...props} element={props.element}/>;
+        return <OrderedList {...props} element={props.element} />;
       case ListType.UNORDERED_LIST:
-        return <UnorderedList {...props} element={props.element}/>;
+        return <UnorderedList {...props} element={props.element} />;
       case ListType.LIST_ITEM:
-        return <ListItem {...props} element={props.element}/>;
+        return <ListItem {...props} element={props.element} />;
       case NodeType.IMAGE:
         return <EditableImage {...props} />;
       case NodeType.BLOCKQUOTE:
@@ -225,19 +224,22 @@ export const WSGIEditor = ({
     {
       name: "Heading 1",
       command: (editor) => {
-        const heading1: HeadingElementType = {
-          type: HeadingType.H1,
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: "",
-            },
-          ],
-        };
+        // const heading1: HeadingElementType = {
+        //   type: HeadingType.H1,
+        //   align: "left",
+        //   children: [
+        //     {
+        //       type: "default",
+        //       text: "",
+        //     },
+        //   ],
+        // };
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        // if (currentNode) {
+        //   SlateCustomEditor.replaceBlock(editor, currentNode, heading1);
+        // }
         if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, heading1);
+          editor.replaceWithHeading(currentNode, HeadingType.H1);
         }
       },
     },
@@ -435,9 +437,14 @@ export const WSGIEditor = ({
       timeout = setTimeout(() => callback(...args), delay);
     };
   };
-  const debouncedSave = useMemo(() => {
-    return debounce((body: string) => onChange && onChange(body), 3000);
-  }, [onChange]);
+  const debouncedContentSave = useMemo(() => {
+    return debounce((body: string) => onContentChange && onContentChange(body), 3000);
+  }, [onContentChange]);
+
+  const debouncedTitleSave = useMemo(() => {
+    return debounce((title: string) => onTitleChange && onTitleChange(title), 500);
+  }
+  , [onTitleChange]);
 
   const titleRef = useRef<HTMLInputElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -476,7 +483,7 @@ export const WSGIEditor = ({
             (op) => "set_selection" !== op.type
           );
           if (isAstChange) {
-            debouncedSave(JSON.stringify(value));
+            debouncedContentSave(JSON.stringify(value));
           }
         }}
       >
@@ -487,12 +494,7 @@ export const WSGIEditor = ({
             className="text-5xl font-extrabold bg-transparent h-14 w-full"
             onChange={(e) => {
               setTitle(e.target.value);
-              debouncedSave(
-                JSON.stringify({
-                  title: e.target.value,
-                  content: JSON.stringify(editor.children),
-                })
-              );
+              debouncedTitleSave(e.target.value);
             }}
             value={pageTitle}
             placeholder="Title"
@@ -510,7 +512,7 @@ export const WSGIEditor = ({
               handleKeyBoardFormating(event, editor, isCommendMenuOpen);
               if (event.ctrlKey && event.key === "s") {
                 event.preventDefault();
-                onChange && onChange(JSON.stringify(editor.children));
+                onContentChange && onContentChange(JSON.stringify(editor.children));
               }
             }}
           />

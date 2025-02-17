@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export const ArticleCard = ({ data }: { data: Article }) => {
+export const ArticleCard = ({ data, href }: { data: Article, href: string }) => {
   return (
-    <Link href={`/${data.slug}`} className="border dark:border-neutral-700 rounded-md">
+    <Link href={href} className="border dark:border-neutral-700 rounded-md">
       <div className="w-full flex flex-col justify-center h-24 p-4">
         <h1 className="text-2xl font-bold">{data.title || "Untitled"}</h1>
 

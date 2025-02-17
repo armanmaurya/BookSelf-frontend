@@ -36,7 +36,7 @@ export const RenderContent = ({
   title,
   children,
 }: {
-  value: Descendant[];
+  value: any[];
   title: string;
   children?: React.ReactNode;
 }) => {
@@ -82,7 +82,7 @@ export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
                 ref: null,
               }}
             >
-              <RenderEditorStatic value={node.children} />
+              <RenderEditorStatic value={node.children as Descendant[]} />
             </ServerElement>
           );
         } else {

@@ -26,8 +26,6 @@ const page = async ({
 
   const res = await fetch(
     `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`, {
-
-
       cache: "no-store",
     }
   );

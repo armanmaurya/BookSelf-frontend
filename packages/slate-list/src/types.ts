@@ -22,12 +22,12 @@ export type UnorderedListElementType = {
   children: ListItemElementType[];
 };
 
-declare module "slate" {
-  interface CustomTypes {
-    Editor: CustomEditor;
-    Element: CustomElement;
-  }
-}
+// declare module "slate" {
+//   interface CustomTypes {
+//     Editor: CustomEditor;
+//     Element: CustomElement;
+//   }
+// }
 
 type CustomEditor = BaseEditor & ReactEditor
 export type CustomElement = OrderedListElementType | UnorderedListElementType | ListItemElementType;

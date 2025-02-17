@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
-// import 'react-notifications-component/dist/theme.css'
-// import 'animate.css/animate.min.css';
-import AppBar from "../../components/AppBar";
 import { SideBar, SideBarElement, SideBarProvider } from "@bookself/react-sidebar";
 import { ContextProvider } from "../../components/context";
 import NextTopLoader from "nextjs-toploader";
@@ -12,8 +9,12 @@ import { IoBookOutline, IoLibrary, IoPaperPlane } from "react-icons/io5";
 import { cookies } from "next/headers";
 import { API_ENDPOINT } from "../utils";
 import { SlNote } from "react-icons/sl";
-import Link from "next/link";
-import { ProfileIconContainer } from "@/components/Navbar/ProfileIcon/ProfileIconContainer";
+import { AuthProvider } from "@/context/AuthContext";
+import { User } from "@/types/auth";
+import { LoadingProvider, TriangleSpinner } from "@bookself/react-loading"
+import { TopBar } from "@/components/TopBar";
+import ThemeSwitcher from "@/components/element/button/ThemeSwitchButton";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,9 +41,7 @@ export default async function RootLayout({
         }`,
     },
   });
-  let data = {
-    username: ""
-  };
+  let data: User | null = null;
   if (res.ok) {
     data = await res.json();
   } else {
@@ -55,32 +54,35 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" enableSystem>
           <NextTopLoader />
+          <ThemeSwitcher className="absolute right-2 bottom-4" />
+          <LoadingProvider>
+            <TriangleSpinner className="absolute h-screen w-screen bg-black bg-opacity-30 left-0 top-0 flex items-center justify-center" height={100} width={100} color="grey" />
+            <AuthProvider userData={data}>
+              <ContextProvider>
+                <SideBarProvider>
+                  <TopBar />
+                  <div className="h-full w-full">
+                    <div className="h-full">{children}</div>
+                    <SideBar>
+                      <SideBarElement className="flex">
+                        <IoLibrary size={20} className="" />
+                        <span className="pl-3">Library</span>
+                      </SideBarElement>
+                      <SideBarElement className="flex">
+                        <IoBookOutline size={20} className="" />
+                        <span className="pl-3">Your Notebook</span>
+                      </SideBarElement>
+                      <SideBarElement className="flex">
+                        <SlNote size={20} className="" />
+                        <span className="pl-3">Your Articles</span>
+                      </SideBarElement>
+                    </SideBar>
+                  </div>
+                </SideBarProvider>
 
-          <ContextProvider>
-            <SideBarProvider>
-              <AppBar />
-              {/* <ProfileIconContainer /> */}
-
-              <div className="h-full w-full">
-                <div className="h-full">{children}</div>
-                <SideBar>
-                  <SideBarElement className="flex">
-                    <IoLibrary size={20} className="" />
-                    <span className="pl-3">Library</span>
-                  </SideBarElement>
-                  <SideBarElement className="flex">
-                    <IoBookOutline size={20} className="" />
-                    <span className="pl-3">Your Notebook</span>
-                  </SideBarElement>
-                  <SideBarElement className="flex">
-                    <SlNote size={20} className="" />
-                    <span className="pl-3">Your Articles</span>
-                  </SideBarElement>
-                </SideBar>
-              </div>
-            </SideBarProvider>
-
-          </ContextProvider>
+              </ContextProvider>
+            </AuthProvider>
+          </LoadingProvider>
         </ThemeProvider>
       </body>
     </html>

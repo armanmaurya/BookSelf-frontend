@@ -9,13 +9,21 @@ import { Store } from "react-notifications-component";
 import { API_ENDPOINT } from "../app/utils";
 import { ConverLoading } from "./converLoading";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import nProgress from "nprogress";
+import { useLoading } from "@bookself/react-loading";
 
 export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
-  const router = useRouter();
-  const googleAuthUrl = getGoogleAuthUrl(redirect_path);
   const searchParams = useSearchParams();
   const code = searchParams.get("code");
-  const [isChecking, setIsChecking] = useState(code ? true : false);
+  const router = useRouter();
+  const googleAuthUrl = getGoogleAuthUrl(redirect_path);
+  const loader = useLoading();
+  const { setUser } = useAuth();
+
+  if (code) {
+    loader.show();
+  }
 
   const socialLogin = async () => {
     if (!code) {
@@ -33,13 +41,17 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
         }
       );
       if (response.status == 200) {
-        window.location.href = "/";
-        // router.push("/");
+        loader.hide();
+        setUser(await response.json());
+        nProgress.start();
+        router.push("/");
+
       } else if (response.status == 201) {
         // window.location.href = "/signup/username";
         router.push("/signup/username");
       } else {
         console.log("Registration failed");
+        loader.hide();
         Store.addNotification({
           title: "Error",
           message: "Registration failed",
@@ -53,7 +65,6 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
             // onScreen: true,
           },
         });
-        // setIsChecking(false);
       }
     } catch (error) {
       console.log("Network error");
@@ -66,7 +77,7 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
 
   return (
     <div>
-      {isChecking && <ConverLoading />}
+      {/* {isChecking && <ConverLoading />} */}
       <a
         className="border hover:cursor-pointer h-11 relative rounded-md w-80 flex justify-center items-center"
         href={googleAuthUrl}

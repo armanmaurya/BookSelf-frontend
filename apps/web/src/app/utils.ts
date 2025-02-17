@@ -33,12 +33,17 @@ export async function getData(
 const apiURl = process.env.NEXT_PUBLIC_API_URL;
 
 export const API_ENDPOINT = {
+  
   notebook: {
     url: `${apiURl}/notebook`,
     method: "GET",
   },
+  likeArticle: {
+    url: `${apiURl}/article/like/`,
+    method: "GET",
+  },
   article: {
-    url: `${apiURl}/article`,
+    url: `${apiURl}/article/`,
     method: "GET",
   },
   login: {

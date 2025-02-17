@@ -1,3 +1,4 @@
+"use client";
 import {
   Element,
   Path,
@@ -9,6 +10,7 @@ import {
 } from "slate";
 import { ListType } from "./types";
 import { ReactEditor } from "slate-react";
+
 
 export const ListEditor = {
   // Insert a new list item with the given children

@@ -3,14 +3,12 @@ import React from "react";
 import { ArticleCard } from "../../components/blocks/card";
 import { API_ENDPOINT } from "../utils";
 import { Article } from "../types";
-import { NewArticleButton } from "@/components/newArticleBtn";
+import { useAuth } from "@/context/AuthContext";
 
 const fetchData = async () => {
   try {
     const res = await fetch(API_ENDPOINT.article.url, {
-      next: {
-        tags: ["home"],
-      },
+      cache: "no-cache",
     });
     return res.json();
   } catch (error) {
@@ -31,10 +29,9 @@ export default async function Home() {
       <div className="w-full h-full space-y-2 overflow-auto flex flex-col p-2">
         {data.map(async (articlePromise) => {
           const article = await articlePromise;
-          return <ArticleCard key={article.id} data={article} />;
+          return <ArticleCard href={`/${article.username}/article/${article.slug}`} key={article.id} data={article} />;
         })}
       </div>
-      <NewArticleButton/>
       {/* <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
         Latest Article
       </div> */}

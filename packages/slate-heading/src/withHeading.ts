@@ -55,7 +55,7 @@ export const withHeading = (type: string, editor: Editor) => {
         type: to as HeadingType,
         children: [
           {
-            type: "default",
+            type: "heading",
             text: "",
           },
         ],

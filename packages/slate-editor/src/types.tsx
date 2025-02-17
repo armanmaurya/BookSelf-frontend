@@ -10,12 +10,12 @@ import { HistoryEditor } from "slate-history";
 import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-paragraph";
 import { TabLeafType } from "./plugins/tab-list/leaf/TabLeafType";
 import { CodeElementType } from "@bookself/slate-code";
-import { HeadingElementType } from "@bookself/slate-heading";
+import { HeadingEditor, HeadingElementType } from "@bookself/slate-heading";
 import { ListItemElementType, OrderedListElementType, UnorderedListElementType } from "@bookself/slate-list";
 
 // ...
 
-type CustomEditor = BaseEditor & ReactEditor & CustomEditorType & HistoryEditor;
+type CustomEditor = BaseEditor & ReactEditor & CustomEditorType & HistoryEditor & HeadingEditor;
 type CustomEditorType = { type?: string };
 
 type HeadingElement = {
@@ -32,37 +32,6 @@ type HeadingElement = {
   children: DefalutLeafType[];
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
-
-// type CodeElementType = {
-//   type: NodeType.CODE | null;
-//   language: string | null;
-//   children: CustomText[];
-// };
-
-// type OrderedListElementType = {
-//   type: NodeType.ORDERED_LIST | null;
-//   //   children: (OrderedListElementType | CustomText)[]
-//   children: (
-//     | OrderedListElementType
-//     | ListItemElementType
-//     | UnorderedListElementType
-//   )[];
-// };
-
-// type UnorderedListElementType = {
-//   type: NodeType.UNORDERED_LIST | null;
-//   //   children: (UnorderedListElementType | CustomText)[]
-//   children: (
-//     | UnorderedListElementType
-//     | ListItemElementType
-//     | OrderedListElementType
-//   )[];
-// };
-
-// type ListItemElementType = {
-//   type: NodeType.LIST_ITEM | null;
-//   children: ParagraphElementType[];
-// };
 
 
 declare module "@bookself/slate-command-menu" {
