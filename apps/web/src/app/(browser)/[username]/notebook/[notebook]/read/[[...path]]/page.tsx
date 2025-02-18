@@ -1,5 +1,5 @@
 import { API_ENDPOINT } from '@/app/utils';
-import { FloatingButton } from '@/components/element/button/EditButton';
+import { EditButton } from '@/components/element/button/EditButton';
 // import { NoContent } from '@/components/blocks/noContent';
 import { RenderContent } from '@bookself/slate-editor/renderer';
 import { PageResponse } from '@bookself/types';
@@ -48,11 +48,11 @@ const page = async ({
           No Content
         </div>
       </RenderContent>
-      <FloatingButton href={
+      <EditButton href={
         `/${username}/notebook/${notebook}/edit/${path.join("/")}`
       }>
         Edit
-      </FloatingButton>
+      </EditButton>
     </div>
   )
 }

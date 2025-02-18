@@ -3,7 +3,6 @@ import Link from "next/link";
 import { HamburgerIcon } from "../decoration";
 import { ProfileIcon } from "./ProfileIcon";
 import { SearchInput } from "../element/input";
-import ThemeSwitcher from "../element/button/ThemeSwitchButton";
 import { NewArticleButton } from "./newArticleBtn";
 import { useAuth } from "@/context/AuthContext";
 

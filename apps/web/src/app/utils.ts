@@ -12,7 +12,7 @@ export async function getData(
     Accept: "application/json",
     Cookie: "",
   }
-): Promise<CustomResponse| null> {
+): Promise<CustomResponse | null> {
   try {
     const res = await fetch(`${API_ENDPOINT.article.url}?slug=${id}`, {
       method: "GET",
@@ -22,7 +22,7 @@ export async function getData(
       return await res.json();
     }
     console.log(await res.body);
-    
+
     return null;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -33,7 +33,13 @@ export async function getData(
 const apiURl = process.env.NEXT_PUBLIC_API_URL;
 
 export const API_ENDPOINT = {
-  
+  base: {
+    url: `${apiURl}`,
+  },
+  toggleFollow: {
+    url: `${apiURl}/account/follow`,
+    method: "POST",
+  },
   notebook: {
     url: `${apiURl}/notebook`,
     method: "GET",
@@ -85,7 +91,7 @@ export const API_ENDPOINT = {
   newNotebook: {
     url: `${apiURl}/notebooks`,
     method: "POST",
-  }
+  },
 };
 
 export const getGoogleAuthUrl = (redirect_path: string) => {

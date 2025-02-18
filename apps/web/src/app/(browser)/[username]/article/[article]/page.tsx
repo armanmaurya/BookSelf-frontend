@@ -1,9 +1,11 @@
 import { API_ENDPOINT } from "@/app/utils";
 import { Button } from "@/components/element/button";
+// import { EditButton } from "@/components/element/button/EditButton";
 import { LikeButton } from "@/components/element/button/LikeButton";
 import { RenderContent } from "@bookself/slate-editor/renderer";
 import { Article } from "@bookself/types";
 import { cookies } from "next/headers";
+import Link from "next/link";
 
 const Page = async ({
   params,
@@ -22,21 +24,30 @@ const Page = async ({
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Cookie: `${cookieStore.get("sessionid")?.name}=${
-        cookieStore.get("sessionid")?.value
-      }`,
+      Cookie: `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value
+        }`,
     },
   });
 
   const data: Article = await res.json();
   return (
     <div className="">
-      <LikeButton
-        initialState={data.liked}
-        initialLikes={data.likes}
-        url={`${API_ENDPOINT.likeArticle.url}?slug=${article}`}
-        method={`${API_ENDPOINT.likeArticle.method}`}
-      />
+      <div className="flex items-center space-x-3">
+        <LikeButton
+          initialState={data.liked}
+          initialLikes={data.likes}
+          url={`${API_ENDPOINT.likeArticle.url}?slug=${article}`}
+          method={`${API_ENDPOINT.likeArticle.method}`}
+        />
+        {
+          data.username === username && (
+            <Link href={`${article}/edit`} className="text-gray-400">
+              Edit
+            </Link>
+          )
+        }
+      </div>
+
       <RenderContent title={data.title} value={JSON.parse(data.content)} />
     </div>
   );

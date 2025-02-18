@@ -8,4 +8,5 @@ export interface Article {
   tags: string[];
   likes: number;
   liked: boolean;
+  username: string
 }

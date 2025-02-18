@@ -54,7 +54,7 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" enableSystem>
           <NextTopLoader />
-          <ThemeSwitcher className="absolute right-2 bottom-4" />
+          <ThemeSwitcher className="fixed right-2 bottom-4" />
           <LoadingProvider>
             <TriangleSpinner className="absolute h-screen w-screen bg-black bg-opacity-30 left-0 top-0 flex items-center justify-center" height={100} width={100} color="grey" />
             <AuthProvider userData={data}>
