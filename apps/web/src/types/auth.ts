@@ -3,7 +3,8 @@ export type User = {
     email: string;
     first_name: string;
     last_name: string;
-    is_following: boolean | undefined;
-    followers: number;
-    following: number;
+    is_following: boolean;
+    followers_count: number;
+    following_count: number;
+    is_self: boolean;
 }

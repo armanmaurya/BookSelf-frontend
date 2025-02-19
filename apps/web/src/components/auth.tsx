@@ -21,14 +21,16 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   const loader = useLoading();
   const { setUser } = useAuth();
 
-  if (code) {
-    loader.show();
-  }
+  // if (code) {
+  //   loader.show();
+  // }
 
   const socialLogin = async () => {
     if (!code) {
       return;
     }
+
+    loader.show();
     try {
       const response = await fetch(
         `${API_ENDPOINT.googleAuth.url}?code=${code}&redirect_path=${redirect_path}`,
@@ -47,7 +49,8 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
         router.push("/");
 
       } else if (response.status == 201) {
-        // window.location.href = "/signup/username";
+        loader.hide();
+        nProgress.start();
         router.push("/signup/username");
       } else {
         console.log("Registration failed");
@@ -73,7 +76,7 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
 
   useEffect(() => {
     socialLogin();
-  });
+  }, [code]);
 
   return (
     <div>

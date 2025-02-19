@@ -25,13 +25,6 @@ export default async function Login() {
     console.log("Error", res);
   }
 
-  // const context = useContext(AppContext);
-
-  // useEffect(() => {
-  //   if (context.isAuthenticated) {
-  //     window.location.href = "/";
-  //   }
-  // })
   return (
     <main className="h-full">
       <RNotification />
