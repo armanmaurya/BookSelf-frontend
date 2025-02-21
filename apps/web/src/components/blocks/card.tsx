@@ -10,9 +10,9 @@ export const ArticleCard = ({ data, href }: { data: Article, href: string }) => 
         <h1 className="text-2xl font-bold">{data.title || "Untitled"}</h1>
 
         <div className="flex justify-between w-full">
-          <p className="text-sm">Author: {data.author}</p>
+          <p className="text-sm">Author: {data.author.firstName}{" "}{data.author.lastName}</p>
           <p className="text-sm">
-            {new Date(data.created_at).toLocaleDateString("en-GB", {
+            {new Date(data.createdAt).toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "short",
               year: "numeric",
@@ -37,7 +37,7 @@ export const ArticleCard2 = ({ data }: { data: Article }) => {
       <div className="p-2">
         <h1 className="text-3xl font-bold text-black">{data.title}</h1>
         <div className="flex justify-between w-full">
-          <p className="text-sm">Author: {data.author}</p>
+          {/* <p className="text-sm">Author: {data.author}</p> */}
           <p className="text-sm">
             Created At:{" "}
             {new Date(data.created_at).toLocaleDateString("en-GB", {

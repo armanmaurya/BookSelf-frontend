@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import nProgress from "nprogress";
 import { useLoading } from "@bookself/react-loading";
+import client from "@/lib/apolloClient";
+import { gql, useMutation } from "@apollo/client";
 
 export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   const searchParams = useSearchParams();
@@ -25,52 +27,90 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   //   loader.show();
   // }
 
+  const GOOGLE_AUTH = gql`
+  mutation MyMutation($redirectPath: String!, $token: String!) {
+    googleAuth(redirectPath: $redirectPath, token: $token) {
+      isCreated
+    }
+  }
+`;
+
+  const [googleAuth, {data, loading, error}] = useMutation(GOOGLE_AUTH);
+
+  // console.log("Data", data);
+
   const socialLogin = async () => {
     if (!code) {
       return;
     }
-
+    // console.log("Query", query.definitions);
     loader.show();
     try {
-      const response = await fetch(
-        `${API_ENDPOINT.googleAuth.url}?code=${code}&redirect_path=${redirect_path}`,
-        {
-          method: API_ENDPOINT.googleAuth.method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      if (response.status == 200) {
+      const response = await googleAuth({
+        variables: { redirectPath: redirect_path, token: code },
+      });
+      if (response.data.googleAuth.isCreated !== true) {
         loader.hide();
-        setUser(await response.json());
         nProgress.start();
         router.push("/");
-
-      } else if (response.status == 201) {
-        loader.hide();
-        nProgress.start();
-        router.push("/signup/username");
-      } else {
-        console.log("Registration failed");
-        loader.hide();
-        Store.addNotification({
-          title: "Error",
-          message: "Registration failed",
-          type: "danger",
-          insert: "top",
-          container: "top-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 5000,
-            // onScreen: true,
-          },
-        });
       }
+      loader.hide();
+      // const { data } = await client.mutate({ mutation: gql`${query}` });
+      // const data = useMutation(gql`${query}`);
+      // console.log("Data", data);
+      // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/graphql/`, {
+      //   body: JSON.stringify({ query }),
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Accept": "application/json" // (Optional, but some servers require it)
+      //   },
+      // })
+
+
+
+
+      // console.log("Response", res);
+      // console.log(data);
+      // const response = await fetch(
+      //   `${API_ENDPOINT.googleAuth.url}?code=${code}&redirect_path=${redirect_path}`,
+      //   {
+      //     method: API_ENDPOINT.googleAuth.method,
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     credentials: "include",
+      //   }
+      // );
+      // if (response.status == 200) {
+      //   loader.hide();
+      //   setUser(await response.json());
+      //   // nProgress.start();
+      //   // router.push("/");
+
+      // } else if (response.status == 201) {
+      //   loader.hide();
+      //   nProgress.start();
+      //   router.push("/signup/username");
+      // } else {
+      //   console.log("Registration failed");
+      //   loader.hide();
+      //   Store.addNotification({
+      //     title: "Error",
+      //     message: "Registration failed",
+      //     type: "danger",
+      //     insert: "top",
+      //     container: "top-center",
+      //     animationIn: ["animate__animated", "animate__fadeIn"],
+      //     animationOut: ["animate__animated", "animate__fadeOut"],
+      //     dismiss: {
+      //       duration: 5000,
+      //       // onScreen: true,
+      //     },
+      //   });
+      // }
     } catch (error) {
-      console.log("Network error");
+      console.log("Network error", error);
     }
   };
 

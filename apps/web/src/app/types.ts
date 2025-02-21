@@ -2,9 +2,11 @@ export interface Article {
   id: number;
   title: string;
   content: string;
-  author: number;
-  created_at: string;
+  author: {
+    username: string;
+    firstName: string;
+    lastName: string;
+  };
+  createdAt: string;
   slug: string;
-  tags: string[];
-  username: string;
 }

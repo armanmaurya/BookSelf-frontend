@@ -1,40 +1,40 @@
-import React from "react";
+// Home Page
 
 import { ArticleCard } from "../../components/blocks/card";
 import { API_ENDPOINT } from "../utils";
 import { Article } from "../types";
-import { useAuth } from "@/context/AuthContext";
+import client from "@/lib/apolloClient";
+import { gql } from "@apollo/client";
 
-const fetchData = async () => {
-  try {
-    const res = await fetch(API_ENDPOINT.article.url, {
-      cache: "no-cache",
-    });
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    // Handle the error here, e.g. show an error message to the user
-    throw error; // Rethrow the error to propagate it to the caller
-  }
-};
+const GET_ARTICLES = gql`
+  query MyQuery {
+    articles {
+      content
+      slug
+      title
+      views
+      createdAt
+      author {
+        username
+        firstName
+        lastName
+      }
+    }
+}
+`;
 
 
 export default async function Home() {
-  const data: Promise<Article>[] = await fetchData();
-  // console.log(data);
-  // await checklogin();
+  const { data } = await client.query({ query: GET_ARTICLES });
+  const articles = data.articles;
 
   return (
     <main className="h-full flex justify-center items-center">
       <div className="w-full h-full space-y-2 overflow-auto flex flex-col p-2">
-        {data.map(async (articlePromise) => {
-          const article = await articlePromise;
-          return <ArticleCard href={`/${article.username}/article/${article.slug}`} key={article.id} data={article} />;
+        {articles.map((article: Article) => {
+          return <ArticleCard href={`/${article.author.username}/article/${article.slug}`} key={article.id} data={article} />;
         })}
       </div>
-      {/* <div className="w-96 flex items-center justify-center border mx-2 rounded-md">
-        Latest Article
-      </div> */}
     </main>
   );
 }
