@@ -1,9 +1,14 @@
 import { API_ENDPOINT } from "@/app/utils";
+import { AddComment } from "@/components/blocks/AddComment";
+import { Comments } from "@/components/blocks/Comments";
 import { Button } from "@/components/element/button";
 import { FollowButton } from "@/components/element/button/FollowButton";
 // import { EditButton } from "@/components/element/button/EditButton";
 import { LikeButton } from "@/components/element/button/LikeButton";
+import { createServerClient } from "@/lib/ServerClient";
 import { User } from "@/types/auth";
+import { GraphQLData } from "@/types/graphql";
+import { gql } from "@apollo/client";
 import { RenderContent } from "@bookself/slate-editor/renderer";
 import { Article } from "@bookself/types";
 import { cookies } from "next/headers";
@@ -21,35 +26,71 @@ const Page = async ({
   console.log("username", username);
   console.log("article", articleSlug);
 
-  const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Cookie: `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value
-        }`,
-    },
-  });
+  // const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
+  //   cache: "no-store",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Accept: "application/json",
+  //     Cookie: `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value
+  //       }`,
+  //   },
+  // });
 
-  const {
-    article,
-    author,
-  }: {
-    article: Article;
-    author: User;
-  } = await res.json();
+  const QUERY = gql`
+    query MyQuery {
+      article(slug: "what-some-3") {
+        content
+        createdAt
+        id
+        isLiked
+        likesCount
+        slug
+        title
+        views
+        author {
+          firstName
+          lastName
+          isFollowing
+          isSelf
+          followingCount
+          followersCount
+        }
+        comments(number: 10) {
+          content
+          id
+          createdAt
+          isLiked
+          likesCount
+          repliesCount
+          user {
+            firstName
+            lastName
+            username
+          }
+        }
+        commentsCount
+      }
+    }
+  `;
+  // const
+  // const { data } = await ServerClient.query({ query: QUERY });
+  const { data }: {
+    data: GraphQLData;
+  } = await createServerClient().query({ query: QUERY });
 
-  console.log("article", author);
+  const article = data.article;
+
+  // console.log("article", article.author.);
   return (
     <div className="">
       <div className="flex items-center space-x-3">
         <LikeButton
-          initialState={article.liked}
-          initialLikes={article.likes}
+          initialState={article.isLiked}
+          initialLikes={article.likesCount}
           url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
           method={`${API_ENDPOINT.likeArticle.method}`}
         />
-        {author.is_self && (
+        {article.author.isSelf && (
           <Link href={`${articleSlug}/edit`} className="text-gray-400">
             Edit
           </Link>
@@ -64,7 +105,7 @@ const Page = async ({
       <div style={{ height: 1 }} className="w-full bg-gray-200" />
 
       <div className="flex items-center space-x-3">
-        <Link href={`/${author.username}`}>
+        <Link href={`/${article.author.username}`}>
           <img
             className="rounded-full h-10"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrE8nc9Fu5rmmNIUGCGx6WZWsF_YqHAtFtST8LTKtLZFKXYtw-eR6sJOc&usqp=CAE&s"
@@ -73,25 +114,36 @@ const Page = async ({
         </Link>
         <div className="py-5 flex items-center space-x-4">
           <div>
-            <Link href={`/${author.username}`}>
+            <Link href={`/${article.author.username}`}>
               Written By{" "}
               <span className="text-blue-500">
-                {author.first_name} {author.last_name}
+                {article.author.firstName} {article.author.lastName}
               </span>
             </Link>
             <div>
-              <Link href={`/${username}/followers`} className="hover:underline">{author.followers_count} Followers</Link> ·{" "}
-              <Link href={`/${username}/following`} className="hover:underline">{author.following_count} Following</Link>
+              <Link href={`/${username}/followers`} className="hover:underline">
+                {article.author.followersCount} Followers
+              </Link>{" "}
+              ·{" "}
+              <Link href={`/${username}/following`} className="hover:underline">
+                {article.author.followingCount} Following
+              </Link>
             </div>
           </div>
           <div>
-            {
-              !author.is_self && (
-                <FollowButton initialIsFollowing={author.is_following} username={username} />
-              )
-            }
+            {!article.author.isSelf && (
+              <FollowButton
+                initialIsFollowing={article.author.isFollowing}
+                username={username}
+              />
+            )}
           </div>
         </div>
+      </div>
+
+      {/* Comments */}
+      <div>
+        <Comments commentsCount={data.article.commentsCount} initialComments={data.article.comments} articleSlug={articleSlug} />
       </div>
     </div>
   );

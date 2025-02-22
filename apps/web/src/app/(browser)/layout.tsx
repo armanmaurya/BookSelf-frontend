@@ -16,8 +16,9 @@ import { TopBar } from "@/components/TopBar";
 import ThemeSwitcher from "@/components/element/button/ThemeSwitchButton";
 import { ApolloProviderWrapper } from "@/context/ApolloProvider";
 // import client from "@/lib/apolloClient";
-import { ServerClient } from "@/lib/ServerClient";
+import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
+import { GraphQLData } from "@/types/graphql";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,7 +36,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = cookies();
   const QUERY = gql`
     query MyQuery {
       me {
@@ -46,7 +46,10 @@ export default async function RootLayout({
       }
     }
   `
-  const { data } = await ServerClient.query({ query: QUERY });
+  const cookieStore = cookies();
+  const { data }:{
+    data: GraphQLData
+  } = await createServerClient().query({ query: QUERY });
   let user: User | null = data.me;
   console.log("User", user);
   return (

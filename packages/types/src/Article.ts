@@ -1,12 +1,16 @@
+import { User } from "@/types/auth";
+import { CommentType } from "@/types/comment";
+
 export interface Article {
-  id: number;
-  title: string;
   content: string;
-  author: number;
-  created_at: string;
+  createdAt: string;
+  id: number;
+  isLiked: boolean;
+  likesCount: number;
   slug: string;
-  tags: string[];
-  likes: number;
-  liked: boolean;
-  username: string
+  views: number;
+  title: string;
+  author: User;
+  comments: CommentType[];
+  commentsCount: number;
 }
