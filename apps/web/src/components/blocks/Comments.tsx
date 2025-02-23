@@ -164,6 +164,8 @@ const Comment = ({
         {
           showAddReply && (
             <AddComment
+              focused={true}
+              onCanceled={() => setShowAddReply(false)}
               comments={replies}
               setComments={setReplies}
               articleSlug={articleSlug}
@@ -215,7 +217,7 @@ const Comment = ({
           }}
         >
           <div className="flex space-x-1 items-center pt-2 text-blue-400">
-            <IoIosArrowUp className="rotate-180" />
+            <IoIosArrowUp className="rotate-180 -z-10" />
             <span className="text-sm">
               <span>{comment.repliesCount}</span> <span>Replies</span>
             </span>

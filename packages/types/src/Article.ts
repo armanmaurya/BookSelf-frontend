@@ -11,6 +11,7 @@ export interface Article {
   views: number;
   title: string;
   author: User;
+  isSelf: boolean;
   comments: CommentType[];
   commentsCount: number;
 }

@@ -80,14 +80,14 @@ export const ProfileIcon = () => {
                           <FaUser />
                           <span>Profile</span>
                         </Link>
-                        <Link
+                        {/* <Link
                           className="flex space-x-2 items-center"
                           href={`/${user.username}/notebook`}
                           onClick={toggleClick}
                         >
                           <SlNotebook />
                           <span>Your Notebooks</span>
-                        </Link>
+                        </Link> */}
                         <button onClick={logout} className="flex space-x-2 items-center">
                           <IoIosLogOut />
                           <span>Logout</span>

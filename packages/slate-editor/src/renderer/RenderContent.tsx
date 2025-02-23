@@ -52,17 +52,21 @@ export const RenderContent = ({
       <h1 className="text-5xl font-extrabold h-14 flex items-center">
         {title || "Untitled"}
       </h1>
-      {
-        value.length === 0 ? (
-          <div className="h-full">
-            {children}
-          </div>
-        ) : (
-          <div className="">
-            <RenderEditorStatic value={value} />
-          </div>
-        )
-      }
+      {value && (
+        <div>
+          {
+            value.length === 0 ? (
+              <div className="h-full">
+                {children}
+              </div>
+            ) : (
+              <div className="">
+                <RenderEditorStatic value={value} />
+              </div>
+            )
+          }
+        </div>
+      )}
 
     </div>
   );

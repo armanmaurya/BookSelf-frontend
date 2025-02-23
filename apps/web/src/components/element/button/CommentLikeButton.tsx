@@ -15,8 +15,6 @@ export const CommentLikeButton = ({
   const [liked, setLiked] = React.useState(initialState);
   const [likes, setLikes] = React.useState(initialLikes);
 
-  console.log("initialLikes", initialLikes);
-  console.log("initialState", initialState);
   const MUTATION = gql`
     mutation MyMutation($id: Int!) {
       toggleCommentLike(id: $id) {

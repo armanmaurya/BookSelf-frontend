@@ -8,8 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 
 export const TopBar = () => {
   return (
-    <header className="shadow-md dark:bg-neutral-800 bg-white w-full h-12">
-      <nav className=" flex justify-between items-center  pr-2">
+    <header className="w-full h-12 z-10">
+      <nav className="bg-white flex justify-between items-center shadow-md dark:bg-neutral-800 w-full pr-2 fixed">
         <div className="flex flex-1 space-x-2 w-full items-center justify-between">
           <div className="flex items-center">
             <HamburgerIcon />

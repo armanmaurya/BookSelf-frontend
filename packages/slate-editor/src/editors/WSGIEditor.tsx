@@ -43,6 +43,7 @@ import {
   Element as SlateElement,
   Editor,
   Element,
+  Transforms,
 } from "slate";
 import { SlateCustomEditor } from "../utils/customEditor";
 import { handleKeyBoardFormating } from "../utils/handleKeyBoard";
@@ -107,6 +108,25 @@ const isFocusAtStart = (path: number[]) => {
 
 export type SlateNodeType = HeadingType | NodeType | ListType;
 
+const withEnforceOneChild = (editor: Editor) => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = ([node, path]) => {
+    // Ensure the editor always has at least one child
+    if (Editor.isEditor(node) && node.children.length === 0) {
+      Transforms.insertNodes(editor, {
+        type: NodeType.PARAGRAPH,
+        align: "left",
+        children: [{ text: "", type: "text", fontSize: 16 }],
+      });
+    }
+
+    normalizeNode([node, path]);
+  };
+
+  return editor;
+};
+
 /**
  * WSGIEditor component.
  * @param initialValue - The initial value of the editor.
@@ -126,16 +146,18 @@ export const WSGIEditor = ({
 }) => {
   const editor = useMemo(
     () =>
-      withHeading(NodeType.PARAGRAPH,
-        withTabs(
-          withNormalize(
-            withImage(
-              withLinks(
-                withPaste(withReact(withHistory(createEditor())))
+      withEnforceOneChild(
+        withHeading(NodeType.PARAGRAPH,
+          withTabs(
+            withNormalize(
+              withImage(
+                withLinks(
+                  withPaste(withReact(withHistory(createEditor())))
+                )
               )
             )
-          )
-        ),
+          ),
+        )
       ),
     []
   );
@@ -188,6 +210,8 @@ export const WSGIEditor = ({
         return <Default {...props} />;
     }
   }, []);
+
+
 
   /**
    * Commands for the command menu.
@@ -444,7 +468,7 @@ export const WSGIEditor = ({
   const debouncedTitleSave = useMemo(() => {
     return debounce((title: string) => onTitleChange && onTitleChange(title), 500);
   }
-  , [onTitleChange]);
+    , [onTitleChange]);
 
   const titleRef = useRef<HTMLInputElement>(null);
   const ref = useRef<HTMLDivElement>(null);

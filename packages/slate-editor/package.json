@@ -7,11 +7,6 @@
   "files": [
     "src/**/*"
   ],
-  "exports": {
-    "./editor": "./src/editors/WSGIEditor.tsx",
-    "./renderer": "./src/renderer/RenderContent.tsx",
-    "./nativeRenderer": "./src/renderer/NativeRender.tsx"
-  },
   "devDependencies": {
     "@bookself/slate-heading": "*",
     "@bookself/slate-paragraph": "*",

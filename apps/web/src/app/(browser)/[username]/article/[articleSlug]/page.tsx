@@ -9,8 +9,8 @@ import { createServerClient } from "@/lib/ServerClient";
 import { User } from "@/types/auth";
 import { GraphQLData } from "@/types/graphql";
 import { gql } from "@apollo/client";
-import { RenderContent } from "@bookself/slate-editor/renderer";
-import { Article } from "@bookself/types";
+import { RenderContent } from "@bookself/slate-editor";
+// import { Article } from "@bookself/types";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
@@ -26,19 +26,9 @@ const Page = async ({
   console.log("username", username);
   console.log("article", articleSlug);
 
-  // const res = await fetch(`${API_ENDPOINT.article.url}?slug=${articleSlug}`, {
-  //   cache: "no-store",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Accept: "application/json",
-  //     Cookie: `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value
-  //       }`,
-  //   },
-  // });
-
   const QUERY = gql`
-    query MyQuery {
-      article(slug: "what-some-3") {
+    query MyQuery($slug: String!) {
+      article(slug: $slug) {
         content
         createdAt
         id
@@ -76,7 +66,7 @@ const Page = async ({
   // const { data } = await ServerClient.query({ query: QUERY });
   const { data }: {
     data: GraphQLData;
-  } = await createServerClient().query({ query: QUERY });
+  } = await createServerClient().query({ query: QUERY, variables: { slug: articleSlug } });
 
   const article = data.article;
 

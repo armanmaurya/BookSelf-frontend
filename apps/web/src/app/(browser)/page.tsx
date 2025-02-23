@@ -29,7 +29,7 @@ export default async function Home() {
   const articles = data.articles;
 
   return (
-    <main className="h-full flex justify-center items-center">
+    <main className="flex justify-center items-center">
       <div className="w-full h-full space-y-2 overflow-auto flex flex-col p-2">
         {articles.map((article: Article) => {
           return <ArticleCard href={`/${article.author.username}/article/${article.slug}`} key={article.id} data={article} />;

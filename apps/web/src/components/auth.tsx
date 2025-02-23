@@ -28,14 +28,19 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   // }
 
   const GOOGLE_AUTH = gql`
-  mutation MyMutation($redirectPath: String!, $token: String!) {
-    googleAuth(redirectPath: $redirectPath, token: $token) {
-      isCreated
+    mutation MyMutation($redirectPath: String!, $token: String!) {
+      googleAuth(redirectPath: $redirectPath, token: $token) {
+        isCreated
+        user {
+          username
+          lastName
+          firstName
+        }
+      }
     }
-  }
-`;
+  `;
 
-  const [googleAuth, {data, loading, error}] = useMutation(GOOGLE_AUTH);
+  const [googleAuth, { data, loading, error }] = useMutation(GOOGLE_AUTH);
 
   // console.log("Data", data);
 
@@ -46,10 +51,11 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
     // console.log("Query", query.definitions);
     loader.show();
     try {
-      const response = await googleAuth({
+      const { data } = await googleAuth({
         variables: { redirectPath: redirect_path, token: code },
       });
-      if (response.data.googleAuth.isCreated !== true) {
+      if (data.googleAuth.isCreated !== true) {
+        setUser(data.googleAuth.user);
         loader.hide();
         nProgress.start();
         router.push("/");
@@ -66,9 +72,6 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
       //     "Accept": "application/json" // (Optional, but some servers require it)
       //   },
       // })
-
-
-
 
       // console.log("Response", res);
       // console.log(data);

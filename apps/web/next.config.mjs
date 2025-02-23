@@ -8,7 +8,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   reactStrictMode: false,
   experimental: {
-    optimizePackageImports: ['@bookself/slate-editor', "@bookself/slate-paragraph", "slate", "slate-react"]
+    optimizePackageImports: ['', "@bookself/slate-paragraph", "slate", "slate-react"]
   }
 };
 
