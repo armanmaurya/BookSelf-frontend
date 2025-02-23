@@ -44,6 +44,7 @@ const Page = async ({
           isSelf
           followingCount
           followersCount
+          username
         }
         comments(number: 10) {
           content
@@ -95,7 +96,7 @@ const Page = async ({
       <div style={{ height: 1 }} className="w-full bg-gray-200" />
 
       <div className="flex items-center space-x-3">
-        <Link href={`/${article.author.username}`}>
+        <Link href={`/user/${article.author.username}`}>
           <img
             className="rounded-full h-10"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrE8nc9Fu5rmmNIUGCGx6WZWsF_YqHAtFtST8LTKtLZFKXYtw-eR6sJOc&usqp=CAE&s"
@@ -104,18 +105,18 @@ const Page = async ({
         </Link>
         <div className="py-5 flex items-center space-x-4">
           <div>
-            <Link href={`/${article.author.username}`}>
+            <Link href={`/user/${article.author.username}`}>
               Written By{" "}
               <span className="text-blue-500">
                 {article.author.firstName} {article.author.lastName}
               </span>
             </Link>
             <div>
-              <Link href={`/${username}/followers`} className="hover:underline">
+              <Link href={`/user/${username}/followers`} className="hover:underline">
                 {article.author.followersCount} Followers
               </Link>{" "}
               ·{" "}
-              <Link href={`/${username}/following`} className="hover:underline">
+              <Link href={`/user/${username}/following`} className="hover:underline">
                 {article.author.followingCount} Following
               </Link>
             </div>

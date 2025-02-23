@@ -32,7 +32,7 @@ export default async function Home() {
     <main className="flex justify-center items-center">
       <div className="w-full h-full space-y-2 overflow-auto flex flex-col p-2">
         {articles.map((article: Article) => {
-          return <ArticleCard href={`/${article.author.username}/article/${article.slug}`} key={article.id} data={article} />;
+          return <ArticleCard href={`/user/${article.author.username}/article/${article.slug}`} key={article.id} data={article} />;
         })}
       </div>
     </main>

@@ -73,7 +73,7 @@ export const ProfileIcon = () => {
                     <div className="dark:bg-neutral-500 p-2 rounded-lg shadow-lg min-w-44">
                       <div className="flex flex-col space-y-2">
                         <Link
-                          href={`/${user.username}`}
+                          href={`/user/${user.username}`}
                           className="flex space-x-2 items-center"
                           onClick={toggleClick}
                         >
