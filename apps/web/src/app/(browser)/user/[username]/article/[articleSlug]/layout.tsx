@@ -7,7 +7,7 @@ const Layout = ({
 }
 ) => {
     return (
-        <div className='mx-2 pt-2'>
+        <div className=''>
             {children}
         </div>
     )

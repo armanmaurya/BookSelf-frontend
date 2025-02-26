@@ -8,6 +8,7 @@ import { Store } from "react-notifications-component";
 import { useAuth } from "@/context/AuthContext";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
+import { FaImage } from "react-icons/fa6";
 
 export const Editor = ({
   content,
@@ -36,11 +37,11 @@ export const Editor = ({
 
       try {
         const { data } = await client.mutate({
-            mutation: MUTATION,
-            variables: { content: body, title: null, slug: articleSlug},
+          mutation: MUTATION,
+          variables: { content: body, title: null, slug: articleSlug },
         })
         if (data) {
-            console.log("Success");
+          console.log("Success");
         }
       } catch (error) {
         console.log(error);
@@ -53,16 +54,16 @@ export const Editor = ({
     const csrf = Cookies.get("csrftoken");
 
     try {
-        const { data } = await client.mutate({
-            mutation: MUTATION,
-            variables: { content: null, title: title , slug: articleSlug},
-        })
+      const { data } = await client.mutate({
+        mutation: MUTATION,
+        variables: { content: null, title: title, slug: articleSlug },
+      })
 
-        if (data) {
-            const slug = data.updateArticle.slug;
-            window.history.replaceState({}, "", `/${user?.username}/article/${slug}/edit`);
-            setArticleSlug(slug);
-        }
+      if (data) {
+        const slug = data.updateArticle.slug;
+        window.history.replaceState({}, "", `/${user?.username}/article/${slug}/edit`);
+        setArticleSlug(slug);
+      }
 
     } catch (error) {
       console.log(error);
@@ -93,14 +94,22 @@ export const Editor = ({
   };
   console.log("content", content);
   return (
-    <WSGIEditor
-      onTitleChange={(title) => {
-        console.log("title changed");
-        UpdateTitle(title);
-      }}
-      onContentChange={UpdateContent}
-      initialValue={content}
-      title={title}
-    />
+    <div className="">
+      <div className="flex">
+        <div className="flex items-center p-1 rounded-md space-x-2 hover:bg-gray-100 hover:bg-opacity-5 cursor-pointer">
+          <FaImage />
+          <span>Add Cover</span>
+        </div>
+      </div>
+      <WSGIEditor
+        onTitleChange={(title) => {
+          console.log("title changed");
+          UpdateTitle(title);
+        }}
+        onContentChange={UpdateContent}
+        initialValue={content}
+        title={title}
+      />
+    </div>
   );
 };

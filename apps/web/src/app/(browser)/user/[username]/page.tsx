@@ -3,6 +3,11 @@ import { API_ENDPOINT } from "@/app/utils";
 import { cookies } from "next/headers";
 import { User } from "@/types/auth";
 import { FollowButton } from "@/components/element/button/FollowButton";
+import { gql } from "@apollo/client";
+// import client from "@/lib/apolloClient";
+import { GraphQLData } from "@/types/graphql";
+import { createServerClient } from "@/lib/ServerClient";
+import Link from "next/link";
 
 const ProfilePage = async ({
   params,
@@ -12,33 +17,47 @@ const ProfilePage = async ({
   const cookieStore = cookies();
   const { username } = await params;
 
-  const res = await fetch(`${API_ENDPOINT.base.url}/account/profile/${username}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Cookie: `${cookieStore.get("sessionid")?.name}=${cookieStore.get("sessionid")?.value
-        }`,
-    },
-  });
+  const QUERY = gql`
+    query MyQuery($username: String!) {
+      user(username: $username) {
+        email
+        followersCount
+        followingCount
+        firstName
+        lastName
+        isSelf
+        isFollowing
+        username
+        registrationMethod
+      }
+    }
+  `;
 
-  const data: User = await res.json();
-  console.log(data);
+  const { data }: {
+    data: GraphQLData;
+  } = await createServerClient().query({
+    query: QUERY,
+    variables: {
+      username: username
+    }
+  })
 
   return (
     <div>
-      <div>{data.username}</div>
+      <div>{data.user.username}</div>
       <div className="flex space-x-2">
-        <div className="flex space-x-1">
-          <div>{data.followers}</div>
-          <div>Followers</div>
-        </div>
-        <div className="flex space-x-1">
-          <div>{data.following}</div>
-          <div>Following</div>
-        </div>
+        <Link href={`${data.user.username}/followers`} className=" flex hover:underline">
+          {data.user.followersCount} Followers
+        </Link>
+        <Link href={`${data.user.username}/following`} className=" flex hover:underline">
+          {data.user.followingCount} Following
+        </Link>
       </div>
-      {data.is_following != undefined && (
-        <FollowButton username={username} initialIsFollowing={data.is_following} />
+      {!data.user.isSelf && (
+        <FollowButton
+          username={username}
+          initialIsFollowing={data.user.isFollowing}
+        />
       )}
     </div>
   );

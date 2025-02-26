@@ -6,6 +6,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        // hostname: "media-storage-bucket-123.s3.amazonaws.com",
+        hostname: "**",
+      }
+    ]
+  },
   reactStrictMode: false,
   experimental: {
     optimizePackageImports: ['', "@bookself/slate-paragraph", "slate", "slate-react"]

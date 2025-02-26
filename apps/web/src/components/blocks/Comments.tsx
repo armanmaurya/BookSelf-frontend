@@ -66,17 +66,19 @@ export const Comments = ({
   initialComments,
   articleSlug,
   commentsCount,
+  totalCommentsCount,
 }: {
   initialComments: CommentType[];
   articleSlug: string;
   commentsCount: number;
+  totalCommentsCount: number;
 }) => {
   const [comments, setComments] = useState(initialComments);
 
   return (
     <div>
       <h3 className="text-2xl font-bold my-2">
-        <span>{commentsCount}</span> Comments
+        <span>{totalCommentsCount}</span> Comments
       </h3>
       <AddComment
         comments={comments}
@@ -94,21 +96,26 @@ export const Comments = ({
           );
         })}
       </div>
-      <button
-        className="border rounded-full my-5 p-2 text-sm"
-        onClick={async () => {
-          const lastId = comments[comments.length - 1].id;
-          const newComments = await fetchComments({
-            lastId: lastId,
-            slug: articleSlug,
-          });
-          if (newComments) {
-            setComments([...comments, ...newComments]);
-          }
-        }}
-      >
-        Show More
-      </button>
+      {
+        comments.length < commentsCount && (
+          <button
+            className="border rounded-full my-5 p-2 text-sm"
+            onClick={async () => {
+
+              const lastId = comments.length > 0 ? comments[comments.length - 1].id : undefined
+              const newComments = await fetchComments({
+                lastId: lastId,
+                slug: articleSlug,
+              });
+              if (newComments) {
+                setComments([...comments, ...newComments]);
+              }
+            }}
+          >
+            Show More
+          </button>
+        )
+      }
     </div>
   );
 };

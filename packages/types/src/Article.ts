@@ -14,4 +14,5 @@ export interface Article {
   isSelf: boolean;
   comments: CommentType[];
   commentsCount: number;
+  totalCommentsCount: number;
 }

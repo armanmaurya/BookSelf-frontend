@@ -1,6 +1,6 @@
 import { Article } from "@/app/types";
 import { RichTextEditor } from "./RichTextEditor"
-import { WSGIEditor } from "@bookself/slate-editor/editor";
+import { WSGIEditor } from "@bookself/slate-editor";
 
 export type NotebookOverviewProps = {
     id: string;

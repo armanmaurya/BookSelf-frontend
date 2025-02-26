@@ -78,7 +78,7 @@ export default async function RootLayout({
                   <SideBarProvider>
                     <TopBar />
                     <div className="h-full w-full">
-                      <div className="h-full">{children}</div>
+                      <div className="h-full p-3">{children}</div>
                       <SideBar className="w-40">
                         {/* <SideBarElement className="flex">
                           <IoLibrary size={20} className="" />

@@ -18,6 +18,7 @@ export const TriangleSpinner = (props: TriangleSpinnerProps) => {
         <div className={`${className}`}>
           <Triangle
             {...restProps}
+            color="grey"
           />
         </div>
       )}

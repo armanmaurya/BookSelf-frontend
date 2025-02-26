@@ -1,6 +1,7 @@
 import { API_ENDPOINT } from "@/app/utils";
 import { AddComment } from "@/components/blocks/AddComment";
 import { Comments } from "@/components/blocks/Comments";
+import { SaveArticle } from "@/components/blocks/SaveArticle";
 import { Button } from "@/components/element/button";
 import { FollowButton } from "@/components/element/button/FollowButton";
 // import { EditButton } from "@/components/element/button/EditButton";
@@ -12,7 +13,12 @@ import { gql } from "@apollo/client";
 import { RenderContent } from "@bookself/slate-editor";
 // import { Article } from "@bookself/types";
 import { cookies } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
+
+// -----------------Icons----------------------------
+import { IoMdEye } from "react-icons/io";
+
 
 const Page = async ({
   params,
@@ -45,6 +51,7 @@ const Page = async ({
           followingCount
           followersCount
           username
+          profilePicture
         }
         comments(number: 10) {
           content
@@ -60,6 +67,7 @@ const Page = async ({
           }
         }
         commentsCount
+        totalCommentsCount
       }
     }
   `;
@@ -74,6 +82,9 @@ const Page = async ({
   // console.log("article", article.author.);
   return (
     <div className="">
+      {/* <div className="h-96 overflow-hidden rounded-md">
+        <img src="https://picsum.photos/1920/1080" className="" alt="" />
+      </div> */}
       <div className="flex items-center space-x-3">
         <LikeButton
           initialState={article.isLiked}
@@ -81,25 +92,35 @@ const Page = async ({
           url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
           method={`${API_ENDPOINT.likeArticle.method}`}
         />
+        <div className="flex items-center space-x-1">
+          <IoMdEye />
+          <span>{article.views}</span>
+        </div>
         {article.author.isSelf && (
           <Link href={`${articleSlug}/edit`} className="text-gray-400">
             Edit
           </Link>
         )}
+        <SaveArticle articleSlug={articleSlug} initialIsSaved={false}/>
       </div>
       <main>
-        <RenderContent
-          title={article.title}
-          value={JSON.parse(article.content)}
-        />
+        <div>
+          <RenderContent
+            title={article.title}
+            value={JSON.parse(article.content)}
+          />
+
+        </div>
       </main>
       <div style={{ height: 1 }} className="w-full bg-gray-200" />
 
       <div className="flex items-center space-x-3">
         <Link href={`/user/${article.author.username}`}>
-          <img
+          <Image
+            width={40}
+            height={40}
             className="rounded-full h-10"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrE8nc9Fu5rmmNIUGCGx6WZWsF_YqHAtFtST8LTKtLZFKXYtw-eR6sJOc&usqp=CAE&s"
+            src={article.author.profilePicture}
             alt=""
           />
         </Link>
@@ -133,8 +154,8 @@ const Page = async ({
       </div>
 
       {/* Comments */}
-      <div>
-        <Comments commentsCount={data.article.commentsCount} initialComments={data.article.comments} articleSlug={articleSlug} />
+      <div className="">
+        <Comments totalCommentsCount={data.article.totalCommentsCount} commentsCount={data.article.commentsCount} initialComments={data.article.comments} articleSlug={articleSlug} />
       </div>
     </div>
   );
