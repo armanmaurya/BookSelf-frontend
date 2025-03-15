@@ -1,11 +1,9 @@
 import { API_ENDPOINT } from "@/app/utils";
-import { AddComment } from "@/components/blocks/AddComment";
 import { Comments } from "@/components/blocks/Comments";
-import { SaveArticle } from "@/components/blocks/SaveArticle";
-import { Button } from "@/components/element/button";
 import { FollowButton } from "@/components/element/button/FollowButton";
 // import { EditButton } from "@/components/element/button/EditButton";
 import { LikeButton } from "@/components/element/button/LikeButton";
+import { SaveArticleButton } from "@/components/element/button/SaveArticleButton";
 import { createServerClient } from "@/lib/ServerClient";
 import { User } from "@/types/auth";
 import { GraphQLData } from "@/types/graphql";
@@ -15,6 +13,7 @@ import { RenderContent } from "@bookself/slate-editor";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 // -----------------Icons----------------------------
 import { IoMdEye } from "react-icons/io";
@@ -26,11 +25,6 @@ const Page = async ({
   params: Promise<{ username: string; articleSlug: string }>;
 }) => {
   const { username, articleSlug } = await params;
-
-  const cookieStore = cookies();
-
-  console.log("username", username);
-  console.log("article", articleSlug);
 
   const QUERY = gql`
     query MyQuery($slug: String!) {
@@ -71,20 +65,18 @@ const Page = async ({
       }
     }
   `;
-  // const
-  // const { data } = await ServerClient.query({ query: QUERY });
   const { data }: {
     data: GraphQLData;
   } = await createServerClient().query({ query: QUERY, variables: { slug: articleSlug } });
 
   const article = data.article;
+  if (article.slug != articleSlug) {
+    redirect(`${article.slug}`)
+  }
 
-  // console.log("article", article.author.);
   return (
     <div className="">
-      {/* <div className="h-96 overflow-hidden rounded-md">
-        <img src="https://picsum.photos/1920/1080" className="" alt="" />
-      </div> */}
+
       <div className="flex items-center space-x-3">
         <LikeButton
           initialState={article.isLiked}
@@ -101,8 +93,9 @@ const Page = async ({
             Edit
           </Link>
         )}
-        <SaveArticle articleSlug={articleSlug} initialIsSaved={false}/>
+        <SaveArticleButton articleSlug={articleSlug} isSaved={false}/>
       </div>
+      {/* Main Article Content */}
       <main>
         <div>
           <RenderContent
@@ -114,6 +107,7 @@ const Page = async ({
       </main>
       <div style={{ height: 1 }} className="w-full bg-gray-200" />
 
+      {/* User Information */}
       <div className="flex items-center space-x-3">
         <Link href={`/user/${article.author.username}`}>
           <Image
@@ -126,12 +120,12 @@ const Page = async ({
         </Link>
         <div className="py-5 flex items-center space-x-4">
           <div>
-            <Link href={`/user/${article.author.username}`}>
+            <div>
               Written By{" "}
-              <span className="text-blue-500">
+              <Link className="text-blue-500 hover:underline" href={`/user/${article.author.username}`}>
                 {article.author.firstName} {article.author.lastName}
-              </span>
-            </Link>
+              </Link>
+            </div>
             <div>
               <Link href={`/user/${username}/followers`} className="hover:underline">
                 {article.author.followersCount} Followers

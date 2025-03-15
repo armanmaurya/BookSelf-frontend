@@ -8,6 +8,7 @@ import { gql } from "@apollo/client";
 import { GraphQLData } from "@/types/graphql";
 import { createServerClient } from "@/lib/ServerClient";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const ProfilePage = async ({
   params,
@@ -41,6 +42,10 @@ const ProfilePage = async ({
       username: username
     }
   })
+
+  if (data.user.isSelf) {
+    redirect("/me");
+  }
 
   return (
     <div>

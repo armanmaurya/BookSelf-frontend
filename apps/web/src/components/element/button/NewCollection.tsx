@@ -6,14 +6,7 @@ import { gql } from "@apollo/client";
 import { useState } from "react";
 
 export const NewCollectionButton = () => {
-  const MUTATION = gql`
-    mutation MyMutation($name: String!, $isPublic: Boolean!) {
-      createCollection(name: $name, isPublic: $isPublic) {
-        id
-        name
-      }
-    }
-  `;
+  
   const [showModal, setShowModal] = useState(false);
 
   const createCollection = async ({

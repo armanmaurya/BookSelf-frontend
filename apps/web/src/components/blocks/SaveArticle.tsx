@@ -3,30 +3,29 @@ import { useAuth } from "@/context/AuthContext";
 import client from "@/lib/apolloClient";
 import { gql } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
-import { FaRegBookmark } from "react-icons/fa6";
-import { FaBookmark } from "react-icons/fa6";
-import { NewCollectionButton } from "../element/button/NewCollection";
+import { AddArticleToCollection } from "../element/button/AddArticleToCollection";
+import { LoadingSpinner } from "../element/loadingSpinner";
 
 export const SaveArticle = ({
-  initialIsSaved,
   articleSlug,
+  setShow,
 }: {
-  initialIsSaved: boolean;
+  setShow: (show: boolean) => void;
   articleSlug: string;
 }) => {
-  const [show, setShow] = useState(false);
-  const [collections, setCollections] = useState<{ id: string; name: string }[]>([]);
+  const [collections, setCollections] = useState<
+    { id: string; name: string; isAdded: boolean }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
   const [isArticleCreateOpen, setIsArticleCreateOpen] = useState(false);
   const [collectionData, setCollectonData] = useState({
     name: "",
     isPublic: false,
   });
 
-  const showModal = () => {
-    setShow(true);
-  };
   const { user } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
+
   const handleOutsideClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
       setShow(false);
@@ -34,27 +33,31 @@ export const SaveArticle = ({
     }
   };
 
-
   const createCollection = async () => {
-    const { data } = await client.mutate({
-      mutation: MUTATION,
-      variables: {
-        name: collectionData.name,
-        isPublic: collectionData.isPublic,
-      },
-    });
-    if (data) {
+    try {
+      const { data } = await client.mutate({
+        mutation: MUTATION,
+        variables: {
+          name: collectionData.name,
+          isPublic: collectionData.isPublic,
+        },
+      });
+      if (data) {
         setIsArticleCreateOpen(false);
         setCollections([data.createCollection, ...collections]);
-
+      }
+    } catch (error) {
+      console.error("Error creating collection", error);
     }
   };
+
   const GET_USER_COLLECTIONS = gql`
-    query MyQuery($username: String!) {
+    query MyQuery($username: String!, $articleSlug: String!) {
       user(username: $username) {
         collections(number: 10) {
           id
           name
+          isAdded(articleSlug: $articleSlug)
         }
       }
     }
@@ -70,17 +73,22 @@ export const SaveArticle = ({
   `;
 
   const fetchCollections = async () => {
-    client
-      .query({
+    try {
+      const { data } = await client.query({
         query: GET_USER_COLLECTIONS,
         variables: {
           username: user?.username,
+          articleSlug: articleSlug,
         },
-      })
-      .then((res) => {
-        console.log(res.data.user.collections);
-        setCollections(res.data.user.collections);
+        fetchPolicy: "network-only",
       });
+      if (data) {
+        setLoading(false);
+        setCollections(data.user.collections);
+      }
+    } catch (error) {
+      console.error("Error fetching collections", error);
+    }
   };
 
   useEffect(() => {
@@ -94,12 +102,11 @@ export const SaveArticle = ({
   }, []);
 
   return (
-    <div>
-      <div className="hover:cursor-pointer" onClick={showModal}>
-        <FaRegBookmark />
-      </div>
-      {show && (
-        <div className=" rounded-md fixed top-0 left-0 backdrop-blur-sm bg-black bg-opacity-50 w-full h-full flex justify-center items-center">
+    <div className="rounded-md fixed top-0 left-0 backdrop-blur-sm bg-black bg-opacity-50 w-full h-full flex justify-center items-center">
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
           {isArticleCreateOpen ? (
             <div
               className="bg-neutral-800 h-96 w-96 rounded-md flex justify-center items-center flex-col space-y-6"
@@ -109,34 +116,63 @@ export const SaveArticle = ({
                 type="text"
                 value={collectionData.name}
                 onChange={(e) => {
-                    setCollectonData({ ...collectionData, name: e.target.value });
+                  setCollectonData({ ...collectionData, name: e.target.value });
                 }}
-                className=" p-2 bg-transparent border rounded-md"
+                className="p-2 bg-transparent border rounded-md"
                 placeholder="Name"
               />
               <div>
-                <input type="checkbox" onChange={(e) => {
-                    setCollectonData({ ...collectionData, isPublic: e.target.checked });
-                }} checked={collectionData.isPublic} />
+                <input
+                  type="checkbox"
+                  onChange={(e) => {
+                    setCollectonData({
+                      ...collectionData,
+                      isPublic: e.target.checked,
+                    });
+                  }}
+                  checked={collectionData.isPublic}
+                />
                 <span>Public</span>
               </div>
               <div className="flex space-x-2">
                 <button
-                  className=" border p-1 rounded-md"
+                  className="border p-1 rounded-md"
                   onClick={() => {
                     setIsArticleCreateOpen(false);
                   }}
                 >
                   Cancel
                 </button>
-                <button className="bg-blue-500 p-1 rounded-md" onClick={createCollection}>Create</button>
+                <button
+                  className="bg-blue-500 p-1 rounded-md"
+                  onClick={createCollection}
+                >
+                  Create
+                </button>
               </div>
             </div>
           ) : (
-            <div className="bg-neutral-800 p-4 rounded-md space-y-2 flex flex-col" ref={ref}>
-              {collections.map((collection) => {
-                return <div>{collection.name}</div>;
-              })}
+            <div
+              className="bg-neutral-800 p-4 rounded-md space-y-2 flex flex-col"
+              ref={ref}
+            >
+              {collections.map((collection) => (
+                <AddArticleToCollection
+                  key={collection.id}
+                  onToggle={(status) => {
+                    setCollections(
+                      collections.map((c) => {
+                        if (c.id === collection.id) {
+                          return { ...c, isAdded: status };
+                        }
+                        return c;
+                      })
+                    );
+                  }}
+                  collection={collection}
+                  articleSlug={articleSlug}
+                />
+              ))}
               <button
                 onClick={() => {
                   setIsArticleCreateOpen(true);
@@ -147,7 +183,7 @@ export const SaveArticle = ({
               </button>
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

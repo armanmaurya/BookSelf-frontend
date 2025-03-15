@@ -16,7 +16,9 @@ export const NewArticleButton = () => {
       createArticle(content: $content, title: $title) {
         content
         title
-        slug
+        article {
+          slug
+        }
       }
     }
   `;
@@ -32,23 +34,9 @@ export const NewArticleButton = () => {
       if (data) {
         console.log("Article created");
         NProgress.start();
-        router.push(`/${user?.username}/article/${data.createArticle.slug}`);
+        router.push(`/user/${user?.username}/article/${data.createArticle.article.slug}/edit`);
       }
-      // const res = await fetch(API_ENDPOINT.article.url, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "X-CSRFToken": `${csrf}`,
-      //   },
-      //   credentials: "include",
-      // });
-
-      // if (res.ok) {
-      //   console.log("Article created");
-      //   const data = await res.json();
-      //   NProgress.start();
-      //   router.push(`/${user?.username}/article/${data.slug}`);
-      // }
+  
     } catch (error) {
       console.log(error);
     }

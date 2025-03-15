@@ -62,7 +62,7 @@ export default async function RootLayout({
       <body
         className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}
       >
-        <ApolloProviderWrapper>
+        {/* <ApolloProviderWrapper> */}
           <ThemeProvider attribute="class" enableSystem>
             <NextTopLoader />
             <ThemeSwitcher className="fixed right-2 bottom-4" />
@@ -77,8 +77,8 @@ export default async function RootLayout({
                 <ContextProvider>
                   <SideBarProvider>
                     <TopBar />
-                    <div className="h-full w-full">
-                      <div className="h-full p-3">{children}</div>
+                    <div className="h-auto">
+                      <div className="p-3">{children}</div>
                       <SideBar className="w-40">
                         {/* <SideBarElement className="flex">
                           <IoLibrary size={20} className="" />
@@ -99,7 +99,7 @@ export default async function RootLayout({
               </AuthProvider>
             </LoadingProvider>
           </ThemeProvider>
-        </ApolloProviderWrapper>
+        {/* </ApolloProviderWrapper> */}
       </body>
     </html>
   );

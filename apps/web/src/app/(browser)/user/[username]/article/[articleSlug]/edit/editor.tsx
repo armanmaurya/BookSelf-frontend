@@ -9,18 +9,23 @@ import { useAuth } from "@/context/AuthContext";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { FaImage } from "react-icons/fa6";
+import nProgress from "nprogress";
+import { useRouter } from "next/navigation";
 
 export const Editor = ({
   content,
   slug,
   title,
+  status,
 }: {
   title: string;
   content: string;
   slug: string;
+  status: string
 }) => {
   const [articleSlug, setArticleSlug] = useState<string | null>(slug);
   const { user } = useAuth();
+  const router = useRouter();
 
   const MUTATION = gql`
     mutation MyMutation($content: String, $title: String, $slug: String!) {
@@ -39,7 +44,7 @@ export const Editor = ({
         const { data } = await client.mutate({
           mutation: MUTATION,
           variables: { content: body, title: null, slug: articleSlug },
-        })
+        });
         if (data) {
           console.log("Success");
         }
@@ -57,39 +62,37 @@ export const Editor = ({
       const { data } = await client.mutate({
         mutation: MUTATION,
         variables: { content: null, title: title, slug: articleSlug },
-      })
+      });
 
       if (data) {
         const slug = data.updateArticle.slug;
-        window.history.replaceState({}, "", `/${user?.username}/article/${slug}/edit`);
+        window.history.replaceState(
+          {},
+          "",
+          `/${user?.username}/article/${slug}/edit`
+        );
         setArticleSlug(slug);
       }
-
     } catch (error) {
       console.log(error);
     }
   };
-  const DeleteArticle = async () => {
-    const csrf = Cookies.get("csrftoken");
 
-    try {
-      const res = await fetch(`${API_ENDPOINT.article.url}?slug=${slug}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": `${csrf}`,
-        },
-        credentials: "include",
-      });
-      if (res.ok) {
-        console.log("Article deleted");
-        const res = await fetch("/api/revalidate?path=/");
-        const ata = await res.json();
-        console.log(ata);
-        window.location.href = "/";
-      }
-    } catch (error) {
-      console.log(error);
+  const PublishArticleMutation = gql`
+    mutation MyMutation($slug: String!) {
+      publishArticle(slug: $slug) 
+    }
+  `;
+
+  const PublishArticle = async () => {
+    const { data } = await client.mutate({
+      mutation: PublishArticleMutation,
+      variables: { slug: articleSlug },
+    });
+    // console.log(data);
+    if (data.publishArticle != "") {
+      nProgress.start();
+      router.push(`/user/${user?.username}/article/${data.publishArticle}`);
     }
   };
   console.log("content", content);
@@ -99,6 +102,11 @@ export const Editor = ({
         <div className="flex items-center p-1 rounded-md space-x-2 hover:bg-gray-100 hover:bg-opacity-5 cursor-pointer">
           <FaImage />
           <span>Add Cover</span>
+        </div>
+        <div className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer" onClick={PublishArticle}>
+          {
+            status === "DR" ? "Publish" : "Update"
+          }
         </div>
       </div>
       <WSGIEditor

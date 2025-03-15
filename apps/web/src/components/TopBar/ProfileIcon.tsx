@@ -2,10 +2,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { FaUser } from "react-icons/fa";
+import { FaPage4, FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { FaHistory } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
+import { IoDocumentText } from "react-icons/io5";
 
 export const ProfileIcon = () => {
   const [isClick, setIsClick] = useState(false);
@@ -72,14 +73,26 @@ export const ProfileIcon = () => {
                   <div className="dark:bg-neutral-500 p-2 rounded-lg shadow-lg min-w-44">
                     <div className="flex flex-col space-y-2">
                       <Link
-                        href={`/user/${user.username}`}
+                        href={`/me`}
                         className="flex space-x-2 items-center"
                         onClick={toggleClick}
                       >
                         <FaUser />
                         <span>Profile</span>
                       </Link>
-                      <Link href={`/me/history/`} className="flex space-x-2 items-center" onClick={toggleClick}>
+                      <Link
+                        href={`/me/articles/draft`}
+                        className="flex space-x-2 items-center"
+                        onClick={toggleClick}
+                      >
+                        <IoDocumentText />
+                        <span>Your Articles</span>
+                      </Link>
+                      <Link
+                        href={`/me/history/`}
+                        className="flex space-x-2 items-center"
+                        onClick={toggleClick}
+                      >
                         <FaHistory />
                         <span>History</span>
                       </Link>
