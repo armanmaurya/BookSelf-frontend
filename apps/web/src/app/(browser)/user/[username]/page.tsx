@@ -1,10 +1,9 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { cookies } from "next/headers";
 import { User } from "@/types/auth";
 import { FollowButton } from "@/components/element/button/FollowButton";
 import { gql } from "@apollo/client";
-// import client from "@/lib/apolloClient";
 import { GraphQLData } from "@/types/graphql";
 import { createServerClient } from "@/lib/ServerClient";
 import Link from "next/link";
@@ -12,6 +11,8 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { CgProfile } from "react-icons/cg";
 import { LinkTabs } from "@/components/element/LinkTabs";
+import { Article } from "@bookself/types";
+import { ArticleCard } from "@/components/element/cards/ArticleCard";
 
 const ProfilePage = async ({
   params,
@@ -22,8 +23,6 @@ const ProfilePage = async ({
 }) => {
   const cookieStore = cookies();
   const { username } = await params;
-
-  // console.log("searchParams", searchParams);
 
   const QUERY = gql`
     query MyQuery($username: String!) {
@@ -37,24 +36,15 @@ const ProfilePage = async ({
         isFollowing
         username
         registrationMethod
+        profilePicture
       }
     }
   `;
 
-  const {
-    data,
-  }: {
-    data: GraphQLData;
-  } = await createServerClient().query({
+  const { data }: { data: GraphQLData } = await createServerClient().query({
     query: QUERY,
-    variables: {
-      username: username,
-    },
+    variables: { username: username },
   });
-
-  if (data.user.isSelf) {
-    redirect("/me");
-  }
 
   const tabs = [
     {
@@ -65,79 +55,138 @@ const ProfilePage = async ({
       name: "Articles",
       href: `/user/${username}?tab=articles`,
     },
-    {
-      name: "Collections",
-      href: `/user/${username}?tab=collections`,
-    },
   ];
 
-  const RenderTab = () => {
+  const RenderTab = async () => {
     switch (searchParams.tab) {
       case "collections":
-        return <div>Collections</div>;
+        return (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            Collections coming soon
+          </div>
+        );
       case "articles":
-        return <div>Articles</div>;
+        const QUERY = gql`
+          query MyQuery($username: String!) {
+            user(username: $username) {
+              articles {
+                title
+                slug
+                views
+                likesCount
+                createdAt
+                status
+                author {
+                  username
+                  profilePicture
+                }
+              }
+            }
+          }
+        `;
+        const { data }: { data: GraphQLData } =
+          await createServerClient().query({
+            query: QUERY,
+            variables: { username: username },
+          });
+        const articles = data.user.articles;
+
+        return articles.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {articles.map((article: Article) => (
+              <ArticleCard key={article.slug} article={article} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            No articles published yet
+          </div>
+        );
       default:
-        return <div>Overview</div>;
+        return (
+          <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-6 shadow-sm border border-neutral-200 dark:border-neutral-700">
+            <h2 className="text-xl font-semibold mb-4 text-neutral-900 dark:text-white">
+              About
+            </h2>
+          </div>
+        );
     }
   };
 
   return (
-    <div className="mx-32 mt-8 flex flex-col space-y-6">
-      <div className="h-72 dark:bg-neutral-900 bg-gray-200 rounded-md flex items-center px-24 space-x-6">
-        <div className="h-40 w-40 rounded-full bg-white overflow-hidden flex items-center justify-center">
-          {data.user.profilePicture ? (
-            <Image
-              src={`${data.user.profilePicture || ""}`}
-              alt=""
-              width={160}
-              height={160}
-            />
-          ) : (
-            <CgProfile className="h-full w-full text-gray-900" />
-          )}
-        </div>
-        <div className="flex flex-col space-y-1.5">
-          <div className="">
-            <div className="font-semibold text-xl">
-              {data.user.firstName} {data.user.lastName}
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      {/* Profile Header - Clean version without banner */}
+      <div className="rounded-xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 mb-8">
+        <div className="flex flex-col sm:flex-row items-start gap-6">
+          {/* Profile Picture */}
+          <div className="relative border-neutral-600  h-32 w-32 rounded-full border-4 overflow-hidden shadow-md flex-shrink-0">
+            {data.user.profilePicture ? (
+              <Image
+                src={data.user.profilePicture}
+                alt={`${data.user.username}'s profile`}
+                width={128}
+                height={128}
+                className="object-cover h-full w-full"
+              />
+            ) : (
+              <CgProfile className="h-full w-full text-gray-400 p-6" />
+            )}
+          </div>
+
+          {/* Profile Info */}
+          <div className="flex-1 space-y-3">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {data.user.firstName} {data.user.lastName}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                @{data.user.username}
+              </p>
             </div>
-            <div className="text-sm">@{data.user.username}</div>
-          </div>
-          <div className="">
-            <Link
-              href={`/user/${username}/followers`}
-              className="hover:underline"
-            >
-              {data.user.followersCount} Followers
-            </Link>
-            <span> · </span>
-            <Link
-              href={`/user/${username}/following`}
-              className="hover:underline"
-            >
-              {data.user.followingCount} Following
-            </Link>
-          </div>
-          <div className="flex space-x-2">
-            <FollowButton
-              initialIsFollowing={data.user.isFollowing}
-              username={data.user.username}
-            />
-            <Link href={`/chat/`} className="bg-gray-600 text-white rounded-md p-1 hover:cursor-pointer hover:bg-gray-500">Messege</Link>
+
+            <div className="flex items-center gap-4">
+              <Link
+                href={`/user/${username}/followers`}
+                className="text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm"
+              >
+                <span className="font-semibold">
+                  {data.user.followersCount}
+                </span>{" "}
+                Followers
+              </Link>
+              <Link
+                href={`/user/${username}/following`}
+                className="text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm"
+              >
+                <span className="font-semibold">
+                  {data.user.followingCount}
+                </span>{" "}
+                Following
+              </Link>
+            </div>
+
+            {!data.user.isSelf && (
+              <div className="pt-1">
+                <FollowButton
+                  initialIsFollowing={data.user.isFollowing}
+                  username={data.user.username}
+                  // className="text-sm px-4 py-1.5"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="dark:bg-neutral-900 bg-gray-200 p-4 rounded-md">
-        <h1 className="text-4xl font-bold">About</h1>
-        <p>There is Nothing to Show</p>
-      </div>
-      <div className="">
+      {/* Tabs */}
+      <div className="mb-6">
         <LinkTabs tabs={tabs} />
       </div>
 
-      <RenderTab />
+      {/* Tab Content */}
+      <div className="mb-8">
+        <RenderTab />
+      </div>
     </div>
   );
 };

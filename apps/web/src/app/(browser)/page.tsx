@@ -11,12 +11,12 @@ import { Article } from "@bookself/types";
 const GET_ARTICLES = gql`
   query MyQuery {
     articles {
-      content
       slug
       title
       views
       createdAt
       likesCount
+      status
       author {
         username
         firstName

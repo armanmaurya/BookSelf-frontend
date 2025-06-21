@@ -16,4 +16,5 @@ export interface Article {
   commentsCount: number;
   totalCommentsCount: number;
   image_url: string;
+  status: string;
 }

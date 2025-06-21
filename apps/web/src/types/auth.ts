@@ -1,3 +1,5 @@
+import { Article } from "@bookself/types";
+
 export type User = {
     id: number
     username: string;
@@ -11,4 +13,5 @@ export type User = {
     followingCount: number;
     isSelf: boolean;
     profilePicture: string;
+    articles: Article[];
 }

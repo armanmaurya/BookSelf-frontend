@@ -8,46 +8,48 @@ export const ArticleCard = ({ article }: { article: Article }) => {
   const formattedDate = formatDistanceToNow(parseISO(article.createdAt), { addSuffix: true });
 
   return (
-    <div className="bg-gray-200 dark:bg-[#1E1E1E] p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-col h-full">
-      {/* Article Image (16:9 Aspect Ratio) */}
-      <div className="w-full aspect-[16/9] overflow-hidden rounded-md">
-        <img
-          src={article.image_url || "/default-article.jpg"} 
-          alt={article.title || "Article Image"}
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Article Content (Auto-expand to fill) */}
-      <div className="mt-3 flex flex-col flex-grow">
-        <div>
+    <div className="group bg-white dark:bg-[#1E1E1E] p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-44 relative border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 overflow-hidden">
+      {/* Article Content */}
+      <div className="flex flex-col flex-grow h-full">
+        <div className="mb-3">
           <Link href={`/user/${article.author.username}/article/${article.slug}`}>
-            <h2 className="text-lg font-semibold hover:underline text-black dark:text-white line-clamp-2">
-              {article.title || "Untitled"}
+            <h2
+              className="text-xl font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-gray-800 dark:text-white line-clamp-2 leading-tight pt-1"
+              title={article.title || "Untitled Article"}
+            >
+              {article.title || "Untitled Article"}
             </h2>
           </Link>
-          <div className="text-sm hover:underline text-gray-600 dark:text-gray-300">
-            <Link href={`/user/${article.author.username}`}>
-              {article.author.username}
+          <div className="text-sm mt-1">
+            <Link 
+              href={`/user/${article.author.username}`}
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            >
+              by {article.author.username}
             </Link>
           </div>
         </div>
 
-        {/* Meta Info (Pushed to the bottom) */}
-        <div className="flex items-center space-x-2 text-black dark:text-white text-sm mt-auto">
-          <div className="flex items-center space-x-1">
-            <IoMdEye />
-            <span>{article.views}</span>
+        {/* Meta Info */}
+        <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-sm">
+          <div className="flex items-center space-x-4 text-gray-500 dark:text-gray-400">
+            <div className="flex items-center space-x-1.5">
+              <IoMdEye className="text-gray-400 dark:text-gray-500" size={16} />
+              <span>{article.views}</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <AiOutlineLike className="text-gray-400 dark:text-gray-500" size={16} />
+              <span>{article.likesCount}</span>
+            </div>
           </div>
-          <span>·</span>
-          <div className="flex items-center space-x-1">
-            <AiOutlineLike />
-            <span>{article.likesCount}</span>
+          <div className="text-gray-400 dark:text-gray-500 text-xs">
+            {formattedDate}
           </div>
-          <span>·</span>
-          <div className="text-sm">{formattedDate}</div>
         </div>
       </div>
+      
+      {/* Subtle hover effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-0 group-hover:opacity-5 dark:group-hover:opacity-10 transition-opacity pointer-events-none" />
     </div>
   );
 };

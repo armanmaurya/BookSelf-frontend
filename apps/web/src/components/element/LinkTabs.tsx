@@ -17,7 +17,7 @@ export const LinkTabs = ({ tabs, className }: LinkTabsProps) => {
 
   return (
     <div className={`flex ${className}`}>
-      <div className="flex space-x-4 shadow-md p-2 rounded-full bg-gray-200 dark:bg-neutral-700 relative">
+      <div className="flex space-x-4 shadow-md p-2 rounded-lg bg-gray-200 dark:bg-neutral-700 relative">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.name.toLowerCase();
 

@@ -49,9 +49,9 @@ export const RenderContent = ({
           alt=""
         />
       </div> */}
-      <h1 className="text-5xl font-extrabold h-14 flex items-center">
+      {/* <h1 className="text-5xl font-extrabold h-14 flex items-center">
         {title || "Untitled"}
-      </h1>
+      </h1> */}
       {value && (
         <div>
           {
