@@ -66,11 +66,11 @@ export const ProfileIcon = () => {
                 <div className="">
                   <div className="flex justify-end mr-4">
                     <div
-                      className="dark:bg-neutral-500 h-2 w-2 right-4"
+                      className="dark:bg-neutral-500 bg-white border h-2 w-2 right-4"
                       style={{ clipPath: "polygon(50% 0, 100% 100%, 0% 100%)" }}
                     ></div>
                   </div>
-                  <div className="dark:bg-neutral-500 p-2 rounded-lg shadow-lg min-w-44">
+                  <div className="dark:bg-neutral-500 border border-black bg-white p-2 rounded-lg shadow-lg min-w-44">
                     <div className="flex flex-col space-y-2">
                       <Link
                         href={`/me`}

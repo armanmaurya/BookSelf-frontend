@@ -16,6 +16,7 @@ const GET_ARTICLES = gql`
       title
       views
       createdAt
+      likesCount
       author {
         username
         firstName
@@ -31,12 +32,11 @@ export default async function Home() {
   const articles = data.articles;
 
   return (
-    <main className="flex">
-      <div className="w-full space-y-2">
+    <main className="">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         {articles.map((article: Article) => {
           return <div>
             <ArticleCard article={article} />
-            {/* <div style={{ height: 1 }} className='bg-white bg-opacity-25' /> */}
           </div>
         })}
       </div>

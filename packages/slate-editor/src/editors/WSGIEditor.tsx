@@ -498,7 +498,7 @@ export const WSGIEditor = ({
   const currentNode = match ? (match[0].type as string) : null;
 
   return (
-    <div className="transition-all h-screen overflow-y-scroll">
+    <div className="transition-all h-screen overflow-auto">
       <Slate
         editor={editor}
         initialValue={initialValue ? JSON.parse(initialValue) : editorValue}

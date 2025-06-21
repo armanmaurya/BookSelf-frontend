@@ -12,7 +12,7 @@ export const FollowCard = ({
     profilePicture: string;
 }) => {
     return (
-        <div className="bg-neutral-900 rounded-md flex justify-between p-3 items-center">
+        <div className="dark:bg-neutral-900 bg-gray-200 rounded-md flex justify-between p-3 items-center">
             <div className="flex items-center space-x-3">
                 <Image className="rounded-full" height={46} width={46} src={profilePicture ? profilePicture : "https://cdn-icons-png.flaticon.com/128/64/64572.png"} alt="Photot" />
                 <div>{username}</div>

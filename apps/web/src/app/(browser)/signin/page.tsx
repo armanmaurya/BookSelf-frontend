@@ -28,7 +28,7 @@ export default async function Login() {
   return (
     <main className="h-full">
       <RNotification />
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="m-4">
           <Suspense>
             <GoolgeAuth redirect_path="/signin" />

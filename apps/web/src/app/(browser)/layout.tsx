@@ -60,7 +60,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}
+        className={`${inter.className} dark:bg-[#121212] dark:text-slate-200 flex flex-col`}
       >
         {/* <ApolloProviderWrapper> */}
           <ThemeProvider attribute="class" enableSystem>
@@ -77,7 +77,7 @@ export default async function RootLayout({
                 <ContextProvider>
                   <SideBarProvider>
                     <TopBar />
-                    <div className="h-auto">
+                    <div className="">
                       <div className="p-3">{children}</div>
                       <SideBar className="w-40">
                         {/* <SideBarElement className="flex">

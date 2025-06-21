@@ -28,7 +28,7 @@ export default function ArticlesLayout({
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   />
                 )}
-                <span className="py-2 px-4 relative">
+                <span className="py-2 px-4 relative text-white">
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </span>
               </Link>

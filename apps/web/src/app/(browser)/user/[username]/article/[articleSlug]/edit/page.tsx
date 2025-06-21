@@ -34,6 +34,7 @@ const Page = async ({
           __typename
           title
           content
+          imageUrl
           article {
             slug
             isSelf
@@ -70,6 +71,7 @@ const Page = async ({
         content={data.draftArticle.content}
         title={data.draftArticle.title}
         slug={articleSlug}
+        imageUrl={data.draftArticle.imageUrl}
       />
     </div>
   );

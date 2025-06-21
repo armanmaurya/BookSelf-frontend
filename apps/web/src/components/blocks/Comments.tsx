@@ -96,26 +96,26 @@ export const Comments = ({
           );
         })}
       </div>
-      {
-        comments.length < commentsCount && (
-          <button
-            className="border rounded-full my-5 p-2 text-sm"
-            onClick={async () => {
-
-              const lastId = comments.length > 0 ? comments[comments.length - 1].id : undefined
-              const newComments = await fetchComments({
-                lastId: lastId,
-                slug: articleSlug,
-              });
-              if (newComments) {
-                setComments([...comments, ...newComments]);
-              }
-            }}
-          >
-            Show More
-          </button>
-        )
-      }
+      {comments.length < commentsCount && (
+        <button
+          className="border rounded-full my-5 p-2 text-sm"
+          onClick={async () => {
+            const lastId =
+              comments.length > 0
+                ? comments[comments.length - 1].id
+                : undefined;
+            const newComments = await fetchComments({
+              lastId: lastId,
+              slug: articleSlug,
+            });
+            if (newComments) {
+              setComments([...comments, ...newComments]);
+            }
+          }}
+        >
+          Show More
+        </button>
+      )}
     </div>
   );
 };
@@ -150,36 +150,65 @@ const Comment = ({
         >
           {comment.content}
         </p>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 pt-1.5">
           <CommentLikeButton
             commentId={comment.id}
             initialLikes={comment.likesCount}
             initialState={comment.isLiked}
           />
-          <button>
-            <span
-              className="text-xs cursor-pointer hover:underline"
-              onClick={() => setShowAddReply(!showAddReply)}
-            >
-              Reply
-            </span>
-          </button>
+          <span
+            className="text-xs cursor-pointer hover:underline"
+            onClick={() => setShowAddReply(!showAddReply)}
+          >
+            Reply
+          </span>
+          {comment.repliesCount > 0 &&
+            replies.length < comment.repliesCount && (
+              <button
+                className=""
+                onClick={async () => {
+                  if (replies.length === 0) {
+                    const newComments = await fetchComments({
+                      slug: articleSlug,
+                      parentId: comment.id,
+                    });
+                    if (newComments) {
+                      setReplies([...replies, ...newComments]);
+                    }
+                  } else {
+                    const lastId = replies[replies.length - 1].id;
+                    const newComments = await fetchComments({
+                      lastId: lastId,
+                      slug: articleSlug,
+                      parentId: comment.id,
+                    });
+                    if (newComments) {
+                      setReplies([...replies, ...newComments]);
+                    }
+                  }
+                }}
+              >
+                <div className="flex space-x-1 items-center text-blue-400">
+                  <IoIosArrowUp className="rotate-180 -z-10" />
+                  <span className="text-xs">
+                    <span>{comment.repliesCount}</span> <span>Replies</span>
+                  </span>
+                </div>
+              </button>
+            )}
         </div>
-
       </div>
       <div className="ml-5">
-        {
-          showAddReply && (
-            <AddComment
-              focused={true}
-              onCanceled={() => setShowAddReply(false)}
-              comments={replies}
-              setComments={setReplies}
-              articleSlug={articleSlug}
-              parentCommentId={comment.id}
-            />
-          )
-        }
+        {showAddReply && (
+          <AddComment
+            focused={true}
+            onCanceled={() => setShowAddReply(false)}
+            comments={replies}
+            setComments={setReplies}
+            articleSlug={articleSlug}
+            parentCommentId={comment.id}
+          />
+        )}
       </div>
 
       {/* If Stored Replies Lenght if Greater than Zero The Render the Replies*/}
@@ -198,39 +227,6 @@ const Comment = ({
       )}
 
       {/* If Commment Replies Count is Greater than zero and Current Replies Lenght is Less than Comment replies count then Show the Reply Button */}
-      {comment.repliesCount > 0 && replies.length < comment.repliesCount && (
-        <button
-          className=""
-          onClick={async () => {
-            if (replies.length === 0) {
-              const newComments = await fetchComments({
-                slug: articleSlug,
-                parentId: comment.id,
-              });
-              if (newComments) {
-                setReplies([...replies, ...newComments]);
-              }
-            } else {
-              const lastId = replies[replies.length - 1].id;
-              const newComments = await fetchComments({
-                lastId: lastId,
-                slug: articleSlug,
-                parentId: comment.id,
-              });
-              if (newComments) {
-                setReplies([...replies, ...newComments]);
-              }
-            }
-          }}
-        >
-          <div className="flex space-x-1 items-center pt-2 text-blue-400">
-            <IoIosArrowUp className="rotate-180 -z-10" />
-            <span className="text-sm">
-              <span>{comment.repliesCount}</span> <span>Replies</span>
-            </span>
-          </div>
-        </button>
-      )}
       {/* <div
         style={{ height: 1 }}
         className="w-full bg-gray-200 bg-opacity-30 my-2"

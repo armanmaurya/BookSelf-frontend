@@ -11,17 +11,21 @@ import client from "@/lib/apolloClient";
 import { FaImage } from "react-icons/fa6";
 import nProgress from "nprogress";
 import { useRouter } from "next/navigation";
+import { AddArticleCover } from "@/components/element/AddArticleCover";
+import Image from "next/image";
 
 export const Editor = ({
   content,
   slug,
   title,
   status,
+  imageUrl,
 }: {
   title: string;
   content: string;
   slug: string;
-  status: string
+  status: string;
+  imageUrl: string;
 }) => {
   const [articleSlug, setArticleSlug] = useState<string | null>(slug);
   const { user } = useAuth();
@@ -80,7 +84,7 @@ export const Editor = ({
 
   const PublishArticleMutation = gql`
     mutation MyMutation($slug: String!) {
-      publishArticle(slug: $slug) 
+      publishArticle(slug: $slug)
     }
   `;
 
@@ -95,18 +99,31 @@ export const Editor = ({
       router.push(`/user/${user?.username}/article/${data.publishArticle}`);
     }
   };
-  console.log("content", content);
+  // console.log("content", content);
   return (
-    <div className="">
+    <div className="mt-12">
+      <div className="w-full mb-4 flex items-center justify-center">
+        {/* Show Cover Image */}
+        {/* {imageUrl && (
+          <div className="aspect-w-16 aspect-h-9 w-[800px] bg-white">
+            <Image
+              width={300}
+              height={200}
+
+              src={`${imageUrl}`}
+              alt="Cover Image"
+              className="w-full h-full object-cover overflow-hidden rounded-lg"
+            />
+          </div>
+        )} */}
+      </div>
       <div className="flex">
-        <div className="flex items-center p-1 rounded-md space-x-2 hover:bg-gray-100 hover:bg-opacity-5 cursor-pointer">
-          <FaImage />
-          <span>Add Cover</span>
-        </div>
-        <div className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer" onClick={PublishArticle}>
-          {
-            status === "DR" ? "Publish" : "Update"
-          }
+        <AddArticleCover articleSlug={articleSlug} />
+        <div
+          className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer"
+          onClick={PublishArticle}
+        >
+          {status === "DR" ? "Publish" : "Update"}
         </div>
       </div>
       <WSGIEditor

@@ -29,6 +29,7 @@ const Page = async () => {
   });
   return (
     <div className="flex flex-col space-y-2">
+      <h1 className="text-2xl font-bold">Draft Articles</h1>
       {data.draftArticles.articles.map((draftArticle: any) => {
         return <DraftArticleCard draftArticle={draftArticle} />;
       })}

@@ -10,16 +10,15 @@ export const DraftArticleCard = ({
 }) => {
   const formattedDate = formatDistanceToNow(parseISO(draftArticle.updatedAt), { addSuffix: true });
   return (
-    <div className='flex justify-between hover:cursor-pointer bg-neutral-900 p-4 rounded-md w-full'>
+    <div className='flex justify-between hover:cursor-pointer bg-gray-200 dark:bg-neutral-900 p-4 rounded-md w-full'>
       <div>
         <Link href={`/user/${draftArticle.article.author.username}/article/${draftArticle.article.slug}/edit`}>
-          <span className='text-3xl font-semibold hover:underline'>{draftArticle.title ? draftArticle.title : "Untitled"}</span>
+          <span className='text-3xl font-semibold hover:underline text-black dark:text-white'>{draftArticle.title ? draftArticle.title : "Untitled"}</span>
         </Link>
         <div className='flex items-center space-x-2'>
-          <span>Last Edited</span>
-          <div className='text-sm'>{formattedDate}</div>
+          <span className='text-black dark:text-white'>Last Edited</span>
+          <div className='text-sm text-black dark:text-white'>{formattedDate}</div>
         </div>
-
       </div>
     </div>
   )

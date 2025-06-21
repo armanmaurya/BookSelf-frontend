@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/auth";
 import { FollowCard } from "../element/cards/FollowCard";
 
-export const Following = ({ username }: { username: string }) => {
+export const FollowingBlock = ({ username }: { username: string }) => {
   // const [following, setFollowing] = useState<User[]>([]);
   const [following, setFollowing] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
