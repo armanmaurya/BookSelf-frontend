@@ -51,6 +51,8 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
         loader.hide();
         nProgress.start();
         router.push("/");
+      } else {
+        router.push("/signup/username");
       }
       loader.hide();
     } catch (error) {

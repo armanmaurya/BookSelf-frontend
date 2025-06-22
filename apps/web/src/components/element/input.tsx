@@ -3,6 +3,10 @@ import { API_ENDPOINT } from "@/app/utils";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
+import { gql } from "@apollo/client";
+import client from "@/lib/apolloClient";
+import { User } from "@/types/auth";
+import Link from "next/link";
 
 export const EmailInput = ({
   email,
@@ -85,29 +89,113 @@ export const PasswordInput = ({
   );
 };
 
+// It will search for users when @username is typed in the search bar otherwise it will search for articles
 export const SearchInput = () => {
   const router = useRouter();
 
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLInputElement> &
-      React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
-      if (event.target.value === "") {
-        return;
+  const QUERY = gql`
+    query MyQuery($username: String!) {
+      users(username: $username) {
+        id
+        username
+        profilePicture
+        firstName
+        lastName
       }
-      router.push(`/search/${event.target.value}`);
+    }
+  `;
+
+  const searchUser = async (username: string) => {
+    const { data } = await client.query({
+      query: QUERY,
+      variables: { username },
+    });
+    return data.users;
+  };
+
+  const [users, setUsers] = useState<Partial<User>[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (!searchQuery.startsWith("@")) {
+      setUsers([]);
+      return;
+    }
+    if (searchQuery.trim() === "@") {
+      setUsers([]);
+      return;
+    }
+    const delayDebounceFn = setTimeout(async () => {
+      const username = searchQuery.slice(1);
+      if (username.length > 0) {
+        const results = await searchUser(username);
+        setUsers(results);
+      } else {
+        setUsers([]);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && searchQuery.trim() !== "") {
+      if (searchQuery.startsWith("@")) {
+        // If starts with @, go to user profile if only one result
+        if (users.length === 1) {
+          router.push(`/profile/${users[0].username}`);
+        }
+      } else {
+        router.push(`/search/${searchQuery}`);
+      }
+      setUsers([]);
     }
   };
 
   return (
-    <input
-      id="search-bar"
-      className="border dark:bg-neutral-700 p-1 px-2 rounded-full border-zinc-900 bg-transparent w-96 sm:block hidden"
-      placeholder="Search..."
-      type="text"
-      onKeyDown={handleKeyPress}
-    />
+    <div className="relative w-96">
+      <input
+        id="search-bar"
+        autoComplete="off"
+        className="border dark:border-neutral-600 dark:bg-neutral-800 dark:text-white w-full p-2 px-4 rounded-full border-zinc-300 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500 sm:block hidden transition-all"
+        placeholder="Search users with @ or articles..."
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyDown={handleKeyPress}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setTimeout(() => setIsFocused(false), 500)}
+      />
+      {/* Search results dropdown */}
+      {isFocused && users.length > 0 && (
+        <div className="absolute z-10 w-full mt-2 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-gray-200 dark:border-neutral-700 overflow-hidden">
+          {users.map((user) => (
+            <Link
+              href={`/user/${user.username}`}
+              key={user.id}
+              className="flex items-center p-3 hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer transition-colors"
+            >
+              <img
+                src={user.profilePicture || "https://writedirection.com/wp-content/uploads/2016/09/blank-profile-picture-973460_960_720.png"}
+                alt={user.username}
+                className="w-10 h-10 rounded-full object-cover mr-3"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://writedirection.com/wp-content/uploads/2016/09/blank-profile-picture-973460_960_720.png";
+                }}
+              />
+              <div>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  @{user.username}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -216,7 +304,6 @@ export const Tag = ({
 export const Input = (
   InputProp: React.InputHTMLAttributes<HTMLInputElement>
 ) => {
-  
   return (
     <input
       {...InputProp}
