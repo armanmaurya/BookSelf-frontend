@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { CommentType } from "@/types/comment";
+import { useRouter } from "next/navigation";
+import nProgress from "nprogress";
 
 export const AddComment = ({
   articleSlug,
@@ -23,6 +25,8 @@ export const AddComment = ({
   const [text, setText] = useState("");
   const [isShow, setIsShow] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const router = useRouter();
+  
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
     if (textareaRef.current) {
@@ -40,16 +44,22 @@ export const AddComment = ({
   const MUTATION = gql`
     mutation MyMutation($content: String!, $articleSlug: String!, $parentId: Int) {
       createComment(articleSlug: $articleSlug, content: $content, parentId: $parentId) {
-        content
-        id
-        createdAt
-        isLiked
-        likesCount
-        repliesCount
-        user {
-          firstName
-          lastName
-          username
+        ... on AuthencatationError {
+          __typename
+          message
+        }
+        ... on CommentType {
+          id
+          content
+          createdAt
+          isLiked
+          likesCount
+          repliesCount
+          user {
+            firstName
+            lastName
+            username
+          }
         }
       }
     }
@@ -61,6 +71,19 @@ export const AddComment = ({
         mutation: MUTATION,
         variables: { content: text, articleSlug, parentId: parentCommentId },
       });
+
+      if (!data || !data.createComment) {
+        console.error("No comment returned from server.");
+        return;
+      }
+
+      if (data.createComment.__typename === "AuthencatationError") {
+        // Redirect to login
+        nProgress.start();
+        router.push("/signin");
+        return;
+      }
+
       setComments([data.createComment, ...comments]);
       setText("");
     } catch (error) {

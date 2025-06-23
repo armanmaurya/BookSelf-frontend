@@ -1,9 +1,8 @@
-import { ArticleCard } from "@/components/blocks/card";
 import { API_ENDPOINT } from "@/app/utils";
-import { Article } from "../../../types";
-// import { useRouter } from "next/navigation";
-
-
+import { ArticleCard } from "@/components/element/cards/ArticleCard";
+import { createServerClient } from "@/lib/ServerClient";
+import { gql } from "@apollo/client";
+import { Article } from "@bookself/types";
 
 async function search(query: string) {
   try {
@@ -14,22 +13,75 @@ async function search(query: string) {
     return res.json();
   } catch (error) {
     console.error("Error fetching data:", error);
-    // Handle the error here, e.g. show an error message to the user
-    throw error; // Rethrow the error to propagate it to the caller
+    throw error;
   }
 }
-const Page = async ({ params: { query } }:{ params: { query: string } }) => {
-  const data: Promise<Article>[] = await search(query);
-  // await new Promise((resolve) => setTimeout(resolve, 9000));
+
+const Page = async ({ params: { query } }: { params: { query: string } }) => {
+  const QUERY = gql`
+    query MyQuery($query: String!) {
+      articles(query: $query) {
+        id
+        slug
+        title
+        views
+        createdAt
+        likesCount
+        status
+        author {
+          username
+          firstName
+          lastName
+          profilePicture
+          isSelf
+        }
+      }
+    }
+  `;
+
+  const {
+    data,
+  }: {
+    data: { articles: Article[] };
+  } = await createServerClient().query({
+    query: QUERY,
+    variables: { query },
+  });
 
   return (
-    <main className="px-2 mt-2">
-      <div className="w-full h-full space-y-2 overflow-auto pr-2">
-        {data.map(async (articlePromise) => {
-          const article = await articlePromise;
-          return <ArticleCard key={article.id} data={article} />;
-        })}
+    <main className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Search Results for:{" "}
+          <span className="text-primary-600">
+            "{decodeURIComponent(query)}"
+          </span>
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          {data.articles.length} articles found
+        </p>
       </div>
+
+      {data.articles.length === 0 ? (
+        <div className="text-center py-12">
+          <h2 className="text-xl font-medium text-gray-500 dark:text-gray-400">
+            No articles found matching your search
+          </h2>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">
+            Try different keywords or check back later
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {data.articles.map((article) => (
+            <ArticleCard
+              key={article.id}
+              article={article}
+              // className="transition-transform duration-200 hover:scale-[1.02] hover:shadow-lg"
+            />
+          ))}
+        </div>
+      )}
     </main>
   );
 };

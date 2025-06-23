@@ -13,6 +13,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { IoMdEye } from "react-icons/io";
 import { FiEdit2 } from "react-icons/fi";
+import { Metadata } from "next";
 
 const Page = async ({
   params,
@@ -88,7 +89,7 @@ const Page = async ({
                 initialLikes={article.likesCount}
                 url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
                 method={`${API_ENDPOINT.likeArticle.method}`}
-                // className="text-lg"
+              // className="text-lg"
               />
             </div>
 
@@ -207,5 +208,23 @@ const Page = async ({
     </div>
   );
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ username: string; articleSlug: string }> }): Promise<Metadata> {
+  const { articleSlug } = await params;
+  const QUERY = gql`
+    query MyQuery($slug: String!) {
+      article(slug: $slug) {
+        title
+      }
+    }
+  `;
+  const { data }: { data: GraphQLData } = await createServerClient().query({
+    query: QUERY,
+    variables: { slug: articleSlug },
+  });
+  return {
+    title: `${data.article.title}` || "Article"
+  };
+}
 
 export default Page;

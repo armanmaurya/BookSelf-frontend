@@ -35,7 +35,12 @@ import {
   withHeading,
 } from "@bookself/slate-heading";
 
-import { ListItem, ListType, OrderedList, UnorderedList } from "@bookself/slate-list";
+import {
+  ListItem,
+  ListType,
+  OrderedList,
+  UnorderedList,
+} from "@bookself/slate-list";
 
 import {
   Descendant,
@@ -82,6 +87,7 @@ import {
 import { EditableParagraph } from "@bookself/slate-paragraph";
 import { CodeEditor, EditableCode } from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
+import { SlateToolBar } from "../components/Toolbar/toolbar";
 
 /**
  * Initial value for the editor.
@@ -147,16 +153,15 @@ export const WSGIEditor = ({
   const editor = useMemo(
     () =>
       withEnforceOneChild(
-        withHeading(NodeType.PARAGRAPH,
+        withHeading(
+          NodeType.PARAGRAPH,
           withTabs(
             withNormalize(
               withImage(
-                withLinks(
-                  withPaste(withReact(withHistory(createEditor())))
-                )
+                withLinks(withPaste(withReact(withHistory(createEditor()))))
               )
             )
-          ),
+          )
         )
       ),
     []
@@ -210,8 +215,6 @@ export const WSGIEditor = ({
         return <Default {...props} />;
     }
   }, []);
-
-
 
   /**
    * Commands for the command menu.
@@ -369,13 +372,18 @@ export const WSGIEditor = ({
         if (currentNode) {
           SlateCustomEditor.replaceBlock(editor, currentNode, {
             type: ListType.UNORDERED_LIST,
-            children: [{
-              type: ListType.LIST_ITEM, children: [{
-                type: "text",
-                children: [{ text: "", type: "text", fontSize: 16 }],
-                align: "left",
-              }]
-            }],
+            children: [
+              {
+                type: ListType.LIST_ITEM,
+                children: [
+                  {
+                    type: "text",
+                    children: [{ text: "", type: "text", fontSize: 16 }],
+                    align: "left",
+                  },
+                ],
+              },
+            ],
           });
         }
       },
@@ -462,13 +470,18 @@ export const WSGIEditor = ({
     };
   };
   const debouncedContentSave = useMemo(() => {
-    return debounce((body: string) => onContentChange && onContentChange(body), 3000);
+    return debounce(
+      (body: string) => onContentChange && onContentChange(body),
+      3000
+    );
   }, [onContentChange]);
 
   const debouncedTitleSave = useMemo(() => {
-    return debounce((title: string) => onTitleChange && onTitleChange(title), 500);
-  }
-    , [onTitleChange]);
+    return debounce(
+      (title: string) => onTitleChange && onTitleChange(title),
+      500
+    );
+  }, [onTitleChange]);
 
   const titleRef = useRef<HTMLInputElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -511,6 +524,8 @@ export const WSGIEditor = ({
           }
         }}
       >
+        {" "}
+        <SlateToolBar />
         <div className="w-full">
           <input
             ref={titleRef}
@@ -536,7 +551,8 @@ export const WSGIEditor = ({
               handleKeyBoardFormating(event, editor, isCommendMenuOpen);
               if (event.ctrlKey && event.key === "s") {
                 event.preventDefault();
-                onContentChange && onContentChange(JSON.stringify(editor.children));
+                onContentChange &&
+                  onContentChange(JSON.stringify(editor.children));
               }
             }}
           />

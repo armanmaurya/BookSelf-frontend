@@ -68,7 +68,7 @@ export const SlateToolBar = () => {
   });
   return (
     <div
-      className="fixed z-10 w-full px-2"
+      className="z-10 pt-3"
     // onMouseDown={(e) => {
     //   e.preventDefault();
     // }}
