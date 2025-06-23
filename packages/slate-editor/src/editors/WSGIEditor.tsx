@@ -498,7 +498,7 @@ export const WSGIEditor = ({
   const currentNode = match ? (match[0].type as string) : null;
 
   return (
-    <div className="transition-all h-screen overflow-auto">
+    <div className="">
       <Slate
         editor={editor}
         initialValue={initialValue ? JSON.parse(initialValue) : editorValue}
@@ -515,7 +515,7 @@ export const WSGIEditor = ({
           <input
             ref={titleRef}
             type="text"
-            className="text-5xl font-extrabold bg-transparent h-14 w-full"
+            className="text-3xl font-extrabold bg-transparent h-14 w-full"
             onChange={(e) => {
               setTitle(e.target.value);
               debouncedTitleSave(e.target.value);
@@ -529,7 +529,7 @@ export const WSGIEditor = ({
             spellCheck
             autoFocus
             id="editor"
-            className=""
+            style={{ position: "inherit", zIndex: 0 }}
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {
@@ -548,7 +548,7 @@ export const WSGIEditor = ({
                 select: true,
               });
             }}
-            className="h-96"
+            className="h-60"
           ></div>
         </div>
         <CommandMenu

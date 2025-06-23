@@ -46,6 +46,7 @@ export default async function RootLayout({
         email
         firstName
         lastName
+        profilePicture
       }
     }
   `;
@@ -60,7 +61,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} dark:bg-[#121212] dark:text-slate-200 flex flex-col`}
+        className={`${inter.className} dark:bg-[#121212] dark:text-slate-200`}
       >
         {/* <ApolloProviderWrapper> */}
           <ThemeProvider attribute="class" enableSystem>

@@ -27,6 +27,7 @@ export const Follower = ({ username }: { username: string }) => {
           followingCount
           firstName
           lastName
+          isSelf
         }
       }
     }
@@ -82,6 +83,7 @@ export const Follower = ({ username }: { username: string }) => {
           <FollowCard 
             key={user.id} 
             {...user} 
+            showFollowButton={!user.isSelf}
             // displayName={`${user.firstName} ${user.lastName}`}
           />
         ))}

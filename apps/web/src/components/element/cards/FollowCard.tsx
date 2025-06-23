@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { FollowButton } from "../button/FollowButton";
+import Link from "next/link";
 
 export const FollowCard = ({
   firstName,
@@ -8,7 +9,9 @@ export const FollowCard = ({
   username,
   isFollowing,
   profilePicture,
+  showFollowButton
 }: {
+  showFollowButton?: boolean;
   firstName: string;
   lastName: string;
   username: string;
@@ -17,7 +20,10 @@ export const FollowCard = ({
 }) => {
   return (
     <div className="group dark:bg-neutral-800 bg-white rounded-lg flex justify-between p-4 items-center border border-gray-200 dark:border-neutral-700 hover:shadow-md transition-all duration-200 hover:border-gray-300 dark:hover:border-neutral-600">
-      <div className="flex items-center space-x-3 overflow-hidden">
+      <Link
+        href={`/user/${username}`}
+        className="flex items-center space-x-3 overflow-hidden"
+      >
         <div className="relative flex-shrink-0">
           <Image
             className="rounded-full object-cover"
@@ -43,14 +49,16 @@ export const FollowCard = ({
             @{username.toLowerCase()}
           </p>
         </div>
-      </div>
-      <div className="flex-shrink-0 ml-2">
-        <FollowButton
-          initialIsFollowing={isFollowing}
-          username={username}
-          //   className="text-sm px-3 py-1.5"
-        />
-      </div>
+      </Link>
+      {showFollowButton !== false && (
+        <div className="flex-shrink-0 ml-2">
+          <FollowButton
+            initialIsFollowing={isFollowing}
+            username={username}
+            //   className="text-sm px-3 py-1.5"
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -21,6 +21,8 @@ const GET_ARTICLES = gql`
         username
         firstName
         lastName
+        profilePicture
+        isSelf
       }
     }
 }

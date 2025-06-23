@@ -72,55 +72,57 @@ const Page = async ({
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       {/* Article Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {article.title}
-        </h1>
+      <div className="dark:bg-neutral-900 bg-neutral-50 rounded-lg p-6 mb-8 shadow-sm">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {article.title}
+          </h1>
 
-        {/* Article Stats */}
-        <div className="flex items-center space-x-6 text-gray-600 dark:text-gray-400 mb-6">
-          <div className="flex items-center space-x-2">
-            <LikeButton
-              initialState={article.isLiked}
-              initialLikes={article.likesCount}
-              url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
-              method={`${API_ENDPOINT.likeArticle.method}`}
+          {/* Article Stats */}
+          <div className="flex items-center space-x-6 text-gray-600 dark:text-gray-400 mb-6">
+            <div className="flex items-center space-x-2">
+              <LikeButton
+                initialState={article.isLiked}
+                initialLikes={article.likesCount}
+                url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
+                method={`${API_ENDPOINT.likeArticle.method}`}
+                // className="text-lg"
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <IoMdEye className="text-lg" />
+              <span>{article.views} views</span>
+            </div>
+
+            {article.author.isSelf && (
+              <Link
+                href={`${articleSlug}/edit`}
+                className="flex items-center space-x-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                <FiEdit2 className="text-lg" />
+                <span>Edit</span>
+              </Link>
+            )}
+
+            <SaveArticleButton
+              articleSlug={articleSlug}
+              isSaved={false}
               // className="text-lg"
             />
           </div>
-
-          <div className="flex items-center space-x-2">
-            <IoMdEye className="text-lg" />
-            <span>{article.views} views</span>
-          </div>
-
-          {article.author.isSelf && (
-            <Link
-              href={`${articleSlug}/edit`}
-              className="flex items-center space-x-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              <FiEdit2 className="text-lg" />
-              <span>Edit</span>
-            </Link>
-          )}
-
-          <SaveArticleButton
-            articleSlug={articleSlug}
-            isSaved={false}
-            // className="text-lg"
-          />
         </div>
-      </div>
 
-      {/* Main Article Content */}
-      <main className="prose dark:prose-invert max-w-none mb-12">
-        <RenderContent
-          title={article.title}
-          value={JSON.parse(article.content)}
-        />
-      </main>
+        {/* Main Article Content */}
+        <main className="prose dark:prose-invert max-w-none mb-12">
+          <RenderContent
+            title={article.title}
+            value={JSON.parse(article.content)}
+          />
+        </main>
+      </div>
 
       {/* Divider */}
       <div className="border-t border-gray-200 dark:border-gray-700 my-8" />
@@ -131,13 +133,19 @@ const Page = async ({
           href={`/user/${article.author.username}`}
           className="flex-shrink-0 self-center sm:self-start"
         >
-          <Image
-            width={64}
-            height={64}
-            className="rounded-full h-16 w-16 object-cover border-2 border-white dark:border-neutral-800 shadow"
-            src={article.author.profilePicture || "/default-avatar.png"}
-            alt={`${article.author.username}'s profile`}
-          />
+          {article.author.profilePicture ? (
+            <Image
+              width={64}
+              height={64}
+              className="rounded-full h-16 w-16 object-cover border-2 border-white dark:border-neutral-800 shadow"
+              src={article.author.profilePicture || "/default-avatar.png"}
+              alt={`${article.author.username}'s profile`}
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center text-2xl text-gray-500 dark:text-gray-400">
+              {article.author.username.charAt(0).toUpperCase()}
+            </div>
+          )}
         </Link>
         <div className="flex-1 flex flex-col sm:flex-row w-full gap-4">
           <div className="flex-1 w-full flex flex-col justify-center">
@@ -189,9 +197,6 @@ const Page = async ({
 
       {/* Comments Section */}
       <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-          Comments ({article.totalCommentsCount})
-        </h2>
         <Comments
           totalCommentsCount={article.totalCommentsCount}
           commentsCount={article.commentsCount}

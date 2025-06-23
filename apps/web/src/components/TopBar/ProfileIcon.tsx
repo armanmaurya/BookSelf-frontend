@@ -45,12 +45,12 @@ export const ProfileIcon = () => {
       {user ? (
         <div>
           <div
-            className="rounded-full border cursor-pointer shadow-md"
+            className="rounded-full overflow-hidden border cursor-pointer shadow-md"
             onClick={toggleClick}
           >
             <img
               className="h-8 object-fill"
-              src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
+              src={`${user.profilePicture || "https://ui-avatars.com/api/?name=User&size=64"}`}
               alt=""
             />
           </div>
@@ -61,7 +61,7 @@ export const ProfileIcon = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute top-12 right-1"
+                className="absolute top-12 right-1 z-50"
               >
                 <div className="">
                   <div className="flex justify-end mr-4">
@@ -88,14 +88,14 @@ export const ProfileIcon = () => {
                         <IoDocumentText />
                         <span>Your Articles</span>
                       </Link>
-                      <Link
+                      {/* <Link
                         href={`/me/history/`}
                         className="flex space-x-2 items-center"
                         onClick={toggleClick}
                       >
                         <FaHistory />
                         <span>History</span>
-                      </Link>
+                      </Link> */}
                       {/* <Link
                           className="flex space-x-2 items-center"
                           href={`/${user.username}/notebook`}
@@ -119,18 +119,24 @@ export const ProfileIcon = () => {
           </AnimatePresence>
         </div>
       ) : (
-        <div>
-          <li className="flex justify-center items-center rounded-xl overflow-hidden bg-sky-600">
-            <a
-              className="bg-sky-500 text-slate-50 md:block hidden rounded-r-md h-full p-2 shadow-[4px_4px_10px_rgba(0,0,0,0.4)]"
-              href="/signup"
+        <div className="flex justify-center">
+          <div className="flex items-center rounded-full bg-slate-800 shadow-md overflow-hidden border border-slate-700">
+            <Link
+              href="/signin"
+              className="px-6 py-2.5 text-slate-200 font-medium text-sm hover:bg-slate-700 transition-colors"
             >
-              Create
-            </a>
-            <Link className="h-full p-2 text-slate-200" href="/signin">
               Login
             </Link>
-          </li>
+
+            <div className="h-5 w-px bg-slate-600"></div>
+
+            <Link
+              href="/signup"
+              className="px-6 py-2.5 text-white font-medium text-sm bg-sky-600 hover:bg-sky-700 transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
       )}
     </div>

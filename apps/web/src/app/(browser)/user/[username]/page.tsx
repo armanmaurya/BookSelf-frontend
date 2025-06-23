@@ -13,6 +13,7 @@ import { CgProfile } from "react-icons/cg";
 import { LinkTabs } from "@/components/element/LinkTabs";
 import { Article } from "@bookself/types";
 import { ArticleCard } from "@/components/element/cards/ArticleCard";
+import { UserArticles } from "./userArticles";
 
 const ProfilePage = async ({
   params,
@@ -49,16 +50,21 @@ const ProfilePage = async ({
   const tabs = [
     {
       name: "Overview",
-      href: `/user/${username}`,
+      href: `/user/${username}?tab=overview`,
     },
     {
       name: "Articles",
       href: `/user/${username}?tab=articles`,
     },
+    // {
+    //   name: "Collections",
+    //   href: `/user/${username}?tab=collections`,
+    // },
   ];
 
-  const RenderTab = async () => {
-    switch (searchParams.tab) {
+  // RenderTab rewritten using switch-case
+  const RenderTab = () => {
+    switch (searchParams?.tab) {
       case "collections":
         return (
           <div className="text-center py-12 text-gray-500 dark:text-gray-400">
@@ -66,42 +72,7 @@ const ProfilePage = async ({
           </div>
         );
       case "articles":
-        const QUERY = gql`
-          query MyQuery($username: String!) {
-            user(username: $username) {
-              articles {
-                title
-                slug
-                views
-                likesCount
-                createdAt
-                status
-                author {
-                  username
-                  profilePicture
-                }
-              }
-            }
-          }
-        `;
-        const { data }: { data: GraphQLData } =
-          await createServerClient().query({
-            query: QUERY,
-            variables: { username: username },
-          });
-        const articles = data.user.articles;
-
-        return articles.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {articles.map((article: Article) => (
-              <ArticleCard key={article.slug} article={article} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            No articles published yet
-          </div>
-        );
+        return <UserArticles isSelf={data.user.isSelf} username={username} />;
       default:
         return (
           <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-6 shadow-sm border border-neutral-200 dark:border-neutral-700">
@@ -114,7 +85,7 @@ const ProfilePage = async ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <div className="mx-auto px-4 sm:px-6 my-8">
       {/* Profile Header - Clean version without banner */}
       <div className="rounded-xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-6">
@@ -129,7 +100,9 @@ const ProfilePage = async ({
                 className="object-cover h-full w-full"
               />
             ) : (
-              <CgProfile className="h-full w-full text-gray-400 p-6" />
+              <span className="w-full h-full flex items-center justify-center text-3xl">
+                {data.user.username.charAt(0).toUpperCase()}
+              </span>
             )}
           </div>
 
@@ -184,9 +157,7 @@ const ProfilePage = async ({
       </div>
 
       {/* Tab Content */}
-      <div className="mb-8">
-        <RenderTab />
-      </div>
+      <div className="mb-8">{RenderTab()}</div>
     </div>
   );
 };

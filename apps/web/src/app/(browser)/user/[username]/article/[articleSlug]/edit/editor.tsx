@@ -101,40 +101,28 @@ export const Editor = ({
   };
   // console.log("content", content);
   return (
-    <div className="mt-12">
-      <div className="w-full mb-4 flex items-center justify-center">
-        {/* Show Cover Image */}
-        {/* {imageUrl && (
-          <div className="aspect-w-16 aspect-h-9 w-[800px] bg-white">
-            <Image
-              width={300}
-              height={200}
-
-              src={`${imageUrl}`}
-              alt="Cover Image"
-              className="w-full h-full object-cover overflow-hidden rounded-lg"
-            />
+    <div className="max-w-full flex flex-col">
+      {/* Editor Content - Centered but full width */}
+      <div className="flex-1 w-full px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+        <div className="flex">
+          {/* <AddArticleCover articleSlug={articleSlug} /> */}
+          <div
+            className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer"
+            onClick={PublishArticle}
+          >
+            {status === "DR" ? "Publish" : "Update"}
           </div>
-        )} */}
-      </div>
-      <div className="flex">
-        <AddArticleCover articleSlug={articleSlug} />
-        <div
-          className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer"
-          onClick={PublishArticle}
-        >
-          {status === "DR" ? "Publish" : "Update"}
         </div>
+        <WSGIEditor
+          onTitleChange={(title) => {
+            console.log("title changed");
+            UpdateTitle(title);
+          }}
+          onContentChange={UpdateContent}
+          initialValue={content}
+          title={title}
+        />
       </div>
-      <WSGIEditor
-        onTitleChange={(title) => {
-          console.log("title changed");
-          UpdateTitle(title);
-        }}
-        onContentChange={UpdateContent}
-        initialValue={content}
-        title={title}
-      />
     </div>
   );
 };

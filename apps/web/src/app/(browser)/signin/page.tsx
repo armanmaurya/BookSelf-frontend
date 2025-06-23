@@ -34,10 +34,10 @@ export default async function Login() {
             <GoolgeAuth redirect_path="/signin" />
           </Suspense>
         </div>
-        <div className="w-80 my-3 rounded-full">
+        {/* <div className="w-80 my-3 rounded-full">
           <Divider />
-        </div>
-        <LoginForm />
+        </div> */}
+        {/* <LoginForm /> */}
       </div>
     </main>
   );
