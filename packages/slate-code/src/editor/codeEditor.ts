@@ -47,16 +47,15 @@ export const CodeEditor = {
     });
 
     console.log("text", text);
-    Transforms.insertNodes(editor, {
-      type: "code",
-      children: [
-        {
-          text: text ? text : "",
-          type: "code",
-        },
-      ],
-      language: "",
-    });
+    // Transforms.insertNodes(editor, {
+    //   type: "code",
+    //   children: [
+    //     {
+    //       text: text ? text : "",
+    //     },
+    //   ],
+    //   language: "",
+    // });
 
     // const text = SlateEditor.string(editor, editor.selection);
 

@@ -249,7 +249,7 @@ export const SlateCustomEditor = {
   isOrderedListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
-        SlateElement.isElement(n) && n.type === NodeType.ORDERED_LIST,
+        SlateElement.isElement(n) && (n.type as NodeType) === NodeType.ORDERED_LIST,
     });
     return !!match;
   },
@@ -308,7 +308,7 @@ export const SlateCustomEditor = {
    */
   outdentInfo(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+      match: (n) => SlateElement.isElement(n) && (n.type as NodeType) === NodeType.LIST_ITEM,
       mode: "lowest",
     });
 
@@ -330,8 +330,8 @@ export const SlateCustomEditor = {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
         SlateElement.isElement(n) &&
-        (n.type === NodeType.UNORDERED_LIST ||
-          n.type === NodeType.ORDERED_LIST),
+        ((n.type as NodeType) === NodeType.UNORDERED_LIST ||
+          (n.type as NodeType) === NodeType.ORDERED_LIST),
       mode: "lowest",
     });
 
@@ -354,8 +354,8 @@ export const SlateCustomEditor = {
 
     if (
       beforeNode &&
-      beforeNode[0].type === NodeType.LIST_ITEM &&
-      SlateElement.isElement(beforeNode[0])
+      SlateElement.isElement(beforeNode[0]) &&
+      (beforeNode[0] as any).type === NodeType.LIST_ITEM
     ) {
       return {
         type: match[0].type as string,
@@ -363,7 +363,7 @@ export const SlateCustomEditor = {
         to: Path.next(
           ReactEditor.findPath(
             editor,
-            beforeNode[0].children[beforeNode[0].children.length - 1]
+            (beforeNode[0] as any).children[(beforeNode[0] as any).children.length - 1]
           )
         ),
       };
@@ -381,7 +381,7 @@ export const SlateCustomEditor = {
     Transforms.wrapNodes(
       editor,
       {
-        type: type as NodeType.UNORDERED_LIST | NodeType.ORDERED_LIST,
+        type: type as any, // Cast as any to avoid type error
         children: [],
       },
       {
@@ -401,7 +401,7 @@ export const SlateCustomEditor = {
    */
   isListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+      match: (n) => SlateElement.isElement(n) && (n.type as NodeType) === NodeType.LIST_ITEM,
     });
     return !!match;
   },
@@ -578,7 +578,7 @@ export const SlateCustomEditor = {
     if (editor.selection) {
       const [currentListItem] = SlateEditor.nodes(editor, {
         match: (n) =>
-          SlateElement.isElement(n) && n.type === NodeType.LIST_ITEM,
+          SlateElement.isElement(n) && (n.type as NodeType) === NodeType.LIST_ITEM,
         mode: "lowest",
       });
 

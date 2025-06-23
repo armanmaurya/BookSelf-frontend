@@ -62,15 +62,23 @@ export const RenderCode = (props: RenderElementProps) => {
     const highlightedCode: React.JSX.Element[] =
       generateHighlightedCode(tokens);
 
-    const newProps = { ...props, children: highlightedCode };
     return (
       <div className="relative">
         <div className="absolute right-1 m-1 text-gray-400">
           {Language[language as string]}
         </div>
-        <BaseCode {...newProps} />
+        <BaseCode
+          attributes={attributes}
+          element={element as any}
+        >
+          {highlightedCode}
+        </BaseCode>
       </div>
     );
   }
-  return <BaseCode {...props} />;
+  return (
+    <BaseCode attributes={attributes} element={element as any}>
+      {children}
+    </BaseCode>
+  );
 };

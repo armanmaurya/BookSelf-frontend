@@ -74,7 +74,7 @@ export const IconBtn = ({children}: {
               <li className="rounded p-1.5 dark:bg-neutral-700 w-full bg-slate-100 text-center hover:cursor-pointer">
                 <NewArticleBtn />
               </li>
-              <LogoutBtn />
+              {/* <LogoutBtn /> */}
             </ul>
           </motion.div>
         )}

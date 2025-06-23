@@ -1,6 +1,6 @@
 "use client";
 import { API_ENDPOINT } from "@/app/utils";
-import { WSGIEditor } from "@bookself/slate-editor/editor";
+// import { WSGIEditor } from "@bookself/slate-editor/editor";
 
 export const RichTextEditor = ({
   initialValue,
@@ -32,13 +32,13 @@ export const RichTextEditor = ({
   console.log("initialValue", initialValue);
   return (
     <div className="">
-      <WSGIEditor
+      {/* <WSGIEditor
         onChange={(value) => {
           updatePage(value);
         }}
         initialValue={initialValue}
         title={title}
-      />
+      /> */}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import {
   Node,
   EditorNodesOptions,
 } from "slate";
-import { ListType } from "./types";
+import { NodeType } from "@bookself/slate-editor/src/types";
 import { ReactEditor } from "slate-react";
 
 
@@ -18,11 +18,11 @@ export const ListEditor = {
     Transforms.insertNodes(
       editor,
       {
-        type: ListType.LIST_ITEM,
+        type: NodeType.LIST_ITEM,
         children: children,
       },
       {
-        match: (n) => Element.isElement(n) && n.type === ListType.LIST_ITEM,
+        match: (n) => Element.isElement(n) && n.type === NodeType.LIST_ITEM,
       }
     );
   },
@@ -30,7 +30,7 @@ export const ListEditor = {
   // Indent the current list item
   indentListItem(editor: Editor) {
     const [currentListItem] = Editor.nodes(editor, {
-      match: (n) => Element.isElement(n) && n.type === ListType.LIST_ITEM,
+      match: (n) => Element.isElement(n) && n.type === NodeType.LIST_ITEM,
       mode: "lowest",
     });
 
@@ -46,11 +46,11 @@ export const ListEditor = {
       Transforms.wrapNodes(
         editor,
         {
-          type: ListType.UNORDERED_LIST,
+          type: NodeType.UNORDERED_LIST,
           children: [],
         },
         {
-          match: (n) => Element.isElement(n) && n.type === ListType.LIST_ITEM,
+          match: (n) => Element.isElement(n) && n.type === NodeType.LIST_ITEM,
         }
       );
 
@@ -64,7 +64,7 @@ export const ListEditor = {
 
       // If the previous node is also the List then merge it with current
       const previousNode = Editor.node(editor, Path.previous(toPath));
-      if (Element.isElement(previousNode[0]) && previousNode[0].type === ListType.UNORDERED_LIST) {
+      if (Element.isElement(previousNode[0]) && previousNode[0].type === NodeType.UNORDERED_LIST) {
         Transforms.mergeNodes(editor, {
           at: toPath,
         });
@@ -83,7 +83,7 @@ export const ListEditor = {
   outdentListItem(editor: Editor) {
     const [currentListItem] = Editor.nodes(editor, {
       at: editor.selection?.anchor,
-      match: (n) => Element.isElement(n) && n.type == ListType.LIST_ITEM,
+      match: (n) => Element.isElement(n) && n.type == NodeType.LIST_ITEM,
       mode: "lowest",
     });
 
@@ -95,7 +95,7 @@ export const ListEditor = {
     if (
       !parentListItem ||
       !Element.isElement(parentListItem[0]) ||
-      parentListItem[0].type !== ListType.LIST_ITEM
+      parentListItem[0].type !== NodeType.LIST_ITEM
     ) {
       console.log("Cannot outdent further");
       return;
@@ -117,9 +117,7 @@ export const ListEditor = {
         Transforms.wrapNodes(
           editor,
           {
-            type: currentList[0].type as
-              | ListType.ORDERED_LIST
-              | ListType.UNORDERED_LIST,
+            type: currentList[0].type as NodeType.ORDERED_LIST | NodeType.UNORDERED_LIST,
             children: [],
           },
           {

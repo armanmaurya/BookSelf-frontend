@@ -16,13 +16,13 @@ export const NewCollectionButton = () => {
     name: string;
     isPublic: boolean;
   }) => {
-    const { data } = await client.mutate({
-      mutation: MUTATION,
-      variables: {
-        name,
-        isPublic,
-      },
-    });
+    // const { data } = await client.mutate({
+    //   mutation: MUTATION,
+    //   variables: {
+    //     name,
+    //     isPublic,
+    //   },
+    // });
   };
   return (
     <div>
@@ -50,7 +50,7 @@ export const NewCollectionButton = () => {
            <button className="bg-blue-500 p-1 rounded-md">Create</button>
          </div>
        </div>
-      )}
+      )
     </div>
   );
 };

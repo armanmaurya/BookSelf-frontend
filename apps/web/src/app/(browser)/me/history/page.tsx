@@ -53,7 +53,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchHistory({ lastId: 0 });
-  }, []);
+  });
 
   const groupedHistory = history.reduce((acc: any, item: any) => {
     const date = format(new Date(item.lastVisited), "MMMM dd, yyyy");

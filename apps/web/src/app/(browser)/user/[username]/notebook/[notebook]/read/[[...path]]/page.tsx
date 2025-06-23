@@ -1,11 +1,11 @@
-import { API_ENDPOINT } from '@/app/utils';
-import { EditButton } from '@/components/element/button/EditButton';
+import { API_ENDPOINT } from "@/app/utils";
+// import { EditButton } from '@/components/element/button/EditButton';
 // import { NoContent } from '@/components/blocks/noContent';
-import { RenderContent } from '@bookself/slate-editor/renderer';
-import { PageResponse } from '@bookself/types';
-import { redirect } from 'next/navigation';
-import React from 'react'
-import { Descendant } from 'slate';
+// import { RenderContent } from '@bookself/slate-editor/renderer';
+import { PageResponse } from "@bookself/types";
+import { redirect } from "next/navigation";
+import React from "react";
+import { Descendant } from "slate";
 
 const page = async ({
   params,
@@ -15,17 +15,24 @@ const page = async ({
   const { username, notebook, path } = await params;
 
   if (!path) {
-    const getIndexPage = await fetch(`${API_ENDPOINT.notebook.url}/${username}/${notebook}?index`, {
-      cache: "no-store",
-    });
+    const getIndexPage = await fetch(
+      `${API_ENDPOINT.notebook.url}/${username}/${notebook}?index`,
+      {
+        cache: "no-store",
+      }
+    );
     const data: PageResponse = await getIndexPage.json();
     redirect(`/${username}/notebook/${notebook}/${data.slug}`);
   }
 
-  console.log("path", `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`);
+  console.log(
+    "path",
+    `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`
+  );
 
   const res = await fetch(
-    `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`, {
+    `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${path.join("/")}`,
+    {
       cache: "no-store",
     }
   );
@@ -39,22 +46,10 @@ const page = async ({
   console.log("runned");
 
   return (
-    <div className='h-full'>
-      <RenderContent value={
-        JSON.parse(data.content == "" ? "[]" : data.content) as Descendant[]
-      } title={data.title}>
-        <div className='h-full flex justify-center items-center'>
-          {/* <NoContent height={400} /> */}
-          No Content
-        </div>
-      </RenderContent>
-      <EditButton href={
-        `/${username}/notebook/${notebook}/edit/${path.join("/")}`
-      }>
-        Edit
-      </EditButton>
+    <div className="h-full">
+      
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

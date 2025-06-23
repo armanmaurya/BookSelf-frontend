@@ -10,7 +10,8 @@ export const withHeading = (type: string, editor: Editor) => {
       let fromtype = type;
       const isActive = HeadingEditor.isHeadingActive(editor);
       if (isActive) {
-         fromtype = HeadingEditor.getHeadingType(editor);
+         const headingType = HeadingEditor.getHeadingType(editor);
+         fromtype = headingType ?? type;
       }
       const blockText = editor.string(editor.selection?.anchor.path);
       switch (blockText) {

@@ -37,7 +37,6 @@ import {
 
 import {
   ListItem,
-  ListType,
   OrderedList,
   UnorderedList,
 } from "@bookself/slate-list";
@@ -112,7 +111,7 @@ const isFocusAtStart = (path: number[]) => {
   return true;
 };
 
-export type SlateNodeType = HeadingType | NodeType | ListType;
+export type SlateNodeType = HeadingType | NodeType;
 
 const withEnforceOneChild = (editor: Editor) => {
   const { normalizeNode } = editor;
@@ -189,11 +188,11 @@ export const WSGIEditor = ({
         return <EditorHeading6 {...props} />;
       case NodeType.CODE:
         return <EditableCode {...props} element={props.element} />;
-      case ListType.ORDERED_LIST:
+      case NodeType.ORDERED_LIST:
         return <OrderedList {...props} element={props.element} />;
-      case ListType.UNORDERED_LIST:
+      case NodeType.UNORDERED_LIST:
         return <UnorderedList {...props} element={props.element} />;
-      case ListType.LIST_ITEM:
+      case NodeType.LIST_ITEM:
         return <ListItem {...props} element={props.element} />;
       case NodeType.IMAGE:
         return <EditableImage {...props} />;
@@ -371,10 +370,10 @@ export const WSGIEditor = ({
         const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
         if (currentNode) {
           SlateCustomEditor.replaceBlock(editor, currentNode, {
-            type: ListType.UNORDERED_LIST,
+            type: NodeType.UNORDERED_LIST,
             children: [
               {
-                type: ListType.LIST_ITEM,
+                type: NodeType.LIST_ITEM,
                 children: [
                   {
                     type: "text",

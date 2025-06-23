@@ -2,7 +2,7 @@
 import { Button } from "@/components/element/button";
 import { Form } from "@/components/element/form";
 import { Input } from "@/components/element/input";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Store } from "react-notifications-component";
 
 export const UsernameForm = ({
@@ -119,10 +119,8 @@ export const UsernameForm = ({
         }
     };
 
-    const debounceCheckUsername = useCallback(
-        debounce((username: string) => checkUsername(username), 500),
-        []
-    );
+    // Remove useCallback, just use the debounced function directly
+    const debounceCheckUsername = debounce((username: string) => checkUsername(username), 500);
 
     return (
         <Form className="max-w-md mx-auto p-6 bg-white dark:bg-neutral-900 rounded-lg shadow-md" onSubmit={handleSubmit}>

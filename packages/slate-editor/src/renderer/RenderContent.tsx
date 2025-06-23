@@ -28,7 +28,7 @@ import {
 import { RenderParagraph } from "@bookself/slate-paragraph";
 import { ParagraphLeaf } from "@bookself/slate-paragraph";
 import { HeadingType } from "@bookself/slate-heading";
-import { ListItem, ListType, OrderedList, UnorderedList, } from "@bookself/slate-list";
+import { ListItem, OrderedList, UnorderedList } from "@bookself/slate-list";
 
 
 export const RenderContent = ({
@@ -124,11 +124,11 @@ const ServerElement = (props: RenderElementProps) => {
       return <H6 {...props} />;
     case NodeType.CODE:
       return <RenderCode {...props} />;
-    case ListType.ORDERED_LIST:
+    case NodeType.ORDERED_LIST:
       return <OrderedList {...props} />;
-    case ListType.UNORDERED_LIST:
+    case NodeType.UNORDERED_LIST:
       return <UnorderedList {...props} />;
-    case ListType.LIST_ITEM:
+    case NodeType.LIST_ITEM:
       return <ListItem {...props} />;
     case NodeType.IMAGE:
       return <RenderImage {...props} />;

@@ -40,7 +40,7 @@ export const ArticleCard2 = ({ data }: { data: Article }) => {
           {/* <p className="text-sm">Author: {data.author}</p> */}
           <p className="text-sm">
             Created At:{" "}
-            {new Date(data.created_at).toLocaleDateString("en-GB", {
+            {new Date(data.createdAt).toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "short",
               year: "numeric",

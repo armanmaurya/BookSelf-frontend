@@ -1,7 +1,7 @@
 
 import { API_ENDPOINT } from "@/app/utils";
 import { RichTextEditor } from "@/components/blocks/RichTextEditor";
-import { EditButton } from "@/components/element/button/EditButton";
+// import { EditButton } from "@/components/element/button/EditButton";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -42,12 +42,12 @@ const Page = async ({
   return (
     <div>
 
-      <RichTextEditor username={username} notebook={notebook} path={path} initialValue={data.content} title={data.title} />
+      {/* <RichTextEditor username={username} notebook={notebook} path={path} initialValue={data.content} title={data.title} />
       <EditButton href={
         `/${username}/notebook/${notebook}/read/${path ? path.join("/") : ""}`
       }>
         Read
-      </EditButton>
+      </EditButton> */}
     </div>
     
     

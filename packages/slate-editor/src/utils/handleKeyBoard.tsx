@@ -10,7 +10,7 @@ import { NodeType } from "../types";
 import { ReactEditor } from "slate-react";
 import { TabEditor } from "../plugins/tab-list/tab-editor";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
-import { ListEditor, ListType } from "@bookself/slate-list";
+import { ListEditor } from "@bookself/slate-list";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 
 export const handleKeyBoardFormating = (
@@ -351,7 +351,7 @@ export const handleKeyBoardFormating = (
           event.preventDefault();
           SlateCustomEditor.insertParagraph(editor, HeadingType.H6);
           break;
-        case ListType.UNORDERED_LIST:
+        case NodeType.UNORDERED_LIST:
           event.preventDefault();
           console.log("Runnnned");
           const insertingChild = [

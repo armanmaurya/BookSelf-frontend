@@ -4,7 +4,7 @@ import { getData } from "@/app/utils";
 // import { NodeType } from "@/components/slate/types";
 import { cookies } from "next/headers";
 import { Descendant } from "slate";
-import { RenderContent } from "@bookself/slate-editor/renderer";
+// import { RenderContent } from "@bookself/slate-editor/renderer";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const cookieStore = cookies();
@@ -31,7 +31,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="flex">
-        <RenderContent title={data.data.title} value={jsonContent} />
+        {/* <RenderContent title={data.data.title} value={jsonContent} /> */}
     </div>
   );
 };

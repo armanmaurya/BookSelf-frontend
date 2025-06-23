@@ -25,9 +25,8 @@ const GET_ARTICLES = gql`
         isSelf
       }
     }
-}
+  }
 `;
-
 
 export default async function Home() {
   const { data } = await client.query({ query: GET_ARTICLES });
@@ -37,12 +36,13 @@ export default async function Home() {
     <main className="">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         {articles.map((article: Article) => {
-          return <div>
-            <ArticleCard article={article} />
-          </div>
+          return (
+            <div key={article.slug}>
+              <ArticleCard article={article} />
+            </div>
+          );
         })}
       </div>
-
     </main>
   );
 }

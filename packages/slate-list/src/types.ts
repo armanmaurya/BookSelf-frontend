@@ -1,24 +1,19 @@
 import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
-
-export enum ListType {
-  ORDERED_LIST = "ol",
-  UNORDERED_LIST = "ul",
-  LIST_ITEM = "li",
-}
+import { NodeType } from "@bookself/slate-editor/src/types";
 
 export type ListItemElementType = {
-  type: ListType.LIST_ITEM | null;
+  type: NodeType.LIST_ITEM | null;
   children: any[];
 };
 
 export type OrderedListElementType = {
-  type: ListType.ORDERED_LIST;
+  type: NodeType.ORDERED_LIST;
   children: ListItemElementType[];
 };
 
 export type UnorderedListElementType = {
-  type: ListType.UNORDERED_LIST;
+  type: NodeType.UNORDERED_LIST;
   children: ListItemElementType[];
 };
 
@@ -29,5 +24,5 @@ export type UnorderedListElementType = {
 //   }
 // }
 
-type CustomEditor = BaseEditor & ReactEditor
+type CustomEditor = BaseEditor & ReactEditor;
 export type CustomElement = OrderedListElementType | UnorderedListElementType | ListItemElementType;
