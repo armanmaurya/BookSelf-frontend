@@ -7,6 +7,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { FaHistory } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
 import { IoDocumentText } from "react-icons/io5";
+import { SlSettings } from "react-icons/sl";
 
 export const ProfileIcon = () => {
   const [isClick, setIsClick] = useState(false);
@@ -50,7 +51,10 @@ export const ProfileIcon = () => {
           >
             <img
               className="h-8 object-fill"
-              src={`${user.profilePicture || "https://ui-avatars.com/api/?name=User&size=64"}`}
+              src={`${
+                user.profilePicture ||
+                "https://ui-avatars.com/api/?name=User&size=64"
+              }`}
               alt=""
             />
           </div>
@@ -87,6 +91,15 @@ export const ProfileIcon = () => {
                       >
                         <IoDocumentText />
                         <span>Your Articles</span>
+                      </Link>
+                      {/* Settings */}
+                      <Link
+                        href={`/settings/profile`}
+                        className="flex space-x-2 items-center"
+                        onClick={toggleClick}
+                      >
+                        <SlSettings />
+                        <span>Settings</span>
                       </Link>
                       {/* <Link
                         href={`/me/history/`}

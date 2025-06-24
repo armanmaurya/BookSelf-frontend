@@ -92,6 +92,10 @@ export const API_ENDPOINT = {
     url: `${apiURl}/notebooks`,
     method: "POST",
   },
+  uploadProfilePicture: {
+    url: `${apiURl}/account/upload-profile-pic/`,
+    method: "POST",
+  },
 };
 
 export const getGoogleAuthUrl = (redirect_path: string) => {

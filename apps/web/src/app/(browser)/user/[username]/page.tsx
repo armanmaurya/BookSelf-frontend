@@ -14,6 +14,7 @@ import { LinkTabs } from "@/components/element/LinkTabs";
 import { Article } from "@bookself/types";
 import { ArticleCard } from "@/components/element/cards/ArticleCard";
 import { UserArticles } from "./userArticles";
+import { EditableProfilePicture } from "@/components/blocks/EditProfilePicture";
 
 const ProfilePage = async ({
   params,
@@ -90,21 +91,7 @@ const ProfilePage = async ({
       <div className="rounded-xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-6">
           {/* Profile Picture */}
-          <div className="relative border-neutral-600  h-32 w-32 rounded-full border-4 overflow-hidden shadow-md flex-shrink-0">
-            {data.user.profilePicture ? (
-              <Image
-                src={data.user.profilePicture}
-                alt={`${data.user.username}'s profile`}
-                width={128}
-                height={128}
-                className="object-cover h-full w-full"
-              />
-            ) : (
-              <span className="w-full h-full flex items-center justify-center text-3xl">
-                {data.user.username.charAt(0).toUpperCase()}
-              </span>
-            )}
-          </div>
+          <EditableProfilePicture src={data.user.profilePicture} />
 
           {/* Profile Info */}
           <div className="flex-1 space-y-3">
