@@ -13,7 +13,7 @@ const Page = async () => {
     }
   `;
  
-  const { data } = await createServerClient().query({ 
+  const { data } = await createServerClient().query({  
     query: QUERY,
   });
   return (
