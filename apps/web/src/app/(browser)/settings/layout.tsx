@@ -1,35 +1,38 @@
+"use client";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 const Sidebar = () => {
+  const pathname = usePathname();
   const sections = [
     {
       title: "Account",
       items: [
-        "Public profile",
-        "Account",
-        "Accessibility",
-        "Notifications"
-      ]
+        { label: "Public profile", href: "/settings/profile" },
+        { label: "Account", href: "/settings/account" },
+        // { label: "Accessibility", href: "/settings/accessibility" },
+        // { label: "Notifications", href: "/settings/notifications" },
+      ],
     },
-    {
-      title: "Access",
-      items: [
-        "Billing and licensing",
-        "Emails",
-        "Password and authentication",
-        "Sessions",
-        "SSH and GPG keys",
-        "Organizations",
-        "Enterprises",
-        "Moderation"
-      ]
-    },
-    {
-      title: "Code, planning, and automation",
-      items: [
-        "Repositories"
-      ]
-    }
+    // {
+    //   title: "Access",
+    //   items: [
+    //     { label: "Billing and licensing", href: "/settings/billing" },
+    //     { label: "Emails", href: "/settings/emails" },
+    //     { label: "Password and authentication", href: "/settings/password" },
+    //     { label: "Sessions", href: "/settings/sessions" },
+    //     { label: "SSH and GPG keys", href: "/settings/ssh-gpg" },
+    //     { label: "Organizations", href: "/settings/organizations" },
+    //     { label: "Enterprises", href: "/settings/enterprises" },
+    //     { label: "Moderation", href: "/settings/moderation" },
+    //   ],
+    // },
+    // {
+    //   title: "Code, planning, and automation",
+    //   items: [
+    //     { label: "Repositories", href: "/settings/repositories" },
+    //   ],
+    // },
   ];
 
   return (
@@ -40,22 +43,23 @@ const Sidebar = () => {
             {section.title}
           </h3> */}
           {/* Horizontal Line */}
-          <div className="border-t border-neutral-600 my-3"></div>
+          {/* <div className="border-t border-neutral-600 my-3"></div> */}
           <ul className="space-y-1.5">
-            {section.items.map((item, itemIndex) => (
-              <li key={itemIndex}>
-                <a
-                  href="#"
-                  className={`block px-3 py-2 text-sm rounded-md transition-colors ${
-                    item === "Public profile"
-                      ? "bg-neutral-700 text-white"
-                      : "text-neutral-300 hover:bg-neutral-700 hover:text-white"
-                  }`}
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
+            {section.items.map((item, itemIndex) => {
+              const isActive = pathname === item.href;
+              return (
+                <li key={itemIndex}>
+                  <a
+                    href={item.href}
+                    className={`block px-3 py-2 text-sm rounded-md transition-colors text-neutral-300 hover:bg-neutral-700 hover:text-white${
+                      isActive ? " bg-neutral-700 text-white font-semibold" : ""
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ))}
