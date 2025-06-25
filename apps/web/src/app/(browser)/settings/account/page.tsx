@@ -27,7 +27,7 @@ const Page = async () => {
             Username
           </label>
           <div className="w-full bg-neutral-700 border border-neutral-600 rounded-md p-3 text-white">
-            <span>{data.me.username}</span>
+            <span>{data.me.username}</span> 
           </div>
         </div>
 
