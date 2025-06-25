@@ -37,7 +37,6 @@ const ProfilePage = async ({
         isSelf
         isFollowing
         username
-        registrationMethod
         profilePicture
       }
     }

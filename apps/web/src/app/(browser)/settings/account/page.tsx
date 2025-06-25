@@ -8,12 +8,12 @@ const Page = async () => {
       me {
         email
         username
-        registrationMethod
+        registrationMethods
       }
     }
   `;
  
-  const { data } = await createServerClient().query({  
+  const { data } = await createServerClient().query({
     query: QUERY,
   });
   return (
@@ -61,7 +61,7 @@ const Page = async () => {
                   </svg>
                   <span>Google</span>
                 </div>
-                {data.me.registrationMethod.includes("google") ? (
+                {data.me.registrationMethods.includes("google") ? (
                   <div className="flex items-center space-x-2">
                     <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">
                       Connected
@@ -93,7 +93,7 @@ const Page = async () => {
                   </svg>
                   <span>Email & Password</span>
                 </div>
-                {data.me.registrationMethod.includes("email") ? (
+                {data.me.registrationMethods.includes("email") ? (
                   <div className="flex items-center space-x-4">
                     <button
                       className="text-sm text-blue-400 hover:text-blue-300"
@@ -121,12 +121,12 @@ const Page = async () => {
           </div>
 
           {/* Warning message if only one method is connected */}
-          {data.me.registrationMethod.length === 1 && (
+          {/* {data.me.registrationMethods.length === 1 && (
             <p className="text-xs text-yellow-400">
               Warning: You only have one login method connected. Please add
               another method before disconnecting this one.
             </p>
-          )}
+          )} */}
         </div>
       </section>
 
