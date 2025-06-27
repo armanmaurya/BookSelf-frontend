@@ -1,3 +1,4 @@
+"use client";
 import BaseParagraph from "../base/BaseParagraph";
 import { ParagraphElementProps } from "../../types/element";
 import { useSelected, useSlateStatic } from "slate-react";
