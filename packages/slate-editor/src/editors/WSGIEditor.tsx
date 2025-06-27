@@ -35,11 +35,7 @@ import {
   withHeading,
 } from "@bookself/slate-heading";
 
-import {
-  ListItem,
-  OrderedList,
-  UnorderedList,
-} from "@bookself/slate-list";
+import { ListItem, OrderedList, UnorderedList } from "@bookself/slate-list";
 
 import {
   Descendant,
@@ -83,7 +79,7 @@ import {
   EditableParagraphLeaf,
   ParagraphEditor,
 } from "@bookself/slate-paragraph";
-import { EditableParagraph } from "@bookself/slate-paragraph";
+import { EditableParagraph, withParagraph } from "@bookself/slate-paragraph";
 import { CodeEditor, EditableCode } from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
@@ -152,12 +148,11 @@ export const WSGIEditor = ({
   const editor = useMemo(
     () =>
       withEnforceOneChild(
-        withHeading(
-          NodeType.PARAGRAPH,
-          withTabs(
-            withNormalize(
-              withImage(
-                withLinks(withPaste(withReact(withHistory(createEditor()))))
+        withTabs(
+          withNormalize(
+            withImage(
+              withLinks(
+                withPaste(withParagraph(withReact(withHistory(createEditor()))))
               )
             )
           )
@@ -186,28 +181,28 @@ export const WSGIEditor = ({
         return <EditorHeading5 {...props} />;
       case HeadingType.H6:
         return <EditorHeading6 {...props} />;
-      case NodeType.CODE:
-        return <EditableCode {...props} element={props.element} />;
-      case NodeType.ORDERED_LIST:
-        return <OrderedList {...props} element={props.element} />;
-      case NodeType.UNORDERED_LIST:
-        return <UnorderedList {...props} element={props.element} />;
-      case NodeType.LIST_ITEM:
-        return <ListItem {...props} element={props.element} />;
-      case NodeType.IMAGE:
-        return <EditableImage {...props} />;
-      case NodeType.BLOCKQUOTE:
-        return <EditableQuote {...props} />;
-      case NodeType.LINK:
-        return <SlateAnchorTag {...props} />;
-      case NodeType.TABS:
-        return <EditableTabs {...props} />;
-      case NodeType.TAB_LIST:
-        return <EditableTabList {...props} />;
-      case NodeType.TAB:
-        return <EditableTab {...props} />;
-      case NodeType.TAB_PANEL:
-        return <EditableTabPanel {...props} />;
+      // case NodeType.CODE:
+      //   return <EditableCode {...props} element={props.element} />;
+      // case NodeType.ORDERED_LIST:
+      //   return <OrderedList {...props} element={props.element} />;
+      // case NodeType.UNORDERED_LIST:
+      //   return <UnorderedList {...props} element={props.element} />;
+      // case NodeType.LIST_ITEM:
+      //   return <ListItem {...props} element={props.element} />;
+      // case NodeType.IMAGE:
+      //   return <EditableImage {...props} />;
+      // case NodeType.BLOCKQUOTE:
+      //   return <EditableQuote {...props} />;
+      // case NodeType.LINK:
+      //   return <SlateAnchorTag {...props} />;
+      // case NodeType.TABS:
+      //   return <EditableTabs {...props} />;
+      // case NodeType.TAB_LIST:
+      //   return <EditableTabList {...props} />;
+      // case NodeType.TAB:
+      //   return <EditableTab {...props} />;
+      // case NodeType.TAB_PANEL:
+      //   return <EditableTabPanel {...props} />;
       case NodeType.PARAGRAPH:
         return <EditableParagraph {...props} element={props.element} />;
       default:
@@ -225,28 +220,28 @@ export const WSGIEditor = ({
         SlateCustomEditor.toggleMark(editor, "bold");
       },
     },
-    {
-      name: "Text",
-      command: (editor) => {
-        const [match] = Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n),
-        });
-        const currentNode = match ? (match[0].type as SlateNodeType) : null;
-        if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, {
-            type: NodeType.PARAGRAPH,
-            align: "left",
-            children: [
-              {
-                type: "text",
-                text: "",
-                fontSize: 16,
-              },
-            ],
-          });
-        }
-      },
-    },
+    // {
+    //   name: "Text",
+    //   command: (editor) => {
+    //     const [match] = Editor.nodes(editor, {
+    //       match: (n) => SlateElement.isElement(n),
+    //     });
+    //     const currentNode = match ? (match[0].type as SlateNodeType) : null;
+    //     if (currentNode) {
+    //       SlateCustomEditor.replaceBlock(editor, currentNode, {
+    //         type: NodeType.PARAGRAPH,
+    //         align: "left",
+    //         children: [
+    //           {
+    //             type: "text",
+    //             text: "",
+    //             fontSize: 16,
+    //           },
+    //         ],
+    //       });
+    //     }
+    //   },
+    // },
     {
       name: "Heading 1",
       command: (editor) => {
@@ -439,6 +434,7 @@ export const WSGIEditor = ({
     },
   ];
 
+  
   const [isCommendMenuOpen, setIsCommendMenuOpen] = useState(false);
 
   /**
@@ -525,7 +521,7 @@ export const WSGIEditor = ({
       >
         {" "}
         <SlateToolBar />
-        <div className="w-full">
+        <div className="">
           <input
             ref={titleRef}
             type="text"
@@ -543,7 +539,7 @@ export const WSGIEditor = ({
             spellCheck
             autoFocus
             id="editor"
-            style={{ position: "inherit", zIndex: 0 }}
+            style={{ position: "relative", zIndex: 0 }}
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={(event) => {
@@ -566,11 +562,11 @@ export const WSGIEditor = ({
             className="h-60"
           ></div>
         </div>
-        <CommandMenu
+        {/* <CommandMenu
           commands={commands}
           isCommandMenuOpen={isCommendMenuOpen}
           setIsCommandMenuOpen={setIsCommendMenuOpen}
-        />
+        /> */}
       </Slate>
     </div>
   );

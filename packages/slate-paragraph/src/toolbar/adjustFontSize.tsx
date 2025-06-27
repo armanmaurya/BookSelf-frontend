@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { ReactEditor, useSlate, useSlateStatic } from "slate-react"
-import { ParagraphEditor } from "../editor/paragraphEditor";
+import { ParagraphEditor } from "../paragraph-editor";
 import { Editor, Element } from "slate";
 
 export const AdjustFontSize = () => {
@@ -21,11 +21,6 @@ export const AdjustFontSize = () => {
     const decreaseFontSize = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         ParagraphEditor.decreaseFontSize(editor);
-        // const fontSize = ParagraphEditor.getFontSize(editor);
-        // if (fontSize) {
-
-        //     setSize(fontSize)
-        // }
     }
 
     const setFontSize = (size: number) => {
@@ -43,15 +38,15 @@ export const AdjustFontSize = () => {
         console.log("HIIIIIII");
         for (const [node, path] of nodes) {
             console.log("node", node)
-            if (node.type !== "text") {
-                if (!disabled) {
-                    setIsDisabled(true);
-                } 
-            } else {
-                if (disabled) {
-                    setIsDisabled(false);
-                }
-            }
+            // if (node.type !== "text") {
+            //     if (!disabled) {
+            //         setIsDisabled(true);
+            //     } 
+            // } else {
+            //     if (disabled) {
+            //         setIsDisabled(false);
+            //     }
+            // }
     
         }
     }, [nodes])

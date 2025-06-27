@@ -4,28 +4,25 @@ import { ParagraphLeafProps } from "../../types/leaf";
 import { ParagraphLeaf } from "../base/ParagraphLeaf";
 import { useEffect } from "react";
 import { Editor, Range } from "slate";
-import { ParagraphEditor } from "../../editor/paragraphEditor";
+import { ParagraphEditor } from "../../paragraph-editor";
 
 export const EditableParagraphLeaf = (props: ParagraphLeafProps) => {
-    const editor = useSlateStatic();
-    const focused = useFocused();
+    // useEffect(() => {
 
-    useEffect(() => {
+    //     // console.log("Focused", focused)
+    //     if (editor.selection) {
+    //         if (!focused && !Range.isCollapsed(editor.selection)) {
+    //             // console.log("runned")
+    //             const isActive = ParagraphEditor.isMarkActive(editor, "blueSelect")
+    //             if (!isActive) {
 
-        // console.log("Focused", focused)
-        if (editor.selection) {
-            if (!focused && !Range.isCollapsed(editor.selection)) {
-                // console.log("runned")
-                const isActive = ParagraphEditor.isMarkActive(editor, "blueSelect")
-                if (!isActive) {
-
-                    Editor.addMark(editor, "blueSelect", true)
-                }
-            } else if (focused) {
-                Editor.removeMark(editor, "blueSelect")
-            }
-        }
-    }, [focused])
+    //                 Editor.addMark(editor, "blueSelect", true)
+    //             }
+    //         } else if (focused) {
+    //             Editor.removeMark(editor, "blueSelect")
+    //         }
+    //     }
+    // }, [focused])
     return (
         <ParagraphLeaf {...props}/>
     )

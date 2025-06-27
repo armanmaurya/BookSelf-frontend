@@ -17,7 +17,7 @@ const nextConfig = {
   },
   reactStrictMode: false,
   experimental: {
-    optimizePackageImports: ['', "@bookself/slate-paragraph", "slate", "slate-react"]
+    optimizePackageImports: ['', "slate", "slate-react"]
   }
 };
 

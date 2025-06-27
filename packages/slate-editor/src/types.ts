@@ -7,15 +7,27 @@ import {
 } from "slate";
 import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
-import { ParagraphElementType, ParagraphLeafType } from "@bookself/slate-paragraph";
+import {
+  ParagraphElementType,
+  ParagraphLeafType,
+  ParagraphEditor,
+} from "@bookself/slate-paragraph";
 import { TabLeafType } from "./plugins/tab-list/leaf/TabLeafType";
 import { CodeElementType } from "@bookself/slate-code";
 import { HeadingEditor, HeadingElementType } from "@bookself/slate-heading";
-import { ListItemElementType, OrderedListElementType, UnorderedListElementType } from "@bookself/slate-list";
+import {
+  ListItemElementType,
+  OrderedListElementType,
+  UnorderedListElementType,
+} from "@bookself/slate-list";
 
 // ...
 
-type CustomEditor = BaseEditor & ReactEditor & CustomEditorType & HistoryEditor & HeadingEditor;
+  type CustomEditor = BaseEditor &
+  ReactEditor &
+  CustomEditorType &
+  HistoryEditor &
+  HeadingEditor & ParagraphEditor;
 type CustomEditorType = { type?: string };
 
 type HeadingElement = {
@@ -32,7 +44,6 @@ type HeadingElement = {
   children: DefalutLeafType[];
 };
 export type BaseOperation = NodeOperation | SelectionOperation | TextOperation;
-
 
 declare module "@bookself/slate-command-menu" {
   interface CustomTypes {
@@ -84,7 +95,7 @@ type TabPanel = {
 };
 
 export type CustomElement =
-  CodeElementType
+  | CodeElementType
   | HeadingElementType
   | ImageElementType
   | OrderedListElementType
@@ -99,9 +110,9 @@ export type CustomElement =
   | ParagraphElementType;
 
 type DefalutLeafType = {
-  type: "default"
-  text: string
-}
+  type: "default";
+  text: string;
+};
 export type CustomText = ParagraphLeafType | TabLeafType | DefalutLeafType;
 
 declare module "slate" {
