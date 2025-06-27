@@ -9,7 +9,7 @@ export type ParagraphLeafType = {
   italic?: boolean;
   code?: boolean;
   fontSize: number;
-  blueSelect?: boolean
+  isFakeSelected?: boolean
 };
 
 

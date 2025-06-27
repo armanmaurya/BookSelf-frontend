@@ -10,7 +10,7 @@ export const ParagraphLeaf = (props: ParagraphLeafProps) => {
         }${props.leaf.underline ? " underline " : ""}${props.leaf.code
           ? " dark:bg-neutral-700 dark:bg-opacity-60 bg-slate-200 bg-opacity-60 px-0.5 rounded "
           : ""
-        }${props.leaf.strike ? " line-through " : ""} ${props.leaf.blueSelect ? "bg-[#323638]" : ""}`}
+        }${props.leaf.strike ? " line-through " : ""} ${props.leaf.isFakeSelected ? "bg-[#323638]" : ""}`}
     >
       {props.children}
     </span>

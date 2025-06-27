@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Editor, Range } from "slate";
 import { useFocused, useSlate } from "slate-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface Commands {
   name: string;
   command: (editor: Editor) => void;
+  icon?: React.ReactNode;
+  description?: string;
 }
 
 export const CommandMenu = ({
@@ -24,7 +27,6 @@ export const CommandMenu = ({
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    // console.log(event.key);
     if (event.key === "Escape") {
       event.preventDefault();
       setIsCommandMenuOpen(false);
@@ -42,7 +44,10 @@ export const CommandMenu = ({
             setSelectCommand(0);
             const range = domSelection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
-            setPos({ top: rect.top, left: rect.left });
+            setPos({ 
+              top: rect.top + window.scrollY + 24, 
+              left: rect.left + window.scrollX 
+            });
           }
         }
       }
@@ -51,7 +56,7 @@ export const CommandMenu = ({
 
   const sortMenuCommands = (command: string) => {
     if (MenuCommands) {
-      const sortedCommands = MenuCommands.sort((a, b) => {
+      const sortedCommands = [...MenuCommands].sort((a, b) => {
         const getMatchScore = (name: string, command: string) => {
           let score = 0;
           let commandIndex = 0;
@@ -80,56 +85,19 @@ export const CommandMenu = ({
   }
 
   useEffect(() => {
-    if (text == "") {
+    if (text === "") {
       setIsCommandMenuOpen(false);
     }
     sortMenuCommands(text.slice(1));
   }, [text]);
-  // useEffect(() => {
-  //   if (editor.selection) {
-  //     text = editor.string(editor.selection.anchor.path);
-  //     if (text.startsWith("/")) {
-  //       if (!isCommandMenuOpen) {
-  //         setIsCommandMenuOpen(true);
-  //       }
-
-  //       const domSelection = window.getSelection();
-  //       if (domSelection) {
-  //         setSelectCommand(0);
-  //         const range = domSelection.getRangeAt(0);
-  //         const rect = range.getBoundingClientRect();
-  //         console.log(rect.top, rect.left);
-  //         // ref.current?.setAttribute(
-  //         //   "style",
-  //         //   `top: ${rect.top}px; left: ${rect.left}px;`
-  //         // );
-  //         setPos({ top: rect.top, left: rect.left });
-  //         console.log("Show Command Menu");
-  //       }
-  //       // Remove the / from the text
-  //       const command = text.slice(1);
-  //       sortMenuCommands(command);
-  //       console.log(command);
-  //     } else {
-  //       if (isCommandMenuOpen) {
-  //         setIsCommandMenuOpen(false);
-  //       }
-  //     }
-  //   }
-  // }, [text]);
 
   const handleNavigation = (event: KeyboardEvent) => {
-    console.log(event.key);
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      if (selectCommand < MenuCommands.length - 1) {
-        setSelectCommand(selectCommand + 1);
-      }
+      setSelectCommand(prev => Math.min(prev + 1, MenuCommands.length - 1));
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      if (selectCommand > 0) {
-        setSelectCommand(selectCommand - 1);
-      }
+      setSelectCommand(prev => Math.max(prev - 1, 0));
     } else if (event.key === "Enter") {
       event.preventDefault();
       MenuCommands[selectCommand].command(editor);
@@ -151,37 +119,76 @@ export const CommandMenu = ({
         window.removeEventListener("keydown", handleNavigation);
       };
     }
-  }, [isCommandMenuOpen, selectCommand]);
+  }, [isCommandMenuOpen, selectCommand, MenuCommands]);
 
   return (
-    <>
+    <AnimatePresence>
       {isCommandMenuOpen && (
-        <div
+        <motion.div
           ref={ref}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.15 }}
           style={{
-            top: pos.top,
-            left: pos.left,
+            top: `${pos.top}px`,
+            left: `${pos.left}px`,
           }}
-          className="absolute p-2 bg-neutral-700 rounded-lg mt-6"
+          className="fixed z-[100] w-64 bg-neutral-800 rounded-lg shadow-lg border border-neutral-700 overflow-hidden"
         >
-          {MenuCommands.map((command, index) => {
-            return (
-              <div
+          <div className="p-1 max-h-80 overflow-y-auto">
+            <div className="px-3 py-2 text-xs text-neutral-400 border-b border-neutral-700">
+              Available commands
+            </div>
+            {MenuCommands.map((command, index) => (
+              <motion.div
                 key={index}
-                className={`p-1 cursor-pointer hover:bg-neutral-600 rounded-md ${index === selectCommand ? "bg-neutral-600" : ""
-                  }`}
+                initial={{ backgroundColor: "rgba(38, 38, 38, 0)" }}
+                animate={{ 
+                  backgroundColor: index === selectCommand ? "rgba(64, 64, 64, 1)" : "rgba(38, 38, 38, 0)" 
+                }}
+                className="flex items-center p-2 cursor-pointer rounded-md"
                 onClick={() => {
                   if (isFocused) {
                     command.command(editor);
+                    setIsCommandMenuOpen(false);
                   }
                 }}
+                onMouseEnter={() => setSelectCommand(index)}
               >
-                {command.name}
+                {command.icon && (
+                  <div className="flex items-center justify-center w-8 h-8 mr-2 bg-neutral-700 rounded-md text-neutral-300">
+                    {command.icon}
+                  </div>
+                )}
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-neutral-100">
+                    {command.name}
+                  </div>
+                  {command.description && (
+                    <div className="text-xs text-neutral-400">
+                      {command.description}
+                    </div>
+                  )}
+                </div>
+                {index === selectCommand && (
+                  <div className="text-xs text-neutral-400 px-2 py-1 bg-neutral-700 rounded">
+                    Enter
+                  </div>
+                )}
+              </motion.div>
+            ))}
+            {MenuCommands.length === 0 && (
+              <div className="p-3 text-sm text-center text-neutral-400">
+                No commands found
               </div>
-            );
-          })}
-        </div>
+            )}
+          </div>
+          <div className="px-3 py-2 text-xs text-neutral-500 border-t border-neutral-700">
+            ↑↓ to navigate • Enter to select • Esc to dismiss
+          </div>
+        </motion.div>
       )}
-    </>
+    </AnimatePresence>
   );
 };

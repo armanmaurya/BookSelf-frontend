@@ -10,6 +10,7 @@ import {
   FaAlignCenter,
   FaAlignRight,
   FaImage,
+  FaAlignJustify,
 } from "react-icons/fa6";
 import { IoMdCode, IoIosArrowDown } from "react-icons/io";
 import { ToolbarButton } from "./toolBarButton";
@@ -28,7 +29,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MdFormatListNumbered } from "react-icons/md";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiTabs } from "react-icons/pi";
-import { AdjustFontSize, ParagraphEditor } from "@bookself/slate-paragraph";
+import { ParagraphEditor, AdjustFontSize } from "@bookself/slate-paragraph";
 import { ListEditor } from "@bookself/slate-list";
 import { Editor, Element, Transforms } from "slate";
 import { CodeEditor } from "@bookself/slate-code";
@@ -75,7 +76,7 @@ export const SlateToolBar = () => {
     >
       <div className="w-full border justify-between rounded-full bg-slate-100 dark:bg-neutral-700 bg-opacity-80 backdrop-blur-sm flex">
         <div
-          className="toolbar flex space-x-1"
+          className="toolbar flex space-x-1 px-2 m-1"
         // onMouseDown={(e) => {
         //   e.preventDefault();
         // }}
@@ -174,7 +175,7 @@ export const SlateToolBar = () => {
           >
             <LuHeading6 size={23} />
           </ToolbarButton>
-          <ToolbarButton
+          {/* <ToolbarButton
             onClick={() => {
               if (CodeEditor.isBlockActive(editor)) {
                 const text = CodeEditor.text(editor);
@@ -191,8 +192,8 @@ export const SlateToolBar = () => {
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.CODE)}
           >
             <FaCode />
-          </ToolbarButton>
-          <ToolbarButton
+          </ToolbarButton> */}
+          {/* <ToolbarButton
             isActive={SlateCustomEditor.isBlockActive(
               editor,
               NodeType.BLOCKQUOTE
@@ -203,9 +204,9 @@ export const SlateToolBar = () => {
             }}
           >
             <FaQuoteLeft />
-          </ToolbarButton>
+          </ToolbarButton> */}
 
-          <ToolbarButton
+          {/* <ToolbarButton
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.LINK)}
             onClick={() => {
               const url = prompt("Enter the URL of the link:");
@@ -213,7 +214,7 @@ export const SlateToolBar = () => {
             }}
           >
             <FaLink />
-          </ToolbarButton>
+          </ToolbarButton> */}
           <div
             className={`flex relative items-center justify-center hover:cursor-pointer`}
             onClick={(event) => {
@@ -237,45 +238,56 @@ export const SlateToolBar = () => {
             </div>
             <div
               className={`${isDropDownActive ? "" : "hidden"
-                } absolute shadow-lg border rounded-md w-24 flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
+                } absolute shadow-lg border rounded-md flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
             >
               <ToolbarButton
                 onClick={() => {
-                  SlateCustomEditor.setAlignment(editor, "left");
+                  ParagraphEditor.alignNode(editor, "left");
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${SlateCustomEditor.getAlignment(editor)}` === "left"
+                  `${ParagraphEditor.getAlignment(editor)}` === "left"
                 }
               >
                 <FaAlignLeft className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  SlateCustomEditor.setAlignment(editor, "center");
+                  ParagraphEditor.alignNode(editor, "center");
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${SlateCustomEditor.getAlignment(editor)}` === "center"
+                  `${ParagraphEditor.getAlignment(editor)}` === "center"
                 }
               >
                 <FaAlignCenter className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  SlateCustomEditor.setAlignment(editor, "right");
+                  ParagraphEditor.alignNode(editor, "right");
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${SlateCustomEditor.getAlignment(editor)}` === "right"
+                  `${ParagraphEditor.getAlignment(editor)}` === "right"
                 }
               >
                 <FaAlignRight className="my-0.5" />
               </ToolbarButton>
+              <ToolbarButton
+                onClick={() => {
+                  ParagraphEditor.alignNode(editor, "justify");
+                  setIsDropDownActive(false);
+                }}
+                isActive={
+                  `${ParagraphEditor.getAlignment(editor)}` === "justify"
+                }
+              >
+                <FaAlignJustify className="my-0.5" />
+              </ToolbarButton>
             </div>
           </div>
 
-          <ToolbarButton
+          {/* <ToolbarButton
             onClick={() => {
               // toggleList(editor, NodeType.ORDERED_LIST);
               if (editor.selection) {
@@ -288,8 +300,8 @@ export const SlateToolBar = () => {
             }}
           >
             <MdFormatListNumbered size={20} />
-          </ToolbarButton>
-          <ToolbarButton
+          </ToolbarButton> */}
+          {/* <ToolbarButton
             onClick={() => {
               if (editor.selection) {
                 const currentNode = Editor.node(editor, editor.selection)
@@ -301,19 +313,19 @@ export const SlateToolBar = () => {
             }}
           >
             <FaListUl size={20} />
-          </ToolbarButton>
-          <ToolbarButton
+          </ToolbarButton> */}
+          {/* <ToolbarButton
             onClick={() => {
               SlateCustomEditor.insertImage(editor);
             }}
           >
             <FaImage size={20} />
-          </ToolbarButton>
-          <ToolbarButton onClick={() => {
+          </ToolbarButton> */}
+          {/* <ToolbarButton onClick={() => {
             SlateCustomEditor.insertTabs(editor);
           }}>
             <PiTabs size={25} />
-          </ToolbarButton>
+          </ToolbarButton> */}
           {/* <AdjustFontSize /> */}
         </div>
         <div className="">

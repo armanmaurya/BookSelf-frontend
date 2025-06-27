@@ -11,8 +11,10 @@ export { ParagraphLeafType, ParagraphLeafProps } from "./types/leaf";
 // #################
 
 // Editor
-export { ParagraphEditor } from "./editor/paragraphEditor";
+export * from "./paragraph-editor";
 // ##########################################
 
 // ToolBar
 export { AdjustFontSize } from "./toolbar/adjustFontSize";
+
+export { withParagraph } from "./with-paragraph";

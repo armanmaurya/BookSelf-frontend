@@ -557,13 +557,7 @@ export const SlateCustomEditor = {
     }
 
     if (
-      match[0].type === NodeType.PARAGRAPH ||
-      match[0].type === HeadingType.H1 ||
-      match[0].type === HeadingType.H2 ||
-      match[0].type === HeadingType.H3 ||
-      match[0].type === HeadingType.H4 ||
-      match[0].type === HeadingType.H5 ||
-      match[0].type === HeadingType.H6
+      match[0].type === NodeType.PARAGRAPH
     ) {
       return match[0].align;
     }

@@ -12,7 +12,7 @@ export const ParagraphLeaf = (props: ParagraphLeafProps) => {
         props.leaf.code
           ? " dark:bg-neutral-700 dark:bg-opacity-60 bg-slate-200 bg-opacity-60 px-0.5 rounded "
           : ""
-      }${props.leaf.strike ? " line-through " : ""}`}
+      }${props.leaf.strike ? " line-through " : ""} ${props.leaf.isFakeSelected ? " text-blue-500" : ""}`}
     >
       {props.children}
     </span>

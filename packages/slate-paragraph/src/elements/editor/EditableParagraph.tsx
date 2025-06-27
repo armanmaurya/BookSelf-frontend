@@ -2,7 +2,7 @@ import BaseParagraph from "../base/BaseParagraph";
 import { ParagraphElementProps } from "../../types/element";
 import { useSelected, useSlateStatic } from "slate-react";
 import { useEffect } from "react";
-import { ParagraphEditor } from "../../editor/paragraphEditor";
+import { ParagraphEditor } from "../../paragraph-editor";
 
 export const EditableParagraph = (props: ParagraphElementProps) => {
   const selected = useSelected();
@@ -46,19 +46,19 @@ export const EditableParagraph = (props: ParagraphElementProps) => {
       switch (key) {
         case "l":
           e.preventDefault();
-          ParagraphEditor.alignNode(editor, "left")
+          ParagraphEditor.alignNode(editor as ParagraphEditor, "left")
           break;
         case "e":
           e.preventDefault();
-          ParagraphEditor.alignNode(editor, "center")
+          ParagraphEditor.alignNode(editor as ParagraphEditor, "center")
           break;
         case "r":
           e.preventDefault();
-          ParagraphEditor.alignNode(editor, "right")
+          ParagraphEditor.alignNode(editor as ParagraphEditor, "right")
           break;
         case "j": 
           e.preventDefault();
-          ParagraphEditor.alignNode(editor, "justify")
+          ParagraphEditor.alignNode(editor as ParagraphEditor, "justify")
           break;
         case ">":
           e.preventDefault();
