@@ -640,7 +640,11 @@ export const SlateCustomEditor = {
           // If the same heading type is active, replace with paragraph at the same path
           ParagraphEditor.insertParagraph(
             editor,
-            {}, 
+            {
+              at: SlateEditor.after(editor, editor.selection.focus, {
+                unit: "block",
+              }),
+            },
             text
           );
           Transforms.removeNodes(editor, {
