@@ -7,7 +7,7 @@ export {
   EditorHeading6,
 } from "./elements/editor/EditorHeading";
 
-export * from "./editor/HeadingEditor";
+export { HeadingEditor } from "./heading-editor";
 export * from "./types/element";
 export * from "./types/type";
-export * from "./withHeading"
+export * from "./with-heading";

@@ -152,7 +152,11 @@ export const WSGIEditor = ({
           withNormalize(
             withImage(
               withLinks(
-                withPaste(withParagraph(withReact(withHistory(createEditor()))))
+                withPaste(
+                  withHeading(
+                    withParagraph(withReact(withHistory(createEditor())))
+                  )
+                )
               )
             )
           )
@@ -260,7 +264,7 @@ export const WSGIEditor = ({
         //   SlateCustomEditor.replaceBlock(editor, currentNode, heading1);
         // }
         if (currentNode) {
-          editor.replaceWithHeading(currentNode, HeadingType.H1);
+          // editor.replaceWithHeading(currentNode, HeadingType.H1);
         }
       },
     },
@@ -434,7 +438,6 @@ export const WSGIEditor = ({
     },
   ];
 
-  
   const [isCommendMenuOpen, setIsCommendMenuOpen] = useState(false);
 
   /**

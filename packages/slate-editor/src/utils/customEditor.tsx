@@ -13,6 +13,7 @@ import { ReactEditor } from "slate-react";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
 import { SlateNodeType } from "../editors/WSGIEditor";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
+import { HeadingEditor } from "@bookself/slate-heading";
 
 export const SlateCustomEditor = {
   /**
@@ -249,7 +250,8 @@ export const SlateCustomEditor = {
   isOrderedListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) =>
-        SlateElement.isElement(n) && (n.type as NodeType) === NodeType.ORDERED_LIST,
+        SlateElement.isElement(n) &&
+        (n.type as NodeType) === NodeType.ORDERED_LIST,
     });
     return !!match;
   },
@@ -308,7 +310,9 @@ export const SlateCustomEditor = {
    */
   outdentInfo(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && (n.type as NodeType) === NodeType.LIST_ITEM,
+      match: (n) =>
+        SlateElement.isElement(n) &&
+        (n.type as NodeType) === NodeType.LIST_ITEM,
       mode: "lowest",
     });
 
@@ -363,7 +367,9 @@ export const SlateCustomEditor = {
         to: Path.next(
           ReactEditor.findPath(
             editor,
-            (beforeNode[0] as any).children[(beforeNode[0] as any).children.length - 1]
+            (beforeNode[0] as any).children[
+              (beforeNode[0] as any).children.length - 1
+            ]
           )
         ),
       };
@@ -401,7 +407,9 @@ export const SlateCustomEditor = {
    */
   isListActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && (n.type as NodeType) === NodeType.LIST_ITEM,
+      match: (n) =>
+        SlateElement.isElement(n) &&
+        (n.type as NodeType) === NodeType.LIST_ITEM,
     });
     return !!match;
   },
@@ -556,9 +564,7 @@ export const SlateCustomEditor = {
       return "left";
     }
 
-    if (
-      match[0].type === NodeType.PARAGRAPH
-    ) {
+    if (match[0].type === NodeType.PARAGRAPH) {
       return match[0].align;
     }
   },
@@ -572,7 +578,8 @@ export const SlateCustomEditor = {
     if (editor.selection) {
       const [currentListItem] = SlateEditor.nodes(editor, {
         match: (n) =>
-          SlateElement.isElement(n) && (n.type as NodeType) === NodeType.LIST_ITEM,
+          SlateElement.isElement(n) &&
+          (n.type as NodeType) === NodeType.LIST_ITEM,
         mode: "lowest",
       });
 
@@ -603,42 +610,63 @@ export const SlateCustomEditor = {
    * @param type - The heading type to toggle.
    * @param text - The text to insert in the heading.
    */
-  toggleHeading(editor: SlateEditor, type: string, text: string) {
+  toggleHeading(editor: SlateEditor, type: HeadingType) {
     if (editor.selection) {
-      const [match] = SlateEditor.nodes(editor, {
-        match: (n) =>
-          SlateElement.isElement(n) &&
-          (n.type === HeadingType.H1 ||
-            n.type === HeadingType.H2 ||
-            n.type === HeadingType.H3 ||
-            n.type === HeadingType.H4 ||
-            n.type === HeadingType.H5 ||
-            n.type === HeadingType.H6 ||
-            n.type === NodeType.PARAGRAPH),
-      });
-      if (match) {
-        if (match[0].type === type) {
-          Transforms.removeNodes(editor);
-          ParagraphEditor.insertParagraph(editor, {}, text);
-          return;
+      // Find the current heading node (if any)
+      const [currentNode, currentPath] = SlateEditor.node(
+        editor,
+        editor.selection
+      );
+      const isHeading = HeadingEditor.isHeadingActive(editor);
+      const currentType = HeadingEditor.getHeadingType(editor);
+      const text = ParagraphEditor.string(editor);
+      console.log("Heading Type Active", currentType);
+      const headingTypes: HeadingType[] = [
+        HeadingType.H1,
+        HeadingType.H2,
+        HeadingType.H3,
+        HeadingType.H4,
+        HeadingType.H5,
+        HeadingType.H6,
+      ];
+
+      if (
+        isHeading &&
+        currentType &&
+        headingTypes.includes(currentType as HeadingType)
+      ) {
+        if (currentType === type) {
+          console.log("Same Heading Type Active");
+          // If the same heading type is active, replace with paragraph at the same path
+          ParagraphEditor.insertParagraph(
+            editor,
+            {}, 
+            text
+          );
+          Transforms.removeNodes(editor, {
+            match: (n) =>
+              SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+            mode: "lowest",
+            at: currentPath,
+          });
+        } else {
+          // Switch to a different heading level
+          HeadingEditor.insertHeading(editor, type, text);
+          Transforms.removeNodes(editor, {
+            match: (n) =>
+              SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+            mode: "lowest",
+            at: currentPath,
+          });
         }
-        Transforms.removeNodes(editor);
-        Transforms.insertNodes(editor, {
-          type:
-            (type as HeadingType.H1) ||
-            HeadingType.H2 ||
-            HeadingType.H3 ||
-            HeadingType.H4 ||
-            HeadingType.H5 ||
-            HeadingType.H6,
-          id: "1",
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: text,
-            },
-          ],
+      } else {
+        // If heading is not active, toggle to heading
+        HeadingEditor.insertHeading(editor, type, text);
+        Transforms.removeNodes(editor, {
+          match: (n) =>
+            SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+          mode: "lowest",
+          at: currentPath,
         });
       }
     }
@@ -772,5 +800,5 @@ export const SlateCustomEditor = {
   },
   insertNewLine(editor: SlateEditor) {
     Transforms.insertText(editor, "\n");
-  }
+  },
 };
