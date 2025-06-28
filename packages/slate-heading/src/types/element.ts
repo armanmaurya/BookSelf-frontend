@@ -5,7 +5,7 @@ import { HeadingType } from "./type";
 export const ParagraphType = "text";
 
 export type HeadingElementType = {
-  id?: string;
+  headingId: string;
   type: HeadingType.H1 | HeadingType.H2 | HeadingType.H3 | HeadingType.H4 | HeadingType.H5 | HeadingType.H6;
   align: "left" | "center" | "right" | "justify";
   children: HeadingLeafType[];

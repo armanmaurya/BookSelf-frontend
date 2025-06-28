@@ -290,7 +290,7 @@ export const SlateCustomEditor = {
           Transforms.setNodes(
             editor,
             {
-              id: numberOfDuplicates > 0 ? `${id}-${numberOfDuplicates}` : id,
+              headingId: numberOfDuplicates > 0 ? `${id}-${numberOfDuplicates}` : id,
             },
             {
               at: value[1],

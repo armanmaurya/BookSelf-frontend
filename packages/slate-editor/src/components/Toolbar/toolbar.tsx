@@ -43,6 +43,8 @@ const AlignIconSwitcher = ({ align }: { align: string }) => {
       return <FaAlignCenter />;
     case "right":
       return <FaAlignRight />;
+    case "justify":
+      return <FaAlignJustify />;
     default:
       return <FaAlignLeft />;
   }
@@ -228,7 +230,10 @@ export const SlateToolBar = () => {
               }`}
             >
               <AlignIconSwitcher
-                align={`${SlateCustomEditor.getAlignment(editor)}`}
+                align={`${
+                  ParagraphEditor.getAlignment(editor) ||
+                  HeadingEditor.getAlignment(editor)
+                }`}
               />
               <div
                 className={`${
@@ -245,40 +250,88 @@ export const SlateToolBar = () => {
             >
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "left");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "left");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "left");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
-                isActive={`${ParagraphEditor.getAlignment(editor)}` === "left"}
+                isActive={
+                  `${ParagraphEditor.getAlignment(editor)}` === "left" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "left"
+                }
               >
                 <FaAlignLeft className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "center");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "center");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "center");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${ParagraphEditor.getAlignment(editor)}` === "center"
+                  `${ParagraphEditor.getAlignment(editor)}` === "center" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "center"
                 }
               >
                 <FaAlignCenter className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "right");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "right");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "right");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
-                isActive={`${ParagraphEditor.getAlignment(editor)}` === "right"}
+                isActive={
+                  `${ParagraphEditor.getAlignment(editor)}` === "right" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "right"
+                }
               >
                 <FaAlignRight className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "justify");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "justify");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "justify");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${ParagraphEditor.getAlignment(editor)}` === "justify"
+                  `${ParagraphEditor.getAlignment(editor)}` === "justify" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "justify"
                 }
               >
                 <FaAlignJustify className="my-0.5" />
