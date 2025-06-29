@@ -1,4 +1,4 @@
-import { BaseEditor, Transforms } from "slate";
+import { BaseEditor, Editor, Transforms } from "slate";
 import { ReactEditor, useSlateStatic } from "slate-react";
 import { BaseCode } from "../base/baseCode";
 import {
@@ -21,7 +21,7 @@ import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
 
 export const EditableCode = (props: CodeElementProps) => {
-  const editor = useSlateStatic() as ReactEditor;
+  const editor = useSlateStatic() as any;
 
   const { attributes, children, element } = props;
   const setLanguage = (language: string) => {
@@ -35,7 +35,7 @@ export const EditableCode = (props: CodeElementProps) => {
       <div contentEditable={false} className="absolute">
         <select
           defaultValue={
-            element.type === CodeType ? (element.language as string) : ""
+            element.type === CodeType.Code ? (element.language as string) : ""
           }
           name="languages"
           id=""

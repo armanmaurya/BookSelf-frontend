@@ -4,9 +4,10 @@ export { RenderCode } from "./elements/render/RenderCode";
 export { CodeLeaf } from "./leaf/CodeLeaf";
 
 // Types
-export { CodeType, CodeElementType } from "./types/element";
-export * from "./types/leaf";
+export * from "./types/element";
 
 // Editor
 export { CodeEditor } from "./code-editor";
 export { withCode } from "./with-code";
+
+export { decorate } from "./decorate";

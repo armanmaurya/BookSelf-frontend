@@ -135,6 +135,12 @@ export const handleKeyBoardFormating = (
         ParagraphEditor.insertParagraph(editor, {
           match: (n) => n.type === NodeType.BLOCKQUOTE,
         });
+      case CodeType.Code:
+        event.preventDefault();
+        ParagraphEditor.insertParagraph(editor, {
+          match: (n) => n.type === CodeType.Code,
+        });
+        break;
     }
   }
   if (event.altKey) {

@@ -34,7 +34,7 @@ export const RenderCode = (props: RenderElementProps) => {
   const codeText = element.children.map((child: any) => child.text).join("\n");
 
   const language =
-    (element as CodeElementType).type === CodeType
+    (element as CodeElementType).type === CodeType.Code
       ? (element as CodeElementType).language
       : null;
   if (language) {

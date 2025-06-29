@@ -7,7 +7,7 @@ export const decorate = ([node, path]: [SlateNode, number[]]) => {
   const ranges: any[] = [];
 
   if (
-    (node as CodeElementType).type === CodeType &&
+    (node as CodeElementType).type === CodeType.Code &&
     SlateElement.isElement(node)
   ) {
     const text = SlateNode.string(node);

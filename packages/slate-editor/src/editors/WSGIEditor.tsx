@@ -46,7 +46,6 @@ import {
 } from "slate";
 import { SlateCustomEditor } from "../utils/customEditor";
 import { handleKeyBoardFormating } from "../utils/handleKeyBoard";
-import { decorate } from "../utils/decorate";
 
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-jsx";
@@ -79,7 +78,12 @@ import {
   ParagraphEditor,
 } from "@bookself/slate-paragraph";
 import { EditableParagraph, withParagraph } from "@bookself/slate-paragraph";
-import { CodeEditor, EditableCode, CodeType } from "@bookself/slate-code";
+import {
+  CodeEditor,
+  EditableCode,
+  CodeType,
+  decorate,
+} from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
 
