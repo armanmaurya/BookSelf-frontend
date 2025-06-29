@@ -80,7 +80,7 @@ export const HeadingEditor = {
    * @param align - The desired text alignment for the heading. Can be "left", "center", "right", or "justify".
    */
   alignNode(
-    editor: HeadingEditor,
+    editor: Editor,
     align: "left" | "center" | "right" | "justify"
   ) {
     const [match] = Editor.nodes(editor, {
