@@ -8,7 +8,6 @@ import {
   withPaste,
   withLinks,
   withKeyCommands,
-  withHeadingId,
 } from "../plugins";
 import {
   withReact,

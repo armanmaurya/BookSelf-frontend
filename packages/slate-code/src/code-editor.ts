@@ -1,10 +1,18 @@
 import {
+  BaseEditor,
   Path,
   Range,
   Editor as SlateEditor,
   Element as SlateElement,
   Transforms,
 } from "slate";
+import { CodeElementType } from "./types/element";
+
+export interface CodeEditor extends BaseEditor {
+  insertCode: (editor: SlateEditor, type: string, initialText?: string) => void;
+  isCodeActive: (editor: SlateEditor) => boolean;
+  codeText: (editor: SlateEditor) => string;
+}
 
 export const CodeEditor = {
   insertCode(editor: SlateEditor, type: string, initialText?: string) {
@@ -61,16 +69,17 @@ export const CodeEditor = {
 
     // console.log("text", text);
   },
-  isBlockActive(editor: SlateEditor) {
+  isCodeActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "code",
+      match: (n) =>
+        SlateElement.isElement(n) && (n as CodeElementType).type === "code",
     });
 
     return !!match;
   },
-  text(editor: SlateEditor) {
+  codeText(editor: SlateEditor) {
     return getText(editor);
-  }
+  },
 };
 
 const getText = (editor: SlateEditor) => {

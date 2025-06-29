@@ -1,15 +1,34 @@
-import { Transforms } from "slate";
-import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
+import { BaseEditor, Transforms } from "slate";
+import { ReactEditor, useSlateStatic } from "slate-react";
 import { BaseCode } from "../base/baseCode";
-import { CodeElementProps, CodeType } from "../../types/element";
+import {
+  CodeElementProps,
+  CodeElementType,
+  CodeType,
+} from "../../types/element";
+
+// Importing Prism for syntax highlighting
+// and the necessary languages and themes
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-markdown";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-php";
+import "prismjs/components/prism-sql";
+import "prismjs/components/prism-java";
+import "prismjs/themes/prism-solarizedlight.css";
 
 export const EditableCode = (props: CodeElementProps) => {
-  const editor = useSlateStatic();
+  const editor = useSlateStatic() as ReactEditor;
 
   const { attributes, children, element } = props;
   const setLanguage = (language: string) => {
     const path = ReactEditor.findPath(editor, element);
-    Transforms.setNodes(editor, { language }, { at: path });
+    Transforms.setNodes(editor, { language } as Partial<CodeElementType>, {
+      at: path,
+    });
   };
   return (
     <div className="relative">
