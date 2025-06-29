@@ -36,32 +36,32 @@ export const handleKeyBoardFormating = (
           //   }]
           // })
           // console.log(text)
-          SlateCustomEditor.toggleHeading(editor, NodeType.H1, text)
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H1)
           break;
         case "@":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          SlateCustomEditor.toggleHeading(editor, NodeType.H2, text);
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H2);
           break;
         case "#":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          SlateCustomEditor.toggleHeading(editor, NodeType.H3, text);
+          SlateCustomEditor.toggleHeading(editor,  HeadingType.H3);
           break;
         case "$":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          SlateCustomEditor.toggleHeading(editor, NodeType.H4, text);
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H4);
           break;
         case "%":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          SlateCustomEditor.toggleHeading(editor, NodeType.H5, text);
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H5);
           break;
         case "^":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          SlateCustomEditor.toggleHeading(editor, NodeType.H6, text);
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H6);
           break;
         case "~":
           event.preventDefault();

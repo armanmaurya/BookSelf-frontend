@@ -33,6 +33,7 @@ import { ParagraphEditor, AdjustFontSize } from "@bookself/slate-paragraph";
 import { ListEditor } from "@bookself/slate-list";
 import { Editor, Element, Transforms } from "slate";
 import { CodeEditor } from "@bookself/slate-code";
+import { HeadingEditor, HeadingType } from "@bookself/slate-heading";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
   switch (align) {
@@ -42,6 +43,8 @@ const AlignIconSwitcher = ({ align }: { align: string }) => {
       return <FaAlignCenter />;
     case "right":
       return <FaAlignRight />;
+    case "justify":
+      return <FaAlignJustify />;
     default:
       return <FaAlignLeft />;
   }
@@ -70,16 +73,16 @@ export const SlateToolBar = () => {
   return (
     <div
       className="z-10 pt-3"
-    // onMouseDown={(e) => {
-    //   e.preventDefault();
-    // }}
+      // onMouseDown={(e) => {
+      //   e.preventDefault();
+      // }}
     >
       <div className="w-full border justify-between rounded-full bg-slate-100 dark:bg-neutral-700 bg-opacity-80 backdrop-blur-sm flex">
         <div
           className="toolbar flex space-x-1 px-2 m-1"
-        // onMouseDown={(e) => {
-        //   e.preventDefault();
-        // }}
+          // onMouseDown={(e) => {
+          //   e.preventDefault();
+          // }}
         >
           <ToolbarButton
             onClick={() => SlateCustomEditor.toggleMark(editor, NodeType.BOLD)}
@@ -118,10 +121,9 @@ export const SlateToolBar = () => {
 
           <ToolbarButton
             onClick={() => {
-              const text = ParagraphEditor.string(editor);
-              SlateCustomEditor.toggleHeading(editor, NodeType.H1, text);
+              SlateCustomEditor.toggleHeading(editor, HeadingType.H1);
             }}
-            isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H1)}
+            isActive={HeadingEditor.getHeadingType(editor) === HeadingType.H1}
           >
             <LuHeading1 size={23} />
           </ToolbarButton>
@@ -129,9 +131,9 @@ export const SlateToolBar = () => {
           <ToolbarButton
             onClick={() => {
               const text = ParagraphEditor.string(editor);
-              SlateCustomEditor.toggleHeading(editor, NodeType.H2, text);
+              SlateCustomEditor.toggleHeading(editor, HeadingType.H2);
             }}
-            isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H2)}
+            isActive={HeadingEditor.getHeadingType(editor) === HeadingType.H2}
           >
             <LuHeading2 size={23} />
           </ToolbarButton>
@@ -139,9 +141,9 @@ export const SlateToolBar = () => {
           <ToolbarButton
             onClick={() => {
               const text = ParagraphEditor.string(editor);
-              SlateCustomEditor.toggleHeading(editor, NodeType.H3, text);
+              SlateCustomEditor.toggleHeading(editor, HeadingType.H3);
             }}
-            isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H3)}
+            isActive={HeadingEditor.getHeadingType(editor) === HeadingType.H3}
           >
             <LuHeading3 size={23} />
           </ToolbarButton>
@@ -149,9 +151,9 @@ export const SlateToolBar = () => {
           <ToolbarButton
             onClick={() => {
               const text = ParagraphEditor.string(editor);
-              SlateCustomEditor.toggleHeading(editor, NodeType.H4, text);
+              SlateCustomEditor.toggleHeading(editor, HeadingType.H4);
             }}
-            isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H4)}
+            isActive={HeadingEditor.getHeadingType(editor) === HeadingType.H4}
           >
             <LuHeading4 size={23} />
           </ToolbarButton>
@@ -159,9 +161,9 @@ export const SlateToolBar = () => {
           <ToolbarButton
             onClick={() => {
               const text = ParagraphEditor.string(editor);
-              SlateCustomEditor.toggleHeading(editor, NodeType.H5, text);
+              SlateCustomEditor.toggleHeading(editor, HeadingType.H5);
             }}
-            isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H5)}
+            isActive={HeadingEditor.getHeadingType(editor) === HeadingType.H5}
           >
             <LuHeading5 size={23} />
           </ToolbarButton>
@@ -169,9 +171,9 @@ export const SlateToolBar = () => {
           <ToolbarButton
             onClick={() => {
               const text = ParagraphEditor.string(editor);
-              SlateCustomEditor.toggleHeading(editor, NodeType.H6, text);
+              SlateCustomEditor.toggleHeading(editor, HeadingType.H6);
             }}
-            isActive={SlateCustomEditor.isBlockActive(editor, NodeType.H6)}
+            isActive={HeadingEditor.getHeadingType(editor) === HeadingType.H6}
           >
             <LuHeading6 size={23} />
           </ToolbarButton>
@@ -223,63 +225,113 @@ export const SlateToolBar = () => {
             }}
           >
             <div
-              className={`flex space-x-1 p-1 rounded dark:bg-opacity-15 bg-opacity-15  ${isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
-                }`}
+              className={`flex space-x-1 p-1 rounded dark:bg-opacity-15 bg-opacity-15  ${
+                isDropDownActive ? "dark:bg-neutral-400 bg-neutral-400" : ""
+              }`}
             >
               <AlignIconSwitcher
-                align={`${SlateCustomEditor.getAlignment(editor)}`}
+                align={`${
+                  ParagraphEditor.getAlignment(editor) ||
+                  HeadingEditor.getAlignment(editor)
+                }`}
               />
               <div
-                className={`${isDropDownActive ? "-rotate-180" : "rotate-0"
-                  } transition transform-gpu`}
+                className={`${
+                  isDropDownActive ? "-rotate-180" : "rotate-0"
+                } transition transform-gpu`}
               >
                 <IoIosArrowDown />
               </div>
             </div>
             <div
-              className={`${isDropDownActive ? "" : "hidden"
-                } absolute shadow-lg border rounded-md flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
+              className={`${
+                isDropDownActive ? "" : "hidden"
+              } absolute shadow-lg border rounded-md flex items-center dark:bg-neutral-800 bg-white justify-center top-7 left-0`}
             >
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "left");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "left");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "left");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${ParagraphEditor.getAlignment(editor)}` === "left"
+                  `${ParagraphEditor.getAlignment(editor)}` === "left" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "left"
                 }
               >
                 <FaAlignLeft className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "center");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "center");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "center");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${ParagraphEditor.getAlignment(editor)}` === "center"
+                  `${ParagraphEditor.getAlignment(editor)}` === "center" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "center"
                 }
               >
                 <FaAlignCenter className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "right");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "right");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "right");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${ParagraphEditor.getAlignment(editor)}` === "right"
+                  `${ParagraphEditor.getAlignment(editor)}` === "right" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "right"
                 }
               >
                 <FaAlignRight className="my-0.5" />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
-                  ParagraphEditor.alignNode(editor, "justify");
+                  if (editor.selection) {
+                    const [currentNode] = Editor.node(editor, editor.selection);
+                    const nodeType = currentNode.type;
+                    switch (nodeType) {
+                      case NodeType.PARAGRAPH:
+                        ParagraphEditor.alignNode(editor, "justify");
+                        break;
+                      case "heading":
+                        HeadingEditor.alignNode(editor, "justify");
+                    }
+                  }
                   setIsDropDownActive(false);
                 }}
                 isActive={
-                  `${ParagraphEditor.getAlignment(editor)}` === "justify"
+                  `${ParagraphEditor.getAlignment(editor)}` === "justify" ||
+                  `${HeadingEditor.getAlignment(editor)}` === "justify"
                 }
               >
                 <FaAlignJustify className="my-0.5" />
@@ -349,7 +401,7 @@ export const SlateToolBar = () => {
               >
                 <button
                   className="h-12 hover:bg-red-500 w-full border"
-                // onClick={onDelete}
+                  // onClick={onDelete}
                 >
                   Delete
                 </button>

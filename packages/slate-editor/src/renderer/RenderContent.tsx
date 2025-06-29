@@ -27,9 +27,16 @@ import {
 } from "../plugins/tab-list/elements/render";
 import { RenderParagraph } from "@bookself/slate-paragraph";
 import { ParagraphLeaf } from "@bookself/slate-paragraph";
-import { HeadingType } from "@bookself/slate-heading";
+import {
+  HeadingType,
+  RenderHeading1,
+  RenderHeading2,
+  RenderHeading3,
+  RenderHeading4,
+  RenderHeading5,
+  RenderHeading6,
+} from "@bookself/slate-heading";
 import { ListItem, OrderedList, UnorderedList } from "@bookself/slate-list";
-
 
 export const RenderContent = ({
   value,
@@ -54,20 +61,15 @@ export const RenderContent = ({
       </h1> */}
       {value && (
         <div>
-          {
-            value.length === 0 ? (
-              <div className="h-full">
-                {children}
-              </div>
-            ) : (
-              <div className="">
-                <RenderEditorStatic value={value} />
-              </div>
-            )
-          }
+          {value.length === 0 ? (
+            <div className="h-full">{children}</div>
+          ) : (
+            <div className="">
+              <RenderEditorStatic value={value} />
+            </div>
+          )}
         </div>
       )}
-
     </div>
   );
 };
@@ -111,17 +113,17 @@ export const RenderEditorStatic = ({ value }: { value: Descendant[] }) => {
 const ServerElement = (props: RenderElementProps) => {
   switch (props.element.type) {
     case HeadingType.H1:
-      return <H1 {...props} />;
+      return <RenderHeading1 {...props} />;
     case HeadingType.H2:
-      return <H2 {...props} />;
+      return <RenderHeading2 {...props} />;
     case HeadingType.H3:
-      return <H3 {...props} />;
+      return <RenderHeading3 {...props} />;
     case HeadingType.H4:
-      return <H4 {...props} />;
+      return <RenderHeading4 {...props} />;
     case HeadingType.H5:
-      return <H5 {...props} />;
+      return <RenderHeading5 {...props} />;
     case HeadingType.H6:
-      return <H6 {...props} />;
+      return <RenderHeading6 {...props} />;
     case NodeType.CODE:
       return <RenderCode {...props} />;
     case NodeType.ORDERED_LIST:
@@ -145,7 +147,7 @@ const ServerElement = (props: RenderElementProps) => {
     case NodeType.TAB_PANEL:
       return <RenderTabPanel {...props} />;
     case NodeType.PARAGRAPH:
-      return <RenderParagraph {...props} element={props.element} />
+      return <RenderParagraph {...props} element={props.element} />;
     default:
       return <Default {...props} />;
   }
@@ -154,7 +156,7 @@ const ServerElement = (props: RenderElementProps) => {
 const ServerLeaf = (props: RenderLeafProps) => {
   switch (props.leaf.type) {
     case "text":
-      return <ParagraphLeaf {...props} leaf={props.leaf} />
+      return <ParagraphLeaf {...props} leaf={props.leaf} />;
     default:
       return <DefalutLeaf {...props} />;
   }

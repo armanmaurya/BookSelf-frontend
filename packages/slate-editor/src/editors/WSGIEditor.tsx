@@ -152,7 +152,11 @@ export const WSGIEditor = ({
           withNormalize(
             withImage(
               withLinks(
-                withPaste(withParagraph(withReact(withHistory(createEditor()))))
+                // withPaste(
+                  withHeading(
+                    withParagraph(withReact(withHistory(createEditor())))
+                  )
+                // )
               )
             )
           )
@@ -260,103 +264,103 @@ export const WSGIEditor = ({
         //   SlateCustomEditor.replaceBlock(editor, currentNode, heading1);
         // }
         if (currentNode) {
-          editor.replaceWithHeading(currentNode, HeadingType.H1);
+          // editor.replaceWithHeading(currentNode, HeadingType.H1);
         }
       },
     },
     {
       name: "Heading 2",
       command: (editor) => {
-        const heading2: HeadingElementType = {
-          type: HeadingType.H2,
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: "",
-            },
-          ],
-        };
-        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, heading2);
-        }
+        // const heading2: HeadingElementType = {
+        //   type: HeadingType.H2,
+        //   align: "left",
+        //   children: [
+        //     {
+        //       type: "default",
+        //       text: "",
+        //     },
+        //   ],
+        // };
+        // const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        // if (currentNode) {
+        //   SlateCustomEditor.replaceBlock(editor, currentNode, heading2);
+        // }
       },
     },
     {
       name: "Heading 3",
       command: (editor) => {
-        const heading3: HeadingElementType = {
-          type: HeadingType.H3,
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: "",
-            },
-          ],
-        };
-        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, heading3);
-        }
+        // const heading3: HeadingElementType = {
+        //   type: HeadingType.H3,
+        //   align: "left",
+        //   children: [
+        //     {
+        //       type: "default",
+        //       text: "",
+        //     },
+        //   ],
+        // };
+        // const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        // if (currentNode) {
+        //   SlateCustomEditor.replaceBlock(editor, currentNode, heading3);
+        // }
       },
     },
     {
       name: "Heading 4",
       command: (editor) => {
-        const heading4: HeadingElementType = {
-          type: HeadingType.H4,
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: "",
-            },
-          ],
-        };
-        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, heading4);
-        }
+        // const heading4: HeadingElementType = {
+        //   type: HeadingType.H4,
+        //   align: "left",
+        //   children: [
+        //     {
+        //       type: "default",
+      //       text: "",
+        //     },
+        //   ],
+        // };
+        // const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        // if (currentNode) {
+        //   SlateCustomEditor.replaceBlock(editor, currentNode, heading4);
+        // }
       },
     },
     {
       name: "Heading 5",
       command: (editor) => {
-        const heading5: HeadingElementType = {
-          type: HeadingType.H5,
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: "",
-            },
-          ],
-        };
-        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, heading5);
-        }
+        // const heading5: HeadingElementType = {
+        //   type: HeadingType.H5,
+        //   align: "left",
+        //   children: [
+        //     {
+        //       type: "default",
+        //       text: "",
+        //     },
+        //   ],
+        // };
+        // const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        // if (currentNode) {
+        //   SlateCustomEditor.replaceBlock(editor, currentNode, heading5);
+        // }
       },
     },
     {
       name: "Heading 6",
       command: (editor) => {
-        const heading6: HeadingElementType = {
-          type: HeadingType.H6,
-          align: "left",
-          children: [
-            {
-              type: "default",
-              text: "",
-            },
-          ],
-        };
-        const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
-        if (currentNode) {
-          SlateCustomEditor.replaceBlock(editor, currentNode, heading6);
-        }
+        // const heading6: HeadingElementType = {
+        //   type: HeadingType.H6,
+        //   align: "left",
+        //   children: [
+        //     {
+        //       type: "default",
+        //       text: "",
+        //     },
+        //   ],
+        // };
+        // const currentNode = SlateCustomEditor.getCurrentBlockType(editor);
+        // if (currentNode) {
+        //   SlateCustomEditor.replaceBlock(editor, currentNode, heading6);
+        // }
       },
     },
     {
@@ -434,7 +438,6 @@ export const WSGIEditor = ({
     },
   ];
 
-  
   const [isCommendMenuOpen, setIsCommendMenuOpen] = useState(false);
 
   /**
