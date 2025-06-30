@@ -1,8 +1,17 @@
 import { DraftArticle } from "@bookself/types";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import Link from "next/link";
-import { IoMdEye, IoMdTime } from "react-icons/io";
-import { FiEdit2 } from "react-icons/fi";
+import { FiEdit2, FiClock, FiTrash2, FiShare2 } from "react-icons/fi";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 export const DraftArticleCard = ({
   draftArticle,
@@ -15,37 +24,74 @@ export const DraftArticleCard = ({
     addSuffix: true,
   });
 
+  const handleDelete = () => {
+    // Add your delete logic here
+    console.log("Deleting draft:", draftArticle.article.slug);
+  };
+
+  const handleShare = () => {
+    // Add your share logic here
+    console.log("Sharing draft:", draftArticle.article.slug);
+  };
+
   return (
-    <div className="group bg-white dark:bg-neutral-900 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-neutral-800 hover:shadow-md transition-all duration-200">
-      <div className="flex justify-between items-start gap-3">
-        <div>
-          <Link
-            href={href}
-            className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
-          >
-            {draftArticle.article.title || "Untitled Draft"}
+    <Card className="group p-6 transition-all hover:shadow-md">
+      <div className="flex justify-between items-start gap-4">
+        <div className="flex-1">
+          <Link href={href}>
+            <h3 className="text-lg font-medium group-hover:text-primary transition-colors line-clamp-2">
+              {draftArticle.article.title || "Untitled Draft"}
+            </h3>
           </Link>
           
-          <div className="flex items-center mt-2 text-sm text-gray-500 dark:text-gray-400">
-            <IoMdTime className="mr-1.5" size={14} />
+          <div className="flex items-center mt-2 text-sm text-muted-foreground">
+            <FiClock className="mr-2 h-4 w-4" />
             <span>Last edited {formattedDate}</span>
           </div>
         </div>
         
-        <Link
-          href={href}
-          className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-          title="Edit draft"
-        >
-          <FiEdit2 size={18} />
-        </Link>
+        <div className="flex items-center gap-1">
+          <Button 
+            asChild
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8"
+          >
+            <Link href={href} title="Edit draft">
+              <FiEdit2 className="h-4 w-4" />
+            </Link>
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 focus:opacity-100"
+              >
+                <BsThreeDotsVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleShare}>
+                <FiShare2 className="mr-2 h-4 w-4" />
+                <span>Share</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleDelete}
+                className="text-destructive focus:text-destructive"
+              >
+                <FiTrash2 className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       
-      {/* {draftArticle.article.excerpt && (
-        <p className="mt-3 text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
-          {draftArticle.article.excerpt}
-        </p>
-      )} */}
-    </div>
+      <Badge variant="secondary" className="mt-3">
+        Draft
+      </Badge>
+    </Card>
   );
 };

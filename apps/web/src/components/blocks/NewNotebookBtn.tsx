@@ -9,7 +9,7 @@ import {
   AnimatePresence,
   AnimationProps,
 } from "framer-motion";
-import { Input } from "../element/input";
+import { CustomInput } from "../element/input";
 import { API_ENDPOINT } from "@/app/utils";
 import Cookies from "js-cookie";
 import { Store } from "react-notifications-component";
@@ -111,7 +111,7 @@ export const NewNotebookBtn = ({ username }: { username: string }) => {
               className="flex flex-col gap-3 items-center dark:bg-neutral-900 p-2 rounded-md"
             >
               <h1 className="text-3xl">New Notebook</h1>
-              <Input placeholder="Notebook Name" value={notebookName} onChange={(e) => {
+              <CustomInput placeholder="Notebook Name" value={notebookName} onChange={(e) => {
                 setNotebookName(e.target.value);
               }} />
               <Button

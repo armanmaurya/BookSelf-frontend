@@ -1,34 +1,65 @@
 "use client";
-import { TextInput } from "@/components/element/inputs/textInput";
 import { gql } from "@apollo/client";
-import { createServerClient } from "@/lib/ServerClient";
 import React, { useRef, useState } from "react";
 import client from "@/lib/apolloClient";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { IoClose } from "react-icons/io5";
 
-export function ProfileForm({ defaultFirstName, defaultLastName, defaultAbout }: {
+// Define form schema
+const formSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  about: z.string().optional(),
+});
+
+export function ProfileForm({
+  defaultFirstName,
+  defaultLastName,
+  defaultAbout,
+}: {
   defaultFirstName: string;
   defaultLastName: string;
   defaultAbout: string;
 }) {
   const [success, setSuccess] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: defaultFirstName,
+      lastName: defaultLastName,
+      about: defaultAbout,
+    },
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setSuccess(false);
-    const formData = new FormData(e.currentTarget);
-    const firstName = formData.get("firstName")?.toString().trim() || "";
-    const lastName = formData.get("lastName")?.toString().trim() || "";
-    const about = formData.get("about")?.toString().trim() || "";
-
-    if (!firstName || !lastName) {
-      alert("First and last name are required.");
-      return;
-    }
+    const { firstName, lastName, about } = values;
 
     const MUTATION = gql`
-      mutation UpdateProfile($firstName: String!, $lastName: String!, $about: String) {
-        updateProfile(firstName: $firstName, lastName: $lastName, about: $about) {
+      mutation UpdateProfile(
+        $firstName: String!
+        $lastName: String!
+        $about: String
+      ) {
+        updateProfile(
+          firstName: $firstName
+          lastName: $lastName
+          about: $about
+        ) {
           firstName
           lastName
           about
@@ -41,74 +72,104 @@ export function ProfileForm({ defaultFirstName, defaultLastName, defaultAbout }:
         mutation: MUTATION,
         variables: { firstName, lastName, about },
       });
+
       if (errors && errors.length > 0) {
         throw new Error(errors[0].message);
       }
       setSuccess(true);
     } catch (err: any) {
-      alert(err.message || "Failed to update profile.");
-      setSuccess(false);
+      form.setError("root", {
+        message: err.message || "Failed to update profile",
+      });
     }
   }
 
   return (
-    <form className="space-y-6" ref={formRef} onSubmit={handleSubmit}>
-      {success && (
-        <div className="mb-4 text-green-500 bg-green-900/30 border border-green-700 rounded p-2 text-center relative animate-fade-in">
-          Profile updated!
-          <button
-            type="button"
-            aria-label="Close"
-            className="absolute top-1 right-2 text-green-300 hover:text-green-100 text-lg font-bold"
-            onClick={() => setSuccess(false)}
-          >
-            ×
-          </button>
-        </div>
-      )}
-      {/* Name Section */}
-      <section className="space-y-2">
-        <h2 className="text-xl font-semibold text-white">Name</h2>
-        <div className="flex space-x-4">
-          <div className="flex-1 bg-neutral-700 rounded-md border border-neutral-600">
-            <TextInput
-              placeholder="First name"
-              name="firstName"
-              defaultValue={defaultFirstName}
-            />
-          </div>
-          <div className="flex-1 bg-neutral-700 rounded-md border border-neutral-600">
-            <TextInput
-              placeholder="Last name"
-              name="lastName"
-              defaultValue={defaultLastName}
-            />
-          </div>
-        </div>
-      </section>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {success && (
+          <Alert variant="default" className="animate-fade-in">
+            <AlertDescription>Profile updated successfully!</AlertDescription>
+            <button
+              type="button"
+              aria-label="Close"
+              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
+              onClick={() => setSuccess(false)}
+            >
+              <IoClose className="h-4 w-4" />
+            </button>
+          </Alert>
+        )}
 
-      {/* About Section */}
-      <section className="space-y-2">
-        <h2 className="text-xl font-semibold text-white">About</h2>
-        <div className="bg-neutral-700 rounded-md border border-neutral-600">
-          <textarea
+        {form.formState.errors.root && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              {form.formState.errors.root.message}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Name Section */}
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold">Name</h2>
+          <div className="flex gap-4">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>First name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="First name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Last name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Last name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* About Section */}
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold">About</h2>
+          <FormField
+            control={form.control}
             name="about"
-            placeholder="Tell us a little bit about yourself"
-            className="w-full bg-transparent p-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-md min-h-[100px]"
-            defaultValue={defaultAbout}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>About</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Tell us a little bit about yourself"
+                    className="min-h-[100px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
-        <p className="text-neutral-400 text-sm"></p>
-      </section>
 
-      <div className="pt-4 flex justify-end">
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded-md shadow"
-        >
-          Save Changes
-        </button>
-      </div>
-    </form>
+        <div className="pt-4 flex justify-end">
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

@@ -17,6 +17,7 @@ const GET_ARTICLES = gql`
       createdAt
       likesCount
       status
+      isSelf
       author {
         username
         firstName
