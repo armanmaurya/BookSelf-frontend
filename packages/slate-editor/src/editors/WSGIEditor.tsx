@@ -47,18 +47,6 @@ import {
 import { SlateCustomEditor } from "../utils/customEditor";
 import { handleKeyBoardFormating } from "../utils/handleKeyBoard";
 
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-tsx";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-python";
-import "prismjs/components/prism-php";
-import "prismjs/components/prism-sql";
-import "prismjs/components/prism-java";
-import "prismjs/themes/prism-solarizedlight.css";
-import "react-tabs/style/react-tabs.css";
-
 import { CommandMenu, Commands } from "@bookself/slate-command-menu";
 
 import { withImage, EditableImage } from "../plugins/image";
@@ -156,9 +144,9 @@ export const WSGIEditor = ({
             withImage(
               withLinks(
                 // withPaste(
-                withHeading(
-                  withParagraph(withReact(withHistory(createEditor())))
-                )
+                  withHeading(
+                    withParagraph(withReact(withHistory(createEditor())))
+                  )
                 // )
               )
             )

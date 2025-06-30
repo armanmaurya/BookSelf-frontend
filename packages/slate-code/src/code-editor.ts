@@ -6,7 +6,7 @@ import {
   Element as SlateElement,
   Transforms,
 } from "slate";
-import { CodeElementType } from "./types/element";
+import { CodeElementType, CodeType } from "./types/element";
 
 export interface CodeEditor extends BaseEditor {
   insertCode: (editor: SlateEditor, type: string, initialText?: string) => void;
@@ -15,59 +15,20 @@ export interface CodeEditor extends BaseEditor {
 }
 
 export const CodeEditor = {
-  insertCode(editor: SlateEditor, type: string, initialText?: string) {
+  insertCode(editor: SlateEditor, type: string, initialText: string = "") {
     if (!editor.selection) {
       return;
     }
 
-    let nodes = SlateEditor.nodes(editor, {
-      at: editor.selection,
-      match: (n) => SlateElement.isElement(n),
-      mode: "lowest",
-    });
-
-    // for (const node of nodes) {
-    //   if (node[0].type !== type) {
-    //     console.log("Not a given block");
-    //     return;
-    //   }
-    //   //   console.log(editor.selection);
-    // }
-
-    const edges = Range.edges(editor.selection);
-
-    Transforms.splitNodes(editor, {
-      at: edges[1],
-      match: (n) => SlateElement.isElement(n),
-    });
-    Transforms.splitNodes(editor, {
-      at: edges[0],
-      match: (n) => SlateElement.isElement(n),
-    });
-
-    let text = getText(editor);
-    if (initialText != null) {
-      text = initialText;
-    }
-
-    Transforms.removeNodes(editor, {
-      at: editor.selection,
-    });
-
-    console.log("text", text);
-    // Transforms.insertNodes(editor, {
-    //   type: "code",
-    //   children: [
-    //     {
-    //       text: text ? text : "",
-    //     },
-    //   ],
-    //   language: "",
-    // });
-
-    // const text = SlateEditor.string(editor, editor.selection);
-
-    // console.log("text", text);
+    Transforms.insertNodes(editor, {
+      type: CodeType.Code,
+      children: [
+        {
+          text: initialText,
+        },
+      ],
+      language: "",
+    } as CodeElementType);
   },
   isCodeActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {

@@ -13,7 +13,7 @@ export const decorate = ([node, path]: [SlateNode, number[]]) => {
     const text = SlateNode.string(node);
     const language = (node as CodeElementType).language;
 
-    if (language) {
+    if (language && Prism.languages[language]) {
       const tokens = Prism.tokenize(text, Prism.languages[language]);
       // console.log(tokens);
 
@@ -53,7 +53,12 @@ export const decorate = ([node, path]: [SlateNode, number[]]) => {
       };
 
       generateRanges(tokens);
+    } else if (language) {
+      // Unsupported language: treat as plain text (no highlighting)
+      // Optionally, you could add a range for the whole text if you want a fallback style
+      // For now, do nothing (no syntax highlighting)
     }
+
     console.log(ranges);
 
     return ranges;
