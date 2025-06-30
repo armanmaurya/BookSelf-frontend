@@ -78,10 +78,6 @@ const ArticleSettingPage = ({
               <AlertDialogTitle className="text-neutral-900 dark:text-neutral-100">
                 Are you absolutely sure?
               </AlertDialogTitle>
-              <AlertDialogDescription className="text-neutral-600 dark:text-neutral-300">
-                This action cannot be undone. This will permanently delete the "
-                {articleSlug}" article and remove all associated data.
-              </AlertDialogDescription>
             </AlertDialogHeader>
 
             <div className="my-4 space-y-2">
