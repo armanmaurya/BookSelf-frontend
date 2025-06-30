@@ -8,12 +8,15 @@ import { GraphQLData } from "@/types/graphql";
 import { gql } from "@apollo/client";
 import { RenderContent } from "@bookself/slate-editor";
 import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 import { IoMdEye } from "react-icons/io";
 import { FiEdit2 } from "react-icons/fi";
-import { Metadata } from "next";
+import Link from "next/link";
 
 const Page = async ({
   params,
@@ -62,12 +65,21 @@ const Page = async ({
     }
   `;
 
-  const { data }: { data: GraphQLData } = await createServerClient().query({
-    query: QUERY,
-    variables: { slug: articleSlug },
-  });
+  let data: GraphQLData | null = null;
+  try {
+    const result = await createServerClient().query({
+      query: QUERY,
+      variables: { slug: articleSlug },
+    });
+    data = result.data;
+  } catch (error) {
+    return redirect('/not-found');
+  }
 
-  const article = data.article;
+  const article = data?.article;
+  if (!article) {
+    return redirect('/not-found');
+  }
   if (article.slug != articleSlug) {
     redirect(`${article.slug}`);
   }
@@ -75,43 +87,40 @@ const Page = async ({
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       {/* Article Header */}
-      <div className="dark:bg-neutral-900 bg-neutral-50 rounded-lg p-6 mb-8 shadow-sm">
+      <Card className="p-6 mb-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold mb-2">
             {article.title}
           </h1>
 
           {/* Article Stats */}
-          <div className="flex items-center space-x-6 text-gray-600 dark:text-gray-400 mb-6">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-6 text-muted-foreground mb-6">
+            <div className="flex items-center gap-2">
               <LikeButton
                 initialState={article.isLiked}
                 initialLikes={article.likesCount}
                 url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
                 method={`${API_ENDPOINT.likeArticle.method}`}
-              // className="text-lg"
               />
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <IoMdEye className="text-lg" />
               <span>{article.views} views</span>
             </div>
 
             {article.author.isSelf && (
-              <Link
-                href={`${articleSlug}/edit`}
-                className="flex items-center space-x-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                <FiEdit2 className="text-lg" />
-                <span>Edit</span>
+              <Link href={`${articleSlug}/edit`}>
+                <Button variant="ghost" className="gap-2">
+                  <FiEdit2 className="text-lg" />
+                  <span>Edit</span>
+                </Button>
               </Link>
             )}
 
             <SaveArticleButton
               articleSlug={articleSlug}
               isSaved={false}
-              // className="text-lg"
             />
           </div>
         </div>
@@ -123,81 +132,69 @@ const Page = async ({
             value={JSON.parse(article.content)}
           />
         </main>
-      </div>
+      </Card>
 
-      {/* Divider */}
-      <div className="border-t border-gray-200 dark:border-gray-700 my-8" />
+      <Separator className="my-8" />
 
       {/* Author Information */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-12 bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4 border border-neutral-200 dark:border-neutral-700 shadow-sm">
-        <Link
-          href={`/user/${article.author.username}`}
-          className="flex-shrink-0 self-center sm:self-start"
-        >
-          {article.author.profilePicture ? (
-            <Image
-              width={64}
-              height={64}
-              className="rounded-full h-16 w-16 object-cover border-2 border-white dark:border-neutral-800 shadow"
-              src={article.author.profilePicture || "/default-avatar.png"}
-              alt={`${article.author.username}'s profile`}
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center text-2xl text-gray-500 dark:text-gray-400">
-              {article.author.username.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </Link>
-        <div className="flex-1 flex flex-col sm:flex-row w-full gap-4">
-          <div className="flex-1 w-full flex flex-col justify-center">
-            <div className="mb-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <Card className="p-4 mb-8">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+          <Link href={`/user/${article.author.username}`}>
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={article.author.profilePicture} />
+              <AvatarFallback>
+                {article.author.username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+          <div className="flex-1 flex flex-col sm:flex-row w-full gap-4">
+            <div className="flex-1 w-full flex flex-col justify-center">
+              <div className="mb-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <h3 className="text-lg font-semibold">
+                  <Link href={`/user/${article.author.username}`} className="hover:underline">
+                    {article.author.firstName} {article.author.lastName}
+                  </Link>
+                </h3>
+                <p className="text-muted-foreground text-sm sm:ml-2">
+                  @{article.author.username}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm mb-3">
                 <Link
-                  href={`/user/${article.author.username}`}
-                  className="hover:underline"
+                  href={`/user/${username}/followers`}
+                  className="hover:text-primary transition-colors"
                 >
-                  {article.author.firstName} {article.author.lastName}
+                  <span className="font-semibold">
+                    {article.author.followersCount}
+                  </span>{" "}
+                  Followers
                 </Link>
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm sm:ml-2">
-                @{article.author.username}
-              </p>
+                <Link
+                  href={`/user/${username}/following`}
+                  className="hover:text-primary transition-colors"
+                >
+                  <span className="font-semibold">
+                    {article.author.followingCount}
+                  </span>{" "}
+                  Following
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm mb-3">
-              <Link
-                href={`/user/${username}/followers`}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                <span className="font-semibold">
-                  {article.author.followersCount}
-                </span>{" "}
-                Followers
-              </Link>
-              <Link
-                href={`/user/${username}/following`}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                <span className="font-semibold">
-                  {article.author.followingCount}
-                </span>{" "}
-                Following
-              </Link>
-            </div>
+            {!article.author.isSelf && (
+              <div className="flex items-end sm:items-start justify-end sm:justify-center pt-1">
+                <FollowButton
+                  initialIsFollowing={article.author.isFollowing}
+                  username={username}
+                />
+              </div>
+            )}
           </div>
-          {!article.author.isSelf && (
-            <div className="flex items-end sm:items-start justify-end sm:justify-center pt-1">
-              <FollowButton
-                initialIsFollowing={article.author.isFollowing}
-                username={username}
-                // className="text-sm px-3 py-1"
-              />
-            </div>
-          )}
         </div>
-      </div>
+      </Card>
 
       {/* Comments Section */}
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+      <div className="">
+        <Separator className="mb-4" />
         <Comments
           totalCommentsCount={article.totalCommentsCount}
           commentsCount={article.commentsCount}

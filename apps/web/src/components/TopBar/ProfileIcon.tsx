@@ -2,156 +2,108 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { FaPage4, FaUser } from "react-icons/fa";
+import { FaUser, FaHistory } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
-import { FaHistory } from "react-icons/fa";
-import { useAuth } from "@/context/AuthContext";
 import { IoDocumentText } from "react-icons/io5";
 import { SlSettings } from "react-icons/sl";
+import { useAuth } from "@/context/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 export const ProfileIcon = () => {
-  const [isClick, setIsClick] = useState(false);
-
+  const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
-
-  const toggleClick = () => {
-    setIsClick(!isClick);
-  };
-
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (ref.current && !ref.current.contains(e.target as Node)) {
-      setIsClick(false);
-    }
-  };
-
-  const handleEsc = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      setIsClick(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleEsc);
-    window.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      window.removeEventListener("keydown", handleEsc);
-      window.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isClick]);
+  if (!user) {
+    return (
+      <div className="flex gap-2">
+        <Button variant="outline" asChild>
+          <Link href="/signin">Login</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/signup">Sign Up</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div ref={ref}>
-      {user ? (
-        <div>
-          <div
-            className="rounded-full overflow-hidden border cursor-pointer shadow-md"
-            onClick={toggleClick}
-          >
-            <img
-              className="h-8 object-fill"
-              src={`${
-                user.profilePicture ||
-                "https://ui-avatars.com/api/?name=User&size=64"
-              }`}
-              alt=""
-            />
-          </div>
-          <AnimatePresence>
-            {isClick && user && (
+    <div ref={ref} className="relative">
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.profilePicture} />
+              <AvatarFallback>
+                {user.username?.charAt(0).toUpperCase() || "U"}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <AnimatePresence>
+          {isOpen && (
+            <DropdownMenuContent
+              align="end"
+              className="w-56"
+              asChild
+              forceMount
+            >
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute top-12 right-1 z-50"
               >
-                <div className="">
-                  <div className="flex justify-end mr-4">
-                    <div
-                      className="dark:bg-neutral-500 bg-white border h-2 w-2 right-4"
-                      style={{ clipPath: "polygon(50% 0, 100% 100%, 0% 100%)" }}
-                    ></div>
-                  </div>
-                  <div className="dark:bg-neutral-500 border border-black bg-white p-2 rounded-lg shadow-lg min-w-44">
-                    <div className="flex flex-col space-y-2">
-                      <Link
-                        href={`/user/${user.username}`}
-                        className="flex space-x-2 items-center"
-                        onClick={toggleClick}
-                      >
-                        <FaUser />
-                        <span>Profile</span>
-                      </Link>
-                      <Link
-                        href={`/user/${user.username}/?tab=articles`}
-                        className="flex space-x-2 items-center"
-                        onClick={toggleClick}
-                      >
-                        <IoDocumentText />
-                        <span>Your Articles</span>
-                      </Link>
-                      {/* Settings */}
-                      <Link
-                        href={`/settings/profile`}
-                        className="flex space-x-2 items-center"
-                        onClick={toggleClick}
-                      >
-                        <SlSettings />
-                        <span>Settings</span>
-                      </Link>
-                      {/* <Link
-                        href={`/me/history/`}
-                        className="flex space-x-2 items-center"
-                        onClick={toggleClick}
-                      >
-                        <FaHistory />
-                        <span>History</span>
-                      </Link> */}
-                      {/* <Link
-                          className="flex space-x-2 items-center"
-                          href={`/${user.username}/notebook`}
-                          onClick={toggleClick}
-                        >
-                          <SlNotebook />
-                          <span>Your Notebooks</span>
-                        </Link> */}
-                      <button
-                        onClick={logout}
-                        className="flex space-x-2 items-center"
-                      >
-                        <IoIosLogOut />
-                        <span>Logout</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link
+                    href={`/user/${user.username}`}
+                    className="flex items-center w-full cursor-pointer"
+                  >
+                    <FaUser className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link
+                    href={`/user/${user.username}/?tab=articles`}
+                    className="flex items-center w-full cursor-pointer"
+                  >
+                    <IoDocumentText className="mr-2 h-4 w-4" />
+                    <span>Your Articles</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link
+                    href="/settings/profile"
+                    className="flex items-center w-full cursor-pointer"
+                  >
+                    <SlSettings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer text-destructive focus:text-destructive"
+                  onClick={logout}
+                >
+                  <IoIosLogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      ) : (
-        <div className="flex justify-center">
-          <div className="flex items-center rounded-full bg-slate-800 shadow-md overflow-hidden border border-slate-700">
-            <Link
-              href="/signin"
-              className="px-6 py-2.5 text-slate-200 font-medium text-sm hover:bg-slate-700 transition-colors"
-            >
-              Login
-            </Link>
-
-            <div className="h-5 w-px bg-slate-600"></div>
-
-            <Link
-              href="/signup"
-              className="px-6 py-2.5 text-white font-medium text-sm bg-sky-600 hover:bg-sky-700 transition-colors"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </div>
-      )}
+            </DropdownMenuContent>
+          )}
+        </AnimatePresence>
+      </DropdownMenu>
     </div>
   );
 };

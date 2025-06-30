@@ -13,6 +13,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import { gql } from "@apollo/client";
+import client from "@/lib/apolloClient";
+import { useRouter } from "next/navigation";
 
 const ArticleSettingPage = ({
   params: { username, articleSlug },
@@ -21,7 +24,13 @@ const ArticleSettingPage = ({
 }) => {
   const [confirmationText, setConfirmationText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
+  const MUTATION = gql`
+    mutation MyMutation($slug: String!) {
+      deleteArticle(slug: $slug)
+    }
+  `;
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
@@ -29,7 +38,16 @@ const ArticleSettingPage = ({
       // Typically you would call an API here
       // await deleteArticle(articleSlug);
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { data } = await client.mutate({
+        mutation: MUTATION,
+        variables: { slug: articleSlug },
+      });
+      //   Returns boolean indicating success
+      if (!data.deleteArticle) {
+        throw new Error("Failed to delete article");
+      }
+      router.replace(`/`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } finally {
       setIsDeleting(false);
     }
@@ -68,7 +86,8 @@ const ArticleSettingPage = ({
 
             <div className="my-4 space-y-2">
               <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                To confirm, type <span className="font-bold">CONFIRM</span> in the box below:
+                To confirm, type <span className="font-bold">CONFIRM</span> in
+                the box below:
               </p>
               <Input
                 value={confirmationText}
@@ -79,7 +98,7 @@ const ArticleSettingPage = ({
             </div>
 
             <AlertDialogFooter>
-              <AlertDialogCancel 
+              <AlertDialogCancel
                 onClick={() => setConfirmationText("")}
                 className="border-neutral-200 dark:border-neutral-700"
               >

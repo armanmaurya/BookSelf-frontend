@@ -1,6 +1,6 @@
 import React from "react";
 import { cookies } from "next/headers";
-import { Input } from "@/components/element/input";
+import { CustomInput } from "@/components/element/input";
 import { Form } from "@/components/element/form";
 import { Button } from "@/components/element/button";
 import { UsernameForm } from "./form";
