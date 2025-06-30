@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/element/button/FollowButton";
 import { UserArticles } from "./userArticles";
-import { EditableProfilePicture } from "@/components/blocks/EditProfilePicture";
 import { GraphQLData } from "@/types/graphql";
 
 const ProfilePage = async ({
@@ -79,7 +78,14 @@ const ProfilePage = async ({
       <Card className="p-6 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-6">
           {/* Profile Picture */}
-          <EditableProfilePicture src={data.user.profilePicture} />
+          <div className="flex-shrink-0">
+            <Avatar className="h-24 w-24">
+              <AvatarImage src={data.user.profilePicture} />
+              <AvatarFallback>
+                {data.user.username?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
 
           {/* Profile Info */}
           <div className="flex-1 space-y-3">

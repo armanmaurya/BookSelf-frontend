@@ -192,7 +192,7 @@ export const SearchInput = () => {
       </div>
 
       {isOpen && searchQuery.startsWith("@") && (
-        <Command className="absolute top-12 w-full rounded-lg shadow-lg border max-h-96 overflow-y-auto">
+        <Command className="absolute top-12 w-full rounded-lg shadow-lg border max-h-96 min-h-24 overflow-y-auto">
           <CommandList>
             {isLoading ? (
               <div className="flex items-center justify-center py-6">
@@ -208,7 +208,7 @@ export const SearchInput = () => {
                       router.push(`/user/${user.username}`);
                       setIsOpen(false);
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer min-h-[48px]"
                   >
                     <Avatar className="mr-3 h-8 w-8">
                       <AvatarImage src={user.profilePicture} />
