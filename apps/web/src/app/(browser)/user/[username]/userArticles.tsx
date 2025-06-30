@@ -2,11 +2,14 @@
 import { ArticleCard } from "@/components/element/cards/ArticleCard";
 import { DraftArticleCard } from "@/components/element/cards/DraftArticleCard";
 import client from "@/lib/apolloClient";
-import { createServerClient } from "@/lib/ServerClient";
 import { GraphQLData } from "@/types/graphql";
 import { gql } from "@apollo/client";
 import { Article, DraftArticle } from "@bookself/types";
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const UserArticles = ({
   username,
@@ -25,6 +28,7 @@ export const UserArticles = ({
           likesCount
           createdAt
           status
+          isSelf
           author {
             isSelf
             username
@@ -68,88 +72,66 @@ export const UserArticles = ({
     let isMounted = true;
     setLoading(true);
     setError(null);
-    if (filter === "published") {
-      client
-        .query({
-          query: PUBLISHED_QUERY,
-          variables: { username },
-        })
-        .then(({ data }: { data: GraphQLData }) => {
-          if (isMounted) {
-            setArticles(data.user.articles);
+    
+    const fetchArticles = async () => {
+      try {
+        if (filter === "published") {
+          const { data } = await client.query({
+            query: PUBLISHED_QUERY,
+            variables: { username },
+          });
+          if (isMounted) setArticles(data.user.articles);
+        } else {
+          const { data } = await client.query({ query: DRAFT_QUERY });
+          if (isMounted && data.draftArticles.__typename === "DraftArticleList") {
+            setArticles(data.draftArticles.articles);
           }
-        })
-        .catch((err) => {
-          if (isMounted) setError("Failed to load articles");
-        })
-        .finally(() => {
-          if (isMounted) setLoading(false);
-        });
-    } else {
-      client
-        .query({
-          query: DRAFT_QUERY,
-        })
-        .then(({ data }) => {
-          if (isMounted) {
-            if (data.draftArticles.__typename === "DraftArticleList") {
-              setArticles(data.draftArticles.articles);
-            } else {
-              setArticles([]);
-            }
-          }
-        })
-        .catch((err) => {
-          if (isMounted) setError("Failed to load draft articles");
-        })
-        .finally(() => {
-          if (isMounted) setLoading(false);
-        });
-    }
+        }
+      } catch (err) {
+        if (isMounted) setError(filter === "published" 
+          ? "Failed to load articles" 
+          : "Failed to load draft articles");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchArticles();
+
     return () => {
       isMounted = false;
     };
   }, [username, filter]);
 
   return (
-    <div>
+    <div className="space-y-6">
       {isSelf && (
-        <div className="flex gap-2 mb-6">
-          <button
-            className={`px-4 py-2 rounded-md font-medium transition-colors border focus:outline-none ${
-              filter === "published"
-                ? "bg-blue-600 text-white border-blue-600"
-                : "bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-700"
-            }`}
-            onClick={() => setFilter("published")}
-          >
-            Published
-          </button>
-          <button
-            className={`px-4 py-2 rounded-md font-medium transition-colors border focus:outline-none ${
-              filter === "draft"
-                ? "bg-blue-600 text-white border-blue-600"
-                : "bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-700"
-            }`}
-            onClick={() => setFilter("draft")}
-          >
-            Draft
-          </button>
-        </div>
+        <Tabs 
+          value={filter} 
+          onValueChange={(value) => setFilter(value as "published" | "draft")}
+          className="mb-6"
+        >
+          <TabsList>
+            <TabsTrigger value="published">Published</TabsTrigger>
+            <TabsTrigger value="draft">Drafts</TabsTrigger>
+          </TabsList>
+        </Tabs>
       )}
+
       {loading ? (
-        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-          Loading articles...
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(3)].map((_, idx) => (
+            <Skeleton key={idx} className="h-[200px] w-full rounded-lg" />
+          ))}
         </div>
       ) : error ? (
-        <div className="text-center py-12 text-red-500 dark:text-red-400">
-          {error}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       ) : articles.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.map((article, idx) => {
             if (filter === "published") {
-              // Only render ArticleCard for real published articles (with slug)
               if ((article as Article).slug) {
                 return (
                   <ArticleCard
@@ -158,12 +140,9 @@ export const UserArticles = ({
                   />
                 );
               }
-              // If not a published article, skip rendering
               return null;
             }
-            // Otherwise, render Draft card
             const draft = article as DraftArticle;
-            const title = draft.title ?? "Untitled";
             if (draft.article?.slug) {
               return (
                 <DraftArticleCard
@@ -176,7 +155,7 @@ export const UserArticles = ({
           })}
         </div>
       ) : (
-        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-12 text-muted-foreground">
           No {filter === "published" ? "published" : "draft"} articles found
         </div>
       )}

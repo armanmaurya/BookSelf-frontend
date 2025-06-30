@@ -23,6 +23,7 @@ import { ApolloProviderWrapper } from "@/context/ApolloProvider";
 import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
 import { GraphQLData } from "@/types/graphql";
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -101,6 +102,7 @@ export default async function RootLayout({
             </LoadingProvider>
           </ThemeProvider>
         {/* </ApolloProviderWrapper> */}
+        <Toaster />
       </body>
     </html>
   );

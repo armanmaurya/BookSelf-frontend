@@ -1,20 +1,16 @@
-import React from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { cookies } from "next/headers";
-import { User } from "@/types/auth";
-import { FollowButton } from "@/components/element/button/FollowButton";
 import { gql } from "@apollo/client";
-import { GraphQLData } from "@/types/graphql";
 import { createServerClient } from "@/lib/ServerClient";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Image from "next/image";
-import { CgProfile } from "react-icons/cg";
-import { LinkTabs } from "@/components/element/LinkTabs";
-import { Article } from "@bookself/types";
-import { ArticleCard } from "@/components/element/cards/ArticleCard";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FollowButton } from "@/components/element/button/FollowButton";
 import { UserArticles } from "./userArticles";
-import { EditableProfilePicture } from "@/components/blocks/EditProfilePicture";
+import { GraphQLData } from "@/types/graphql";
 
 const ProfilePage = async ({
   params,
@@ -48,78 +44,71 @@ const ProfilePage = async ({
   });
 
   const tabs = [
-    {
-      name: "Overview",
-      href: `/user/${username}?tab=overview`,
-    },
-    {
-      name: "Articles",
-      href: `/user/${username}?tab=articles`,
-    },
-    // {
-    //   name: "Collections",
-    //   href: `/user/${username}?tab=collections`,
-    // },
+    { value: "overview", label: "Overview" },
+    { value: "articles", label: "Articles" },
+    { value: "collections", label: "Collections" },
   ];
 
-  // RenderTab rewritten using switch-case
+  const activeTab = searchParams?.tab || "overview";
+
   const RenderTab = () => {
-    switch (searchParams?.tab) {
+    switch (activeTab) {
       case "collections":
         return (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+          <Card className="text-center py-12">
             Collections coming soon
-          </div>
+          </Card>
         );
       case "articles":
         return <UserArticles isSelf={data.user.isSelf} username={username} />;
       default:
         return (
-          <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-6 shadow-sm border border-neutral-200 dark:border-neutral-700">
-            <h2 className="text-xl font-semibold mb-4 text-neutral-900 dark:text-white">
-              About
-            </h2>
-          </div>
+          <Card>
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-4">About</h2>
+            </div>
+          </Card>
         );
     }
   };
 
   return (
     <div className="mx-auto px-4 sm:px-6 my-8">
-      {/* Profile Header - Clean version without banner */}
-      <div className="rounded-xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 mb-8">
+      {/* Profile Header */}
+      <Card className="p-6 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-6">
           {/* Profile Picture */}
-          <EditableProfilePicture src={data.user.profilePicture} />
+          <div className="flex-shrink-0">
+            <Avatar className="h-24 w-24">
+              <AvatarImage src={data.user.profilePicture} />
+              <AvatarFallback>
+                {data.user.username?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
 
           {/* Profile Info */}
           <div className="flex-1 space-y-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl font-bold">
                 {data.user.firstName} {data.user.lastName}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                @{data.user.username}
-              </p>
+              <p className="text-muted-foreground">@{data.user.username}</p>
             </div>
 
             <div className="flex items-center gap-4">
               <Link
                 href={`/user/${username}/followers`}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm"
+                className="text-sm hover:text-primary transition-colors"
               >
-                <span className="font-semibold">
-                  {data.user.followersCount}
-                </span>{" "}
+                <span className="font-semibold">{data.user.followersCount}</span>{" "}
                 Followers
               </Link>
               <Link
                 href={`/user/${username}/following`}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm"
+                className="text-sm hover:text-primary transition-colors"
               >
-                <span className="font-semibold">
-                  {data.user.followingCount}
-                </span>{" "}
+                <span className="font-semibold">{data.user.followingCount}</span>{" "}
                 Following
               </Link>
             </div>
@@ -129,21 +118,28 @@ const ProfilePage = async ({
                 <FollowButton
                   initialIsFollowing={data.user.isFollowing}
                   username={data.user.username}
-                  // className="text-sm px-4 py-1.5"
                 />
               </div>
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Tabs */}
-      <div className="mb-6">
-        <LinkTabs tabs={tabs} />
-      </div>
+      <Tabs value={activeTab} className="mb-6">
+        <TabsList>
+          {tabs.map((tab) => (
+            <Link href={`/user/${username}?tab=${tab.value}`} key={tab.value}>
+              <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
+            </Link>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {/* Tab Content */}
-      <div className="mb-8">{RenderTab()}</div>
+      <div className="mb-8">
+        <RenderTab />
+      </div>
     </div>
   );
 };

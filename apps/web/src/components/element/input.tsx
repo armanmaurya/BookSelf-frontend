@@ -7,6 +7,18 @@ import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { User } from "@/types/auth";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { SearchIcon } from "lucide-react";
 
 export const EmailInput = ({
   email,
@@ -90,11 +102,16 @@ export const PasswordInput = ({
 };
 
 // It will search for users when @username is typed in the search bar otherwise it will search for articles
+
 export const SearchInput = () => {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [users, setUsers] = useState<Partial<User>[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const QUERY = gql`
-    query MyQuery($username: String!) {
+    query SearchUsers($username: String!) {
       users(username: $username) {
         id
         username
@@ -106,94 +123,117 @@ export const SearchInput = () => {
   `;
 
   const searchUser = async (username: string) => {
-    const { data } = await client.query({
-      query: QUERY,
-      variables: { username },
-    });
-    return data.users;
+    setIsLoading(true);
+    try {
+      const { data } = await client.query({
+        query: QUERY,
+        variables: { username },
+      });
+      return data.users;
+    } catch (error) {
+      console.error("Search error:", error);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  const [users, setUsers] = useState<Partial<User>[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     if (!searchQuery.startsWith("@")) {
       setUsers([]);
       return;
     }
-    if (searchQuery.trim() === "@") {
+
+    const username = searchQuery.slice(1);
+    if (username.length < 1) {
       setUsers([]);
       return;
     }
+
     const delayDebounceFn = setTimeout(async () => {
-      const username = searchQuery.slice(1);
-      if (username.length > 0) {
-        const results = await searchUser(username);
-        setUsers(results);
-      } else {
-        setUsers([]);
-      }
+      const results = await searchUser(username);
+      setUsers(results);
     }, 300);
+
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && searchQuery.trim() !== "") {
-      if (searchQuery.startsWith("@")) {
-        // If starts with @, go to user profile if only one result
-        if (users.length === 1) {
-          router.push(`/profile/${users[0].username}`);
-        }
+      if (searchQuery.startsWith("@") && users.length === 1) {
+        router.push(`/user/${users[0].username}`);
       } else {
-        router.push(`/search/${searchQuery}`);
+        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
       }
-      setUsers([]);
+      setIsOpen(false);
     }
   };
 
   return (
-    <div className="relative w-96">
-      <input
-        id="search-bar"
-        autoComplete="off"
-        className="border dark:border-neutral-600 dark:bg-neutral-800 dark:text-white w-full p-2 px-4 rounded-full border-zinc-300 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500 sm:block hidden transition-all"
-        placeholder="Search users with @ or articles..."
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyDown={handleKeyPress}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setTimeout(() => setIsFocused(false), 500)}
-      />
-      {/* Search results dropdown */}
-      {isFocused && users.length > 0 && (
-        <div className="absolute z-10 w-full mt-2 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-gray-200 dark:border-neutral-700 overflow-hidden">
-          {users.map((user) => (
-            <Link
-              href={`/user/${user.username}`}
-              key={user.id}
-              className="flex items-center p-3 hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer transition-colors"
-            >
-              <img
-                src={user.profilePicture || "https://writedirection.com/wp-content/uploads/2016/09/blank-profile-picture-973460_960_720.png"}
-                alt={user.username}
-                className="w-10 h-10 rounded-full object-cover mr-3"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://writedirection.com/wp-content/uploads/2016/09/blank-profile-picture-973460_960_720.png";
-                }}
-              />
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {user.firstName} {user.lastName}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  @{user.username}
-                </p>
+    <div className="relative w-full max-w-md">
+      <div className="relative">
+        <Input
+          id="search-bar"
+          autoComplete="off"
+          className="w-full pl-10 pr-4 py-2 rounded-full"
+          placeholder="Search users with @ or articles..."
+          type="text"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            if (e.target.value.startsWith("@")) {
+              setIsOpen(true);
+            }
+          }}
+          onKeyDown={handleKeyPress}
+          onFocus={() => setIsOpen(true)}
+        />
+        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      </div>
+
+      {isOpen && searchQuery.startsWith("@") && (
+        <Command className="absolute top-12 w-full rounded-lg shadow-lg border max-h-96 min-h-24 overflow-y-auto">
+          <CommandList>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-6">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
               </div>
-            </Link>
-          ))}
-        </div>
+            ) : users.length > 0 ? (
+              <CommandGroup heading="Users">
+                {users.map((user) => (
+                  <CommandItem
+                    key={user.id}
+                    value={user.username}
+                    onSelect={() => {
+                      router.push(`/user/${user.username}`);
+                      setIsOpen(false);
+                    }}
+                    className="cursor-pointer min-h-[48px]"
+                  >
+                    <Avatar className="mr-3 h-8 w-8">
+                      <AvatarImage src={user.profilePicture} />
+                      <AvatarFallback>
+                        {user.username?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">
+                        {user.firstName} {user.lastName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        @{user.username}
+                      </p>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ) : (
+              <CommandEmpty className="py-6 text-center text-sm">
+                No users found
+              </CommandEmpty>
+            )}
+          </CommandList>
+        </Command>
       )}
     </div>
   );
@@ -301,7 +341,7 @@ export const Tag = ({
   );
 };
 
-export const Input = (
+export const CustomInput = (
   InputProp: React.InputHTMLAttributes<HTMLInputElement>
 ) => {
   return (

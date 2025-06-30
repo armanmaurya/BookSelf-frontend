@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/element/button";
 import { Form } from "@/components/element/form";
-import { Input } from "@/components/element/input";
+import { CustomInput } from "@/components/element/input";
 import { useState } from "react";
 import { Store } from "react-notifications-component";
 
@@ -132,7 +132,7 @@ export const UsernameForm = ({
                         <label htmlFor="first_name" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">
                             First Name
                         </label>
-                        <Input
+                        <CustomInput
                             id="first_name"
                             onChange={handleChange}
                             defaultValue={data.first_name}
@@ -148,7 +148,7 @@ export const UsernameForm = ({
                         <label htmlFor="last_name" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">
                             Last Name
                         </label>
-                        <Input
+                        <CustomInput
                             id="last_name"
                             value={formData.last_name}
                             onChange={handleChange}
@@ -167,7 +167,7 @@ export const UsernameForm = ({
                         Username
                     </label>
                     <div className="relative">
-                        <Input
+                        <CustomInput
                             id="username"
                             spellCheck={false}
                             value={formData.username}
