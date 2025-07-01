@@ -9,6 +9,7 @@ export const BaseHeading1 = (props: RenderElementProps) => {
       (props.element as HeadingElementType).type === HeadingType.H1
         ? (props.element as HeadingElementType).align
         : "left",
+    lineHeight: 2.25,
   };
 
   const idAttribute =
@@ -19,7 +20,7 @@ export const BaseHeading1 = (props: RenderElementProps) => {
       : {};
   return (
     <h1
-      className="text-4xl font-bold leading-tight group" // added leading-tight
+      className="text-4xl font-bold group"
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -35,6 +36,7 @@ export const BaseHeading2 = (props: RenderElementProps) => {
       (props.element as HeadingElementType).type === HeadingType.H2
         ? (props.element as HeadingElementType).align
         : "left",
+    lineHeight: 2.25,
   };
   const idAttribute =
     (props.element as HeadingElementType).type === HeadingType.H2 // Fixed: Changed from H1 to H2
@@ -44,7 +46,7 @@ export const BaseHeading2 = (props: RenderElementProps) => {
       : {};
   return (
     <h2
-      className="text-3xl font-bold leading-snug group" // added leading-snug
+      className="text-3xl font-bold group"
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -60,6 +62,7 @@ export const BaseHeading3 = (props: RenderElementProps) => {
       (props.element as HeadingElementType).type === HeadingType.H3
         ? (props.element as HeadingElementType).align
         : "left",
+    lineHeight: 2.25,
   };
   const idAttribute =
     (props.element as HeadingElementType).type === HeadingType.H3
@@ -69,7 +72,7 @@ export const BaseHeading3 = (props: RenderElementProps) => {
       : {};
   return (
     <h3
-      className="text-2xl font-bold leading-snug group" // added leading-snug
+      className="text-2xl font-bold group"
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -85,6 +88,7 @@ export const BaseHeading4 = (props: RenderElementProps) => {
       (props.element as HeadingElementType).type === HeadingType.H4
         ? (props.element as HeadingElementType).align
         : "left",
+    lineHeight: 2.25,
   };
   const idAttribute =
     (props.element as HeadingElementType).type === HeadingType.H4
@@ -94,7 +98,7 @@ export const BaseHeading4 = (props: RenderElementProps) => {
       : {};
   return (
     <h4
-      className="text-xl font-bold leading-normal group" // added leading-normal
+      className="text-xl font-bold group"
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -110,6 +114,7 @@ export const BaseHeading5 = (props: RenderElementProps) => {
       (props.element as HeadingElementType).type === HeadingType.H5
         ? (props.element as HeadingElementType).align
         : "left",
+    lineHeight: 2.25,
   };
   const idAttribute =
     (props.element as HeadingElementType).type === HeadingType.H5
@@ -119,7 +124,7 @@ export const BaseHeading5 = (props: RenderElementProps) => {
       : {};
   return (
     <h5
-      className="text-lg font-bold leading-normal group" // added leading-normal
+      className="text-lg font-bold group"
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -135,6 +140,7 @@ export const BaseHeading6 = (props: RenderElementProps) => {
       (props.element as HeadingElementType).type === HeadingType.H6
         ? (props.element as HeadingElementType).align
         : "left",
+    lineHeight: 2.25,
   };
   const idAttribute =
     (props.element as HeadingElementType).type === HeadingType.H6
@@ -144,7 +150,7 @@ export const BaseHeading6 = (props: RenderElementProps) => {
       : {};
   return (
     <h6
-      className="text-base font-bold leading-relaxed group" // added leading-relaxed
+      className="text-base font-bold group"
       style={style}
       {...props.attributes}
       {...idAttribute}
