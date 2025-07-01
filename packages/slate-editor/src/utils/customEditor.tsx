@@ -14,6 +14,7 @@ import { ParagraphEditor } from "@bookself/slate-paragraph";
 import { SlateNodeType } from "../editors/WSGIEditor";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 import { HeadingEditor } from "@bookself/slate-heading";
+import { CodeType } from "@bookself/slate-code";
 
 export const SlateCustomEditor = {
   /**
@@ -237,7 +238,7 @@ export const SlateCustomEditor = {
    */
   isCodeBlockActive(editor: SlateEditor) {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === NodeType.CODE,
+      match: (n) => SlateElement.isElement(n) && n.type === CodeType.Code,
     });
     return !!match;
   },

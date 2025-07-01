@@ -14,7 +14,7 @@ import "prismjs/components/prism-php";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-java";
 import "prismjs/themes/prism-solarizedlight.css";
-import { CodeType } from "../../types/element";
+import { CodeElementType, CodeType } from "../../types/element";
 
 const Language: { [key: string]: string } = {
   javascript: "Javascript",
@@ -33,7 +33,10 @@ export const RenderCode = (props: RenderElementProps) => {
 
   const codeText = element.children.map((child: any) => child.text).join("\n");
 
-  const language = element.type === CodeType ? element.language : null;
+  const language =
+    (element as CodeElementType).type === CodeType.Code
+      ? (element as CodeElementType).language
+      : null;
   if (language) {
     const tokens = Prism.tokenize(codeText, Prism.languages[language]);
 
@@ -67,10 +70,7 @@ export const RenderCode = (props: RenderElementProps) => {
         <div className="absolute right-1 m-1 text-gray-400">
           {Language[language as string]}
         </div>
-        <BaseCode
-          attributes={attributes}
-          element={element as any}
-        >
+        <BaseCode attributes={attributes} element={element as any}>
           {highlightedCode}
         </BaseCode>
       </div>

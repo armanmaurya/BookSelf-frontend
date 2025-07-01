@@ -12,11 +12,12 @@ import { TabEditor } from "../plugins/tab-list/tab-editor";
 import { ParagraphEditor } from "@bookself/slate-paragraph";
 import { ListEditor } from "@bookself/slate-list";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
+import { CodeType } from "@bookself/slate-code";
 
 export const handleKeyBoardFormating = (
   event: React.KeyboardEvent<HTMLDivElement>,
   editor: SlateEditor,
-  isCommandMenuOpen: boolean,
+  isCommandMenuOpen: boolean
 ) => {
   if (editor.selection) {
     if (event.ctrlKey && event.shiftKey) {
@@ -36,7 +37,7 @@ export const handleKeyBoardFormating = (
           //   }]
           // })
           // console.log(text)
-          SlateCustomEditor.toggleHeading(editor, HeadingType.H1)
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H1);
           break;
         case "@":
           event.preventDefault();
@@ -46,7 +47,7 @@ export const handleKeyBoardFormating = (
         case "#":
           event.preventDefault();
           // SlateCustomEditor.toggleBlock(editor, NodeType.H1);
-          SlateCustomEditor.toggleHeading(editor,  HeadingType.H3);
+          SlateCustomEditor.toggleHeading(editor, HeadingType.H3);
           break;
         case "$":
           event.preventDefault();
@@ -65,19 +66,18 @@ export const handleKeyBoardFormating = (
           break;
         case "~":
           event.preventDefault();
-          console.log("runned")
+          console.log("runned");
           Transforms.removeNodes(editor);
           Transforms.insertNodes(editor, {
-            type: NodeType.CODE,
+            type: CodeType.Code,
             children: [
               {
                 text: text,
-                type: "default"
-              }
+                type: "default",
+              },
             ],
-            language: ""
-
-          })
+            language: "",
+          });
           // SlateCustomEditor.toggleBlock(editor, NodeType.CODE);
           break;
         // case "b":
@@ -101,7 +101,7 @@ export const handleKeyBoardFormating = (
             match: (n) =>
               SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
           });
-          console.log(match[0].type)
+          console.log(match[0].type);
           if (match[0].type) {
             switch (match[0].type) {
               case NodeType.CODE:
@@ -111,10 +111,10 @@ export const handleKeyBoardFormating = (
               case NodeType.BLOCKQUOTE:
                 event.preventDefault();
                 // SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
-                console.log("runned")
+                console.log("runned");
                 ParagraphEditor.insertParagraph(editor, {
-                  match: (n) => n.type === NodeType.BLOCKQUOTE
-                })
+                  match: (n) => n.type === NodeType.BLOCKQUOTE,
+                });
                 break;
             }
           }
@@ -124,18 +124,23 @@ export const handleKeyBoardFormating = (
 
   if (event.ctrlKey && !event.shiftKey && event.key === "Enter") {
     const [match] = SlateEditor.nodes(editor, {
-      match: (n) =>
-        SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+      match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
     });
-    console.log(match[0].type)
+    console.log(match[0].type);
     switch (match[0].type) {
       case NodeType.BLOCKQUOTE:
         event.preventDefault();
         // SlateCustomEditor.insertParagraph(editor, NodeType.BLOCKQUOTE);
-        console.log("runned")
+        console.log("runned");
         ParagraphEditor.insertParagraph(editor, {
-          match: (n) => n.type === NodeType.BLOCKQUOTE
-        })
+          match: (n) => n.type === NodeType.BLOCKQUOTE,
+        });
+      case CodeType.Code:
+        event.preventDefault();
+        ParagraphEditor.insertParagraph(editor, {
+          match: (n) => n.type === CodeType.Code,
+        });
+        break;
     }
   }
   if (event.altKey) {
@@ -267,10 +272,11 @@ export const handleKeyBoardFormating = (
               // event.preventDefault();
             }
             const [nestedMatch] = SlateEditor.nodes(editor, {
-              match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
+              match: (n) =>
+                SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
               mode: "lowest",
             });
-            switch(nestedMatch[0].type) {
+            switch (nestedMatch[0].type) {
               case NodeType.PARAGRAPH:
                 event.preventDefault();
                 SlateCustomEditor.deleteNode(editor);
@@ -319,7 +325,12 @@ export const handleKeyBoardFormating = (
       }
     }
   }
-  if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey && !isCommandMenuOpen) {
+  if (
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.ctrlKey &&
+    !isCommandMenuOpen
+  ) {
     const [match] = SlateEditor.nodes(editor, {
       match: (n) => SlateElement.isElement(n) && SlateEditor.isBlock(editor, n),
       // mode: "lowest",
@@ -365,7 +376,7 @@ export const handleKeyBoardFormating = (
                 },
               ],
             },
-          ]
+          ];
           ListEditor.insertListItem(editor, insertingChild);
           // insertListItem(editor);
           // ListEditor.(editor)
@@ -383,13 +394,13 @@ export const handleKeyBoardFormating = (
                 },
               ],
             },
-          ]
+          ];
           ListEditor.insertListItem(editor, children);
           break;
         case NodeType.BLOCKQUOTE:
           event.preventDefault();
           // SlateCustomEditor.insertParagraph(editor, NodeType.PARAGRAPH);
-          ParagraphEditor.insertParagraph(editor)
+          ParagraphEditor.insertParagraph(editor);
           break;
         case NodeType.CODE:
           event.preventDefault();

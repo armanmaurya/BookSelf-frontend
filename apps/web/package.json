@@ -17,6 +17,7 @@
     "@bookself/slate-command-menu": "*",
     "@bookself/slate-editor": "*",
     "@bookself/slate-paragraph": "*",
+    "@bookself/slate-code": "*",
     "@bookself/ui": "*",
     "@emotion/css": "^11.11.2",
     "@hookform/resolvers": "^5.1.1",

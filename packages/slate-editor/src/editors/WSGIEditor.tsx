@@ -8,7 +8,6 @@ import {
   withPaste,
   withLinks,
   withKeyCommands,
-  withHeadingId,
 } from "../plugins";
 import {
   withReact,
@@ -22,7 +21,7 @@ import {
   useSelected,
 } from "slate-react";
 
-import { DefalutLeaf, Default, Quote, Anchor } from "../elements";
+import { DefalutLeaf, Default, Quote, Anchor, Code } from "../elements";
 
 import {
   EditorHeading1,
@@ -47,19 +46,6 @@ import {
 } from "slate";
 import { SlateCustomEditor } from "../utils/customEditor";
 import { handleKeyBoardFormating } from "../utils/handleKeyBoard";
-import { decorate } from "../utils/decorate";
-
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-tsx";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-python";
-import "prismjs/components/prism-php";
-import "prismjs/components/prism-sql";
-import "prismjs/components/prism-java";
-import "prismjs/themes/prism-solarizedlight.css";
-import "react-tabs/style/react-tabs.css";
 
 import { CommandMenu, Commands } from "@bookself/slate-command-menu";
 
@@ -80,7 +66,13 @@ import {
   ParagraphEditor,
 } from "@bookself/slate-paragraph";
 import { EditableParagraph, withParagraph } from "@bookself/slate-paragraph";
-import { CodeEditor, EditableCode } from "@bookself/slate-code";
+import {
+  CodeEditor,
+  EditableCode,
+  CodeType,
+  decorate,
+  withCode,
+} from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
 
@@ -153,10 +145,12 @@ export const WSGIEditor = ({
             withImage(
               withLinks(
                 // withPaste(
+                withCode(
                   withHeading(
                     withParagraph(withReact(withHistory(createEditor())))
                   )
-                // )
+                  // )
+                )
               )
             )
           )
@@ -185,8 +179,8 @@ export const WSGIEditor = ({
         return <EditorHeading5 {...props} />;
       case HeadingType.H6:
         return <EditorHeading6 {...props} />;
-      // case NodeType.CODE:
-      //   return <EditableCode {...props} element={props.element} />;
+      case CodeType.Code:
+        return <EditableCode {...props} element={props.element} />;
       // case NodeType.ORDERED_LIST:
       //   return <OrderedList {...props} element={props.element} />;
       // case NodeType.UNORDERED_LIST:
@@ -315,7 +309,7 @@ export const WSGIEditor = ({
         //   children: [
         //     {
         //       type: "default",
-      //       text: "",
+        //       text: "",
         //     },
         //   ],
         // };
@@ -399,7 +393,7 @@ export const WSGIEditor = ({
 
         if (currentNode) {
           SlateCustomEditor.replaceBlock(editor, currentNode, {
-            type: NodeType.CODE,
+            type: CodeType.Code,
             children: [{ text: "", type: "default" }],
             language: "",
           });

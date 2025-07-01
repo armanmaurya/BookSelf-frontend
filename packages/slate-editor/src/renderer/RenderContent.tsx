@@ -17,7 +17,7 @@ import { RenderElementProps, RenderLeafProps } from "slate-react";
 import { NodeType } from "../types";
 import { Descendant, Element } from "slate";
 import { RenderImage } from "../plugins/image/elements/RenderImage";
-import { RenderCode } from "../plugins/code/elements/RenderCode";
+// import { RenderCode } from "../plugins/code/elements/RenderCode";
 import { RenderQuote } from "../plugins/quote/elements/RenderQuote";
 import {
   RenderTab,
@@ -37,6 +37,7 @@ import {
   RenderHeading6,
 } from "@bookself/slate-heading";
 import { ListItem, OrderedList, UnorderedList } from "@bookself/slate-list";
+import { CodeType, RenderCode } from "@bookself/slate-code";
 
 export const RenderContent = ({
   value,
@@ -124,7 +125,7 @@ const ServerElement = (props: RenderElementProps) => {
       return <RenderHeading5 {...props} />;
     case HeadingType.H6:
       return <RenderHeading6 {...props} />;
-    case NodeType.CODE:
+    case CodeType.Code:
       return <RenderCode {...props} />;
     case NodeType.ORDERED_LIST:
       return <OrderedList {...props} />;

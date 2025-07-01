@@ -32,7 +32,7 @@ import { PiTabs } from "react-icons/pi";
 import { ParagraphEditor, AdjustFontSize } from "@bookself/slate-paragraph";
 import { ListEditor } from "@bookself/slate-list";
 import { Editor, Element, Transforms } from "slate";
-import { CodeEditor } from "@bookself/slate-code";
+import { CodeEditor, CodeType } from "@bookself/slate-code";
 import { HeadingEditor, HeadingType } from "@bookself/slate-heading";
 
 const AlignIconSwitcher = ({ align }: { align: string }) => {
@@ -177,24 +177,27 @@ export const SlateToolBar = () => {
           >
             <LuHeading6 size={23} />
           </ToolbarButton>
-          {/* <ToolbarButton
+          <ToolbarButton
             onClick={() => {
-              if (CodeEditor.isBlockActive(editor)) {
-                const text = CodeEditor.text(editor);
+              if (CodeEditor.isCodeActive(editor)) {
+                if (!editor.selection) {
+                  return;
+                }
+                const text = Editor.string(editor, editor.selection);
                 Transforms.removeNodes(editor, {
-                  match: (n) => Element.isElement(n) && n.type === NodeType.CODE,
-                  mode: "highest"
+                  match: (n) =>
+                    Element.isElement(n) && n.type === CodeType.Code,
+                  mode: "highest",
                 });
                 ParagraphEditor.insertParagraph(editor, {}, text);
               } else {
-
                 CodeEditor.insertCode(editor, NodeType.PARAGRAPH);
               }
             }}
             isActive={SlateCustomEditor.isBlockActive(editor, NodeType.CODE)}
           >
             <FaCode />
-          </ToolbarButton> */}
+          </ToolbarButton>
           {/* <ToolbarButton
             isActive={SlateCustomEditor.isBlockActive(
               editor,
