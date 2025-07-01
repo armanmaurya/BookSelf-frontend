@@ -97,12 +97,12 @@ const Page = async ({
     // });
     // moreArticles = moreResult.data.articles || [];
   } catch (error) {
-    return redirect('/not-found');
+    return redirect("/not-found");
   }
 
   const article = data?.article;
   if (!article) {
-    return redirect('/not-found');
+    return redirect("/not-found");
   }
   if (article.slug != articleSlug) {
     redirect(`${article.slug}`);
@@ -115,12 +115,10 @@ const Page = async ({
         {/* Article Header */}
         <Card className="p-6 mb-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">
-              {article.title}
-            </h1>
+            <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
 
             {/* Article Stats */}
-            <div className="flex items-center gap-6 text-muted-foreground mb-6">
+            <div className="flex items-center gap-4 text-muted-foreground mb-6">
               <div className="flex items-center gap-2">
                 <LikeButton
                   initialState={article.isLiked}
@@ -136,18 +134,13 @@ const Page = async ({
               </div>
 
               {article.author.isSelf && (
-                <Link href={`${articleSlug}/edit`}>
-                  <Button variant="ghost" className="gap-2">
-                    <FiEdit2 className="text-lg" />
-                    <span>Edit</span>
-                  </Button>
+                <Link href={`${articleSlug}/edit`} className="flex items-center justify-center gap-1 hover:text-primary transition-colors mx-1">
+                  <FiEdit2 className="text-lg" size={16}/>
+                  <span>Edit</span>
                 </Link>
               )}
 
-              <SaveArticleButton
-                articleSlug={articleSlug}
-                isSaved={false}
-              />
+              <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
             </div>
           </div>
 
@@ -175,7 +168,10 @@ const Page = async ({
               <div className="flex-1 w-full flex flex-col justify-center">
                 <div className="mb-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <h3 className="text-lg font-semibold">
-                    <Link href={`/user/${article.author.username}`} className="hover:underline">
+                    <Link
+                      href={`/user/${article.author.username}`}
+                      className="hover:underline"
+                    >
                       {article.author.firstName} {article.author.lastName}
                     </Link>
                   </h3>
@@ -232,7 +228,9 @@ const Page = async ({
           <h2 className="text-xl font-semibold mb-4">More Articles</h2>
           <div className="flex flex-col gap-4 max-h-[80vh] overflow-y-auto pr-2">
             {moreArticles.length === 0 && (
-              <div className="text-muted-foreground text-sm">No more articles found.</div>
+              <div className="text-muted-foreground text-sm">
+                No more articles found.
+              </div>
             )}
             {moreArticles.map((a) => (
               <Link
@@ -248,7 +246,9 @@ const Page = async ({
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <span className="text-xs text-muted-foreground">No Image</span>
+                    <span className="text-xs text-muted-foreground">
+                      No Image
+                    </span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -276,7 +276,11 @@ const Page = async ({
   );
 };
 
-export async function generateMetadata({ params }: { params: Promise<{ username: string; articleSlug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string; articleSlug: string }>;
+}): Promise<Metadata> {
   const { articleSlug } = await params;
   const QUERY = gql`
     query MyQuery($slug: String!) {
@@ -290,7 +294,7 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
     variables: { slug: articleSlug },
   });
   return {
-    title: `${data.article.title}` || "Article"
+    title: `${data.article.title}` || "Article",
   };
 }
 
