@@ -9,10 +9,53 @@ import {
 } from "../../types/element";
 import Prism from "prismjs";
 import "prismjs/themes/prism-solarizedlight.css";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export const EditableCode = (props: CodeElementProps) => {
   const editor = useSlateStatic() as any;
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const languageOptions = [
+    { value: "", label: "Select language" },
+    { value: "javascript", label: "JavaScript" },
+    { value: "typescript", label: "TypeScript" },
+    { value: "jsx", label: "JSX" },
+    { value: "tsx", label: "TSX" },
+    { value: "python", label: "Python" },
+    { value: "java", label: "Java" },
+    { value: "c", label: "C" },
+    { value: "cpp", label: "C++" },
+    { value: "csharp", label: "C#" },
+    { value: "go", label: "Go" },
+    { value: "ruby", label: "Ruby" },
+    { value: "swift", label: "Swift" },
+    { value: "kotlin", label: "Kotlin" },
+    { value: "perl", label: "Perl" },
+    { value: "rust", label: "Rust" },
+    { value: "scss", label: "SCSS" },
+    { value: "css", label: "CSS" },
+    { value: "json", label: "JSON" },
+    { value: "bash", label: "Bash" },
+    { value: "shell-session", label: "Shell" },
+    { value: "docker", label: "Docker" },
+    { value: "yaml", label: "YAML" },
+    { value: "graphql", label: "GraphQL" },
+    { value: "matlab", label: "MATLAB" },
+    { value: "objectivec", label: "Objective-C" },
+    { value: "powershell", label: "PowerShell" },
+    { value: "lua", label: "Lua" },
+    { value: "scala", label: "Scala" },
+    { value: "dart", label: "Dart" },
+    { value: "haskell", label: "Haskell" },
+    { value: "clojure", label: "Clojure" },
+    { value: "elixir", label: "Elixir" },
+    { value: "erlang", label: "Erlang" },
+    { value: "markdown", label: "Markdown" },
+    { value: "markup", label: "Html" },
+    { value: "php", label: "PHP" },
+    { value: "sql", label: "SQL" },
+  ];
 
   useEffect(() => {
     require("prismjs/components/prism-javascript");
@@ -63,64 +106,54 @@ export const EditableCode = (props: CodeElementProps) => {
     Transforms.setNodes(editor, { language } as Partial<CodeElementType>, {
       at: path,
     });
+    setOpen(false);
   };
 
   return (
     <div className="relative group">
       <div
         contentEditable={false}
-        className="absolute left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        className="absolute left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20"
+        ref={dropdownRef}
       >
-        <select
-          defaultValue={
-            element.type === CodeType.Code ? (element.language as string) : ""
-          }
-          name="languages"
-          className="px-2 text-sm font-mono bg-gray-100 dark:bg-neutral-700 border border-gray-300 dark:border-neutral-600 rounded focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 shadow-md hover:shadow-lg"
-          onChange={(e) => {
-            const language = e.target.value;
-            setLanguage(language);
-          }}
+        <button
+          type="button"
+          className="px-2 bg-transparent mt-1.5 text-sm font-mono bg-background focus:outline-none flex items-center gap-2"
+          onClick={() => setOpen((v) => !v)}
         >
-          <option value="">Select language</option>
-          <option value="javascript">JavaScript</option>
-          <option value="typescript">TypeScript</option>
-          <option value="jsx">JSX</option>
-          <option value="tsx">TSX</option>
-          <option value="python">Python</option>
-          <option value="java">Java</option>
-          <option value="c">C</option>
-          <option value="cpp">C++</option>
-          <option value="csharp">C#</option>
-          <option value="go">Go</option>
-          <option value="ruby">Ruby</option>
-          <option value="swift">Swift</option>
-          <option value="kotlin">Kotlin</option>
-          <option value="perl">Perl</option>
-          <option value="rust">Rust</option>
-          <option value="scss">SCSS</option>
-          <option value="css">CSS</option>
-          <option value="json">JSON</option>
-          <option value="bash">Bash</option>
-          <option value="shell-session">Shell</option>
-          <option value="docker">Docker</option>
-          <option value="yaml">YAML</option>
-          <option value="graphql">GraphQL</option>
-          <option value="matlab">MATLAB</option>
-          <option value="objectivec">Objective-C</option>
-          <option value="powershell">PowerShell</option>
-          <option value="lua">Lua</option>
-          <option value="scala">Scala</option>
-          <option value="dart">Dart</option>
-          <option value="haskell">Haskell</option>
-          <option value="clojure">Clojure</option>
-          <option value="elixir">Elixir</option>
-          <option value="erlang">Erlang</option>
-          <option value="markdown">Markdown</option>
-          <option value="markup">Html</option>
-          <option value="php">PHP</option>
-          <option value="sql">SQL</option>
-        </select>
+          {languageOptions.find((opt) => opt.value === element.language)?.label || "Select language"}
+          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+        </button>
+        {open && (
+          <div className="absolute left-0 mt-1 w-44 max-h-64 overflow-y-auto bg-background dark:bg-zinc-900 border border-border rounded shadow-lg z-50">
+            <div className="p-2">
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search language..."
+                className="w-full px-2 py-1 text-sm rounded border border-border bg-background focus:outline-none mb-2"
+                autoFocus
+              />
+            </div>
+            {languageOptions
+              .filter(opt =>
+                opt.label.toLowerCase().includes(search.toLowerCase())
+              )
+              .map(opt => (
+                <div
+                  key={opt.value}
+                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-accent hover:text-primary ${element.language === opt.value ? 'bg-accent text-primary' : ''}`}
+                  onClick={() => setLanguage(opt.value)}
+                >
+                  {opt.label}
+                </div>
+              ))}
+            {languageOptions.filter(opt => opt.label.toLowerCase().includes(search.toLowerCase())).length === 0 && (
+              <div className="px-3 py-2 text-xs text-muted-foreground">No results</div>
+            )}
+          </div>
+        )}
       </div>
       <BaseCode {...props} />
     </div>

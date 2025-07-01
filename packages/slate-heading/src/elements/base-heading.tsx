@@ -19,7 +19,7 @@ export const BaseHeading1 = (props: RenderElementProps) => {
       : {};
   return (
     <h1
-      className="text-4xl font-bold group"
+      className="text-4xl font-bold leading-tight group" // added leading-tight
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -37,14 +37,14 @@ export const BaseHeading2 = (props: RenderElementProps) => {
         : "left",
   };
   const idAttribute =
-    (props.element as HeadingElementType).type === HeadingType.H1
+    (props.element as HeadingElementType).type === HeadingType.H2 // Fixed: Changed from H1 to H2
       ? (props.element as HeadingElementType).headingId
         ? { id: (props.element as HeadingElementType).headingId }
         : {}
       : {};
   return (
     <h2
-      className="text-3xl font-bold group"
+      className="text-3xl font-bold leading-snug group" // added leading-snug
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -69,7 +69,7 @@ export const BaseHeading3 = (props: RenderElementProps) => {
       : {};
   return (
     <h3
-      className="text-2xl font-bold group"
+      className="text-2xl font-bold leading-snug group" // added leading-snug
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -94,7 +94,7 @@ export const BaseHeading4 = (props: RenderElementProps) => {
       : {};
   return (
     <h4
-      className="text-xl font-bold group"
+      className="text-xl font-bold leading-normal group" // added leading-normal
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -119,7 +119,7 @@ export const BaseHeading5 = (props: RenderElementProps) => {
       : {};
   return (
     <h5
-      className="text-lg font-bold group"
+      className="text-lg font-bold leading-normal group" // added leading-normal
       style={style}
       {...props.attributes}
       {...idAttribute}
@@ -144,7 +144,7 @@ export const BaseHeading6 = (props: RenderElementProps) => {
       : {};
   return (
     <h6
-      className="text-base font-bold group"
+      className="text-base font-bold leading-relaxed group" // added leading-relaxed
       style={style}
       {...props.attributes}
       {...idAttribute}

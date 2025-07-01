@@ -71,6 +71,7 @@ import {
   EditableCode,
   CodeType,
   decorate,
+  withCode,
 } from "@bookself/slate-code";
 import { HeadingType } from "@bookself/slate-heading/src/types/type";
 import { SlateToolBar } from "../components/Toolbar/toolbar";
@@ -144,10 +145,12 @@ export const WSGIEditor = ({
             withImage(
               withLinks(
                 // withPaste(
+                withCode(
                   withHeading(
                     withParagraph(withReact(withHistory(createEditor())))
                   )
-                // )
+                  // )
+                )
               )
             )
           )
