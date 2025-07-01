@@ -1,5 +1,4 @@
 "use client";
-
 import { CommentType } from "@/types/comment";
 import { MouseEventHandler, useEffect, useState } from "react";
 import { AddComment } from "./AddComment";
@@ -8,6 +7,11 @@ import { gql } from "@apollo/client";
 import { GraphQLData } from "@/types/graphql";
 import { CommentLikeButton } from "../element/button/CommentLikeButton";
 import { IoIosArrowUp } from "react-icons/io";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp, Reply } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 const QUERY = gql`
   query MyQuery($slug: String!, $number: Int!, $lastId: Int, $parentId: Int) {
@@ -107,7 +111,7 @@ export const Comments = ({
   };
 
   return (
-    <div className="mx-auto px-4">
+    <div className="">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
           {totalCommentsCount}{" "}
@@ -209,7 +213,8 @@ const Comment = ({
   const [replies, setReplies] = useState<CommentType[]>([]);
   const [showAddReply, setShowAddReply] = useState(false);
   const [isLoadingReplies, setIsLoadingReplies] = useState(false);
-  const [showReplies, setShowReplies] = useState(false); // default to hidden
+  const [showReplies, setShowReplies] = useState(false);
+  const { toast } = useToast();
 
   const loadReplies = async () => {
     try {
@@ -222,6 +227,12 @@ const Comment = ({
       if (newComments) {
         setReplies([...replies, ...newComments]);
       }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load replies",
+        variant: "destructive",
+      });
     } finally {
       setIsLoadingReplies(false);
     }
@@ -236,61 +247,68 @@ const Comment = ({
 
   return (
     <div className="my-4 group" key={comment.id}>
-      <div className="flex flex-col p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
-        <div className="flex items-start space-x-3">
-          <div className="overflow-hidden rounded-full w-9 h-9 flex-shrink-0">
-            <img
-              src={`https://ui-avatars.com/api/?name=${comment.user.firstName}+${comment.user.lastName}&size=64&background=random`}
-              alt={`${comment.user.firstName} ${comment.user.lastName}`}
-              className="w-full h-full object-cover"
-            />
-          </div>
+      <div className="flex flex-col p-4 rounded-lg hover:bg-accent transition-colors duration-150">
+        <div className="flex items-start gap-3">
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={comment.user.profilePicture} />
+            <AvatarFallback>
+              {comment.user.firstName.charAt(0)}
+              {comment.user.lastName.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
 
-          <div className="flex-1">
-            <div className="flex items-center space-x-2">
-              <span className="font-medium text-gray-900 dark:text-gray-100">
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">
                 {comment.user.firstName} {comment.user.lastName}
               </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {new Date(comment.createdAt).toLocaleDateString()}
+              <span className="text-xs text-muted-foreground">
+                {new Date(comment.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
               </span>
             </div>
 
-            <p className="text-sm text-gray-800 dark:text-gray-200 mt-1 leading-relaxed">
-              {comment.content}
-            </p>
+            <p className="text-sm leading-relaxed">{comment.content}</p>
 
-            <div className="flex items-center space-x-4 pt-2">
+            <div className="flex items-center gap-4 pt-1">
               <CommentLikeButton
                 commentId={comment.id}
                 initialLikes={comment.likesCount}
                 initialState={comment.isLiked}
               />
 
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1 text-muted-foreground"
                 onClick={() => setShowAddReply(!showAddReply)}
-                className="text-xs text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
               >
-                Reply
-              </button>
+                <Reply className="h-3.5 w-3.5" />
+                <span>Reply</span>
+              </Button>
 
               {comment.repliesCount > 0 && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1"
                   onClick={handleToggleReplies}
-                  className="flex items-center space-x-1 text-xs text-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   {showReplies ? (
                     <>
-                      <IoIosArrowUp className="rotate-180" />
+                      <ChevronUp className="h-3.5 w-3.5" />
                       <span>Hide Replies</span>
                     </>
                   ) : (
                     <>
-                      <IoIosArrowUp />
+                      <ChevronDown className="h-3.5 w-3.5" />
                       <span>Show Replies ({comment.repliesCount})</span>
                     </>
                   )}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -310,11 +328,22 @@ const Comment = ({
         )}
       </div>
 
-      {showReplies && replies.length > 0 && (
-        <div className="pl-8 border-l-2 border-gray-200 dark:border-gray-700 ml-3">
-          {replies.map((reply) => (
-            <Comment articleSlug={articleSlug} comment={reply} key={reply.id} />
-          ))}
+      {showReplies && (
+        <div className="pl-8 border-l-2 border-border ml-3">
+          {isLoadingReplies ? (
+            <div className="space-y-3 mt-3">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          ) : replies.length > 0 ? (
+            replies.map((reply) => (
+              <Comment articleSlug={articleSlug} comment={reply} key={reply.id} />
+            ))
+          ) : (
+            <div className="text-sm text-muted-foreground mt-3">
+              No replies yet
+            </div>
+          )}
         </div>
       )}
     </div>
