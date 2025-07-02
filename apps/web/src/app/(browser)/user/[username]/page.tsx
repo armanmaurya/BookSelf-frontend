@@ -35,6 +35,7 @@ const ProfilePage = async ({
         isFollowing
         username
         profilePicture
+        about
       }
     }
   `;
@@ -65,6 +66,11 @@ const ProfilePage = async ({
           <Card>
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">About</h2>
+                <p>
+                {data.user.about && data.user.about.trim().length > 0
+                  ? data.user.about
+                  : <span className="text-muted-foreground">Tell us about yourself.</span>}
+                </p>
             </div>
           </Card>
         );

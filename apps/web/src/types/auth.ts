@@ -14,4 +14,5 @@ export type User = {
     isSelf: boolean;
     profilePicture: string;
     articles: Article[];
+    about?: string;
 }

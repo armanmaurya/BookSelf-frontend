@@ -247,7 +247,7 @@ const Comment = ({
 
   return (
     <div className="my-4 group" key={comment.id}>
-      <div className="flex flex-col p-4 rounded-lg hover:bg-accent transition-colors duration-150">
+      <div className="flex flex-col">
         <div className="flex items-start gap-3">
           <Avatar className="h-9 w-9">
             <AvatarImage src={comment.user.profilePicture} />
@@ -273,7 +273,7 @@ const Comment = ({
 
             <p className="text-sm leading-relaxed">{comment.content}</p>
 
-            <div className="flex items-center gap-4 pt-1">
+            <div className="flex items-center gap-2 pt-1">
               <CommentLikeButton
                 commentId={comment.id}
                 initialLikes={comment.likesCount}
@@ -305,7 +305,7 @@ const Comment = ({
                   ) : (
                     <>
                       <ChevronDown className="h-3.5 w-3.5" />
-                      <span>Show Replies ({comment.repliesCount})</span>
+                      <span>Replies ({comment.repliesCount})</span>
                     </>
                   )}
                 </Button>

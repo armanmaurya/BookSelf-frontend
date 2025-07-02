@@ -7,8 +7,13 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import * as NProgress from "nprogress";
 import { FaPenNib } from "react-icons/fa";
+import { Button } from "@/components/ui/button"; // shadcn button import
 
-export const NewArticleButton = () => {
+export const NewArticleButton = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const router = useRouter();
   const { user } = useAuth();
   const MUTATION = gql`
@@ -34,22 +39,21 @@ export const NewArticleButton = () => {
       if (data) {
         console.log("Article created");
         NProgress.start();
-        router.push(`/user/${user?.username}/article/${data.createArticle.article.slug}/edit`);
+        router.push(
+          `/user/${user?.username}/article/${data.createArticle.article.slug}/edit`
+        );
       }
-  
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <button
-      onClick={(e) => {
-        newArticle();
-      }}
-      className="p-1 flex items-center text-gray-700 hover:text-black space-x-1.5 dark:text-gray-300 dark:hover:text-white"
+    <Button
+      variant="ghost"
+      onClick={() => newArticle()}
+      className="flex items-center space-x-1.5"
     >
-      <FaPenNib />
-      <span>Write</span>
-    </button>
+      {children}
+    </Button>
   );
 };

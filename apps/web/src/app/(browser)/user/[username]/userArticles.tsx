@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FaPenNib } from "react-icons/fa";
+import { NewArticleButton } from "@/components/blocks/buttons/NewArticleBtn";
 
 export const UserArticles = ({
   username,
@@ -72,7 +74,7 @@ export const UserArticles = ({
     let isMounted = true;
     setLoading(true);
     setError(null);
-    
+
     const fetchArticles = async () => {
       try {
         if (filter === "published") {
@@ -83,14 +85,20 @@ export const UserArticles = ({
           if (isMounted) setArticles(data.user.articles);
         } else {
           const { data } = await client.query({ query: DRAFT_QUERY });
-          if (isMounted && data.draftArticles.__typename === "DraftArticleList") {
+          if (
+            isMounted &&
+            data.draftArticles.__typename === "DraftArticleList"
+          ) {
             setArticles(data.draftArticles.articles);
           }
         }
       } catch (err) {
-        if (isMounted) setError(filter === "published" 
-          ? "Failed to load articles" 
-          : "Failed to load draft articles");
+        if (isMounted)
+          setError(
+            filter === "published"
+              ? "Failed to load articles"
+              : "Failed to load draft articles"
+          );
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -106,16 +114,24 @@ export const UserArticles = ({
   return (
     <div className="space-y-6">
       {isSelf && (
-        <Tabs 
-          value={filter} 
-          onValueChange={(value) => setFilter(value as "published" | "draft")}
-          className="mb-6"
-        >
-          <TabsList>
-            <TabsTrigger value="published">Published</TabsTrigger>
-            <TabsTrigger value="draft">Drafts</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="flex justify-between">
+          <Tabs
+            value={filter}
+            onValueChange={(value) => setFilter(value as "published" | "draft")}
+            className=""
+          >
+            <TabsList>
+              <TabsTrigger value="published">Published</TabsTrigger>
+              <TabsTrigger value="draft">Drafts</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="flex justify-end">
+            <NewArticleButton>
+              <FaPenNib className="h-4 w-4" />
+              <span>Create</span>
+            </NewArticleButton>
+          </div>
+        </div>
       )}
 
       {loading ? (

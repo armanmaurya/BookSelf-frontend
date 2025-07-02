@@ -170,12 +170,12 @@ export const SearchInput = () => {
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
       <div className="relative">
         <Input
           id="search-bar"
           autoComplete="off"
-          className="w-full pl-10 pr-4 py-2 rounded-full"
+          className="w-full pl-10 pr-4 py-2 rounded-full text-base sm:text-lg"
           placeholder="Search users with @ or articles..."
           type="text"
           value={searchQuery}
@@ -192,7 +192,7 @@ export const SearchInput = () => {
       </div>
 
       {isOpen && searchQuery.startsWith("@") && (
-        <Command className="absolute top-12 w-full rounded-lg shadow-lg border max-h-96 min-h-24 overflow-y-auto">
+        <Command className="absolute top-12 w-full rounded-lg shadow-lg border max-h-96 min-h-24 overflow-y-auto bg-background z-50">
           <CommandList>
             {isLoading ? (
               <div className="flex items-center justify-center py-6">
@@ -208,19 +208,19 @@ export const SearchInput = () => {
                       router.push(`/user/${user.username}`);
                       setIsOpen(false);
                     }}
-                    className="cursor-pointer min-h-[48px]"
+                    className="cursor-pointer min-h-[48px] flex items-center gap-2 px-2 sm:px-4"
                   >
-                    <Avatar className="mr-3 h-8 w-8">
+                    <Avatar className="mr-3 h-8 w-8 flex-shrink-0">
                       <AvatarImage src={user.profilePicture} />
                       <AvatarFallback>
                         {user.username?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="font-medium">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">
                         {user.firstName} {user.lastName}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground truncate">
                         @{user.username}
                       </p>
                     </div>
