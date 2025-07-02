@@ -13,8 +13,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, MoreHorizontal, MoreVertical } from "lucide-react";
 import { EditCollectionBtn } from "@/components/blocks/buttons/EditCollectionBtn";
+
+import { ArticleCardMenu } from "@/components/element/button/ArticleCardMenu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { FaDumpster } from "react-icons/fa";
+import { RemoveArticleFromCollectionBtn } from "@/components/blocks/buttons/RemoveArticleFromCollectionBtn";
+import { ShareButton } from "@/components/blocks/buttons/ShareButton";
+import { IoShareOutline } from "react-icons/io5";
 
 interface CollectionItem {
   id: string;
@@ -39,6 +52,8 @@ interface CollectionData {
   updatedAt: string;
   isPublic: boolean;
   retrieveItems: CollectionItem[];
+  isSelf: boolean;
+  itemsCount: number;
 }
 
 const Page = async ({
@@ -55,6 +70,8 @@ const Page = async ({
         createdAt
         updatedAt
         isPublic
+        isSelf
+        itemsCount
         retrieveItems {
           dateAdded
           id
@@ -106,6 +123,9 @@ const Page = async ({
                     initialDescription={collection.description}
                     initialIsPublic={collection.isPublic}
                   />
+                  <ShareButton>
+                    <IoShareOutline className="h-4 w-4" />
+                  </ShareButton>
                 </div>
                 <p className="text-muted-foreground text-sm mt-2">
                   {collection.description || "No description"}
@@ -172,7 +192,7 @@ const Page = async ({
                 key={`${article.slug}-${index}`}
                 className="hover:border-primary transition-all"
               >
-                <CardContent className="p-6 flex flex-col sm:flex-row gap-4">
+                <CardContent className="p-6 flex flex-col sm:flex-row gap-4 relative">
                   {/* <div className="flex-shrink-0">
                     <Avatar className="h-24 w-full sm:w-24 rounded-md aspect-video">
                       <AvatarFallback className="rounded-md bg-muted text-lg font-medium">
@@ -180,6 +200,42 @@ const Page = async ({
                       </AvatarFallback>
                     </Avatar>
                   </div> */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 p-0"
+                        >
+                          <MoreVertical className="h-5 w-5" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        {collection.isSelf && (
+                          <>
+                            <DropdownMenuItem className="cursor-pointer">
+                              <Link
+                                href={`/user/${username}/article/${article.slug}/edit`}
+                              >
+                                Edit
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="cursor-pointer">
+                              <RemoveArticleFromCollectionBtn
+                                collectionId={parseInt(collection.id)}
+                                articleSlug={article.slug}
+                              >
+                                Remove
+                              </RemoveArticleFromCollectionBtn>
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                   <div className="space-y-2 flex-1">
                     <Link href={`/user/${username}/article/${article.slug}`}>
                       <h3 className="font-medium text-lg hover:underline">

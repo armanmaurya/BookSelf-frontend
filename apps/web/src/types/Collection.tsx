@@ -9,4 +9,6 @@ export type CollectionType = {
     items: Article[];
     isAdded: boolean;
     isPublic: boolean;
+    isSelf: boolean;
+    itemsCount: number;
 }
