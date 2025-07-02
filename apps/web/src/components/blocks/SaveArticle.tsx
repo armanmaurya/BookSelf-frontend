@@ -5,6 +5,7 @@ import { gql } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { AddArticleToCollection } from "../element/button/AddArticleToCollection";
 import { LoadingSpinner } from "../element/loadingSpinner";
+import { CollectionType } from "@/types/Collection";
 
 export const SaveArticle = ({
   articleSlug,
@@ -14,7 +15,7 @@ export const SaveArticle = ({
   articleSlug: string;
 }) => {
   const [collections, setCollections] = useState<
-    { id: string; name: string; isAdded: boolean }[]
+    CollectionType[]
   >([]);
   const [loading, setLoading] = useState(true);
   const [isArticleCreateOpen, setIsArticleCreateOpen] = useState(false);

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FaUser, FaHistory } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
-import { IoDocumentText } from "react-icons/io5";
+import { IoDocumentText, IoFileTrayStackedOutline } from "react-icons/io5";
 import { SlSettings } from "react-icons/sl";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -80,6 +80,15 @@ export const ProfileIcon = () => {
                   >
                     <IoDocumentText className="mr-2 h-4 w-4" />
                     <span>Your Articles</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link
+                    href={`/user/${user.username}/?tab=collections`}
+                    className="flex items-center w-full cursor-pointer"
+                  >
+                    <IoFileTrayStackedOutline className="mr-2 h-4 w-4" />
+                    <span>Your Collections</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer">

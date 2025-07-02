@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/element/button/FollowButton";
 import { UserArticles } from "./userArticles";
 import { GraphQLData } from "@/types/graphql";
+import { UserCollections } from "./userCollections";
 
 const ProfilePage = async ({
   params,
@@ -55,9 +56,7 @@ const ProfilePage = async ({
     switch (activeTab) {
       case "collections":
         return (
-          <Card className="text-center py-12">
-            Collections coming soon
-          </Card>
+          <UserCollections username={username} />
         );
       case "articles":
         return <UserArticles isSelf={data.user.isSelf} username={username} />;

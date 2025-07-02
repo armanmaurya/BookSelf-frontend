@@ -139,6 +139,7 @@ export const SaveArticle = ({
             animate={{ height: height ?? "auto" }}
             initial={false}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            style={{ overflow: "hidden" }}
           >
             {loading ? (
               <div className="flex justify-center items-center">
