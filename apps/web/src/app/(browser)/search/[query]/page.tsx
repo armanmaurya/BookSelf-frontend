@@ -1,21 +1,7 @@
-import { API_ENDPOINT } from "@/app/utils";
 import { ArticleCard } from "@/components/element/cards/ArticleCard";
 import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
 import { Article } from "@bookself/types";
-
-async function search(query: string) {
-  try {
-    if (query === null || query === undefined || query === "") {
-      window.location.href = "/";
-    }
-    const res = await fetch(`${API_ENDPOINT.search.url}?q=${query}`);
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
-  }
-}
 
 const Page = async ({ params: { query } }: { params: { query: string } }) => {
   const QUERY = gql`
@@ -75,7 +61,6 @@ const Page = async ({ params: { query } }: { params: { query: string } }) => {
             <ArticleCard
               key={article.id}
               article={article}
-              // className="transition-transform duration-200 hover:scale-[1.02] hover:shadow-lg"
             />
           ))}
         </div>

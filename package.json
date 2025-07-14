@@ -11,7 +11,7 @@
     "type": "git",
     "url": "https://github.com/armanmaurya/frontend.git"
   },
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "npm@10.0.0",
   "scripts": {
     "dev": "turbo run dev",
     "dev:web": "dotenv -- turbo run dev --filter=web",

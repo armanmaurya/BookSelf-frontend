@@ -163,7 +163,7 @@ export const SearchInput = () => {
       if (searchQuery.startsWith("@") && users.length === 1) {
         router.push(`/user/${users[0].username}`);
       } else {
-        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+        router.push(`/search/${encodeURIComponent(searchQuery)}`);
       }
       setIsOpen(false);
     }
