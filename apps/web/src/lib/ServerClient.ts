@@ -8,9 +8,9 @@ export const createServerClient = () => {
   const sessionid = cookieStore.get("sessionid")?.value;
 
   return new ApolloClient({
+    ssrMode: true,
     link: new HttpLink({
       uri: `${apiURl}/graphql/`, // Change to your Django GraphQL URL
-      fetchOptions: { cache: "no-store" }, // Ensures fresh data
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
