@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description:
     "Welcome to bookself.site, your go-to destination for insightful and engaging articles on a wide range of topics. Whether you're looking to stay informed, learn something new, or simply enjoy some quality reading time",
 };
-export const revalidate = 3600;
+export const revalidate = 1;
 
 export default async function RootLayout({
   children,

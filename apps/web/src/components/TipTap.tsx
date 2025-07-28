@@ -734,7 +734,7 @@ const Tiptap = ({
           <div className="px-6 pb-6">
             <EditorContent
               editor={editor}
-              className="prose dark:prose-invert min-h-[200px] w-full"
+              className="prose dark:prose-invert min-h-[200px] max-w-none"
             />
           </div>
         </div>

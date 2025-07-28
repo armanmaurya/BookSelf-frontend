@@ -4,6 +4,9 @@ import { gql } from "@apollo/client";
 import { Article } from "@bookself/types";
 
 const Page = async ({ params: { query } }: { params: { query: string } }) => {
+  // Decode and sanitize the query parameter
+  const decodedQuery = decodeURIComponent(query).trim();
+  
   const QUERY = gql`
     query MyQuery($query: String!) {
       articles(query: $query) {
@@ -24,22 +27,23 @@ const Page = async ({ params: { query } }: { params: { query: string } }) => {
       }
     }
   `;
-
+  console.log("Search Query", decodedQuery);
   const {
     data,
   }: {
     data: { articles: Article[] };
   } = await createServerClient().query({
     query: QUERY,
-    variables: { query },
+    variables: { query: decodedQuery },
   });
+  console.log("Search Results", data.articles);
 
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Search Results for:&nbsp;
-          <span className="text-primary-600">&quot;{decodeURIComponent(query)}&quot;</span>
+          <span className="text-primary-600">&quot;{decodedQuery}&quot;</span>
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
           {data.articles.length} articles found
