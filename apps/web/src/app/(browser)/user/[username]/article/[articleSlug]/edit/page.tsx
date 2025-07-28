@@ -8,6 +8,7 @@ import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { createServerClient } from "@/lib/ServerClient";
 import { GraphQLData } from "@/types/graphql";
+import Tiptap from "@/components/TipTap";
 
 const Page = async ({
   params,
@@ -67,11 +68,11 @@ const Page = async ({
   return (
     <div className="">
       <Editor
-        status={data.draftArticle.article.status}
-        content={data.draftArticle.content}
         title={data.draftArticle.title}
-        slug={articleSlug}
+        content={data.draftArticle.content}
+        slug={data.draftArticle.article.slug}
         imageUrl={data.draftArticle.imageUrl}
+        status={data.draftArticle.article.status}
       />
     </div>
   );

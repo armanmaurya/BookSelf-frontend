@@ -20,24 +20,25 @@ export const TopBar = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
+  // Commented out scroll hide functionality
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollPos = window.scrollY;
 
-      // Always show header when at top of page
-      if (currentScrollPos === 0) {
-        setVisible(true);
-        return;
-      }
+  //     // Always show header when at top of page
+  //     if (currentScrollPos === 0) {
+  //       setVisible(true);
+  //       return;
+  //     }
 
-      // Show/hide based on scroll direction
-      setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
-      setPrevScrollPos(currentScrollPos);
-    };
+  //     // Show/hide based on scroll direction
+  //     setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
+  //     setPrevScrollPos(currentScrollPos);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [prevScrollPos]);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [prevScrollPos]);
 
   return (
     <AnimatePresence initial={false}>

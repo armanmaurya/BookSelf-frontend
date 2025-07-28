@@ -2,7 +2,7 @@
 import { WSGIEditor } from "@bookself/slate-editor";
 // import { Article } from "@/app/types";
 import Cookies from "js-cookie";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { Store } from "react-notifications-component";
 import { useAuth } from "@/context/AuthContext";
@@ -13,6 +13,7 @@ import nProgress from "nprogress";
 import { useRouter } from "next/navigation";
 import { AddArticleCover } from "@/components/element/AddArticleCover";
 import Image from "next/image";
+import Tiptap from "@/components/TipTap";
 
 export const Editor = ({
   content,
@@ -28,6 +29,8 @@ export const Editor = ({
   imageUrl: string;
 }) => {
   const [articleSlug, setArticleSlug] = useState<string | null>(slug);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved');
   const { user } = useAuth();
   const router = useRouter();
 
@@ -41,6 +44,7 @@ export const Editor = ({
   const UpdateContent = useCallback(
     async (body: string) => {
       console.log(body);
+      setSaveStatus('saving');
 
       const csrf = Cookies.get("csrftoken");
 
@@ -51,16 +55,20 @@ export const Editor = ({
         });
         if (data) {
           console.log("Success");
+          setSaveStatus('saved');
+          setLastSaved(new Date());
         }
       } catch (error) {
         console.log(error);
+        setSaveStatus('error');
       }
     },
-    [articleSlug]
+    [articleSlug, MUTATION]
   );
 
   const UpdateTitle = async (title: string) => {
     const csrf = Cookies.get("csrftoken");
+    setSaveStatus('saving');
 
     try {
       const { data } = await client.mutate({
@@ -76,9 +84,12 @@ export const Editor = ({
           `/${user?.username}/article/${slug}/edit`
         );
         setArticleSlug(slug);
+        setSaveStatus('saved');
+        setLastSaved(new Date());
       }
     } catch (error) {
       console.log(error);
+      setSaveStatus('error');
     }
   };
 
@@ -99,28 +110,97 @@ export const Editor = ({
       router.push(`/user/${user?.username}/article/${data.publishArticle}`);
     }
   };
+
+  // Function to get time elapsed since last save
+  const getTimeElapsed = () => {
+    if (!lastSaved) return '';
+    
+    const now = new Date();
+    const diffInMs = now.getTime() - lastSaved.getTime();
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    
+    if (diffInMinutes === 0) {
+      return 'just now';
+    } else if (diffInMinutes === 1) {
+      return '1 minute ago';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
+    } else {
+      const hours = Math.floor(diffInMinutes / 60);
+      if (hours === 1) {
+        return '1 hour ago';
+      } else {
+        return `${hours} hours ago`;
+      }
+    }
+  };
+
+  // Update time display every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Force re-render to update time display
+      setLastSaved(prev => prev);
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Initialize last saved time
+  useEffect(() => {
+    setLastSaved(new Date());
+  }, []);
+
+  const SaveIndicator = () => {
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        {saveStatus === 'saving' && (
+          <>
+            <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+            <span>Saving...</span>
+          </>
+        )}
+        {saveStatus === 'saved' && (
+          <>
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span>Saved {getTimeElapsed()}</span>
+          </>
+        )}
+        {saveStatus === 'error' && (
+          <>
+            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+            <span>Error saving</span>
+          </>
+        )}
+      </div>
+    );
+  };
+
   // console.log("content", content);
   return (
-    <div className="max-w-full flex flex-col">
-      {/* Editor Content - Centered but full width */}
-      <div className="flex-1 w-full px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
-        <div className="flex">
-          {/* <AddArticleCover articleSlug={articleSlug} /> */}
-          <div
-            className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer"
-            onClick={PublishArticle}
-          >
-            {status === "DR" ? "Publish" : "Update"}
+    <div className="">
+      <div className="">
+        <div className="mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* <AddArticleCover articleSlug={articleSlug} /> */}
+              <div
+                className="bg-green-600 rounded-full flex items-center justify-center m-1 text-xs p-1 cursor-pointer"
+                onClick={PublishArticle}
+              >
+                {status === "DR" ? "Publish" : "Update"}
+              </div>
+            </div>
+            <SaveIndicator />
           </div>
         </div>
-        <WSGIEditor
+        <Tiptap
+          initialContent={content}
+          initialTitle={title}
           onTitleChange={(title) => {
             console.log("title changed");
             UpdateTitle(title);
           }}
           onContentChange={UpdateContent}
-          initialValue={content}
-          title={title}
         />
       </div>
     </div>
