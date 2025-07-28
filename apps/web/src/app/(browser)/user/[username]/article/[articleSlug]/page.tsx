@@ -154,7 +154,7 @@ const Page = async ({
         <Separator className="my-8" />
         {/* Author Information */}
         <Card className="p-4 mb-8">
-          <div className="flex flex-col sm:flex-row items-start gap-4 w-full">
+          <div className="flex items-start gap-4">
             <Link href={`/user/${article.author.username}`} className="flex-shrink-0">
               <Avatar className="h-16 w-16">
                 <AvatarImage src={article.author.profilePicture} />
@@ -163,50 +163,52 @@ const Page = async ({
                 </AvatarFallback>
               </Avatar>
             </Link>
-            <div className="flex-1 flex flex-col sm:flex-row w-full gap-4">
-              <div className="flex-1 w-full flex flex-col justify-center min-w-0">
-                <div className="mb-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 w-full">
-                  <h3 className="text-lg font-semibold truncate">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 mb-1">
+                    <h3 className="text-lg font-semibold">
+                      <Link
+                        href={`/user/${article.author.username}`}
+                        className="hover:underline"
+                      >
+                        {article.author.firstName} {article.author.lastName}
+                      </Link>
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      @{article.author.username}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                     <Link
-                      href={`/user/${article.author.username}`}
-                      className="hover:underline"
+                      href={`/user/${username}/followers`}
+                      className="hover:text-primary transition-colors"
                     >
-                      {article.author.firstName} {article.author.lastName}
+                      <span className="font-semibold">
+                        {article.author.followersCount}
+                      </span>{" "}
+                      Followers
                     </Link>
-                  </h3>
-                  <p className="text-muted-foreground text-sm sm:ml-2 truncate">
-                    @{article.author.username}
-                  </p>
+                    <Link
+                      href={`/user/${username}/following`}
+                      className="hover:text-primary transition-colors"
+                    >
+                      <span className="font-semibold">
+                        {article.author.followingCount}
+                      </span>{" "}
+                      Following
+                    </Link>
+                  </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm mb-3 w-full">
-                  <Link
-                    href={`/user/${username}/followers`}
-                    className="hover:text-primary transition-colors"
-                  >
-                    <span className="font-semibold">
-                      {article.author.followersCount}
-                    </span>{" "}
-                    Followers
-                  </Link>
-                  <Link
-                    href={`/user/${username}/following`}
-                    className="hover:text-primary transition-colors"
-                  >
-                    <span className="font-semibold">
-                      {article.author.followingCount}
-                    </span>{" "}
-                    Following
-                  </Link>
-                </div>
+                {!article.author.isSelf && (
+                  <div className="flex-shrink-0">
+                    <FollowButton
+                      initialIsFollowing={article.author.isFollowing}
+                      username={username}
+                    />
+                  </div>
+                )}
               </div>
-              {!article.author.isSelf && (
-                <div className="flex items-end sm:items-start justify-end sm:justify-center pt-1 w-full sm:w-auto">
-                  <FollowButton
-                    initialIsFollowing={article.author.isFollowing}
-                    username={username}
-                  />
-                </div>
-              )}
             </div>
           </div>
         </Card>

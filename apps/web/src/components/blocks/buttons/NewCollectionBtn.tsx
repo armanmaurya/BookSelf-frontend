@@ -21,6 +21,7 @@ interface NewCollectionBtnProps {
 
 export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
   const [isCollectionCreateOpen, setIsCollectionCreateOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [collectionData, setCollectionData] = useState({
     name: "",
     isPublic: false,
@@ -36,6 +37,10 @@ export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
   `;
 
   const handleCreate = async () => {
+    if (isCreating || !collectionData.name.trim()) return;
+
+    setIsCreating(true);
+
     try {
       const { data } = await client.mutate({
         mutation: CREATE_COLLECTION_MUTATION,
@@ -50,6 +55,7 @@ export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
         variant: "default",
       });
       onCreate(collectionData.name, collectionData.isPublic);
+      setCollectionData({ name: "", isPublic: false }); // Reset form
       setIsCollectionCreateOpen(false);
     } catch (error) {
       console.error("Error creating collection", error);
@@ -58,6 +64,8 @@ export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
         description: "Failed to create collection. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -93,6 +101,7 @@ export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
                   setCollectionData({ ...collectionData, name: e.target.value })
                 }
                 placeholder="Enter collection name"
+                disabled={isCreating}
               />
             </div>
 
@@ -103,6 +112,7 @@ export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
                 onCheckedChange={(checked) =>
                   setCollectionData({ ...collectionData, isPublic: checked })
                 }
+                disabled={isCreating}
               />
               <Label htmlFor="public-collection">Public Collection</Label>
             </div>
@@ -112,14 +122,20 @@ export const NewCollectionBtn = ({ onCreate }: NewCollectionBtnProps) => {
             <Button
               variant="outline"
               onClick={() => setIsCollectionCreateOpen(false)}
+              disabled={isCreating}
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreate}
-              disabled={!collectionData.name.trim()}
+              disabled={!collectionData.name.trim() || isCreating}
+              className="min-w-[80px]"
             >
-              Create
+              {isCreating ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+              ) : (
+                "Create"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

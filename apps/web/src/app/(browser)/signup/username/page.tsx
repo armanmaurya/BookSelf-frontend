@@ -1,8 +1,5 @@
 import React from "react";
 import { cookies } from "next/headers";
-import { CustomInput } from "@/components/element/input";
-import { Form } from "@/components/element/form";
-import { Button } from "@/components/element/button";
 import { UsernameForm } from "./form";
 
 const Page = async () => {
@@ -34,25 +31,25 @@ const Page = async () => {
   }
 
   return (
-    <div className="min-h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-neutral-900 dark:text-white">
+          <h2 className="mt-6 text-3xl font-extrabold text-foreground">
             Complete Your Registration
           </h2>
-          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+          <p className="mt-2 text-sm text-muted-foreground">
             Please choose a username to continue
           </p>
         </div>
 
         <UsernameForm data={data} />
 
-        <div className="mt-6 text-center text-sm text-neutral-600 dark:text-neutral-300">
+        <div className="mt-6 text-center text-sm text-muted-foreground">
           <p>
             Need help?{" "}
             <a
               href="#"
-              className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
+              className="font-medium text-primary hover:text-primary/80 transition-colors"
             >
               Contact support
             </a>

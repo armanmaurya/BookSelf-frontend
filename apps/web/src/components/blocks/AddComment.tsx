@@ -5,6 +5,9 @@ import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { CommentType } from "@/types/comment";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import nProgress from "nprogress";
 
 export const AddComment = ({
@@ -24,8 +27,10 @@ export const AddComment = ({
 }) => {
   const [text, setText] = useState("");
   const [isShow, setIsShow] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
+  const { toast } = useToast();
   
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
@@ -66,6 +71,10 @@ export const AddComment = ({
   `;
 
   const addComment = async () => {
+    if (text.trim().length === 0 || isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
       const { data } = await client.mutate({
         mutation: MUTATION,
@@ -73,11 +82,15 @@ export const AddComment = ({
       });
 
       if (!data || !data.createComment) {
-        console.error("No comment returned from server.");
-        return;
+        throw new Error("No comment returned from server.");
       }
 
       if (data.createComment.__typename === "AuthencatationError") {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to add a comment.",
+          variant: "destructive",
+        });
         // Redirect to login
         nProgress.start();
         router.push("/signin");
@@ -86,28 +99,44 @@ export const AddComment = ({
 
       setComments([data.createComment, ...comments]);
       setText("");
+      setIsShow(false);
+      
+      toast({
+        title: "Success!",
+        description: "Comment added successfully.",
+      });
     } catch (error) {
       console.error("Error adding comment", error);
+      toast({
+        title: "Error",
+        description: "Failed to add comment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="flex flex-col space-y-2">
-      <textarea
+      <Textarea
         ref={textareaRef}
         placeholder="Add a comment"
-        className={`w-full focus:outline-none resize-none bg-transparent border-b-2 border-gray-400 focus:border-white`}
+        className="resize-none bg-transparent border-b-2 border-border focus:border-primary"
         onChange={handleChange}
         rows={1}
         value={text}
         onKeyDown={handleKeyDown}
         onFocus={() => setIsShow(true)}
         autoFocus={focused}
-      ></textarea>
+        disabled={isSubmitting}
+      />
       {
         isShow && (
           <div className="flex justify-end space-x-2">
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 setText("");
                 if (onCanceled) {
@@ -116,17 +145,25 @@ export const AddComment = ({
                   setIsShow(false);
                 }
               }}
-              className={`rounded-full p-2 right-0 bg-gray-400 bg-opacity-25`}
+              disabled={isSubmitting}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              size="sm"
               onClick={addComment}
-              className={`rounded-full p-2 right-0 ${text.length == 0 ? "bg-gray-400 opacity-30" : "bg-blue-400"
-                }`}
+              disabled={text.trim().length === 0 || isSubmitting}
+              className="min-w-[80px]"
             >
-              Comment
-            </button>
+              {isSubmitting ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                  Adding...
+                </div>
+              ) : (
+                "Comment"
+              )}
+            </Button>
           </div>
         )
       }
