@@ -71,14 +71,68 @@ interface MenuBarProps {
 }
 
 const MenuBar = ({ editor }: MenuBarProps) => {
-  if (!editor) {
-    return null;
-  }
-
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return {
+          isBold: false,
+          canBold: false,
+          isItalic: false,
+          canItalic: false,
+          isUnderline: false,
+          canUnderline: false,
+          isStrike: false,
+          canStrike: false,
+          isCode: false,
+          canCode: false,
+          isHighlight: false,
+          canHighlight: false,
+          isSubscript: false,
+          canSubscript: false,
+          isSuperscript: false,
+          canSuperscript: false,
+          isParagraph: false,
+          isHeading1: false,
+          isHeading2: false,
+          isHeading3: false,
+          isHeading4: false,
+          isHeading5: false,
+          isHeading6: false,
+          isBulletList: false,
+          isOrderedList: false,
+          isTaskList: false,
+          isBlockquote: false,
+          isAlignLeft: false,
+          isAlignCenter: false,
+          isAlignRight: false,
+          isAlignJustify: false,
+          canUndo: false,
+          canRedo: false,
+          isInter: false,
+          isComicSans: false,
+          isSerif: false,
+          isMonospace: false,
+          isCursive: false,
+          isSystemUI: false,
+          isArial: false,
+          isHelvetica: false,
+          isTimesNewRoman: false,
+          isGeorgia: false,
+          isVerdana: false,
+          isTahoma: false,
+          isCourierNew: false,
+          isTrebuchet: false,
+          isImpact: false,
+          isPalatino: false,
+          isRoboto: false,
+          isOpenSans: false,
+          isLato: false,
+          isMontserrat: false,
+          isPoppins: false,
+        };
+      }
       return {
         isBold: ctx.editor.isActive("bold") ?? false,
         canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
@@ -140,6 +194,68 @@ const MenuBar = ({ editor }: MenuBarProps) => {
     },
   });
 
+  if (!editor) {
+    return null;
+  }
+
+  // Default values when editorState is null
+  const safeEditorState = editorState || {
+    isBold: false,
+    canBold: false,
+    isItalic: false,
+    canItalic: false,
+    isUnderline: false,
+    canUnderline: false,
+    isStrike: false,
+    canStrike: false,
+    isCode: false,
+    canCode: false,
+    isHighlight: false,
+    canHighlight: false,
+    isSubscript: false,
+    canSubscript: false,
+    isSuperscript: false,
+    canSuperscript: false,
+    isParagraph: false,
+    isHeading1: false,
+    isHeading2: false,
+    isHeading3: false,
+    isHeading4: false,
+    isHeading5: false,
+    isHeading6: false,
+    isBulletList: false,
+    isOrderedList: false,
+    isTaskList: false,
+    isBlockquote: false,
+    isAlignLeft: false,
+    isAlignCenter: false,
+    isAlignRight: false,
+    isAlignJustify: false,
+    canUndo: false,
+    canRedo: false,
+    isInter: false,
+    isComicSans: false,
+    isSerif: false,
+    isMonospace: false,
+    isCursive: false,
+    isSystemUI: false,
+    isArial: false,
+    isHelvetica: false,
+    isTimesNewRoman: false,
+    isGeorgia: false,
+    isVerdana: false,
+    isTahoma: false,
+    isCourierNew: false,
+    isTrebuchet: false,
+    isImpact: false,
+    isPalatino: false,
+    isRoboto: false,
+    isOpenSans: false,
+    isLato: false,
+    isMontserrat: false,
+    isPoppins: false,
+  };
+
   const toggleHeading = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
     editor.chain().focus().toggleHeading({ level }).run();
   };
@@ -157,34 +273,36 @@ const MenuBar = ({ editor }: MenuBarProps) => {
   };
 
   const getCurrentFontFamily = () => {
-    if (editorState.isInter) return "Inter";
-    if (editorState.isComicSans) return "Comic Sans MS";
-    if (editorState.isSerif) return "Serif";
-    if (editorState.isMonospace) return "Monospace";
-    if (editorState.isCursive) return "Cursive";
-    if (editorState.isSystemUI) return "System UI";
-    if (editorState.isArial) return "Arial";
-    if (editorState.isHelvetica) return "Helvetica";
-    if (editorState.isTimesNewRoman) return "Times New Roman";
-    if (editorState.isGeorgia) return "Georgia";
-    if (editorState.isVerdana) return "Verdana";
-    if (editorState.isTahoma) return "Tahoma";
-    if (editorState.isCourierNew) return "Courier New";
-    if (editorState.isTrebuchet) return "Trebuchet MS";
-    if (editorState.isImpact) return "Impact";
-    if (editorState.isPalatino) return "Palatino";
-    if (editorState.isRoboto) return "Roboto";
-    if (editorState.isOpenSans) return "Open Sans";
-    if (editorState.isLato) return "Lato";
-    if (editorState.isMontserrat) return "Montserrat";
-    if (editorState.isPoppins) return "Poppins";
+    if (!safeEditorState) return "Default";
+    if (safeEditorState.isInter) return "Inter";
+    if (safeEditorState.isComicSans) return "Comic Sans MS";
+    if (safeEditorState.isSerif) return "Serif";
+    if (safeEditorState.isMonospace) return "Monospace";
+    if (safeEditorState.isCursive) return "Cursive";
+    if (safeEditorState.isSystemUI) return "System UI";
+    if (safeEditorState.isArial) return "Arial";
+    if (safeEditorState.isHelvetica) return "Helvetica";
+    if (safeEditorState.isTimesNewRoman) return "Times New Roman";
+    if (safeEditorState.isGeorgia) return "Georgia";
+    if (safeEditorState.isVerdana) return "Verdana";
+    if (safeEditorState.isTahoma) return "Tahoma";
+    if (safeEditorState.isCourierNew) return "Courier New";
+    if (safeEditorState.isTrebuchet) return "Trebuchet MS";
+    if (safeEditorState.isImpact) return "Impact";
+    if (safeEditorState.isPalatino) return "Palatino";
+    if (safeEditorState.isRoboto) return "Roboto";
+    if (safeEditorState.isOpenSans) return "Open Sans";
+    if (safeEditorState.isLato) return "Lato";
+    if (safeEditorState.isMontserrat) return "Montserrat";
+    if (safeEditorState.isPoppins) return "Poppins";
     return "Default";
   };
 
   const getCurrentAlignment = () => {
-    if (editorState.isAlignCenter) return "center";
-    if (editorState.isAlignRight) return "right";
-    if (editorState.isAlignJustify) return "justify";
+    if (!safeEditorState) return "left";
+    if (safeEditorState.isAlignCenter) return "center";
+    if (safeEditorState.isAlignRight) return "right";
+    if (safeEditorState.isAlignJustify) return "justify";
     return "left"; // default
   };
 
@@ -210,7 +328,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editorState.canUndo}
+          disabled={!safeEditorState.canUndo}
           className="h-8 w-8 p-0"
         >
           <Undo className="h-4 w-4" />
@@ -219,7 +337,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editorState.canRedo}
+          disabled={!safeEditorState.canRedo}
           className="h-8 w-8 p-0"
         >
           <Redo className="h-4 w-4" />
@@ -249,37 +367,37 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             </div>
             <DropdownMenuItem
               onClick={() => setFontFamily("Inter")}
-              className={editorState.isInter ? "bg-accent" : ""}
+              className={safeEditorState.isInter ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Inter" }}>Inter</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Roboto")}
-              className={editorState.isRoboto ? "bg-accent" : ""}
+              className={safeEditorState.isRoboto ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Roboto, sans-serif" }}>Roboto</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Open Sans")}
-              className={editorState.isOpenSans ? "bg-accent" : ""}
+              className={safeEditorState.isOpenSans ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: '"Open Sans", sans-serif' }}>Open Sans</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Lato")}
-              className={editorState.isLato ? "bg-accent" : ""}
+              className={safeEditorState.isLato ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Lato, sans-serif" }}>Lato</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Montserrat")}
-              className={editorState.isMontserrat ? "bg-accent" : ""}
+              className={safeEditorState.isMontserrat ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Montserrat, sans-serif" }}>Montserrat</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Poppins")}
-              className={editorState.isPoppins ? "bg-accent" : ""}
+              className={safeEditorState.isPoppins ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Poppins, sans-serif" }}>Poppins</span>
             </DropdownMenuItem>
@@ -290,37 +408,37 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             </div>
             <DropdownMenuItem
               onClick={() => setFontFamily("Arial")}
-              className={editorState.isArial ? "bg-accent" : ""}
+              className={safeEditorState.isArial ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Arial, sans-serif" }}>Arial</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Helvetica")}
-              className={editorState.isHelvetica ? "bg-accent" : ""}
+              className={safeEditorState.isHelvetica ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Helvetica, sans-serif" }}>Helvetica</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Verdana")}
-              className={editorState.isVerdana ? "bg-accent" : ""}
+              className={safeEditorState.isVerdana ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Verdana, sans-serif" }}>Verdana</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Tahoma")}
-              className={editorState.isTahoma ? "bg-accent" : ""}
+              className={safeEditorState.isTahoma ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Tahoma, sans-serif" }}>Tahoma</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Trebuchet MS")}
-              className={editorState.isTrebuchet ? "bg-accent" : ""}
+              className={safeEditorState.isTrebuchet ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: '"Trebuchet MS", sans-serif' }}>Trebuchet MS</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("system-ui")}
-              className={editorState.isSystemUI ? "bg-accent" : ""}
+              className={safeEditorState.isSystemUI ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "system-ui" }}>System UI</span>
             </DropdownMenuItem>
@@ -331,25 +449,25 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             </div>
             <DropdownMenuItem
               onClick={() => setFontFamily("Times New Roman")}
-              className={editorState.isTimesNewRoman ? "bg-accent" : ""}
+              className={safeEditorState.isTimesNewRoman ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: '"Times New Roman", serif' }}>Times New Roman</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Georgia")}
-              className={editorState.isGeorgia ? "bg-accent" : ""}
+              className={safeEditorState.isGeorgia ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Georgia, serif" }}>Georgia</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Palatino")}
-              className={editorState.isPalatino ? "bg-accent" : ""}
+              className={safeEditorState.isPalatino ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Palatino, serif" }}>Palatino</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("serif")}
-              className={editorState.isSerif ? "bg-accent" : ""}
+              className={safeEditorState.isSerif ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "serif" }}>Serif</span>
             </DropdownMenuItem>
@@ -360,19 +478,19 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             </div>
             <DropdownMenuItem
               onClick={() => setFontFamily("Courier New")}
-              className={editorState.isCourierNew ? "bg-accent" : ""}
+              className={safeEditorState.isCourierNew ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: '"Courier New", monospace' }}>Courier New</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("monospace")}
-              className={editorState.isMonospace ? "bg-accent" : ""}
+              className={safeEditorState.isMonospace ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "monospace" }}>Monospace</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Impact")}
-              className={editorState.isImpact ? "bg-accent" : ""}
+              className={safeEditorState.isImpact ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Impact, sans-serif" }}>Impact</span>
             </DropdownMenuItem>
@@ -383,13 +501,13 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             </div>
             <DropdownMenuItem
               onClick={() => setFontFamily("Comic Sans MS, cursive")}
-              className={editorState.isComicSans ? "bg-accent" : ""}
+              className={safeEditorState.isComicSans ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "Comic Sans MS, cursive" }}>Comic Sans</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("cursive")}
-              className={editorState.isCursive ? "bg-accent" : ""}
+              className={safeEditorState.isCursive ? "bg-accent" : ""}
             >
               <span style={{ fontFamily: "cursive" }}>Cursive</span>
             </DropdownMenuItem>
@@ -402,13 +520,13 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 px-2 w-[110px] overflow-auto justify-start">
-              {editorState.isHeading1 && <Heading1 className="h-4 w-4" />}
-              {editorState.isHeading2 && <Heading2 className="h-4 w-4" />}
-              {editorState.isHeading3 && <Heading3 className="h-4 w-4" />}
-              {editorState.isHeading4 && <Heading4 className="h-4 w-4" />}
-              {editorState.isHeading5 && <Heading5 className="h-4 w-4" />}
-              {editorState.isHeading6 && <Heading6 className="h-4 w-4" />}
-              {editorState.isParagraph && (
+              {safeEditorState.isHeading1 && <Heading1 className="h-4 w-4" />}
+              {safeEditorState.isHeading2 && <Heading2 className="h-4 w-4" />}
+              {safeEditorState.isHeading3 && <Heading3 className="h-4 w-4" />}
+              {safeEditorState.isHeading4 && <Heading4 className="h-4 w-4" />}
+              {safeEditorState.isHeading5 && <Heading5 className="h-4 w-4" />}
+              {safeEditorState.isHeading6 && <Heading6 className="h-4 w-4" />}
+              {safeEditorState.isParagraph && (
                 <span className="text-sm">Paragraph</span>
               )}
               <ChevronDown className="h-3 w-3 ml-auto" />
@@ -451,55 +569,55 @@ const MenuBar = ({ editor }: MenuBarProps) => {
 
         {/* Text Formatting */}
         <Button
-          variant={editorState.isBold ? "default" : "ghost"}
+          variant={safeEditorState.isBold ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!editorState.canBold}
+          disabled={!safeEditorState.canBold}
           className="h-8 w-8 p-0"
         >
           <BoldIcon className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isItalic ? "default" : "ghost"}
+          variant={safeEditorState.isItalic ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!editorState.canItalic}
+          disabled={!safeEditorState.canItalic}
           className="h-8 w-8 p-0"
         >
           <ItalicIcon className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isUnderline ? "default" : "ghost"}
+          variant={safeEditorState.isUnderline ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          disabled={!editorState.canUnderline}
+          disabled={!safeEditorState.canUnderline}
           className="h-8 w-8 p-0"
         >
           <UnderlineIcon className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isStrike ? "default" : "ghost"}
+          variant={safeEditorState.isStrike ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          disabled={!editorState.canStrike}
+          disabled={!safeEditorState.canStrike}
           className="h-8 w-8 p-0"
         >
           <Strikethrough className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isCode ? "default" : "ghost"}
+          variant={safeEditorState.isCode ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleCode().run()}
-          disabled={!editorState.canCode}
+          disabled={!safeEditorState.canCode}
           className="h-8 w-8 p-0"
         >
           <Code2 className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isHighlight ? "default" : "ghost"}
+          variant={safeEditorState.isHighlight ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleHighlight().run()}
-          disabled={!editorState.canHighlight}
+          disabled={!safeEditorState.canHighlight}
           className="h-8 w-8 p-0"
         >
           <Highlighter className="h-4 w-4" />
@@ -509,19 +627,19 @@ const MenuBar = ({ editor }: MenuBarProps) => {
 
         {/* Subscript/Superscript */}
         <Button
-          variant={editorState.isSubscript ? "default" : "ghost"}
+          variant={safeEditorState.isSubscript ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleSubscript().run()}
-          disabled={!editorState.canSubscript}
+          disabled={!safeEditorState.canSubscript}
           className="h-8 w-8 p-0"
         >
           <SubscriptIcon className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isSuperscript ? "default" : "ghost"}
+          variant={safeEditorState.isSuperscript ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleSuperscript().run()}
-          disabled={!editorState.canSuperscript}
+          disabled={!safeEditorState.canSuperscript}
           className="h-8 w-8 p-0"
         >
           <SuperscriptIcon className="h-4 w-4" />
@@ -561,7 +679,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
 
         {/* Lists */}
         <Button
-          variant={editorState.isBulletList ? "default" : "ghost"}
+          variant={safeEditorState.isBulletList ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className="h-8 w-8 p-0"
@@ -569,7 +687,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
           <List className="h-4 w-4" />
         </Button>
         <Button
-          variant={editorState.isOrderedList ? "default" : "ghost"}
+          variant={safeEditorState.isOrderedList ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className="h-8 w-8 p-0"
@@ -581,7 +699,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
 
         {/* Blockquote */}
         <Button
-          variant={editorState.isBlockquote ? "default" : "ghost"}
+          variant={safeEditorState.isBlockquote ? "default" : "ghost"}
           size="sm"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className="h-8 w-8 p-0"
