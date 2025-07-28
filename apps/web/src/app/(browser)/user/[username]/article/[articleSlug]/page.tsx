@@ -109,11 +109,11 @@ const Page = async ({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row max-w-7xl mx-auto px-6 gap-8">
+    <div className="flex flex-col lg:flex-row max-w-[1400px] mx-auto px-6 gap-8">
       {/* Main Content */}
       <div className="flex-1 min-w-0">
         {/* Article Header */}
-        <Card className="border-none">
+        <Card className="border-none px-6 pb-6">
           <div className="">
             <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
 
@@ -146,9 +146,8 @@ const Page = async ({
 
           {/* Main Article Content */}
           <main className="prose dark:prose-invert max-w-none">
-            <RenderContent
-              title={article.title}
-              value={JSON.parse(article.content)}
+            <div className=""
+              dangerouslySetInnerHTML={{ __html: article.content }}
             />
           </main>
         </Card>
