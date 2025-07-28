@@ -113,7 +113,7 @@ const Page = async ({
       {/* Main Content */}
       <div className="flex-1 min-w-0">
         {/* Article Header */}
-        <Card className="border-none px-6 pb-6">
+        <Card className="border-none p-6">
           <div className="">
             <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
 

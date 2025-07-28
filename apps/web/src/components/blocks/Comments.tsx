@@ -9,9 +9,16 @@ import { CommentLikeButton } from "../element/button/CommentLikeButton";
 import { IoIosArrowUp } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Reply } from "lucide-react";
+import { ChevronDown, ChevronUp, Reply, MoreVertical } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const QUERY = gql`
   query MyQuery($slug: String!, $number: Int!, $lastId: Int, $parentId: Int) {
@@ -57,6 +64,7 @@ const fetchComments = async ({
         lastId: lastId,
         parentId: parentId,
       },
+      fetchPolicy: "no-cache",
     });
     //   Append Comments
     // setComments([...comments, ...data.article.comments]);
@@ -155,6 +163,9 @@ export const Comments = ({
             articleSlug={articleSlug}
             comment={comment}
             key={comment.id}
+            onCommentDeleted={(deletedCommentId) => {
+              setComments(comments.filter(c => c.id !== deletedCommentId));
+            }}
           />
         ))}
       </div>
@@ -206,15 +217,21 @@ export const Comments = ({
 const Comment = ({
   comment,
   articleSlug,
+  onCommentDeleted,
 }: {
   comment: CommentType;
   articleSlug: string;
+  onCommentDeleted?: (commentId: number) => void;
 }) => {
   const [replies, setReplies] = useState<CommentType[]>([]);
   const [showAddReply, setShowAddReply] = useState(false);
   const [isLoadingReplies, setIsLoadingReplies] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Check if the current user is the comment author
+  const isOwnComment = user?.username === comment.user.username;
 
   const loadReplies = async () => {
     try {
@@ -239,10 +256,44 @@ const Comment = ({
   };
 
   const handleToggleReplies = async () => {
-    if (!showReplies && replies.length === 0) {
-      await loadReplies();
+    if (!showReplies) {
+      // Only load replies if we don't have any yet
+      if (replies.length === 0) {
+        await loadReplies();
+      }
+      setShowReplies(true);
+    } else {
+      setShowReplies(false);
     }
-    setShowReplies((v) => !v);
+  };
+
+  const DELETE_COMMENT = gql`
+    mutation MyMutation($id: Int!) {
+      deleteComment(id: $id)
+    }
+  `;
+
+  const handleDeleteComment = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+    try {
+      await client.mutate({
+        mutation: DELETE_COMMENT,
+        variables: { id: comment.id },
+      });
+      toast({
+        title: "Comment deleted",
+        description: "Your comment has been successfully deleted.",
+      });
+      // Call the parent callback to remove the comment from state
+      onCommentDeleted?.(comment.id);
+    } catch (error) {
+      console.error("Error deleting comment", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete comment. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -258,17 +309,52 @@ const Comment = ({
           </Avatar>
 
           <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">
-                {comment.user.firstName} {comment.user.lastName}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {new Date(comment.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">
+                  {comment.user.firstName} {comment.user.lastName}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(comment.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {isOwnComment && (
+                    <>
+                      <DropdownMenuItem
+                        onClick={(e) =>
+                          handleDeleteComment(e)
+                        }
+                        className="text-destructive"
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuItem
+                    onClick={() =>
+                      toast({ title: "Report feature coming soon" })
+                    }
+                  >
+                    Report
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <p className="text-sm leading-relaxed">{comment.content}</p>
@@ -320,7 +406,16 @@ const Comment = ({
               focused={true}
               onCanceled={() => setShowAddReply(false)}
               comments={replies}
-              setComments={setReplies}
+              setComments={(newReplies) => {
+                setReplies(newReplies);
+                // Show replies when a new reply is added
+                if (newReplies.length > replies.length) {
+                  setShowReplies(true);
+                  setShowAddReply(false); // Close the add reply form
+                  // Update the comment's replies count
+                  comment.repliesCount = newReplies.length;
+                }
+              }}
               articleSlug={articleSlug}
               parentCommentId={comment.id}
             />
@@ -337,7 +432,17 @@ const Comment = ({
             </div>
           ) : replies.length > 0 ? (
             replies.map((reply) => (
-              <Comment articleSlug={articleSlug} comment={reply} key={reply.id} />
+              <Comment
+                articleSlug={articleSlug}
+                comment={reply}
+                key={reply.id}
+                onCommentDeleted={(deletedCommentId) => {
+                  const updatedReplies = replies.filter(r => r.id !== deletedCommentId);
+                  setReplies(updatedReplies);
+                  // Update the parent comment's replies count
+                  comment.repliesCount = updatedReplies.length;
+                }}
+              />
             ))
           ) : (
             <div className="text-sm text-muted-foreground mt-3">

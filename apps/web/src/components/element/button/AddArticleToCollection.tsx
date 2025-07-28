@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddArticleToCollectionProps {
   articleSlug: string;
@@ -32,6 +33,7 @@ export const AddArticleToCollection = ({
   onToggle,
 }: AddArticleToCollectionProps) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(collection.isAdded);
 
@@ -53,10 +55,25 @@ export const AddArticleToCollection = ({
         const actualStatus = data.toggleAddArticleToCollection;
         setIsChecked(actualStatus);
         onToggle?.(actualStatus);
+        
+        // Show success toast
+        toast({
+          title: actualStatus ? "Article added" : "Article removed",
+          description: actualStatus 
+            ? `Added to "${collection.name}" collection`
+            : `Removed from "${collection.name}" collection`,
+        });
       }
     } catch (error) {
       console.error("Error updating article in collection:", error);
       setIsChecked(!newCheckedState);
+      
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to update article in collection. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
