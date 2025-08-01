@@ -78,11 +78,11 @@ export const Editor = ({
 
       if (data) {
         const slug = data.updateArticle.slug;
-        window.history.replaceState(
-          {},
-          "",
-          `/user/${user?.username}/article/${slug}/edit`
-        );
+        // window.history.replaceState(
+        //   {},
+        //   "",
+        //   `/user/${user?.username}/article/${slug}/edit`
+        // );
         setArticleSlug(slug);
         setSaveStatus('saved');
         setLastSaved(new Date());
