@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { ProfileIcon } from "./ProfileIcon";
 import { SearchInput } from "../element/input";
 import { NewArticleButton } from "../blocks/buttons/NewArticleBtn";
@@ -13,44 +12,12 @@ import {
 } from "@/components/ui/navigation-menu";
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { HomeIcon } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FaPenNib } from "react-icons/fa";
 
 export const TopBar = () => {
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState(true);
-
-  // Commented out scroll hide functionality
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const currentScrollPos = window.scrollY;
-
-  //     // Always show header when at top of page
-  //     if (currentScrollPos === 0) {
-  //       setVisible(true);
-  //       return;
-  //     }
-
-  //     // Show/hide based on scroll direction
-  //     setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
-  //     setPrevScrollPos(currentScrollPos);
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [prevScrollPos]);
-
   return (
-    <AnimatePresence initial={false}>
-      {visible && (
-        <motion.header
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          exit={{ y: -100 }}
-          transition={{ type: "spring", damping: 20, stiffness: 300 }}
-          className="w-full h-14 border-b sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-        >
-          <nav className="container flex items-center justify-between h-full px-4">
+    <header className="w-full h-14 border-b fixed top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className="container flex items-center justify-between h-full px-4">
             {/* Left side - Logo and Navigation */}
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center gap-2">
@@ -106,8 +73,6 @@ export const TopBar = () => {
               <ProfileIcon />
             </div>
           </nav>
-        </motion.header>
-      )}
-    </AnimatePresence>
+        </header>
   );
 };

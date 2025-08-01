@@ -79,7 +79,7 @@ export default async function RootLayout({
                 <ContextProvider>
                   <SideBarProvider>
                     <TopBar />
-                    <div className="">
+                    <div className="pt-14">
                       <div className="p-3">{children}</div>
                       <SideBar className="w-40">
                         {/* <SideBarElement className="flex">
