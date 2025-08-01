@@ -31,6 +31,7 @@ export const Editor = ({
   const [articleSlug, setArticleSlug] = useState<string | null>(slug);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved');
+  const [currentTime, setCurrentTime] = useState("");
   const { user } = useAuth();
   const router = useRouter();
 
@@ -43,10 +44,8 @@ export const Editor = ({
   `;
   const UpdateContent = useCallback(
     async (body: string) => {
-      console.log(body);
+      console.log("Saving content:", body);
       setSaveStatus('saving');
-
-      const csrf = Cookies.get("csrftoken");
 
       try {
         const { data } = await client.mutate({
@@ -54,20 +53,20 @@ export const Editor = ({
           variables: { content: body, title: null, slug: articleSlug },
         });
         if (data) {
-          console.log("Success");
+          console.log("Content saved successfully");
           setSaveStatus('saved');
           setLastSaved(new Date());
         }
       } catch (error) {
-        console.log(error);
+        console.log("Error saving content:", error);
         setSaveStatus('error');
       }
     },
     [articleSlug, MUTATION]
   );
 
-  const UpdateTitle = async (title: string) => {
-    const csrf = Cookies.get("csrftoken");
+  const UpdateTitle = useCallback(async (title: string) => {
+    console.log("Saving title:", title);
     setSaveStatus('saving');
 
     try {
@@ -78,20 +77,16 @@ export const Editor = ({
 
       if (data) {
         const slug = data.updateArticle.slug;
-        // window.history.replaceState(
-        //   {},
-        //   "",
-        //   `/user/${user?.username}/article/${slug}/edit`
-        // );
         setArticleSlug(slug);
         setSaveStatus('saved');
         setLastSaved(new Date());
+        console.log("Title saved successfully");
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error saving title:", error);
       setSaveStatus('error');
     }
-  };
+  }, [articleSlug, MUTATION]);
 
   const PublishArticleMutation = gql`
     mutation MyMutation($slug: String!) {
@@ -138,12 +133,14 @@ export const Editor = ({
   // Update time display every minute
   useEffect(() => {
     const interval = setInterval(() => {
-      // Force re-render to update time display
-      setLastSaved(prev => prev);
+      // Force re-render to update time display without changing lastSaved
+      const now = new Date();
+      // This will trigger a re-render without causing infinite loops
+      setLastSaved(prev => prev ? new Date(prev) : null);
     }, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, []);
+  }, []); // Empty dependency array
 
   // Initialize last saved time
   useEffect(() => {
@@ -196,10 +193,7 @@ export const Editor = ({
         <Tiptap
           initialContent={content}
           initialTitle={title}
-          onTitleChange={(title) => {
-            console.log("title changed");
-            UpdateTitle(title);
-          }}
+          onTitleChange={UpdateTitle}
           onContentChange={UpdateContent}
         />
       </div>
