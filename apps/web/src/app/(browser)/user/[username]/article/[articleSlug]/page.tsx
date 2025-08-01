@@ -54,26 +54,22 @@ const QUERY = gql`
       }
       commentsCount
       totalCommentsCount
+      relatedArticles {
+        id
+        slug
+        title
+        author {
+          username
+          firstName
+          lastName
+          profilePicture
+        }
+      }
     }
   }
 `;
 
-// const MORE_ARTICLES_QUERY = gql`
-//   query MoreArticles($excludeSlug: String!, $limit: Int!) {
-//     articles(limit: $limit, excludeSlug: $excludeSlug) {
-//       id
-//       slug
-//       title
-//       thumbnail
-//       author {
-//         username
-//         firstName
-//         lastName
-//         profilePicture
-//       }
-//     }
-//   }
-// `;
+// Remove the commented out MORE_ARTICLES_QUERY since we're using relatedArticles now
 
 const Page = async ({
   params,
@@ -83,19 +79,12 @@ const Page = async ({
   const { username, articleSlug } = await params;
 
   let data: GraphQLData | null = null;
-  let moreArticles: any[] = [];
   try {
     const result = await createServerClient().query({
       query: QUERY,
       variables: { slug: articleSlug },
     });
     data = result.data;
-    // Fetch more articles for sidebar
-    // const moreResult = await createServerClient().query({
-    //   query: MORE_ARTICLES_QUERY,
-    //   variables: { excludeSlug: articleSlug, limit: 8 },
-    // });
-    // moreArticles = moreResult.data.articles || [];
   } catch (error) {
     return redirect("/not-found");
   }
@@ -109,7 +98,7 @@ const Page = async ({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row max-w-[1400px] mx-auto px-6 gap-8">
+    <div className="flex flex-col lg:flex-row max-w-[1500px] mx-auto px-6 gap-8">
       {/* Main Content */}
       <div className="flex-1 min-w-0">
         {/* Article Header */}
@@ -223,52 +212,40 @@ const Page = async ({
           />
         </div>
       </div>
-      {/* More Articles Sidebar */}
+      {/* Related Articles Sidebar */}
       <aside className="hidden lg:block w-80 flex-shrink-0">
         <div className="sticky top-8">
-          <h2 className="text-xl font-semibold mb-4">More Articles</h2>
-          <div className="flex flex-col gap-4 max-h-[80vh] overflow-y-auto pr-2">
-            {moreArticles.length === 0 && (
+          <h2 className="text-xl font-semibold mb-4">Related Articles</h2>
+          <div className="flex flex-col gap-3 max-h-[80vh] overflow-y-auto pr-2">
+            {(!(article as any).relatedArticles || (article as any).relatedArticles.length === 0) && (
               <div className="text-muted-foreground text-sm">
-                No more articles found.
+                No related articles found.
               </div>
             )}
-            {moreArticles.map((a) => (
-              <Link
-                key={a.id}
-                href={`/user/${a.author.username}/article/${a.slug}`}
-                className="flex gap-3 rounded-lg hover:bg-accent transition p-2 group"
-              >
-                <div className="w-20 h-14 flex-shrink-0 bg-muted rounded overflow-hidden flex items-center justify-center">
-                  {a.thumbnail ? (
-                    <img
-                      src={a.thumbnail}
-                      alt={a.title}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <span className="text-xs text-muted-foreground">
-                      No Image
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm line-clamp-2 group-hover:text-primary transition">
-                    {a.title}
+            {(article as any).relatedArticles?.map((a: any) => (
+              <Card key={a.id} className="p-4 hover:shadow-md transition-shadow">
+                <Link
+                  href={`/user/${a.author.username}/article/${a.slug}`}
+                  className="block group"
+                >
+                  <div className="space-y-3">
+                    <h3 className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                      {a.title}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage src={a.author.profilePicture} />
+                        <AvatarFallback className="text-xs">
+                          {a.author.username.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-xs text-muted-foreground">
+                        {a.author.firstName} {a.author.lastName}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={a.author.profilePicture} />
-                      <AvatarFallback>
-                        {a.author.username.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-xs text-muted-foreground">
-                      {a.author.firstName} {a.author.lastName}
-                    </span>
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </Card>
             ))}
           </div>
         </div>
