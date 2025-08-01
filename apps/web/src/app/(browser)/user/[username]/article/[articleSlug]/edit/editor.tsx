@@ -81,7 +81,7 @@ export const Editor = ({
         window.history.replaceState(
           {},
           "",
-          `/${user?.username}/article/${slug}/edit`
+          `/user/${user?.username}/article/${slug}/edit`
         );
         setArticleSlug(slug);
         setSaveStatus('saved');
