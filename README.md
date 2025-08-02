@@ -1,6 +1,6 @@
-# Project Setup
+# Infobite Frontend
 
-This guide will help you set up and run the project across different apps.
+This guide will help you set up and run the Infobite frontend project across different apps.
 
 ## Prerequisites
 

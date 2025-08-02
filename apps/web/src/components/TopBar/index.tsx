@@ -22,7 +22,7 @@ export const TopBar = () => {
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center gap-2">
                 <HomeIcon className="h-5 w-5" />
-                <span className="text-lg font-semibold">Home</span>
+                <span className="text-lg font-semibold">Infobite</span>
               </Link>
             </div>
 

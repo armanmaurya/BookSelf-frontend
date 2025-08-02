@@ -29,9 +29,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title:
-    "BookSelf - Your go-to destination for insightful and engaging articles",
+    "Infobite - Your go-to destination for insightful and engaging articles",
   description:
-    "Welcome to bookself.site, your go-to destination for insightful and engaging articles on a wide range of topics. Whether you're looking to stay informed, learn something new, or simply enjoy some quality reading time",
+    "Welcome to infobite.online, your go-to destination for insightful and engaging articles on a wide range of topics. Whether you're looking to stay informed, learn something new, or simply enjoy some quality reading time",
 };
 export const revalidate = 1;
 
