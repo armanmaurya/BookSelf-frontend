@@ -241,14 +241,14 @@ const ProfilePage = async ({
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    "Great insights on React performance optimization! The
+                    &ldquo;Great insights on React performance optimization! The
                     useMemo examples really helped me understand when to use
-                    it."
+                    it.&rdquo;
                   </p>
                   <div className="mt-3 pt-3 border-t border-muted/30">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground truncate">
-                        On: "React Performance Tips"
+                        On: &ldquo;React Performance Tips&rdquo;
                       </span>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <svg
@@ -290,13 +290,13 @@ const ProfilePage = async ({
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    "This changed my approach to TypeScript completely. The
-                    advanced type patterns section was incredibly detailed."
+                    &ldquo;This changed my approach to TypeScript completely. The
+                    advanced type patterns section was incredibly detailed.&rdquo;
                   </p>
                   <div className="mt-3 pt-3 border-t border-muted/30">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground truncate">
-                        On: "Advanced TypeScript"
+                        On: &ldquo;Advanced TypeScript&rdquo;
                       </span>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <svg
@@ -336,13 +336,13 @@ const ProfilePage = async ({
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    "This is exactly what I needed! Your explanation of state
-                    management patterns saved me hours of debugging."
+                    &ldquo;This is exactly what I needed! Your explanation of state
+                    management patterns saved me hours of debugging.&rdquo;
                   </p>
                   <div className="mt-3 pt-3 border-t border-yellow-200/50 dark:border-yellow-800/30">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground truncate">
-                        On: "State Management Guide"
+                        On: &ldquo;State Management Guide&rdquo;
                       </span>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <svg
