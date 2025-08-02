@@ -1,0 +1,14 @@
+{
+  "name": "Infobite - Discover, Learn, and Share Knowledge",
+  "short_name": "Infobite",
+  "description": "Transform your curiosity into knowledge with Infobite. Explore bite-sized insights, trending topics, and expert perspectives.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "categories": ["education", "news", "productivity"],
+  "lang": "en",
+  "scope": "/",
+  "prefer_related_applications": false
+}
