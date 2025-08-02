@@ -15,4 +15,5 @@ export type User = {
     profilePicture: string;
     articles: Article[];
     about?: string;
+    articlesCount: number; // Updated to match the new field
 }

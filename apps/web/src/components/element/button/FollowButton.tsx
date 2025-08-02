@@ -8,6 +8,14 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import nProgress from "nprogress";
+import { gql } from "@apollo/client";
+import client from "@/lib/apolloClient";
+
+const MUTATION = gql`
+  mutation MyMutation($username: String!) {
+    followUser(username: $username)
+  }
+`;
 
 export const FollowButton = ({
   initialIsFollowing,
@@ -34,29 +42,13 @@ export const FollowButton = ({
     setIsLoading(true);
 
     try {
-      const csrf = Cookies.get("csrftoken");
-
-      const res = await fetch(`${API_ENDPOINT.toggleFollow.url}/${username}/`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrf!,
-        },
+      const data: any = await client.mutate({
+        mutation: MUTATION,
+        variables: { username },
       });
+      const { followUser } = data.data;
 
-      if (!res.ok) {
-        throw new Error("Failed to update follow status");
-      }
-
-      setIsFollowing(!isFollowing);
-      
-      toast({
-        title: "Success!",
-        description: isFollowing 
-          ? `You have unfollowed @${username}` 
-          : `You are now following @${username}`,
-      });
+      setIsFollowing(followUser);
     } catch (error) {
       toast({
         title: "Error",
@@ -66,6 +58,40 @@ export const FollowButton = ({
     } finally {
       setIsLoading(false);
     }
+
+    // try {
+    //   const csrf = Cookies.get("csrftoken");
+
+    //   const res = await fetch(`${API_ENDPOINT.toggleFollow.url}/${username}/`, {
+    //     method: "POST",
+    //     credentials: "include",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "X-CSRFToken": csrf!,
+    //     },
+    //   });
+
+    //   if (!res.ok) {
+    //     throw new Error("Failed to update follow status");
+    //   }
+
+    //   setIsFollowing(!isFollowing);
+
+    //   toast({
+    //     title: "Success!",
+    //     description: isFollowing
+    //       ? `You have unfollowed @${username}`
+    //       : `You are now following @${username}`,
+    //   });
+    // } catch (error) {
+    //   toast({
+    //     title: "Error",
+    //     description: "Something went wrong. Please try again.",
+    //     variant: "destructive",
+    //   });
+    // } finally {
+    //   setIsLoading(false);
+    // }
   }
   return (
     <Button
@@ -80,8 +106,10 @@ export const FollowButton = ({
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
           {isFollowing ? "Unfollowing..." : "Following..."}
         </div>
+      ) : isFollowing ? (
+        "Following"
       ) : (
-        isFollowing ? "Following" : "Follow"
+        "Follow"
       )}
     </Button>
   );
