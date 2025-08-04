@@ -17,4 +17,5 @@ export interface Article {
   totalCommentsCount: number;
   image_url: string;
   status: string;
+  savesCount: number;
 }

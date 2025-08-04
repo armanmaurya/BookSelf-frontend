@@ -5,9 +5,11 @@ import { CollectionType } from "@/types/Collection";
 import { gql } from "@apollo/client";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 interface AddArticleToCollectionProps {
   articleSlug: string;
@@ -80,24 +82,38 @@ export const AddArticleToCollection = ({
   };
 
   return (
-    <div className="flex items-center space-x-3 py-2 px-3 hover:bg-accent rounded-md transition-colors">
-      {isLoading ? (
-        <Loader2 className="h-5 w-5 animate-spin" />
-      ) : (
-        <Checkbox
-          id={`collection-${collection.id}`}
-          checked={isChecked}
-          onCheckedChange={handleCheckboxChange}
-          disabled={isLoading}
-          className="h-5 w-5 rounded-sm"
-        />
-      )}
-      <Label htmlFor={`collection-${collection.id}`} className="cursor-pointer flex items-center">
-        {collection.name}
-        {collection.isPublic && (
-          <span className="ml-2 text-xs text-muted-foreground">(Public)</span>
+    <div className="flex items-center justify-between py-2 px-3 hover:bg-accent rounded-md transition-colors group">
+      <div className="flex items-center space-x-3">
+        {isLoading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <Checkbox
+            id={`collection-${collection.id}`}
+            checked={isChecked}
+            onCheckedChange={handleCheckboxChange}
+            disabled={isLoading}
+            className="h-5 w-5 rounded-sm"
+          />
         )}
-      </Label>
+        <Label htmlFor={`collection-${collection.id}`} className="cursor-pointer flex items-center">
+          {collection.name}
+          {collection.isPublic && (
+            <span className="ml-2 text-xs text-muted-foreground">(Public)</span>
+          )}
+        </Label>
+      </div>
+      
+      {/* Right arrow button to navigate to collection */}
+      <Link href={`/user/${user?.username}/collection/${collection.id}`}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          title={`Go to ${collection.name} collection`}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </Link>
     </div>
   );
 };

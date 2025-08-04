@@ -30,6 +30,7 @@ const QUERY = gql`
       slug
       title
       views
+      savesCount
       author {
         firstName
         lastName
@@ -198,7 +199,10 @@ const Page = async ({
                 </Link>
               )}
 
-              <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
+              <div className="flex items-center gap-2">
+                <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
+                <span>{article.savesCount}</span>
+              </div>
             </div>
           </header>
 
