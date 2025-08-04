@@ -26,6 +26,7 @@ import HardBreak from "@tiptap/extension-hard-break";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import TextAlign from "@tiptap/extension-text-align";
 import Typography from "@tiptap/extension-typography";
+import UniqueID from "@tiptap/extension-unique-id";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -763,6 +764,13 @@ const Tiptap = ({
 
   const editor = useEditor({
     extensions: [
+      UniqueID.configure({
+        types: ['heading'],
+        generateID: () => {
+          // Generate a more readable ID format
+          return `heading-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        },
+      }),
       Heading.configure({
         levels: [1, 2, 3, 4, 5, 6],
       }),

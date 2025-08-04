@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { IoMdEye } from "react-icons/io";
 import { FiEdit2 } from "react-icons/fi";
 import Link from "next/link";
+import { TableOfContents } from "@/components/blocks/TableOfContents";
 
 const QUERY = gql`
   query MyQuery($slug: String!) {
@@ -148,11 +149,18 @@ const Page = async ({
         }}
       />
 
-      <div className="flex flex-col lg:flex-row max-w-[1400px] mx-auto px-6 gap-8">
+      <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-6 pt-6 gap-8">
+        {/* Table of Contents Sidebar - Left */}
+        <aside className="hidden xl:block flex-shrink-0" aria-labelledby="toc-sidebar">
+          <div className="sticky top-20">
+            <TableOfContents />
+          </div>
+        </aside>
+
         {/* Main Content */}
-        <article className="flex-1 min-w-0" itemScope itemType="https://schema.org/Article">
+        <article className="flex-1 min-w-0 pl-8" itemScope itemType="https://schema.org/Article">
           {/* Article Header */}
-          <header className="border-none pt-6">
+          <header className="border-none">
             <h1 className="text-3xl font-bold mb-2" itemProp="headline">{article.title}</h1>
 
             {/* Article Meta Information */}
@@ -193,6 +201,11 @@ const Page = async ({
               <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
             </div>
           </header>
+
+          {/* Mobile Table of Contents */}
+          <div className="xl:hidden mb-6">
+            <TableOfContents />
+          </div>
 
           {/* Main Article Content */}
           <main className="prose dark:prose-invert max-w-none" role="main">
@@ -284,41 +297,44 @@ const Page = async ({
           </section>
         </article>
         
-        {/* Related Articles Sidebar */}
-        <aside className="hidden lg:block w-80 flex-shrink-0" aria-labelledby="related-articles">
-          <div className="sticky top-8">
-            <h2 id="related-articles" className="text-xl font-semibold mb-4">Related Articles</h2>
-            <div className="flex flex-col gap-3 max-h-[80vh] overflow-y-auto pr-2">
-              {(!(article as any).relatedArticles || (article as any).relatedArticles.length === 0) && (
-                <div className="text-muted-foreground text-sm">
-                  No related articles found.
-                </div>
-              )}
-              {(article as any).relatedArticles?.map((a: any) => (
-                <Card key={a.id} className="p-4 hover:shadow-md transition-shadow">
-                  <Link
-                    href={`/user/${a.author.username}/article/${a.slug}`}
-                    className="block group"
-                  >
-                    <article className="space-y-3">
-                      <h3 className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-                        {a.title}
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-5 w-5">
-                          <AvatarImage src={a.author.profilePicture} alt={`${a.author.firstName} ${a.author.lastName}`} />
-                          <AvatarFallback className="text-xs">
-                            {a.author.username.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-xs text-muted-foreground">
-                          {a.author.firstName} {a.author.lastName}
-                        </span>
-                      </div>
-                    </article>
-                  </Link>
-                </Card>
-              ))}
+        {/* Related Articles Sidebar - Right */}
+        <aside className="hidden lg:block w-72 flex-shrink-0" aria-labelledby="related-sidebar">
+          <div className="sticky top-8 space-y-6">
+            {/* Related Articles */}
+            <div>
+              <h2 id="related-articles" className="text-xl font-semibold mb-4">Related Articles</h2>
+              <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2">
+                {(!(article as any).relatedArticles || (article as any).relatedArticles.length === 0) && (
+                  <div className="text-muted-foreground text-sm">
+                    No related articles found.
+                  </div>
+                )}
+                {(article as any).relatedArticles?.map((a: any) => (
+                  <Card key={a.id} className="p-4 hover:shadow-md transition-shadow">
+                    <Link
+                      href={`/user/${a.author.username}/article/${a.slug}`}
+                      className="block group"
+                    >
+                      <article className="space-y-3">
+                        <h3 className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                          {a.title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-5 w-5">
+                            <AvatarImage src={a.author.profilePicture} alt={`${a.author.firstName} ${a.author.lastName}`} />
+                            <AvatarFallback className="text-xs">
+                              {a.author.username.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-xs text-muted-foreground">
+                            {a.author.firstName} {a.author.lastName}
+                          </span>
+                        </div>
+                      </article>
+                    </Link>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         </aside>
