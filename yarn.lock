@@ -1311,10 +1311,10 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-text-align/-/extension-text-align-3.0.7.tgz"
   integrity sha512-3XywI2+dvb5IIO5NnZqyoXrRnikGyCIN7wWymTI7eqD213Ovs19/sfbW5kXLPsBYiNBb12nbG6pmPhr21mPvoA==
 
-"@tiptap/extension-text-style@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.npmjs.org/@tiptap/extension-text-style/-/extension-text-style-3.0.7.tgz"
-  integrity sha512-naJ1XxlbFJ1qlpA+i54lQYKuhWP1dnkUslM86OT0TZt0zJBeu7LIrqSOVGmMB++lF/btnQLMnYkYSSnkLgIw3A==
+"@tiptap/extension-text-style@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.npmjs.org/@tiptap/extension-text-style/-/extension-text-style-3.0.9.tgz"
+  integrity sha512-x7SZLS537c7w789n8re0IktmkBZqz98dux/hwpFAcC4oL06YPjFG7Dy9mAiKcsKqKWI0eAyTQvMybz+TJusBbw==
 
 "@tiptap/extension-text@^3.0.7":
   version "3.0.7"
@@ -6374,6 +6374,7 @@ w3c-keyname@^2.2.0:
     "@tanstack/react-query" "^5.81.5"
     "@tiptap/extension-blockquote" "^3.0.7"
     "@tiptap/extension-bold" "^3.0.7"
+    "@tiptap/extension-bubble-menu" "^3.0.9"
     "@tiptap/extension-code" "^3.0.7"
     "@tiptap/extension-collaboration" "^3.0.7"
     "@tiptap/extension-document" "^3.0.7"

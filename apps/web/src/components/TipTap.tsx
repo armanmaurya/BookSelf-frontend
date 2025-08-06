@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import {
   useEditor,
   EditorContent,
@@ -30,15 +32,22 @@ import UniqueID from "@tiptap/extension-unique-id";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { FontFamily, TextStyle } from "@tiptap/extension-text-style";
+import { FontFamily, TextStyle, Color } from "@tiptap/extension-text-style";
 import { Placeholder } from "@tiptap/extensions";
-import { BubbleMenu } from '@tiptap/react/menus'
+import { BubbleMenu } from '@tiptap/react/menus';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Bold as BoldIcon,
   Italic as ItalicIcon,
@@ -66,14 +75,127 @@ import {
   Heading5,
   Heading6,
   ChevronDown,
+  Palette,
+  Keyboard,
+  HelpCircle,
 } from "lucide-react";
 // import DragHandle from "@tiptap/extension-drag-handle-react";
 
 interface MenuBarProps {
   editor: Editor | null;
+  onHideToolbar?: () => void;
 }
 
-const MenuBar = ({ editor }: MenuBarProps) => {
+// Keyboard Shortcuts Helper Component
+const KeyboardShortcutsHelper = () => {
+  const shortcuts = [
+    { category: "Text Formatting", items: [
+      { keys: ["Ctrl", "B"], description: "Bold" },
+      { keys: ["Ctrl", "I"], description: "Italic" },
+      { keys: ["Ctrl", "U"], description: "Underline" },
+      { keys: ["Ctrl", "Shift", "S"], description: "Strikethrough" },
+      { keys: ["Ctrl", "`"], description: "Code" },
+      { keys: ["Ctrl", "Shift", "H"], description: "Highlight" },
+    ]},
+    { category: "Headings", items: [
+      { keys: ["Ctrl", "Alt", "1"], description: "Heading 1" },
+      { keys: ["Ctrl", "Alt", "2"], description: "Heading 2" },
+      { keys: ["Ctrl", "Alt", "3"], description: "Heading 3" },
+      { keys: ["Ctrl", "Alt", "4"], description: "Heading 4" },
+      { keys: ["Ctrl", "Alt", "5"], description: "Heading 5" },
+      { keys: ["Ctrl", "Alt", "6"], description: "Heading 6" },
+      { keys: ["Ctrl", "Alt", "0"], description: "Paragraph" },
+    ]},
+    { category: "Lists & Blocks", items: [
+      { keys: ["Ctrl", "Shift", "8"], description: "Bullet List" },
+      { keys: ["Ctrl", "Shift", "7"], description: "Ordered List" },
+      { keys: ["Ctrl", "Shift", "B"], description: "Blockquote" },
+      { keys: ["Ctrl", "Alt", "-"], description: "Horizontal Rule" },
+    ]},
+    { category: "Text Alignment", items: [
+      { keys: ["Ctrl", "Shift", "L"], description: "Align Left" },
+      { keys: ["Ctrl", "Shift", "E"], description: "Align Center" },
+      { keys: ["Ctrl", "Shift", "R"], description: "Align Right" },
+      { keys: ["Ctrl", "Shift", "J"], description: "Justify" },
+    ]},
+    { category: "Actions", items: [
+      { keys: ["Ctrl", "Z"], description: "Undo" },
+      { keys: ["Ctrl", "Y"], description: "Redo" },
+      { keys: ["Ctrl", "S"], description: "Save" },
+      { keys: ["Ctrl", "A"], description: "Select All" },
+    ]},
+    { category: "Special", items: [
+      { keys: ["Ctrl", ","], description: "Subscript" },
+      { keys: ["Ctrl", "."], description: "Superscript" },
+      { keys: ["Shift", "Enter"], description: "Hard Break" },
+    ]},
+  ];
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0"
+          title="Keyboard Shortcuts"
+        >
+          <Keyboard className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Keyboard className="h-5 w-5" />
+            Keyboard Shortcuts
+          </DialogTitle>
+        </DialogHeader>
+        <div className="flex-1 overflow-hidden">
+          <PerfectScrollbar
+            options={{
+              wheelSpeed: 0.5,
+              wheelPropagation: false,
+              suppressScrollX: true,
+              minScrollbarLength: 20,
+            }}
+            style={{ maxHeight: '55vh' }}
+          >
+            <div className="grid gap-6 py-4 pr-2">
+              {shortcuts.map((category) => (
+                <div key={category.category} className="space-y-3">
+                  <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                    {category.category}
+                  </h3>
+                  <div className="grid gap-2">
+                    {category.items.map((shortcut, index) => (
+                      <div key={index} className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-muted/50">
+                        <span className="text-sm">{shortcut.description}</span>
+                        <div className="flex items-center gap-1">
+                          {shortcut.keys.map((key, keyIndex) => (
+                            <span key={keyIndex} className="flex items-center gap-1">
+                              <kbd className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
+                                {key}
+                              </kbd>
+                              {keyIndex < shortcut.keys.length - 1 && (
+                                <span className="text-xs text-muted-foreground">+</span>
+                              )}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </PerfectScrollbar>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
     editor,
@@ -355,9 +477,37 @@ const MenuBar = ({ editor }: MenuBarProps) => {
     }
   };
 
+  const setTextColor = (color: string) => {
+    // Use mark method to ensure color is applied properly with other formatting
+    editor.chain().focus().setColor(color).run();
+  };
+
+  const unsetTextColor = () => {
+    editor.chain().focus().unsetColor().run();
+  };
+
+  const getCurrentTextColor = () => {
+    // Get the current attributes from textStyle
+    const attributes = editor.getAttributes('textStyle');
+    return attributes.color || '#000000';
+  };
+
   return (
-    <div className="border border-input bg-background rounded-md p-2 mb-4">
-      <div className="flex items-center gap-1 flex-wrap">
+    <div className="border border-input bg-background rounded-md p-2 mb-4 relative">
+      {/* Hide Toolbar Button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onHideToolbar}
+        className="h-6 w-6 p-0 absolute top-1 right-1 opacity-60 hover:opacity-100"
+        title="Hide Toolbar (Ctrl+Shift+T)"
+      >
+        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+        </svg>
+      </Button>
+      
+      <div className="flex items-center gap-1 flex-wrap pr-8">
         {/* Undo/Redo */}
         <Button
           variant="ghost"
@@ -685,6 +835,62 @@ const MenuBar = ({ editor }: MenuBarProps) => {
           <Highlighter className="h-4 w-4" />
         </Button>
 
+        {/* Text Color Picker */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 relative">
+              <Palette className="h-4 w-4" />
+              <div 
+                className="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-background"
+                style={{ backgroundColor: getCurrentTextColor() }}
+              />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-64">
+            <div className="p-2">
+              <div className="text-sm font-medium mb-2">Text Color</div>
+              
+              {/* Color Swatches */}
+              <div className="grid grid-cols-8 gap-1 mb-3">
+                {[
+                  '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF', '#FF0000', '#FF8000',
+                  '#FFFF00', '#80FF00', '#00FF00', '#00FF80', '#00FFFF', '#0080FF', '#0000FF', '#8000FF',
+                  '#FF00FF', '#FF0080', '#8B4513', '#A0522D', '#D2691E', '#CD853F', '#F4A460', '#DEB887',
+                  '#800080', '#9932CC', '#8A2BE2', '#4B0082', '#6A5ACD', '#7B68EE', '#9370DB', '#BA55D3'
+                ].map((color) => (
+                  <button
+                    key={color}
+                    className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform cursor-pointer"
+                    style={{ backgroundColor: color }}
+                    onClick={() => setTextColor(color)}
+                    title={color}
+                  />
+                ))}
+              </div>
+
+              {/* Custom Color Input */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={getCurrentTextColor()}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="w-8 h-8 rounded border border-input cursor-pointer"
+                  title="Custom color"
+                />
+                <span className="text-xs text-muted-foreground flex-1">Custom</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={unsetTextColor}
+                  className="h-6 px-2 text-xs"
+                >
+                  Reset
+                </Button>
+              </div>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Separator orientation="vertical" className="h-6 mx-1" />
 
         {/* Subscript/Superscript */}
@@ -778,6 +984,10 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         >
           <Minus className="h-4 w-4" />
         </Button>
+
+        <Separator orientation="vertical" className="h-6 mx-1" />
+
+        {/* Keyboard Shortcuts Helper - Removed from here, now floating */}
       </div>
     </div>
   );
@@ -795,6 +1005,7 @@ const Tiptap = ({
   onContentChange: (content: string) => void;
 }) => {
   const [title, setTitle] = useState(initialTitle);
+  const [isToolbarVisible, setIsToolbarVisible] = useState(true);
 
   // Debounce function
   const useDebounce = (value: string, delay: number) => {
@@ -840,6 +1051,12 @@ const Tiptap = ({
       Document,
       Paragraph,
       Text,
+      // TextStyle and Color extensions must come before formatting marks
+      TextStyle,
+      Color.configure({
+        types: ['textStyle'],
+      }),
+      FontFamily,
       Bold,
       Italic,
       Strike,
@@ -861,8 +1078,6 @@ const Tiptap = ({
         types: ["heading", "paragraph"],
       }),
       Typography,
-      TextStyle,
-      FontFamily,
       Placeholder.configure({
         placeholder: "Start writing ...",
       }),
@@ -882,7 +1097,7 @@ const Tiptap = ({
     immediatelyRender: false,
   });
 
-  // Keyboard shortcut handler for Ctrl+S
+  // Keyboard shortcut handler for Ctrl+S and toolbar toggle
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "s") {
@@ -892,18 +1107,151 @@ const Tiptap = ({
           onContentChange(content);
         }
       }
+      
+      // Ctrl+Shift+T to toggle toolbar
+      if (event.ctrlKey && event.shiftKey && event.key === "T") {
+        event.preventDefault();
+        setIsToolbarVisible(!isToolbarVisible);
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [editor, onContentChange]);
+  }, [editor, onContentChange, isToolbarVisible]);
 
   return (
     <div className="w-full">
-      <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <MenuBar editor={editor} />
+      {/* Main Toolbar - Conditionally visible */}
+      {isToolbarVisible && (
+        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <MenuBar editor={editor} onHideToolbar={() => setIsToolbarVisible(false)} />
+        </div>
+      )}
+
+      {/* Floating Buttons - Always visible */}
+      <div className="fixed bottom-4 left-4 z-20 flex flex-col gap-2">
+        {/* Keyboard Shortcuts Helper - Always floating */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-10 w-10 p-0 rounded-full shadow-lg bg-background border-2"
+          title="Keyboard Shortcuts"
+        >
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="h-10 w-10 flex items-center justify-center">
+                <Keyboard className="h-4 w-4" />
+              </div>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Keyboard className="h-5 w-5" />
+                  Keyboard Shortcuts
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex-1 overflow-hidden">
+                <PerfectScrollbar
+                  options={{
+                    wheelSpeed: 0.5,
+                    wheelPropagation: false,
+                    suppressScrollX: true,
+                    minScrollbarLength: 20,
+                  }}
+                  style={{ maxHeight: '55vh' }}
+                >
+                  <div className="grid gap-6 py-4 pr-2">
+                    {[
+                      { category: "Text Formatting", items: [
+                        { keys: ["Ctrl", "B"], description: "Bold" },
+                        { keys: ["Ctrl", "I"], description: "Italic" },
+                        { keys: ["Ctrl", "U"], description: "Underline" },
+                        { keys: ["Ctrl", "Shift", "S"], description: "Strikethrough" },
+                        { keys: ["Ctrl", "`"], description: "Code" },
+                        { keys: ["Ctrl", "Shift", "H"], description: "Highlight" },
+                      ]},
+                      { category: "Headings", items: [
+                        { keys: ["Ctrl", "Alt", "1"], description: "Heading 1" },
+                        { keys: ["Ctrl", "Alt", "2"], description: "Heading 2" },
+                        { keys: ["Ctrl", "Alt", "3"], description: "Heading 3" },
+                        { keys: ["Ctrl", "Alt", "4"], description: "Heading 4" },
+                        { keys: ["Ctrl", "Alt", "5"], description: "Heading 5" },
+                        { keys: ["Ctrl", "Alt", "6"], description: "Heading 6" },
+                        { keys: ["Ctrl", "Alt", "0"], description: "Paragraph" },
+                      ]},
+                      { category: "Lists & Blocks", items: [
+                        { keys: ["Ctrl", "Shift", "8"], description: "Bullet List" },
+                        { keys: ["Ctrl", "Shift", "7"], description: "Ordered List" },
+                        { keys: ["Ctrl", "Shift", "B"], description: "Blockquote" },
+                        { keys: ["Ctrl", "Alt", "-"], description: "Horizontal Rule" },
+                      ]},
+                      { category: "Text Alignment", items: [
+                        { keys: ["Ctrl", "Shift", "L"], description: "Align Left" },
+                        { keys: ["Ctrl", "Shift", "E"], description: "Align Center" },
+                        { keys: ["Ctrl", "Shift", "R"], description: "Align Right" },
+                        { keys: ["Ctrl", "Shift", "J"], description: "Justify" },
+                      ]},
+                      { category: "Actions", items: [
+                        { keys: ["Ctrl", "Z"], description: "Undo" },
+                        { keys: ["Ctrl", "Y"], description: "Redo" },
+                        { keys: ["Ctrl", "S"], description: "Save" },
+                        { keys: ["Ctrl", "A"], description: "Select All" },
+                      ]},
+                      { category: "Special", items: [
+                        { keys: ["Ctrl", ","], description: "Subscript" },
+                        { keys: ["Ctrl", "."], description: "Superscript" },
+                        { keys: ["Shift", "Enter"], description: "Hard Break" },
+                        { keys: ["Ctrl", "Shift", "T"], description: "Toggle Toolbar" },
+                      ]},
+                    ].map((category) => (
+                      <div key={category.category} className="space-y-3">
+                        <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                          {category.category}
+                        </h3>
+                        <div className="grid gap-2">
+                          {category.items.map((shortcut, index) => (
+                            <div key={index} className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-muted/50">
+                              <span className="text-sm">{shortcut.description}</span>
+                              <div className="flex items-center gap-1">
+                                {shortcut.keys.map((key, keyIndex) => (
+                                  <span key={keyIndex} className="flex items-center gap-1">
+                                    <kbd className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
+                                      {key}
+                                    </kbd>
+                                    {keyIndex < shortcut.keys.length - 1 && (
+                                      <span className="text-xs text-muted-foreground">+</span>
+                                    )}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </PerfectScrollbar>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </Button>
+
+        {/* Show Toolbar Button - Only visible when toolbar is hidden */}
+        {!isToolbarVisible && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsToolbarVisible(true)}
+            className="h-10 w-10 p-0 rounded-full shadow-lg bg-background border-2"
+            title="Show Toolbar (Ctrl+Shift+T)"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
+        )}
       </div>
       
       {/* Bubble Menu */}
@@ -958,6 +1306,29 @@ const Tiptap = ({
             >
               <Highlighter className="h-4 w-4" />
             </Button>
+            
+            {/* Color Picker in Bubble Menu */}
+            <div className="flex items-center gap-2 border-l pl-2 ml-1">
+              {/* Color Picker Input */}
+              <input
+                type="color"
+                value={editor.getAttributes('textStyle').color || '#000000'}
+                onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+                className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
+                title="Choose text color"
+              />
+              
+              {/* Reset color button */}
+              <button
+                className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform cursor-pointer bg-white"
+                onClick={() => editor.chain().focus().unsetColor().run()}
+                title="Reset color"
+                style={{ 
+                  background: 'linear-gradient(45deg, transparent 30%, red 30%, red 70%, transparent 70%)',
+                  backgroundSize: '4px 4px'
+                }}
+              />
+            </div>
           </div>
         </BubbleMenu>
       )}
@@ -983,7 +1354,7 @@ const Tiptap = ({
           <div className="px-6 pb-6">
             <EditorContent
               editor={editor}
-              className="prose dark:prose-invert min-h-[200px] max-w-none"
+              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none"
             />
           </div>
         </div>

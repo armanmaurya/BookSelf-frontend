@@ -178,7 +178,7 @@ const Page = async ({
           </div>
 
           {/* Main Article Content */}
-          <main className="prose dark:prose-invert max-w-none" role="main">
+          <main className="prose prose-strong:text-inherit dark:prose-invert max-w-none" role="main">
             <div 
               itemProp="articleBody"
               dangerouslySetInnerHTML={{ __html: article.content }}
