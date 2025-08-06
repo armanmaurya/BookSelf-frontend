@@ -150,7 +150,7 @@ const Page = async ({
         }}
       />
 
-      <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-6 pt-6 gap-8">
+      <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-3 lg:px-6 pt-6 gap-8">
         {/* Table of Contents Sidebar - Left */}
         <aside className="hidden xl:block flex-shrink-0" aria-labelledby="toc-sidebar">
           <div className="sticky top-20">
@@ -159,7 +159,7 @@ const Page = async ({
         </aside>
 
         {/* Main Content */}
-        <article className="flex-1 min-w-0 pl-8" itemScope itemType="https://schema.org/Article">
+        <article className="flex-1 min-w-0 xl:pl-8" itemScope itemType="https://schema.org/Article">
           {/* Article Header */}
           <header className="border-none">
             <h1 className="text-3xl font-bold mb-2" itemProp="headline">{article.title}</h1>
