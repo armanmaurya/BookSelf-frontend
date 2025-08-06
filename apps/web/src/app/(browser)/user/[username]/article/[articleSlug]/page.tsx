@@ -1,8 +1,7 @@
 import { API_ENDPOINT } from "@/app/utils";
 import { Comments } from "@/components/blocks/Comments";
 import { FollowButton } from "@/components/element/button/FollowButton";
-import { LikeButton } from "@/components/element/button/LikeButton";
-import { SaveArticleButton } from "@/components/element/button/SaveArticleButton";
+import { ArticleMetaActions } from "@/components/element/ArticleMetaActions";
 import { createServerClient } from "@/lib/ServerClient";
 import { GraphQLData } from "@/types/graphql";
 import { gql } from "@apollo/client";
@@ -14,8 +13,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { IoMdEye } from "react-icons/io";
-import { FiEdit2 } from "react-icons/fi";
 import Link from "next/link";
 import { TableOfContents } from "@/components/blocks/TableOfContents";
 
@@ -165,45 +162,14 @@ const Page = async ({
             <h1 className="text-3xl font-bold mb-2" itemProp="headline">{article.title}</h1>
 
             {/* Article Meta Information */}
-            <div className="flex items-center gap-4 text-muted-foreground mb-6">
-              <div className="flex items-center gap-2">
-                <LikeButton
-                  initialState={article.isLiked}
-                  initialLikes={article.likesCount}
-                  url={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
-                  method={`${API_ENDPOINT.likeArticle.method}`}
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <IoMdEye className="text-lg" aria-label="Views" />
-                <span itemProp="interactionCount">{article.views} views</span>
-              </div>
-
-              <time dateTime={article.createdAt} itemProp="datePublished" className="text-sm">
-                {new Date(article.createdAt).toLocaleDateString('en-IN', {
-                  year: 'numeric',
-                  month: 'long', 
-                  day: 'numeric'
-                })}
-              </time>
-
-              {article.author.isSelf && (
-                <Link 
-                  href={`${articleSlug}/edit`} 
-                  className="flex items-center justify-center gap-1 hover:text-primary transition-colors mx-1"
-                  aria-label="Edit article"
-                >
-                  <FiEdit2 className="text-lg" size={16}/>
-                  <span>Edit</span>
-                </Link>
-              )}
-
-              <div className="flex items-center gap-2">
-                <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
-                <span>{article.savesCount}</span>
-              </div>
-            </div>
+            <ArticleMetaActions
+              article={article}
+              articleSlug={articleSlug}
+              username={username}
+              likeUrl={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
+              likeMethod={API_ENDPOINT.likeArticle.method}
+              fullUrl={`https://infobite.online/user/${username}/article/${articleSlug}`}
+            />
           </header>
 
           {/* Mobile Table of Contents */}
