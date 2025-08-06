@@ -30,6 +30,19 @@ html, body {
   padding: 0;
 }
 
+.tiptap p.is-empty::before {
+  color: #d1d5db;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.dark .tiptap p.is-empty::before {
+  color: #5a5e67;
+}
+
+
 
 .hover-div:hover > .color-change-div {
   opacity: 1;
