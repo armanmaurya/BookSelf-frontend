@@ -1212,10 +1212,10 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-bold/-/extension-bold-3.0.7.tgz"
   integrity sha512-CQG07yvrIsScLe5NplAuCkVh0sd97Udv1clAGbqfzeV8YfzpV3M7J/Vb09pWyovx3SjDqfsZpkr3RemeKEPY9Q==
 
-"@tiptap/extension-bubble-menu@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.npmjs.org/@tiptap/extension-bubble-menu/-/extension-bubble-menu-3.0.7.tgz"
-  integrity sha512-/oL5kgOHm1AJtyLC6v1+txk/RI9WvI4/gDQ6oWukmT7aQHIfqvCW0DN/ahmX9nxGFAIRlbrooVxLn5Y6/P0adQ==
+"@tiptap/extension-bubble-menu@^3.0.7", "@tiptap/extension-bubble-menu@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.npmjs.org/@tiptap/extension-bubble-menu/-/extension-bubble-menu-3.0.9.tgz"
+  integrity sha512-fZQfdSbKJl3J+Yi+s8NrcLBgXHOaGVD4g+vn+orTPUlZdG9FWvEoon8DexOdK9OvYnW6QMM7kS8whOgpogVyUQ==
   dependencies:
     "@floating-ui/dom" "^1.0.0"
 
@@ -6396,7 +6396,7 @@ w3c-keyname@^2.2.0:
     "@tiptap/extension-typography" "^3.0.7"
     "@tiptap/extension-underline" "^3.0.7"
     "@tiptap/extension-unique-id" "^3.0.7"
-    "@tiptap/extensions" "^3.0.7"
+    "@tiptap/extensions" "^3.0.9"
     "@tiptap/pm" "^3.0.7"
     "@tiptap/react" "^3.0.7"
     "@tiptap/y-tiptap" "^3.0.0"

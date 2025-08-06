@@ -31,7 +31,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { FontFamily, TextStyle } from "@tiptap/extension-text-style";
-import { Placeholder } from '@tiptap/extensions'
+import { Placeholder } from "@tiptap/extensions";
+import { BubbleMenu } from '@tiptap/react/menus'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -171,27 +172,59 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         canUndo: ctx.editor.can().chain().undo().run() ?? false,
         canRedo: ctx.editor.can().chain().redo().run() ?? false,
         // Font family states
-        isInter: ctx.editor.isActive("textStyle", { fontFamily: "Inter" }) ?? false,
-        isComicSans: ctx.editor.isActive("textStyle", { fontFamily: '"Comic Sans MS", "Comic Sans"' }) ?? false,
-        isSerif: ctx.editor.isActive("textStyle", { fontFamily: "serif" }) ?? false,
-        isMonospace: ctx.editor.isActive("textStyle", { fontFamily: "monospace" }) ?? false,
-        isCursive: ctx.editor.isActive("textStyle", { fontFamily: "cursive" }) ?? false,
-        isSystemUI: ctx.editor.isActive("textStyle", { fontFamily: "system-ui" }) ?? false,
-        isArial: ctx.editor.isActive("textStyle", { fontFamily: "Arial" }) ?? false,
-        isHelvetica: ctx.editor.isActive("textStyle", { fontFamily: "Helvetica" }) ?? false,
-        isTimesNewRoman: ctx.editor.isActive("textStyle", { fontFamily: '"Times New Roman"' }) ?? false,
-        isGeorgia: ctx.editor.isActive("textStyle", { fontFamily: "Georgia" }) ?? false,
-        isVerdana: ctx.editor.isActive("textStyle", { fontFamily: "Verdana" }) ?? false,
-        isTahoma: ctx.editor.isActive("textStyle", { fontFamily: "Tahoma" }) ?? false,
-        isCourierNew: ctx.editor.isActive("textStyle", { fontFamily: '"Courier New"' }) ?? false,
-        isTrebuchet: ctx.editor.isActive("textStyle", { fontFamily: '"Trebuchet MS"' }) ?? false,
-        isImpact: ctx.editor.isActive("textStyle", { fontFamily: "Impact" }) ?? false,
-        isPalatino: ctx.editor.isActive("textStyle", { fontFamily: "Palatino" }) ?? false,
-        isRoboto: ctx.editor.isActive("textStyle", { fontFamily: "Roboto" }) ?? false,
-        isOpenSans: ctx.editor.isActive("textStyle", { fontFamily: '"Open Sans"' }) ?? false,
-        isLato: ctx.editor.isActive("textStyle", { fontFamily: "Lato" }) ?? false,
-        isMontserrat: ctx.editor.isActive("textStyle", { fontFamily: "Montserrat" }) ?? false,
-        isPoppins: ctx.editor.isActive("textStyle", { fontFamily: "Poppins" }) ?? false,
+        isInter:
+          ctx.editor.isActive("textStyle", { fontFamily: "Inter" }) ?? false,
+        isComicSans:
+          ctx.editor.isActive("textStyle", {
+            fontFamily: '"Comic Sans MS", "Comic Sans"',
+          }) ?? false,
+        isSerif:
+          ctx.editor.isActive("textStyle", { fontFamily: "serif" }) ?? false,
+        isMonospace:
+          ctx.editor.isActive("textStyle", { fontFamily: "monospace" }) ??
+          false,
+        isCursive:
+          ctx.editor.isActive("textStyle", { fontFamily: "cursive" }) ?? false,
+        isSystemUI:
+          ctx.editor.isActive("textStyle", { fontFamily: "system-ui" }) ??
+          false,
+        isArial:
+          ctx.editor.isActive("textStyle", { fontFamily: "Arial" }) ?? false,
+        isHelvetica:
+          ctx.editor.isActive("textStyle", { fontFamily: "Helvetica" }) ??
+          false,
+        isTimesNewRoman:
+          ctx.editor.isActive("textStyle", {
+            fontFamily: '"Times New Roman"',
+          }) ?? false,
+        isGeorgia:
+          ctx.editor.isActive("textStyle", { fontFamily: "Georgia" }) ?? false,
+        isVerdana:
+          ctx.editor.isActive("textStyle", { fontFamily: "Verdana" }) ?? false,
+        isTahoma:
+          ctx.editor.isActive("textStyle", { fontFamily: "Tahoma" }) ?? false,
+        isCourierNew:
+          ctx.editor.isActive("textStyle", { fontFamily: '"Courier New"' }) ??
+          false,
+        isTrebuchet:
+          ctx.editor.isActive("textStyle", { fontFamily: '"Trebuchet MS"' }) ??
+          false,
+        isImpact:
+          ctx.editor.isActive("textStyle", { fontFamily: "Impact" }) ?? false,
+        isPalatino:
+          ctx.editor.isActive("textStyle", { fontFamily: "Palatino" }) ?? false,
+        isRoboto:
+          ctx.editor.isActive("textStyle", { fontFamily: "Roboto" }) ?? false,
+        isOpenSans:
+          ctx.editor.isActive("textStyle", { fontFamily: '"Open Sans"' }) ??
+          false,
+        isLato:
+          ctx.editor.isActive("textStyle", { fontFamily: "Lato" }) ?? false,
+        isMontserrat:
+          ctx.editor.isActive("textStyle", { fontFamily: "Montserrat" }) ??
+          false,
+        isPoppins:
+          ctx.editor.isActive("textStyle", { fontFamily: "Poppins" }) ?? false,
       };
     },
   });
@@ -350,19 +383,28 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         {/* Font Family Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="px-3 py-1 h-8 text-sm w-[110px] overflow-auto">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-3 py-1 h-8 text-sm w-[110px] overflow-auto"
+            >
               {getCurrentFontFamily()}
               <ChevronDown className="ml-1 h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56 max-h-80 overflow-y-auto">
+          <DropdownMenuContent
+            align="start"
+            className="w-56 max-h-80 overflow-y-auto"
+          >
             <DropdownMenuItem
               onClick={() => unsetFontFamily()}
-              className={getCurrentFontFamily() === "Default" ? "bg-accent" : ""}
+              className={
+                getCurrentFontFamily() === "Default" ? "bg-accent" : ""
+              }
             >
               <span className="font-normal">Default</span>
             </DropdownMenuItem>
-            
+
             {/* Popular Web Fonts */}
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground border-t mt-1">
               Popular Web Fonts
@@ -383,7 +425,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Open Sans")}
               className={safeEditorState.isOpenSans ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: '"Open Sans", sans-serif' }}>Open Sans</span>
+              <span style={{ fontFamily: '"Open Sans", sans-serif' }}>
+                Open Sans
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Lato")}
@@ -395,7 +439,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Montserrat")}
               className={safeEditorState.isMontserrat ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: "Montserrat, sans-serif" }}>Montserrat</span>
+              <span style={{ fontFamily: "Montserrat, sans-serif" }}>
+                Montserrat
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Poppins")}
@@ -418,7 +464,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Helvetica")}
               className={safeEditorState.isHelvetica ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: "Helvetica, sans-serif" }}>Helvetica</span>
+              <span style={{ fontFamily: "Helvetica, sans-serif" }}>
+                Helvetica
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Verdana")}
@@ -436,7 +484,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Trebuchet MS")}
               className={safeEditorState.isTrebuchet ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: '"Trebuchet MS", sans-serif' }}>Trebuchet MS</span>
+              <span style={{ fontFamily: '"Trebuchet MS", sans-serif' }}>
+                Trebuchet MS
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("system-ui")}
@@ -453,7 +503,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Times New Roman")}
               className={safeEditorState.isTimesNewRoman ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: '"Times New Roman", serif' }}>Times New Roman</span>
+              <span style={{ fontFamily: '"Times New Roman", serif' }}>
+                Times New Roman
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("Georgia")}
@@ -482,7 +534,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Courier New")}
               className={safeEditorState.isCourierNew ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: '"Courier New", monospace' }}>Courier New</span>
+              <span style={{ fontFamily: '"Courier New", monospace' }}>
+                Courier New
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("monospace")}
@@ -505,7 +559,9 @@ const MenuBar = ({ editor }: MenuBarProps) => {
               onClick={() => setFontFamily("Comic Sans MS, cursive")}
               className={safeEditorState.isComicSans ? "bg-accent" : ""}
             >
-              <span style={{ fontFamily: "Comic Sans MS, cursive" }}>Comic Sans</span>
+              <span style={{ fontFamily: "Comic Sans MS, cursive" }}>
+                Comic Sans
+              </span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setFontFamily("cursive")}
@@ -521,7 +577,11 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         {/* Headings Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 px-2 w-[110px] overflow-auto justify-start">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 w-[110px] overflow-auto justify-start"
+            >
               {safeEditorState.isHeading1 && <Heading1 className="h-4 w-4" />}
               {safeEditorState.isHeading2 && <Heading2 className="h-4 w-4" />}
               {safeEditorState.isHeading3 && <Heading3 className="h-4 w-4" />}
@@ -755,7 +815,7 @@ const Tiptap = ({
 
   // Debounced values
   const debouncedTitle = useDebounce(title, 500);
-  
+
   // Effect for title changes
   useEffect(() => {
     if (onTitleChange && debouncedTitle !== initialTitle) {
@@ -766,10 +826,12 @@ const Tiptap = ({
   const editor = useEditor({
     extensions: [
       UniqueID.configure({
-        types: ['heading'],
+        types: ["heading"],
         generateID: () => {
           // Generate a more readable ID format
-          return `heading-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          return `heading-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`;
         },
       }),
       Heading.configure({
@@ -802,8 +864,8 @@ const Tiptap = ({
       TextStyle,
       FontFamily,
       Placeholder.configure({
-      placeholder: 'Start writing ...',
-    }),
+        placeholder: "Start writing ...",
+      }),
     ],
     content: initialContent || "<p></p>",
     onUpdate: ({ editor }) => {
@@ -823,7 +885,7 @@ const Tiptap = ({
   // Keyboard shortcut handler for Ctrl+S
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 's') {
+      if (event.ctrlKey && event.key === "s") {
         event.preventDefault();
         if (editor && onContentChange) {
           const content = editor.getHTML();
@@ -832,9 +894,9 @@ const Tiptap = ({
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [editor, onContentChange]);
 
@@ -843,6 +905,63 @@ const Tiptap = ({
       <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <MenuBar editor={editor} />
       </div>
+      
+      {/* Bubble Menu */}
+      {editor && (
+        <BubbleMenu editor={editor}>
+          <div className="bg-background border border-input rounded-md shadow-md p-1 flex items-center gap-1">
+            <Button
+              variant={editor.isActive('bold') ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className="h-8 w-8 p-0"
+            >
+              <BoldIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={editor.isActive('italic') ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className="h-8 w-8 p-0"
+            >
+              <ItalicIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={editor.isActive('underline') ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+              className="h-8 w-8 p-0"
+            >
+              <UnderlineIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={editor.isActive('strike') ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              className="h-8 w-8 p-0"
+            >
+              <Strikethrough className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={editor.isActive('code') ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => editor.chain().focus().toggleCode().run()}
+              className="h-8 w-8 p-0"
+            >
+              <Code2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={editor.isActive('highlight') ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => editor.chain().focus().toggleHighlight().run()}
+              className="h-8 w-8 p-0"
+            >
+              <Highlighter className="h-4 w-4" />
+            </Button>
+          </div>
+        </BubbleMenu>
+      )}
+
       <div className="max-w-4xl mx-auto">
         <div className="border border-input rounded-md">
           {/* Document Title Input - Notion Style */}
@@ -852,14 +971,14 @@ const Tiptap = ({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Untitled"
               className="font-bold border-none px-0 py-2 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-muted-foreground/60 resize-none"
-              style={{ 
-                lineHeight: '1.1',
-                fontWeight: '800',
-                fontSize: '2.8rem',
+              style={{
+                lineHeight: "1.1",
+                fontWeight: "800",
+                fontSize: "2.8rem",
               }}
             />
           </div>
-          
+
           {/* Editor Content */}
           <div className="px-6 pb-6">
             <EditorContent
