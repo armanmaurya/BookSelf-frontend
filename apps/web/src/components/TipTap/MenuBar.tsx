@@ -1,40 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css';
-import {
-  useEditor,
-  EditorContent,
-  useEditorState,
-  type Editor,
-} from "@tiptap/react";
-import Heading from "@tiptap/extension-heading";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Code from "@tiptap/extension-code";
-import Strike from "@tiptap/extension-strike";
-import Highlight from "@tiptap/extension-highlight";
-import Subscript from "@tiptap/extension-subscript";
-import Superscript from "@tiptap/extension-superscript";
-import Underline from "@tiptap/extension-underline";
-import { UndoRedo } from "@tiptap/extensions";
-import Blockquote from "@tiptap/extension-blockquote";
-import { OrderedList, BulletList, ListItem } from "@tiptap/extension-list";
-import HardBreak from "@tiptap/extension-hard-break";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import TextAlign from "@tiptap/extension-text-align";
-import Typography from "@tiptap/extension-typography";
-import UniqueID from "@tiptap/extension-unique-id";
+import { useState } from "react";
+import { useEditorState, type Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { FontFamily, TextStyle, Color } from "@tiptap/extension-text-style";
-import { Placeholder } from "@tiptap/extensions";
-import { BubbleMenu } from '@tiptap/react/menus';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,7 +30,6 @@ import {
   Quote,
   List,
   ListOrdered,
-  CheckSquare,
   Undo,
   Redo,
   AlignLeft,
@@ -76,126 +45,15 @@ import {
   Heading6,
   ChevronDown,
   Palette,
-  Keyboard,
-  HelpCircle,
+  Link as LinkIcon,
 } from "lucide-react";
-// import DragHandle from "@tiptap/extension-drag-handle-react";
-
-interface MenuBarProps {
-  editor: Editor | null;
-  onHideToolbar?: () => void;
-}
-
-// Keyboard Shortcuts Helper Component
-const KeyboardShortcutsHelper = () => {
-  const shortcuts = [
-    { category: "Text Formatting", items: [
-      { keys: ["Ctrl", "B"], description: "Bold" },
-      { keys: ["Ctrl", "I"], description: "Italic" },
-      { keys: ["Ctrl", "U"], description: "Underline" },
-      { keys: ["Ctrl", "Shift", "S"], description: "Strikethrough" },
-      { keys: ["Ctrl", "`"], description: "Code" },
-      { keys: ["Ctrl", "Shift", "H"], description: "Highlight" },
-    ]},
-    { category: "Headings", items: [
-      { keys: ["Ctrl", "Alt", "1"], description: "Heading 1" },
-      { keys: ["Ctrl", "Alt", "2"], description: "Heading 2" },
-      { keys: ["Ctrl", "Alt", "3"], description: "Heading 3" },
-      { keys: ["Ctrl", "Alt", "4"], description: "Heading 4" },
-      { keys: ["Ctrl", "Alt", "5"], description: "Heading 5" },
-      { keys: ["Ctrl", "Alt", "6"], description: "Heading 6" },
-      { keys: ["Ctrl", "Alt", "0"], description: "Paragraph" },
-    ]},
-    { category: "Lists & Blocks", items: [
-      { keys: ["Ctrl", "Shift", "8"], description: "Bullet List" },
-      { keys: ["Ctrl", "Shift", "7"], description: "Ordered List" },
-      { keys: ["Ctrl", "Shift", "B"], description: "Blockquote" },
-      { keys: ["Ctrl", "Alt", "-"], description: "Horizontal Rule" },
-    ]},
-    { category: "Text Alignment", items: [
-      { keys: ["Ctrl", "Shift", "L"], description: "Align Left" },
-      { keys: ["Ctrl", "Shift", "E"], description: "Align Center" },
-      { keys: ["Ctrl", "Shift", "R"], description: "Align Right" },
-      { keys: ["Ctrl", "Shift", "J"], description: "Justify" },
-    ]},
-    { category: "Actions", items: [
-      { keys: ["Ctrl", "Z"], description: "Undo" },
-      { keys: ["Ctrl", "Y"], description: "Redo" },
-      { keys: ["Ctrl", "S"], description: "Save" },
-      { keys: ["Ctrl", "A"], description: "Select All" },
-    ]},
-    { category: "Special", items: [
-      { keys: ["Ctrl", ","], description: "Subscript" },
-      { keys: ["Ctrl", "."], description: "Superscript" },
-      { keys: ["Shift", "Enter"], description: "Hard Break" },
-    ]},
-  ];
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Keyboard Shortcuts"
-        >
-          <Keyboard className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Keyboard className="h-5 w-5" />
-            Keyboard Shortcuts
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex-1 overflow-hidden">
-          <PerfectScrollbar
-            options={{
-              wheelSpeed: 0.5,
-              wheelPropagation: false,
-              suppressScrollX: true,
-              minScrollbarLength: 20,
-            }}
-            style={{ maxHeight: '55vh' }}
-          >
-            <div className="grid gap-6 py-4 pr-2">
-              {shortcuts.map((category) => (
-                <div key={category.category} className="space-y-3">
-                  <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                    {category.category}
-                  </h3>
-                  <div className="grid gap-2">
-                    {category.items.map((shortcut, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-muted/50">
-                        <span className="text-sm">{shortcut.description}</span>
-                        <div className="flex items-center gap-1">
-                          {shortcut.keys.map((key, keyIndex) => (
-                            <span key={keyIndex} className="flex items-center gap-1">
-                              <kbd className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
-                                {key}
-                              </kbd>
-                              {keyIndex < shortcut.keys.length - 1 && (
-                                <span className="text-xs text-muted-foreground">+</span>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </PerfectScrollbar>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
+import { MenuBarProps } from './types';
 
 const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
+  const [linkUrl, setLinkUrl] = useState('');
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+  const [customFontSize, setCustomFontSize] = useState('');
+  
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
     editor,
@@ -256,6 +114,9 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           isLato: false,
           isMontserrat: false,
           isPoppins: false,
+          isLink: false,
+          canLink: false,
+          currentLineHeight: '1.6',
         };
       }
       return {
@@ -347,6 +208,13 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           false,
         isPoppins:
           ctx.editor.isActive("textStyle", { fontFamily: "Poppins" }) ?? false,
+        isLink: ctx.editor.isActive("link") ?? false,
+        canLink: !ctx.editor.state.selection.empty,
+        // Font size states
+        currentFontSize: (() => {
+          const attributes = ctx.editor.getAttributes('textStyle');
+          return attributes.fontSize || '16px';
+        })(),
       };
     },
   });
@@ -411,6 +279,9 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
     isLato: false,
     isMontserrat: false,
     isPoppins: false,
+    isLink: false,
+    canLink: false,
+    currentFontSize: '16px',
   };
 
   const toggleHeading = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
@@ -455,6 +326,46 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
     return "Default";
   };
 
+  const setFontSize = (fontSize: string) => {
+    editor.chain().focus().setFontSize(fontSize).run();
+  };
+
+  const unsetFontSize = () => {
+    editor.chain().focus().unsetFontSize().run();
+  };
+
+  const getCurrentFontSize = () => {
+    return safeEditorState.currentFontSize || '16px';
+  };
+
+  const getFontSizeDisplay = (fontSize: string) => {
+    // Convert px to readable format
+    const size = parseInt(fontSize.replace('px', ''));
+    if (size <= 12) return 'Small';
+    if (size <= 14) return 'Normal';
+    if (size <= 18) return 'Large';
+    if (size <= 24) return 'X-Large';
+    if (size <= 32) return 'XX-Large';
+    return fontSize;
+  };
+
+  const handleCustomFontSize = () => {
+    if (customFontSize.trim() === '') return;
+    
+    // Parse the input to get numeric value
+    const numericValue = parseInt(customFontSize);
+    
+    // Validate the input (reasonable font size range)
+    if (isNaN(numericValue) || numericValue < 8 || numericValue > 72) {
+      alert('Please enter a valid font size between 8px and 72px');
+      return;
+    }
+    
+    // Apply the font size
+    setFontSize(`${numericValue}px`);
+    setCustomFontSize(''); // Clear the input after applying
+  };
+
   const getCurrentAlignment = () => {
     if (!safeEditorState) return "left";
     if (safeEditorState.isAlignCenter) return "center";
@@ -492,14 +403,37 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
     return attributes.color || '#000000';
   };
 
+  const setLink = () => {
+    const previousUrl = editor.getAttributes('link').href;
+    setLinkUrl(previousUrl || '');
+    setIsLinkDialogOpen(true);
+  };
+
+  const handleLinkSubmit = () => {
+    // empty
+    if (linkUrl === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      setIsLinkDialogOpen(false);
+      return;
+    }
+
+    // update link
+    editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+    setIsLinkDialogOpen(false);
+  };
+
+  const unsetLink = () => {
+    editor.chain().focus().unsetLink().run();
+  };
+
   return (
-    <div className="border border-input bg-background rounded-md p-2 mb-4 relative">
+    <div className="border border-input bg-background rounded-md p-2 mb-4 relative overflow-hidden">
       {/* Hide Toolbar Button */}
       <Button
         variant="ghost"
         size="sm"
         onClick={onHideToolbar}
-        className="h-6 w-6 p-0 absolute top-1 right-1 opacity-60 hover:opacity-100"
+        className="h-6 w-6 p-0 absolute top-1 right-1 opacity-60 hover:opacity-100 z-10"
         title="Hide Toolbar (Ctrl+Shift+T)"
       >
         <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -507,7 +441,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
         </svg>
       </Button>
       
-      <div className="flex items-center gap-1 flex-wrap pr-8">
+      <div className="flex items-center gap-0.5 flex-wrap pr-8 overflow-hidden max-w-full min-h-[2rem]">
         {/* Undo/Redo */}
         <Button
           variant="ghost"
@@ -528,7 +462,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           <Redo className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Font Family Dropdown */}
         <DropdownMenu>
@@ -536,7 +470,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
             <Button
               variant="ghost"
               size="sm"
-              className="px-3 py-1 h-8 text-sm w-[110px] overflow-auto"
+              className="px-2 py-1 h-8 text-sm w-[90px] overflow-hidden text-ellipsis whitespace-nowrap"
             >
               {getCurrentFontFamily()}
               <ChevronDown className="ml-1 h-3 w-3" />
@@ -722,7 +656,113 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        {/* Font Size Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-2 py-1 h-8 text-sm w-[70px] overflow-hidden text-ellipsis whitespace-nowrap"
+              title="Font Size"
+            >
+              {getCurrentFontSize().replace('px', '')}
+              <ChevronDown className="ml-1 h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuItem
+              onClick={() => unsetFontSize()}
+              className={getCurrentFontSize() === '16px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">Default</span>
+              <span className="text-muted-foreground">16px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('12px')}
+              className={getCurrentFontSize() === '12px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">Small</span>
+              <span className="text-muted-foreground">12px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('14px')}
+              className={getCurrentFontSize() === '14px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">Normal</span>
+              <span className="text-muted-foreground">14px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('16px')}
+              className={getCurrentFontSize() === '16px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">Medium</span>
+              <span className="text-muted-foreground">16px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('18px')}
+              className={getCurrentFontSize() === '18px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">Large</span>
+              <span className="text-muted-foreground">18px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('20px')}
+              className={getCurrentFontSize() === '20px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">X-Large</span>
+              <span className="text-muted-foreground">20px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('24px')}
+              className={getCurrentFontSize() === '24px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">XX-Large</span>
+              <span className="text-muted-foreground">24px</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFontSize('32px')}
+              className={getCurrentFontSize() === '32px' ? "bg-accent" : ""}
+            >
+              <span className="mr-2">Huge</span>
+              <span className="text-muted-foreground">32px</span>
+            </DropdownMenuItem>
+            
+            <Separator className="my-1" />
+            
+            {/* Custom Font Size Input */}
+            <div className="px-2 py-2">
+              <div className="text-xs font-medium text-muted-foreground mb-2">Custom Size</div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  placeholder="16"
+                  min="8"
+                  max="72"
+                  value={customFontSize}
+                  onChange={(e) => setCustomFontSize(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleCustomFontSize();
+                    }
+                  }}
+                  className="h-7 text-xs w-16"
+                />
+                <span className="text-xs text-muted-foreground">px</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCustomFontSize}
+                  className="h-7 px-2 text-xs"
+                  disabled={!customFontSize.trim()}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Headings Dropdown */}
         <DropdownMenu>
@@ -730,7 +770,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 px-2 w-[110px] overflow-auto justify-start"
+              className="h-8 px-2 w-[90px] overflow-hidden text-ellipsis whitespace-nowrap justify-start"
             >
               {safeEditorState.isHeading1 && <Heading1 className="h-4 w-4" />}
               {safeEditorState.isHeading2 && <Heading2 className="h-4 w-4" />}
@@ -777,7 +817,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Text Formatting */}
         <Button
@@ -891,7 +931,59 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        {/* Link Button */}
+        <Dialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant={safeEditorState.isLink ? "default" : "ghost"}
+              size="sm"
+              onClick={setLink}
+              className="h-8 w-8 p-0"
+              title="Add/Edit Link"
+              disabled={!safeEditorState.canLink}
+            >
+              <LinkIcon className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add Link</DialogTitle>
+            </DialogHeader>
+            <div className="flex items-center space-x-2">
+              <div className="grid flex-1 gap-2">
+                <Input
+                  placeholder="https://example.com"
+                  value={linkUrl}
+                  onChange={(e) => setLinkUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleLinkSubmit();
+                    }
+                  }}
+                />
+              </div>
+              <Button onClick={handleLinkSubmit} size="sm" className="px-3">
+                <span className="sr-only">Add Link</span>
+                Add
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+        {safeEditorState.isLink && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={unsetLink}
+            className="h-8 w-8 p-0"
+            title="Remove Link"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </Button>
+        )}
+
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Subscript/Superscript */}
         <Button
@@ -913,7 +1005,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           <SuperscriptIcon className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Text Alignment Dropdown */}
         <DropdownMenu>
@@ -943,7 +1035,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Lists */}
         <Button
@@ -963,7 +1055,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           <ListOrdered className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Blockquote */}
         <Button
@@ -985,7 +1077,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           <Minus className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Keyboard Shortcuts Helper - Removed from here, now floating */}
       </div>
@@ -993,374 +1085,4 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
   );
 };
 
-const Tiptap = ({
-  initialContent = null,
-  initialTitle = "",
-  onTitleChange,
-  onContentChange,
-}: {
-  initialContent: string | null;
-  initialTitle: string;
-  onTitleChange: (title: string) => void;
-  onContentChange: (content: string) => void;
-}) => {
-  const [title, setTitle] = useState(initialTitle);
-  const [isToolbarVisible, setIsToolbarVisible] = useState(true);
-
-  // Debounce function
-  const useDebounce = (value: string, delay: number) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      return () => {
-        clearTimeout(handler);
-      };
-    }, [value, delay]);
-
-    return debouncedValue;
-  };
-
-  // Debounced values
-  const debouncedTitle = useDebounce(title, 500);
-
-  // Effect for title changes
-  useEffect(() => {
-    if (onTitleChange && debouncedTitle !== initialTitle) {
-      onTitleChange(debouncedTitle);
-    }
-  }, [debouncedTitle, onTitleChange, initialTitle]);
-
-  const editor = useEditor({
-    extensions: [
-      UniqueID.configure({
-        types: ["heading"],
-        generateID: () => {
-          // Generate a more readable ID format
-          return `heading-${Date.now()}-${Math.random()
-            .toString(36)
-            .substr(2, 9)}`;
-        },
-      }),
-      Heading.configure({
-        levels: [1, 2, 3, 4, 5, 6],
-      }),
-      Document,
-      Paragraph,
-      Text,
-      // TextStyle and Color extensions must come before formatting marks
-      TextStyle,
-      Color.configure({
-        types: ['textStyle'],
-      }),
-      FontFamily,
-      Bold,
-      Italic,
-      Strike,
-      Code,
-      Highlight.configure({
-        multicolor: true,
-      }),
-      Subscript,
-      Superscript,
-      Underline,
-      UndoRedo,
-      Blockquote,
-      OrderedList,
-      BulletList,
-      ListItem,
-      HardBreak,
-      HorizontalRule,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      Typography,
-      Placeholder.configure({
-        placeholder: "Start writing ...",
-      }),
-    ],
-    content: initialContent || "<p></p>",
-    onUpdate: ({ editor }) => {
-      const content = editor.getHTML();
-      // Use a simple debounce for content changes
-      if (onContentChange) {
-        clearTimeout((window as any).contentDebounceTimer);
-        (window as any).contentDebounceTimer = setTimeout(() => {
-          onContentChange(content);
-        }, 500);
-      }
-    },
-    // Don't render immediately on the server to avoid SSR issues
-    immediatelyRender: false,
-  });
-
-  // Keyboard shortcut handler for Ctrl+S and toolbar toggle
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "s") {
-        event.preventDefault();
-        if (editor && onContentChange) {
-          const content = editor.getHTML();
-          onContentChange(content);
-        }
-      }
-      
-      // Ctrl+Shift+T to toggle toolbar
-      if (event.ctrlKey && event.shiftKey && event.key === "T") {
-        event.preventDefault();
-        setIsToolbarVisible(!isToolbarVisible);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [editor, onContentChange, isToolbarVisible]);
-
-  return (
-    <div className="w-full">
-      {/* Main Toolbar - Conditionally visible */}
-      {isToolbarVisible && (
-        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <MenuBar editor={editor} onHideToolbar={() => setIsToolbarVisible(false)} />
-        </div>
-      )}
-
-      {/* Floating Buttons - Always visible */}
-      <div className="fixed bottom-4 left-4 z-20 flex flex-col gap-2">
-        {/* Keyboard Shortcuts Helper - Always floating */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-10 w-10 p-0 rounded-full shadow-lg bg-background border-2"
-          title="Keyboard Shortcuts"
-        >
-          <Dialog>
-            <DialogTrigger asChild>
-              <div className="h-10 w-10 flex items-center justify-center">
-                <Keyboard className="h-4 w-4" />
-              </div>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <Keyboard className="h-5 w-5" />
-                  Keyboard Shortcuts
-                </DialogTitle>
-              </DialogHeader>
-              <div className="flex-1 overflow-hidden">
-                <PerfectScrollbar
-                  options={{
-                    wheelSpeed: 0.5,
-                    wheelPropagation: false,
-                    suppressScrollX: true,
-                    minScrollbarLength: 20,
-                  }}
-                  style={{ maxHeight: '55vh' }}
-                >
-                  <div className="grid gap-6 py-4 pr-2">
-                    {[
-                      { category: "Text Formatting", items: [
-                        { keys: ["Ctrl", "B"], description: "Bold" },
-                        { keys: ["Ctrl", "I"], description: "Italic" },
-                        { keys: ["Ctrl", "U"], description: "Underline" },
-                        { keys: ["Ctrl", "Shift", "S"], description: "Strikethrough" },
-                        { keys: ["Ctrl", "`"], description: "Code" },
-                        { keys: ["Ctrl", "Shift", "H"], description: "Highlight" },
-                      ]},
-                      { category: "Headings", items: [
-                        { keys: ["Ctrl", "Alt", "1"], description: "Heading 1" },
-                        { keys: ["Ctrl", "Alt", "2"], description: "Heading 2" },
-                        { keys: ["Ctrl", "Alt", "3"], description: "Heading 3" },
-                        { keys: ["Ctrl", "Alt", "4"], description: "Heading 4" },
-                        { keys: ["Ctrl", "Alt", "5"], description: "Heading 5" },
-                        { keys: ["Ctrl", "Alt", "6"], description: "Heading 6" },
-                        { keys: ["Ctrl", "Alt", "0"], description: "Paragraph" },
-                      ]},
-                      { category: "Lists & Blocks", items: [
-                        { keys: ["Ctrl", "Shift", "8"], description: "Bullet List" },
-                        { keys: ["Ctrl", "Shift", "7"], description: "Ordered List" },
-                        { keys: ["Ctrl", "Shift", "B"], description: "Blockquote" },
-                        { keys: ["Ctrl", "Alt", "-"], description: "Horizontal Rule" },
-                      ]},
-                      { category: "Text Alignment", items: [
-                        { keys: ["Ctrl", "Shift", "L"], description: "Align Left" },
-                        { keys: ["Ctrl", "Shift", "E"], description: "Align Center" },
-                        { keys: ["Ctrl", "Shift", "R"], description: "Align Right" },
-                        { keys: ["Ctrl", "Shift", "J"], description: "Justify" },
-                      ]},
-                      { category: "Actions", items: [
-                        { keys: ["Ctrl", "Z"], description: "Undo" },
-                        { keys: ["Ctrl", "Y"], description: "Redo" },
-                        { keys: ["Ctrl", "S"], description: "Save" },
-                        { keys: ["Ctrl", "A"], description: "Select All" },
-                      ]},
-                      { category: "Special", items: [
-                        { keys: ["Ctrl", ","], description: "Subscript" },
-                        { keys: ["Ctrl", "."], description: "Superscript" },
-                        { keys: ["Shift", "Enter"], description: "Hard Break" },
-                        { keys: ["Ctrl", "Shift", "T"], description: "Toggle Toolbar" },
-                      ]},
-                    ].map((category) => (
-                      <div key={category.category} className="space-y-3">
-                        <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                          {category.category}
-                        </h3>
-                        <div className="grid gap-2">
-                          {category.items.map((shortcut, index) => (
-                            <div key={index} className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-muted/50">
-                              <span className="text-sm">{shortcut.description}</span>
-                              <div className="flex items-center gap-1">
-                                {shortcut.keys.map((key, keyIndex) => (
-                                  <span key={keyIndex} className="flex items-center gap-1">
-                                    <kbd className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
-                                      {key}
-                                    </kbd>
-                                    {keyIndex < shortcut.keys.length - 1 && (
-                                      <span className="text-xs text-muted-foreground">+</span>
-                                    )}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </PerfectScrollbar>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </Button>
-
-        {/* Show Toolbar Button - Only visible when toolbar is hidden */}
-        {!isToolbarVisible && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsToolbarVisible(true)}
-            className="h-10 w-10 p-0 rounded-full shadow-lg bg-background border-2"
-            title="Show Toolbar (Ctrl+Shift+T)"
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </Button>
-        )}
-      </div>
-      
-      {/* Bubble Menu */}
-      {editor && (
-        <BubbleMenu editor={editor}>
-          <div className="bg-background border border-input rounded-md shadow-md p-1 flex items-center gap-1">
-            <Button
-              variant={editor.isActive('bold') ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className="h-8 w-8 p-0"
-            >
-              <BoldIcon className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={editor.isActive('italic') ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className="h-8 w-8 p-0"
-            >
-              <ItalicIcon className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={editor.isActive('underline') ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => editor.chain().focus().toggleUnderline().run()}
-              className="h-8 w-8 p-0"
-            >
-              <UnderlineIcon className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={editor.isActive('strike') ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => editor.chain().focus().toggleStrike().run()}
-              className="h-8 w-8 p-0"
-            >
-              <Strikethrough className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={editor.isActive('code') ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => editor.chain().focus().toggleCode().run()}
-              className="h-8 w-8 p-0"
-            >
-              <Code2 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={editor.isActive('highlight') ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => editor.chain().focus().toggleHighlight().run()}
-              className="h-8 w-8 p-0"
-            >
-              <Highlighter className="h-4 w-4" />
-            </Button>
-            
-            {/* Color Picker in Bubble Menu */}
-            <div className="flex items-center gap-2 border-l pl-2 ml-1">
-              {/* Color Picker Input */}
-              <input
-                type="color"
-                value={editor.getAttributes('textStyle').color || '#000000'}
-                onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
-                className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
-                title="Choose text color"
-              />
-              
-              {/* Reset color button */}
-              <button
-                className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform cursor-pointer bg-white"
-                onClick={() => editor.chain().focus().unsetColor().run()}
-                title="Reset color"
-                style={{ 
-                  background: 'linear-gradient(45deg, transparent 30%, red 30%, red 70%, transparent 70%)',
-                  backgroundSize: '4px 4px'
-                }}
-              />
-            </div>
-          </div>
-        </BubbleMenu>
-      )}
-
-      <div className="max-w-4xl mx-auto">
-        <div className="border border-input rounded-md">
-          {/* Document Title Input - Notion Style */}
-          <div className="p-6 pb-2">
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Untitled"
-              className="font-bold border-none px-0 py-2 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-muted-foreground/60 resize-none"
-              style={{
-                lineHeight: "1.1",
-                fontWeight: "800",
-                fontSize: "2.8rem",
-              }}
-            />
-          </div>
-
-          {/* Editor Content */}
-          <div className="px-6 pb-6">
-            <EditorContent
-              editor={editor}
-              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Tiptap;
+export default MenuBar;

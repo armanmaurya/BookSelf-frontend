@@ -50,7 +50,31 @@ html, body {
   opacity: 1;
 }
 
+.selection {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: inherit;
+}
 
+/* TipTap Selection Styles */
+.tiptap ::selection {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: inherit;
+}
+
+.tiptap ::-moz-selection {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: inherit;
+}
+
+.dark .tiptap ::selection {
+  background-color: rgba(96, 165, 250, 0.25);
+  color: inherit;
+}
+
+.dark .tiptap ::-moz-selection {
+  background-color: rgba(96, 165, 250, 0.25);
+  color: inherit;
+}
 
 ::-webkit-scrollbar-track {
   background: transparent;
