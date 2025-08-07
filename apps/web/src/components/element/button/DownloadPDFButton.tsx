@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 
 interface DownloadPDFButtonProps {
   title: string;
-  content: string;
   author: {
     firstName: string;
     lastName: string;
@@ -18,12 +17,11 @@ interface DownloadPDFButtonProps {
   url?: string;
 }
 
-export const DownloadPDFButton = ({ 
-  title, 
-  content, 
-  author, 
+export const DownloadPDFButton = ({
+  title,
+  author,
   createdAt,
-  url 
+  url
 }: DownloadPDFButtonProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -31,15 +29,26 @@ export const DownloadPDFButton = ({
   const generatePDF = async () => {
     try {
       setIsGenerating(true);
-      
-      // Create a formatted HTML content for PDF
+
+      // Get content from the DOM
+      const articleBody = document.querySelector('.articleBody');
+      if (!articleBody) {
+        toast({
+          title: "PDF generation failed",
+          description: "Article content not found.",
+          variant: "destructive",
+        });
+        setIsGenerating(false);
+        return;
+      }
+      const content = articleBody.innerHTML;
+
       const formattedDate = new Date(createdAt).toLocaleDateString('en-IN', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
 
-      // For print-js, we need just the body content, not full HTML
       const printJsContent = `
         <div style="max-width: 800px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333;">
           <div style="text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e5e5e5;">
@@ -47,7 +56,7 @@ export const DownloadPDFButton = ({
             <div style="color: #666; font-size: 1.1em;">
               <p style="margin: 5px 0;"><strong>Author:</strong> ${author.firstName} ${author.lastName} (@${author.username})</p>
               <p style="margin: 5px 0;"><strong>Published:</strong> ${formattedDate}</p>
-              ${url ? `<p style="margin: 5px 0;"><strong>Source:</strong> ${url}</p>` : ''}
+              ${url ? `<p style=\"margin: 5px 0;\"><strong>Source:</strong> ${url}</p>` : ''}
             </div>
           </div>
           
@@ -61,12 +70,11 @@ export const DownloadPDFButton = ({
         </div>
       `;
 
-      // Full HTML for fallback method
       const fullHtmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="utf-8">
+          <meta charset=\"utf-8\">
           <title>${title} - Infobite</title>
           <style>
             @page { margin: 1in; }
@@ -87,10 +95,10 @@ export const DownloadPDFButton = ({
               font-family: 'Courier New', monospace; 
             }
             blockquote { 
-              border-left: 4px solid #ddd; 
+              border-left: 4px solid #ddd;
               margin: 20px 0; 
               padding: 10px 20px; 
-              background: #f9f9f9; 
+              background: #f9f9f9;
             }
             a { color: #0066cc; text-decoration: underline; }
             table { border-collapse: collapse; width: 100%; margin: 20px 0; }
@@ -104,10 +112,7 @@ export const DownloadPDFButton = ({
         </html>
       `;
 
-      // Try different approaches based on browser support
       if (typeof window !== 'undefined') {
-        // Skip print-js completely and use the fallback method directly
-        // This ensures better compatibility and avoids the element ID error
         fallbackPrint(fullHtmlContent);
       }
 
@@ -132,9 +137,9 @@ export const DownloadPDFButton = ({
       iframe.style.width = '1px';
       iframe.style.height = '1px';
       iframe.style.visibility = 'hidden';
-      
+
       document.body.appendChild(iframe);
-      
+
       // Cleanup function to safely remove iframe
       const cleanupIframe = () => {
         try {
@@ -146,19 +151,35 @@ export const DownloadPDFButton = ({
         }
         setIsGenerating(false);
       };
-      
+
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
       if (iframeDoc) {
         iframeDoc.open();
         iframeDoc.write(htmlContent);
         iframeDoc.close();
-        
+
+        // Copy stylesheets and style tags from the main document into the iframe
+        const mainHead = document.head;
+        const iframeHead = iframeDoc.head;
+        // Copy <link rel="stylesheet"> tags
+        mainHead.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+          try {
+            iframeHead.appendChild(link.cloneNode(true));
+          } catch {}
+        });
+        // Copy <style> tags
+        mainHead.querySelectorAll('style').forEach(style => {
+          try {
+            iframeHead.appendChild(style.cloneNode(true));
+          } catch {}
+        });
+
         // Wait for content to load, then print
         iframe.onload = () => {
           setTimeout(() => {
             try {
               iframe.contentWindow?.print();
-              
+
               // Clean up after printing with delay
               setTimeout(cleanupIframe, 1000);
             } catch (printError) {
@@ -167,10 +188,10 @@ export const DownloadPDFButton = ({
             }
           }, 100);
         };
-        
+
         // Fallback cleanup if onload doesn't fire
         setTimeout(cleanupIframe, 5000);
-        
+
         toast({
           title: "PDF ready!",
           description: "Print dialog opened. You can save as PDF from there.",

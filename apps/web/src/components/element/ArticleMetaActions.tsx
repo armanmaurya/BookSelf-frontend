@@ -109,13 +109,13 @@ export const ArticleMetaActions = ({
           url={fullUrl}
         />
 
-        <DownloadPDFButton 
+        {/* <DownloadPDFButton 
           title={article.title}
-          content={article.content}
+          // content={article.content}
           author={article.author}
           createdAt={article.createdAt}
           url={fullUrl}
-        />
+        /> */}
       </div>
 
       {/* Mobile/Tablet: Three-dot menu */}
@@ -158,13 +158,13 @@ export const ArticleMetaActions = ({
             
             <DropdownMenuItem asChild>
               <div className="w-full">
-                <DownloadPDFButton 
+                {/* <DownloadPDFButton 
                   title={article.title}
-                  content={article.content}
+                  // content={article.content}
                   author={article.author}
                   createdAt={article.createdAt}
                   url={fullUrl}
-                />
+                /> */}
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
