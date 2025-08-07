@@ -15,6 +15,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { TableOfContents } from "@/components/blocks/TableOfContents";
+import { SyntaxHighlight } from "@/components/SyntaxHighlight";
+// Import highlight.js CSS for syntax highlighting in article content
+import 'highlight.js/styles/github-dark.css';
 
 const QUERY = gql`
   query MyQuery($slug: String!) {
@@ -178,11 +181,13 @@ const Page = async ({
           </div>
 
           {/* Main Article Content */}
-          <main className="prose prose-strong:text-inherit dark:prose-invert max-w-none" role="main">
-            <div 
-              itemProp="articleBody"
-              dangerouslySetInnerHTML={{ __html: article.content }}
-            />
+          <main className="prose prose-strong:text-inherit dark:prose-invert max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono" role="main">
+            <SyntaxHighlight>
+              <div 
+                itemProp="articleBody"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+              />
+            </SyntaxHighlight>
           </main>
           
           <Separator className="my-8" />

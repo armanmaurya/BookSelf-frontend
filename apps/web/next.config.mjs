@@ -18,6 +18,21 @@ const nextConfig = {
   reactStrictMode: false,
   experimental: {
     optimizePackageImports: ['', "slate", "slate-react"]
+  },
+  transpilePackages: [
+    "@tiptap/extension-code-block-lowlight",
+    "lowlight",
+    "highlight.js"
+  ],
+  webpack: (config) => {
+    // Handle ES modules that use import.meta
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto'
+    });
+    
+    return config;
   }
 };
 

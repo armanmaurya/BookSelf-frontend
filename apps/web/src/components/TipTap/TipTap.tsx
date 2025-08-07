@@ -5,6 +5,8 @@ import KeyboardShortcutsHelper from './KeyboardShortcutsHelper';
 import MenuBar from './MenuBar';
 import TipTapBubbleMenu from './TipTapBubbleMenu';
 import { TipTapProps } from './types';
+// Import highlight.js CSS for syntax highlighting styles
+import 'highlight.js/styles/github-dark.css'; // You can choose different themes
 import {
   useEditor,
   EditorContent,
@@ -34,8 +36,9 @@ import { Button } from "@/components/ui/button";
 import { FontFamily, TextStyle, Color, FontSize } from "@tiptap/extension-text-style";
 import { Placeholder } from "@tiptap/extensions";
 import Link from '@tiptap/extension-link';
-import { Selection } from '@tiptap/extensions'
-// import DragHandle from "@tiptap/extension-drag-handle-react";
+import { Selection } from '@tiptap/extensions';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { all, createLowlight } from 'lowlight';
 
 const Tiptap = ({
   initialContent = null,
@@ -46,6 +49,10 @@ const Tiptap = ({
   const [title, setTitle] = useState(initialTitle);
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
   const titleRef = useRef<HTMLTextAreaElement>(null);
+
+  // create a lowlight instance with all languages loaded
+  const lowlight = createLowlight(all);
+
 
   // Auto-resize title textarea
   const autoResizeTitle = useCallback((element?: HTMLTextAreaElement) => {
@@ -131,6 +138,7 @@ const Tiptap = ({
       HorizontalRule,
       TextAlign.configure({
         types: ["heading", "paragraph"],
+        
       }),
       Typography,
       Link.configure({
@@ -142,6 +150,11 @@ const Tiptap = ({
         placeholder: "Start writing ...",
       }),
       Selection,
+      CodeBlockLowlight.configure({
+        lowlight,
+        defaultLanguage: 'javascript',
+        languageClassPrefix: 'language-',
+      }),
     ],
     content: initialContent || "<p></p>",
     onUpdate: ({ editor }) => {
@@ -243,7 +256,7 @@ const Tiptap = ({
           <div className="px-6 pb-6">
             <EditorContent
               editor={editor}
-              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none"
+              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono"
             />
           </div>
         </div>

@@ -46,6 +46,8 @@ import {
   ChevronDown,
   Palette,
   Link as LinkIcon,
+  FileCode,
+  Search,
 } from "lucide-react";
 import { MenuBarProps } from './types';
 
@@ -53,6 +55,30 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
   const [linkUrl, setLinkUrl] = useState('');
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [customFontSize, setCustomFontSize] = useState('');
+  const [languageSearch, setLanguageSearch] = useState('');
+  
+  // Language options for code blocks
+  const codeLanguages = [
+    { value: 'javascript', label: 'JavaScript' },
+    { value: 'typescript', label: 'TypeScript' },
+    { value: 'python', label: 'Python' },
+    { value: 'java', label: 'Java' },
+    { value: 'cpp', label: 'C++' },
+    { value: 'csharp', label: 'C#' },
+    { value: 'php', label: 'PHP' },
+    { value: 'ruby', label: 'Ruby' },
+    { value: 'go', label: 'Go' },
+    { value: 'rust', label: 'Rust' },
+    { value: 'html', label: 'HTML' },
+    { value: 'css', label: 'CSS' },
+    { value: 'json', label: 'JSON' },
+    { value: 'yaml', label: 'YAML' },
+    { value: 'xml', label: 'XML' },
+    { value: 'bash', label: 'Bash' },
+    { value: 'sql', label: 'SQL' },
+    { value: 'markdown', label: 'Markdown' },
+    { value: 'plaintext', label: 'Plain Text' },
+  ];
   
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
@@ -215,6 +241,12 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           const attributes = ctx.editor.getAttributes('textStyle');
           return attributes.fontSize || '16px';
         })(),
+        // Code block states
+        isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
+        currentCodeLanguage: (() => {
+          const attributes = ctx.editor.getAttributes('codeBlock');
+          return attributes.language || 'javascript';
+        })(),
       };
     },
   });
@@ -282,6 +314,8 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
     isLink: false,
     canLink: false,
     currentFontSize: '16px',
+    isCodeBlock: false,
+    currentCodeLanguage: 'javascript',
   };
 
   const toggleHeading = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
@@ -424,6 +458,29 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
 
   const unsetLink = () => {
     editor.chain().focus().unsetLink().run();
+  };
+
+  // Code block language functions
+  const setCodeBlockLanguage = (language: string) => {
+    editor.chain().focus().updateAttributes('codeBlock', { language }).run();
+  };
+
+  const getCurrentCodeLanguage = () => {
+    return safeEditorState.currentCodeLanguage || 'javascript';
+  };
+
+  const getCurrentCodeLanguageLabel = () => {
+    const current = codeLanguages.find(lang => lang.value === getCurrentCodeLanguage());
+    return current ? current.label : 'JavaScript';
+  };
+
+  // Filter languages based on search
+  const getFilteredLanguages = () => {
+    if (!languageSearch.trim()) return codeLanguages;
+    return codeLanguages.filter(lang => 
+      lang.label.toLowerCase().includes(languageSearch.toLowerCase()) ||
+      lang.value.toLowerCase().includes(languageSearch.toLowerCase())
+    );
   };
 
   return (
@@ -862,9 +919,83 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={!safeEditorState.canCode}
           className="h-8 w-8 p-0"
+          title="Inline Code"
         >
           <Code2 className="h-4 w-4" />
         </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          className="h-8 w-8 p-0"
+          title="Code Block"
+        >
+          <FileCode className="h-4 w-4" />
+        </Button>
+        
+        {/* Code Block Language Selector - Only visible when in a code block */}
+        {safeEditorState.isCodeBlock && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="px-2 py-1 h-8 text-xs overflow-hidden text-ellipsis whitespace-nowrap"
+                title={`Code Language: ${getCurrentCodeLanguageLabel()}`}
+              >
+                {getCurrentCodeLanguageLabel()}
+                <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48 max-h-80 overflow-y-auto">
+              {/* Search Input */}
+              <div className="p-2 border-b">
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                  <Input
+                    placeholder="Search languages..."
+                    value={languageSearch}
+                    onChange={(e) => setLanguageSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Prevent dropdown menu keyboard navigation from interfering
+                      e.stopPropagation();
+                      // Prevent Enter from selecting the first item
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="h-7 pl-7 text-xs"
+                    autoFocus
+                  />
+                </div>
+              </div>
+              
+              {/* Language List */}
+              <div className="max-h-48 overflow-y-auto">
+                {getFilteredLanguages().map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.value}
+                    onClick={() => {
+                      setCodeBlockLanguage(lang.value);
+                      setLanguageSearch(''); // Clear search after selection
+                    }}
+                    className={getCurrentCodeLanguage() === lang.value ? "bg-accent" : ""}
+                  >
+                    <span className="font-mono text-xs">{lang.label}</span>
+                  </DropdownMenuItem>
+                ))}
+                
+                {/* No results message */}
+                {getFilteredLanguages().length === 0 && (
+                  <div className="px-3 py-2 text-xs text-muted-foreground text-center">
+                    No languages found
+                  </div>
+                )}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+        
         <Button
           variant={safeEditorState.isHighlight ? "default" : "ghost"}
           size="sm"
