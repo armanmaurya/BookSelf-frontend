@@ -26,9 +26,13 @@ interface TipTapBubbleMenuProps {
   editor: Editor;
 }
 
-const TipTapBubbleMenu = ({ editor }: TipTapBubbleMenuProps) => {
+const TipTapBubbleMenu = ({ 
+  editor 
+}: TipTapBubbleMenuProps) => {
   const [linkUrl, setLinkUrl] = useState('');
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+  
+
 
   const setLink = () => {
     const previousUrl = editor.getAttributes('link').href;
@@ -52,6 +56,7 @@ const TipTapBubbleMenu = ({ editor }: TipTapBubbleMenuProps) => {
   return (
     <BubbleMenu editor={editor}>
       <div className="bg-background border border-input rounded-md shadow-md p-1 flex items-center gap-1">
+        {/* Regular text formatting bubble menu */}
         <Button
           variant={editor.isActive('bold') ? 'default' : 'ghost'}
           size="sm"

@@ -18,6 +18,8 @@ import { TableOfContents } from "@/components/blocks/TableOfContents";
 import { SyntaxHighlight } from "@/components/SyntaxHighlight";
 // Import highlight.js CSS for syntax highlighting in article content
 import 'highlight.js/styles/github-dark.css';
+import dynamic from "next/dynamic";
+import { ArticleBodyWithMath } from "@/components/ArticleBodyWithMath";
 
 const QUERY = gql`
   query MyQuery($slug: String!) {
@@ -181,12 +183,18 @@ const Page = async ({
           </div>
 
           {/* Main Article Content */}
-          <main className="prose prose-strong:text-inherit dark:prose-invert max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono" role="main">
+          <main className="prose prose-strong:text-inherit dark:prose-invert max-w-none
+            [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto
+            [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono
+            [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded
+            [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center" role="main">
             <SyntaxHighlight>
-              <div 
+              <div
+                className="articleBody"
                 itemProp="articleBody"
                 dangerouslySetInnerHTML={{ __html: article.content }}
               />
+              <ArticleBodyWithMath />
             </SyntaxHighlight>
           </main>
           

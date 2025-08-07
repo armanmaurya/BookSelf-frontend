@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -50,14 +50,35 @@ import {
   Link as LinkIcon,
   FileCode,
   Search,
+  Sigma,
 } from "lucide-react";
 import { MenuBarProps } from './types';
 
-const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
+const MenuBar = ({ 
+  editor, 
+  onHideToolbar, 
+  mathEditDialog, 
+  onMathEdit, 
+  onCloseMathEditDialog 
+}: MenuBarProps) => {
   const [linkUrl, setLinkUrl] = useState('');
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [customFontSize, setCustomFontSize] = useState('');
   const [languageSearch, setLanguageSearch] = useState('');
+  const [mathExpression, setMathExpression] = useState('');
+  const [isMathDialogOpen, setIsMathDialogOpen] = useState(false);
+  const [mathType, setMathType] = useState<'inline' | 'block'>('inline');
+  const [mathEditMode, setMathEditMode] = useState(false);
+  
+  // Effect to handle external math edit dialog
+  useEffect(() => {
+    if (mathEditDialog?.isOpen) {
+      setMathType(mathEditDialog.type);
+      setMathExpression(mathEditDialog.currentLatex);
+      setMathEditMode(true);
+      setIsMathDialogOpen(true);
+    }
+  }, [mathEditDialog]);
   
   // Language options for code blocks
   const codeLanguages = [
@@ -237,7 +258,9 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
         isPoppins:
           ctx.editor.isActive("textStyle", { fontFamily: "Poppins" }) ?? false,
         isLink: ctx.editor.isActive("link") ?? false,
-        canLink: !ctx.editor.state.selection.empty,
+        canLink: !ctx.editor.state.selection.empty && 
+                 !ctx.editor.isActive("inline-math") && 
+                 !ctx.editor.isActive("block-math"),
         // Font size states
         currentFontSize: (() => {
           const attributes = ctx.editor.getAttributes('textStyle');
@@ -249,6 +272,9 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           const attributes = ctx.editor.getAttributes('codeBlock');
           return attributes.language || 'javascript';
         })(),
+        // Math states
+        isInlineMath: ctx.editor.isActive("inline-math") ?? false,
+        isBlockMath: ctx.editor.isActive("block-math") ?? false,
       };
     },
   });
@@ -318,6 +344,8 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
     currentFontSize: '16px',
     isCodeBlock: false,
     currentCodeLanguage: 'javascript',
+    isInlineMath: false,
+    isBlockMath: false,
   };
 
   const toggleHeading = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
@@ -483,6 +511,59 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
       lang.label.toLowerCase().includes(languageSearch.toLowerCase()) ||
       lang.value.toLowerCase().includes(languageSearch.toLowerCase())
     );
+  };
+
+  // Math functions
+  const insertInlineMath = () => {
+    const hasSelection = !editor.state.selection.empty;
+    
+    if (hasSelection) {
+      return editor.chain().insertInlineMath({ latex: '' }).focus().run();
+    }
+    
+    setMathType('inline');
+    setMathExpression('');
+    setIsMathDialogOpen(true);
+  };
+
+  const insertDisplayMath = () => {
+    const hasSelection = !editor.state.selection.empty;
+    
+    if (hasSelection) {
+      return editor.chain().insertBlockMath({ latex: '' }).focus().run();
+    }
+    
+    setMathType('block');
+    setMathExpression('');
+    setIsMathDialogOpen(true);
+  };
+
+  const handleMathSubmit = () => {
+    if (!mathExpression.trim()) return;
+    
+    if (mathEditMode && onMathEdit) {
+      // Edit existing math
+      onMathEdit(mathExpression);
+    } else {
+      // Insert new math
+      if (mathType === 'inline') {
+        editor.chain().insertInlineMath({ latex: mathExpression }).focus().run();
+      } else {
+        editor.chain().insertBlockMath({ latex: mathExpression }).focus().run();
+      }
+    }
+    
+    setIsMathDialogOpen(false);
+    setMathExpression('');
+    setMathEditMode(false);
+  };
+
+  const removeInlineMath = () => {
+    editor.chain().deleteInlineMath().focus().run();
+  };
+
+  const removeBlockMath = () => {
+    editor.chain().deleteBlockMath().focus().run();
   };
 
   return (
@@ -1206,6 +1287,47 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
           <Quote className="h-4 w-4" />
         </Button>
 
+        {/* Math Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant={safeEditorState.isInlineMath || safeEditorState.isBlockMath ? "default" : "ghost"} 
+              size="sm" 
+              className="h-8 w-8 p-0" 
+              title="Insert Math"
+            >
+              <Sigma className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={insertInlineMath}>
+              <Sigma className="h-4 w-4 mr-2" />
+              Inline Math
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={insertDisplayMath}>
+              <Sigma className="h-4 w-4 mr-2" />
+              Display Math
+            </DropdownMenuItem>
+            
+            {/* Show remove options when math is active */}
+            {(safeEditorState.isInlineMath || safeEditorState.isBlockMath) && (
+              <>
+                <DropdownMenuSeparator />
+                {safeEditorState.isInlineMath && (
+                  <DropdownMenuItem onClick={removeInlineMath} className="text-destructive">
+                    Remove Inline Math
+                  </DropdownMenuItem>
+                )}
+                {safeEditorState.isBlockMath && (
+                  <DropdownMenuItem onClick={removeBlockMath} className="text-destructive">
+                    Remove Block Math
+                  </DropdownMenuItem>
+                )}
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         {/* Horizontal Rule */}
         <Button
           variant="ghost"
@@ -1215,6 +1337,74 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
         >
           <Minus className="h-4 w-4" />
         </Button>
+
+        {/* Math Dialog */}
+        <Dialog 
+          open={isMathDialogOpen} 
+          onOpenChange={(open) => {
+            setIsMathDialogOpen(open);
+            if (!open) {
+              setMathEditMode(false);
+              setMathExpression('');
+              if (mathEditMode && onCloseMathEditDialog) {
+                onCloseMathEditDialog();
+              }
+            }
+          }}
+        >
+          <DialogTrigger asChild>
+            <div style={{ display: 'none' }} />
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {mathEditMode ? 'Edit' : 'Insert'} {mathType === 'inline' ? 'Inline' : 'Block'} Math
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col space-y-4">
+              <div className="grid flex-1 gap-2">
+                <Input
+                  placeholder={mathType === 'inline' ? 'E = mc^2' : '\\int_a^b x^2 dx'}
+                  value={mathExpression}
+                  onChange={(e) => setMathExpression(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleMathSubmit();
+                    }
+                  }}
+                  className="font-mono"
+                  autoFocus
+                />
+                <div className="text-xs text-muted-foreground">
+                  Enter LaTeX expression. Examples: x^2, \\frac&#123;a&#125;&#123;b&#125;, \\sqrt&#123;x&#125;, \\sum_&#123;i=1&#125;^n
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsMathDialogOpen(false);
+                    setMathEditMode(false);
+                    setMathExpression('');
+                    if (mathEditMode && onCloseMathEditDialog) {
+                      onCloseMathEditDialog();
+                    }
+                  }}
+                  size="sm"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleMathSubmit} 
+                  size="sm" 
+                  disabled={!mathExpression.trim()}
+                >
+                  {mathEditMode ? 'Update' : 'Insert'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Separator orientation="vertical" className="h-6 mx-0.5" />
 

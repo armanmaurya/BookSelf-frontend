@@ -7,6 +7,8 @@ import TipTapBubbleMenu from './TipTapBubbleMenu';
 import { TipTapProps } from './types';
 // Import highlight.js CSS for syntax highlighting styles
 import 'highlight.js/styles/github-dark.css'; // You can choose different themes
+// Import KaTeX CSS for math rendering
+import 'katex/dist/katex.min.css';
 import {
   useEditor,
   EditorContent,
@@ -39,6 +41,7 @@ import Link from '@tiptap/extension-link';
 import { Selection } from '@tiptap/extensions';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { all, createLowlight } from 'lowlight';
+import { Mathematics } from '@tiptap/extension-mathematics';
 
 const Tiptap = ({
   initialContent = null,
@@ -49,6 +52,17 @@ const Tiptap = ({
   const [title, setTitle] = useState(initialTitle);
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
   const titleRef = useRef<HTMLTextAreaElement>(null);
+  const [mathEditDialog, setMathEditDialog] = useState<{
+    isOpen: boolean;
+    type: 'inline' | 'block';
+    currentLatex: string;
+    node?: any;
+    pos?: number;
+  }>({
+    isOpen: false,
+    type: 'inline',
+    currentLatex: '',
+  });
 
   // create a lowlight instance with all languages loaded
   const lowlight = createLowlight(all);
@@ -94,6 +108,23 @@ const Tiptap = ({
       onTitleChange(debouncedTitle);
     }
   }, [debouncedTitle, onTitleChange, initialTitle]);
+
+  // Handle math edit dialog
+  const handleMathEdit = (newLatex: string) => {
+    if (!editor || !mathEditDialog.node || mathEditDialog.pos === undefined) return;
+    
+    if (mathEditDialog.type === 'block') {
+      editor.chain().setNodeSelection(mathEditDialog.pos).updateBlockMath({ latex: newLatex }).focus().run();
+    } else {
+      editor.chain().setNodeSelection(mathEditDialog.pos).updateInlineMath({ latex: newLatex }).focus().run();
+    }
+    
+    setMathEditDialog({ isOpen: false, type: 'inline', currentLatex: '' });
+  };
+
+  const closeMathEditDialog = () => {
+    setMathEditDialog({ isOpen: false, type: 'inline', currentLatex: '' });
+  };
 
   const editor = useEditor({
     extensions: [
@@ -155,6 +186,30 @@ const Tiptap = ({
         defaultLanguage: 'javascript',
         languageClassPrefix: 'language-',
       }),
+      Mathematics.configure({
+        blockOptions: {
+          onClick: (node, pos) => {
+            setMathEditDialog({
+              isOpen: true,
+              type: 'block',
+              currentLatex: node.attrs.latex || '',
+              node,
+              pos,
+            });
+          },
+        },
+        inlineOptions: {
+          onClick: (node, pos) => {
+            setMathEditDialog({
+              isOpen: true,
+              type: 'inline',
+              currentLatex: node.attrs.latex || '',
+              node,
+              pos,
+            });
+          },
+        },
+      }),
     ],
     content: initialContent || "<p></p>",
     onUpdate: ({ editor }) => {
@@ -200,7 +255,13 @@ const Tiptap = ({
       {/* Main Toolbar - Conditionally visible */}
       {isToolbarVisible && (
         <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <MenuBar editor={editor} onHideToolbar={() => setIsToolbarVisible(false)} />
+          <MenuBar 
+            editor={editor} 
+            onHideToolbar={() => setIsToolbarVisible(false)}
+            mathEditDialog={mathEditDialog}
+            onMathEdit={handleMathEdit}
+            onCloseMathEditDialog={closeMathEditDialog}
+          />
         </div>
       )}
 
@@ -228,7 +289,11 @@ const Tiptap = ({
       </div>
       
       {/* Bubble Menu */}
-      {editor && <TipTapBubbleMenu editor={editor} />}
+      {editor && (
+        <TipTapBubbleMenu 
+          editor={editor} 
+        />
+      )}
 
         <div className="max-w-4xl mx-auto">
         <div className="border border-input rounded-md">
@@ -256,7 +321,7 @@ const Tiptap = ({
           <div className="px-6 pb-6">
             <EditorContent
               editor={editor}
-              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono"
+              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center"
             />
           </div>
         </div>

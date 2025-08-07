@@ -13,6 +13,15 @@ export interface ShortcutCategory {
 export interface MenuBarProps {
   editor: Editor | null;
   onHideToolbar?: () => void;
+  mathEditDialog?: {
+    isOpen: boolean;
+    type: 'inline' | 'block';
+    currentLatex: string;
+    node?: any;
+    pos?: number;
+  };
+  onMathEdit?: (newLatex: string) => void;
+  onCloseMathEditDialog?: () => void;
 }
 
 export interface TipTapBubbleMenuProps {
