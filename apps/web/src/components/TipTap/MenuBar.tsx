@@ -9,6 +9,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -838,10 +840,16 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
               {safeEditorState.isParagraph && (
                 <span className="text-sm">Paragraph</span>
               )}
+              {safeEditorState.isCodeBlock && (
+                <>
+                  <FileCode className="h-4 w-4" />
+                  <span className="text-sm ml-1">Code Block</span>
+                </>
+              )}
               <ChevronDown className="h-3 w-3 ml-auto" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto">
             <DropdownMenuItem
               onClick={() => editor.chain().focus().setParagraph().run()}
             >
@@ -870,6 +878,15 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
             <DropdownMenuItem onClick={() => toggleHeading(6)}>
               <Heading6 className="h-4 w-4 mr-2" />
               Heading 6
+            </DropdownMenuItem>
+            
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            >
+              <FileCode className="h-4 w-4 mr-2" />
+              Code Block
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -923,15 +940,6 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
         >
           <Code2 className="h-4 w-4" />
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className="h-8 w-8 p-0"
-          title="Code Block"
-        >
-          <FileCode className="h-4 w-4" />
-        </Button>
         
         {/* Code Block Language Selector - Only visible when in a code block */}
         {safeEditorState.isCodeBlock && (
@@ -949,7 +957,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48 max-h-80 overflow-y-auto">
               {/* Search Input */}
-              <div className="p-2 border-b">
+              <DropdownMenuLabel className="p-2 border-b">
                 <div className="relative">
                   <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                   <Input
@@ -968,7 +976,7 @@ const MenuBar = ({ editor, onHideToolbar }: MenuBarProps) => {
                     autoFocus
                   />
                 </div>
-              </div>
+              </DropdownMenuLabel>
               
               {/* Language List */}
               <div className="max-h-48 overflow-y-auto">
