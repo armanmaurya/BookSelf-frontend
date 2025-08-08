@@ -23,8 +23,11 @@ import { ApolloProviderWrapper } from "@/context/ApolloProvider";
 import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
 import { GraphQLData } from "@/types/graphql";
-import { Toaster } from "@/components/ui/toaster"
-import { organizationStructuredData, websiteStructuredData } from "@/lib/structured-data";
+import { Toaster } from "@/components/ui/toaster";
+import {
+  organizationStructuredData,
+  websiteStructuredData,
+} from "@/lib/structured-data";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,7 +47,7 @@ export const metadata: Metadata = {
     "infobite",
     "content platform",
     "reading",
-    "discovery"
+    "discovery",
   ],
   authors: [{ name: "Infobite Team" }],
   creator: "Infobite",
@@ -60,7 +63,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Infobite - Discover, Learn, and Share Knowledge",
-    description: "Transform your curiosity into knowledge with Infobite. Explore bite-sized insights, trending topics, and expert perspectives.",
+    description:
+      "Transform your curiosity into knowledge with Infobite. Explore bite-sized insights, trending topics, and expert perspectives.",
     url: "https://infobite.online",
     siteName: "Infobite",
     locale: "en_IN",
@@ -69,7 +73,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Infobite - Discover, Learn, and Share Knowledge",
-    description: "Transform your curiosity into knowledge with Infobite. Explore bite-sized insights and trending topics.",
+    description:
+      "Transform your curiosity into knowledge with Infobite. Explore bite-sized insights and trending topics.",
     creator: "@infobite",
   },
   robots: {
@@ -136,42 +141,26 @@ export default async function RootLayout({
         className={`${inter.className} dark:bg-[#121212] dark:text-slate-200`}
       >
         {/* <ApolloProviderWrapper> */}
-          <ThemeProvider attribute="class" enableSystem>
-            <NextTopLoader />
-            <ThemeSwitcher className="fixed right-2 bottom-4" />
-            <LoadingProvider>
-              <TriangleSpinner
-                className="absolute h-screen w-screen bg-black bg-opacity-30 left-0 top-0 flex items-center justify-center"
-                height={100}
-                width={100}
-                color="grey"
-              />
-              <AuthProvider userData={user}>
-                <ContextProvider>
-                  <SideBarProvider>
-                    <TopBar />
-                    <div className="pt-14">
-                      <div className="p-3">{children}</div>
-                      <SideBar className="w-40">
-                        {/* <SideBarElement className="flex">
-                          <IoLibrary size={20} className="" />
-                          <span className="pl-3">Library</span>
-                        </SideBarElement>
-                        <SideBarElement className="flex">
-                          <IoBookOutline size={20} className="" />
-                          <span className="pl-3">Your Notebook</span>
-                        </SideBarElement> */}
-                        <SideBarElement className="flex">
-                          <SlNote size={20} className="" />
-                          <span className="pl-3">Nothing</span>
-                        </SideBarElement>
-                      </SideBar>
-                    </div>
-                  </SideBarProvider>
-                </ContextProvider>
-              </AuthProvider>
-            </LoadingProvider>
-          </ThemeProvider>
+        <ThemeProvider attribute="class" enableSystem>
+          <NextTopLoader />
+          <ThemeSwitcher className="fixed right-2 bottom-4" />
+          <LoadingProvider>
+            <TriangleSpinner
+              className="absolute h-screen w-screen bg-black bg-opacity-30 left-0 top-0 flex items-center justify-center"
+              height={100}
+              width={100}
+              color="grey"
+            />
+            <AuthProvider userData={user}>
+              <ContextProvider>
+                <TopBar />
+                <div className="pt-14">
+                  <div className="p-3">{children}</div>
+                </div>
+              </ContextProvider>
+            </AuthProvider>
+          </LoadingProvider>
+        </ThemeProvider>
         {/* </ApolloProviderWrapper> */}
         <Toaster />
       </body>

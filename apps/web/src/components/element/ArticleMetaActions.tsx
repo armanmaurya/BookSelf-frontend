@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LikeButton } from "@/components/element/button/LikeButton";
 import { SaveArticleButton } from "@/components/element/button/SaveArticleButton";
-import { CopyArticleButton } from "@/components/element/button/CopyArticleButton";
+import { CopyArticleAsMarkdownButton } from "@/components/element/button/CopyArticleAsMarkdownButton";
 import { DownloadPDFButton } from "@/components/element/button/DownloadPDFButton";
 import { IoMdEye } from "react-icons/io";
 import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
@@ -86,7 +86,7 @@ export const ArticleMetaActions = () => {
           <span>{article.savesCount}</span>
         </div>
 
-        <CopyArticleButton />
+        <CopyArticleAsMarkdownButton />
 
         {/* <DownloadPDFButton 
           title={article.title}
@@ -129,7 +129,7 @@ export const ArticleMetaActions = () => {
 
             <DropdownMenuItem asChild>
               <div className="w-full">
-                <CopyArticleButton />
+                <CopyArticleAsMarkdownButton />
               </div>
             </DropdownMenuItem>
 

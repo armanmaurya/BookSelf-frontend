@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
-import { Contrail_One } from "next/font/google";
 import { useArticle } from "@/hooks/useArticle";
 import { convertToMarkdown } from "@/utils/markdownConverter";
 
-export const CopyArticleButton = () => {
+export const CopyArticleAsMarkdownButton = () => {
   const { article } = useArticle();
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
