@@ -7,27 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import TurndownService from "turndown";
 import { Contrail_One } from "next/font/google";
+import { useArticle } from "@/hooks/useArticle";
 
-interface CopyArticleButtonProps {
-  title: string;
-  content: string;
-  author: {
-    firstName: string;
-    lastName: string;
-    username: string;
-  };
-  url?: string;
-}
-
-export const CopyArticleButton = ({
-  title,
-  content,
-  author,
-  url,
-}: CopyArticleButtonProps) => {
+export const CopyArticleButton = () => {
+  const { article } = useArticle();
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
-  console.log(content);
+  const url = `${window.location.origin}/user/${article.author.username}/article/${article.slug}`;
+
   const copyToClipboard = async () => {
     try {
       const turndownService = new TurndownService({
@@ -70,7 +57,7 @@ export const CopyArticleButton = ({
 
       // ✅ Parse HTML safely
       const parser = new DOMParser();
-      const doc = parser.parseFromString(`<div>${content}</div>`, "text/html");
+      const doc = parser.parseFromString(`<div>${article.content}</div>`, "text/html");
       const root = doc.body.firstElementChild;
       if (!root) throw new Error("Invalid HTML content");
 
@@ -101,9 +88,9 @@ export const CopyArticleButton = ({
       const markdownContent = turndownService.turndown(root as HTMLElement);
 
       // ✅ Final formatted Markdown
-      const formattedMarkdown = `# ${title}
+      const formattedMarkdown = `# ${article.title}
 
-**Author:** ${author.firstName} ${author.lastName} (@${author.username})
+**Author:** ${article.author.firstName} ${article.author.lastName} (@${article.author.username})
 ${url ? `**Source:** ${url}` : ""}
 
 ---

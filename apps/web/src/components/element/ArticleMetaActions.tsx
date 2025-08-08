@@ -24,8 +24,6 @@ export const ArticleMetaActions = () => {
 
   const likeUrl = `${API_ENDPOINT.likeArticle.url}?slug=${article.slug}`;
   const likeMethod = API_ENDPOINT.likeArticle.method;
-  const fullUrl = `https://infobite.online/user/${article.author.username}/article/${article.slug}`;
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -45,30 +43,38 @@ export const ArticleMetaActions = () => {
         <span itemProp="interactionCount">{article.views} views</span>
       </div>
 
-      <time dateTime={article.createdAt} itemProp="datePublished" className="text-sm hidden sm:block">
-        {new Date(article.createdAt).toLocaleDateString('en-IN', {
-          year: 'numeric',
-          month: 'long', 
-          day: 'numeric'
+      <time
+        dateTime={article.createdAt}
+        itemProp="datePublished"
+        className="text-sm hidden sm:block"
+      >
+        {new Date(article.createdAt).toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
         })}
       </time>
 
       {/* Mobile: Show abbreviated date */}
-      <time dateTime={article.createdAt} itemProp="datePublished" className="text-sm sm:hidden">
-        {new Date(article.createdAt).toLocaleDateString('en-IN', {
-          month: 'short', 
-          day: 'numeric'
+      <time
+        dateTime={article.createdAt}
+        itemProp="datePublished"
+        className="text-sm sm:hidden"
+      >
+        {new Date(article.createdAt).toLocaleDateString("en-IN", {
+          month: "short",
+          day: "numeric",
         })}
       </time>
 
       {/* Edit button - always visible for author */}
       {article.author.isSelf && (
-        <Link 
-          href={`${article.slug}/edit`} 
+        <Link
+          href={`${article.slug}/edit`}
           className="flex items-center justify-center gap-1 hover:text-primary transition-colors mx-1"
           aria-label="Edit article"
         >
-          <FiEdit2 className="text-lg" size={16}/>
+          <FiEdit2 className="text-lg" size={16} />
           <span className="hidden sm:inline">Edit</span>
         </Link>
       )}
@@ -80,12 +86,7 @@ export const ArticleMetaActions = () => {
           <span>{article.savesCount}</span>
         </div>
 
-        <CopyArticleButton 
-          title={article.title}
-          content={article.content}
-          author={article.author}
-          url={fullUrl}
-        />
+        <CopyArticleButton />
 
         {/* <DownloadPDFButton 
           title={article.title}
@@ -117,23 +118,21 @@ export const ArticleMetaActions = () => {
                   <span>Save</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <SaveArticleButton articleSlug={article.slug} isSaved={false} />
+                  <SaveArticleButton
+                    articleSlug={article.slug}
+                    isSaved={false}
+                  />
                   <span className="text-sm">{article.savesCount}</span>
                 </div>
               </div>
             </DropdownMenuItem>
-            
+
             <DropdownMenuItem asChild>
               <div className="w-full">
-                <CopyArticleButton 
-                  title={article.title}
-                  content={article.content}
-                  author={article.author}
-                  url={fullUrl}
-                />
+                <CopyArticleButton />
               </div>
             </DropdownMenuItem>
-            
+
             <DropdownMenuItem asChild>
               <div className="w-full">
                 {/* <DownloadPDFButton 
