@@ -14,6 +14,7 @@ import {
   EditorContent,
   type Editor,
 } from "@tiptap/react";
+import { Extension } from '@tiptap/core';
 import Heading from "@tiptap/extension-heading";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -128,6 +129,41 @@ const Tiptap = ({
 
   const editor = useEditor({
     extensions: [
+      // Custom extension to persist font family and size for new paragraphs
+      Extension.create({
+        name: 'persistentTextStyle',
+        addStorage() {
+          return {
+            defaultFontFamily: null as string | null,
+            defaultFontSize: null as string | null,
+          };
+        },
+        onSelectionUpdate() {
+          const attrs = this.editor.getAttributes('textStyle') as { fontFamily?: string; fontSize?: string };
+          if (attrs?.fontFamily) this.storage.defaultFontFamily = attrs.fontFamily;
+          if (attrs?.fontSize) this.storage.defaultFontSize = attrs.fontSize;
+        },
+        addKeyboardShortcuts() {
+          return {
+            Enter: () => {
+              const { defaultFontFamily, defaultFontSize } = this.storage as { defaultFontFamily: string | null; defaultFontSize: string | null };
+              
+              // Split the block first
+              const result = this.editor.chain().focus().splitBlock().run();
+              
+              // Then apply the stored font styles to the new paragraph
+              if (result && (defaultFontFamily || defaultFontSize)) {
+                const attrs: Record<string, string> = {};
+                if (defaultFontFamily) attrs.fontFamily = defaultFontFamily;
+                if (defaultFontSize) attrs.fontSize = defaultFontSize;
+                this.editor.chain().focus().setMark('textStyle', attrs).run();
+              }
+              
+              return result;
+            },
+          };
+        },
+      }),
       UniqueID.configure({
         types: ["heading"],
         generateID: () => {
