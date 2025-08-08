@@ -5,7 +5,7 @@ import { getGoogleAuthUrl } from "../app/utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import nProgress from "nprogress";
 import { useLoading } from "@bookself/react-loading";
 import client from "@/lib/apolloClient";
@@ -17,7 +17,7 @@ export const GoolgeAuth = ({ redirect_path }: { redirect_path: string }) => {
   const router = useRouter();
   const googleAuthUrl = getGoogleAuthUrl(redirect_path);
   const loader = useLoading();
-  const { setUser } = useAuth();
+  const { setUser } = useUser();
 
   const GOOGLE_AUTH = gql`
     mutation MyMutation($redirectPath: String!, $token: String!) {

@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import client from "@/lib/apolloClient";
 import { CollectionType } from "@/types/Collection";
 import { gql } from "@apollo/client";
@@ -34,7 +34,7 @@ export const AddArticleToCollection = ({
   collection,
   onToggle,
 }: AddArticleToCollectionProps) => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(collection.isAdded);

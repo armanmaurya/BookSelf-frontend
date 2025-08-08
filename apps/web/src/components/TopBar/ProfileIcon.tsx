@@ -6,7 +6,7 @@ import { FaUser, FaHistory } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { IoDocumentText, IoFileTrayStackedOutline } from "react-icons/io5";
 import { SlSettings } from "react-icons/sl";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 
 export const ProfileIcon = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout } = useUser();
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
 

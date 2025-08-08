@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { useCallback, useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { Store } from "react-notifications-component";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { FaImage, FaCog } from "react-icons/fa";
@@ -36,7 +36,7 @@ export const Editor = ({
     "saved"
   );
   const [currentTime, setCurrentTime] = useState("");
-  const { user } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
 
   const MUTATION = gql`

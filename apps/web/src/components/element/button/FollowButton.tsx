@@ -1,7 +1,7 @@
 "use client";
 
 import { API_ENDPOINT } from "@/app/utils";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export const FollowButton = ({
 }) => {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 

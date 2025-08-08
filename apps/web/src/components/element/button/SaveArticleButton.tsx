@@ -1,6 +1,6 @@
 "use client";
 // import { SaveArticle } from "@/components/blocks/SaveArticle";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import nProgress, { set } from "nprogress";
@@ -32,7 +32,7 @@ export const SaveArticleButton = ({
   isSaved: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
 
   const handleOpen = () => {
@@ -82,7 +82,7 @@ export const SaveArticle = ({
   const [collections, setCollections] = useState<CollectionType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isArticleCreateOpen, setIsArticleCreateOpen] = useState(false);
-  const { user } = useAuth();
+  const { user } = useUser();
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | undefined>(undefined);
 

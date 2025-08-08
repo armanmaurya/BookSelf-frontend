@@ -1,6 +1,6 @@
 "use client";
 import { API_ENDPOINT } from "@/app/utils";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import client from "@/lib/apolloClient";
 import { gql } from "@apollo/client";
 import Cookies from "js-cookie";
@@ -17,7 +17,7 @@ export const NewArticleButton = ({
   children: React.ReactNode;
 }) => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const MUTATION = gql`
     mutation MyMutation($content: String, $title: String) {

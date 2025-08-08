@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Reply, MoreVertical } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -220,7 +220,7 @@ const Comment = ({
   const [isLoadingReplies, setIsLoadingReplies] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user } = useUser();
 
   // Check if the current user is the comment author
   const isOwnComment = user?.username === comment.user.username;

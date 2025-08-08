@@ -1,7 +1,5 @@
 import RNotification from "@/components/RNotification";
 import { GoolgeAuth } from "@/components/auth";
-import { LoginForm } from "@/components/blocks/form";
-import { Divider } from "@/components/decoration";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -34,10 +32,6 @@ export default async function Login() {
             <GoolgeAuth redirect_path="/signin" />
           </Suspense>
         </div>
-        {/* <div className="w-80 my-3 rounded-full">
-          <Divider />
-        </div> */}
-        {/* <LoginForm /> */}
       </div>
     </main>
   );

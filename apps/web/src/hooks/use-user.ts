@@ -2,7 +2,7 @@ import { UserContext } from "@/context/auth-context";
 import { useContext } from "react";
 
 
-export function useAuth() {
+export function useUser() {
     const context = useContext(UserContext);
 
     if (!context) {

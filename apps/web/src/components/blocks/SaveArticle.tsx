@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import client from "@/lib/apolloClient";
 import { gql } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
@@ -24,7 +24,7 @@ export const SaveArticle = ({
     isPublic: false,
   });
 
-  const { user } = useAuth();
+  const { user } = useUser();
   const ref = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
