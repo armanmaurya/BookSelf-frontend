@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { useRouter } from "next/navigation";
+import nProgress from "nprogress";
 
 export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) => {
   const [confirmationText, setConfirmationText] = useState("");
@@ -37,6 +38,7 @@ export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) =>
       if (!data.deleteArticle) {
         throw new Error("Failed to delete article");
       }
+      nProgress.start();
       router.replace(`/`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } finally {
