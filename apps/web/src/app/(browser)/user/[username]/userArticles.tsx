@@ -54,6 +54,9 @@ export const UserArticles = ({
             updatedAt
             article {
               slug
+              author {
+                username
+              }
             }
           }
         }

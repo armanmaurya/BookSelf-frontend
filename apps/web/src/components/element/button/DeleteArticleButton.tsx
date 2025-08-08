@@ -16,8 +16,13 @@ import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { useRouter } from "next/navigation";
 import nProgress from "nprogress";
+import { Loader2 } from "lucide-react";
 
-export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) => {
+export const DeleteArticleButton = ({
+  articleSlug,
+}: {
+  articleSlug: string;
+}) => {
   const [confirmationText, setConfirmationText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
@@ -41,8 +46,8 @@ export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) =>
       nProgress.start();
       router.replace(`/`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } finally {
-      setIsDeleting(false);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -51,7 +56,16 @@ export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) =>
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Article</Button>
+        <Button variant="destructive" disabled={isDeleting}>
+          {isDeleting ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="animate-spin h-4 w-4" />
+              <span>Deleting...</span>
+            </span>
+          ) : (
+            "Delete Article"
+          )}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700">
         <AlertDialogHeader>
@@ -61,7 +75,8 @@ export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) =>
         </AlertDialogHeader>
         <div className="my-4 space-y-2">
           <p className="text-sm text-neutral-600 dark:text-neutral-300">
-            To confirm, type <span className="font-bold">CONFIRM</span> in the box below:
+            To confirm, type <span className="font-bold">CONFIRM</span> in the
+            box below:
           </p>
           <Input
             value={confirmationText}
@@ -82,7 +97,7 @@ export const DeleteArticleButton = ({ articleSlug }: { articleSlug: string }) =>
             disabled={!isConfirmed || isDeleting}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isDeleting ? "Deleting..." : "Delete Article"}
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

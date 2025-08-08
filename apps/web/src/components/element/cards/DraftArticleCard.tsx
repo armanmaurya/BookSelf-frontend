@@ -1,7 +1,7 @@
 import { DraftArticle } from "@bookself/types";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import Link from "next/link";
-import { FiEdit2, FiClock, FiTrash2, FiShare2 } from "react-icons/fi";
+import { FiEdit2, FiClock, FiTrash2, FiShare2, FiSettings } from "react-icons/fi";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,7 +40,7 @@ export const DraftArticleCard = ({
         <div className="flex-1">
           <Link href={href}>
             <h3 className="text-lg font-medium group-hover:text-primary transition-colors line-clamp-2">
-              {draftArticle.article.title || "Untitled Draft"}
+              {draftArticle.title || "Untitled Draft"}
             </h3>
           </Link>
           
@@ -78,11 +78,12 @@ export const DraftArticleCard = ({
                 <span>Share</span>
               </DropdownMenuItem>
               <DropdownMenuItem 
-                onClick={handleDelete}
-                className="text-destructive focus:text-destructive"
+                className="focus:text-destructive"
               >
-                <FiTrash2 className="mr-2 h-4 w-4" />
-                <span>Delete</span>
+                <Link className="flex" href={`/user/${draftArticle.article.author.username}/article/${draftArticle.article.slug}/setting`}>
+                  <FiSettings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

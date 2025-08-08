@@ -8,12 +8,14 @@ import { Store } from "react-notifications-component";
 import { useAuth } from "@/context/AuthContext";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
-import { FaImage } from "react-icons/fa6";
+import { FaImage, FaCog } from "react-icons/fa";
 import nProgress from "nprogress";
 import { useRouter } from "next/navigation";
 import { AddArticleCover } from "@/components/element/AddArticleCover";
 import Image from "next/image";
 import Tiptap from "@/components/TipTap";
+import Link from "next/link";
+import { FiSettings } from "react-icons/fi";
 
 export const Editor = ({
   content,
@@ -30,7 +32,9 @@ export const Editor = ({
 }) => {
   const [articleSlug, setArticleSlug] = useState<string | null>(slug);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved');
+  const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">(
+    "saved"
+  );
   const [currentTime, setCurrentTime] = useState("");
   const { user } = useAuth();
   const router = useRouter();
@@ -45,7 +49,7 @@ export const Editor = ({
   const UpdateContent = useCallback(
     async (body: string) => {
       console.log("Saving content:", body);
-      setSaveStatus('saving');
+      setSaveStatus("saving");
 
       try {
         const { data } = await client.mutate({
@@ -54,39 +58,42 @@ export const Editor = ({
         });
         if (data) {
           console.log("Content saved successfully");
-          setSaveStatus('saved');
+          setSaveStatus("saved");
           setLastSaved(new Date());
         }
       } catch (error) {
         console.log("Error saving content:", error);
-        setSaveStatus('error');
+        setSaveStatus("error");
       }
     },
     [articleSlug, MUTATION]
   );
 
-  const UpdateTitle = useCallback(async (title: string) => {
-    console.log("Saving title:", title);
-    setSaveStatus('saving');
+  const UpdateTitle = useCallback(
+    async (title: string) => {
+      console.log("Saving title:", title);
+      setSaveStatus("saving");
 
-    try {
-      const { data } = await client.mutate({
-        mutation: MUTATION,
-        variables: { content: null, title: title, slug: articleSlug },
-      });
+      try {
+        const { data } = await client.mutate({
+          mutation: MUTATION,
+          variables: { content: null, title: title, slug: articleSlug },
+        });
 
-      if (data) {
-        const slug = data.updateArticle.slug;
-        setArticleSlug(slug);
-        setSaveStatus('saved');
-        setLastSaved(new Date());
-        console.log("Title saved successfully");
+        if (data) {
+          const slug = data.updateArticle.slug;
+          setArticleSlug(slug);
+          setSaveStatus("saved");
+          setLastSaved(new Date());
+          console.log("Title saved successfully");
+        }
+      } catch (error) {
+        console.log("Error saving title:", error);
+        setSaveStatus("error");
       }
-    } catch (error) {
-      console.log("Error saving title:", error);
-      setSaveStatus('error');
-    }
-  }, [articleSlug, MUTATION]);
+    },
+    [articleSlug, MUTATION]
+  );
 
   const PublishArticleMutation = gql`
     mutation MyMutation($slug: String!) {
@@ -108,22 +115,22 @@ export const Editor = ({
 
   // Function to get time elapsed since last save
   const getTimeElapsed = () => {
-    if (!lastSaved) return '';
-    
+    if (!lastSaved) return "";
+
     const now = new Date();
     const diffInMs = now.getTime() - lastSaved.getTime();
     const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    
+
     if (diffInMinutes === 0) {
-      return 'just now';
+      return "just now";
     } else if (diffInMinutes === 1) {
-      return '1 minute ago';
+      return "1 minute ago";
     } else if (diffInMinutes < 60) {
       return `${diffInMinutes} minutes ago`;
     } else {
       const hours = Math.floor(diffInMinutes / 60);
       if (hours === 1) {
-        return '1 hour ago';
+        return "1 hour ago";
       } else {
         return `${hours} hours ago`;
       }
@@ -136,7 +143,7 @@ export const Editor = ({
       // Force re-render to update time display without changing lastSaved
       const now = new Date();
       // This will trigger a re-render without causing infinite loops
-      setLastSaved(prev => prev ? new Date(prev) : null);
+      setLastSaved((prev) => (prev ? new Date(prev) : null));
     }, 60000); // Update every minute
 
     return () => clearInterval(interval);
@@ -150,19 +157,19 @@ export const Editor = ({
   const SaveIndicator = () => {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        {saveStatus === 'saving' && (
+        {saveStatus === "saving" && (
           <>
             <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
             <span>Saving...</span>
           </>
         )}
-        {saveStatus === 'saved' && (
+        {saveStatus === "saved" && (
           <>
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <span>Saved {getTimeElapsed()}</span>
           </>
         )}
-        {saveStatus === 'error' && (
+        {saveStatus === "error" && (
           <>
             <div className="w-2 h-2 bg-red-500 rounded-full"></div>
             <span>Error saving</span>
@@ -186,6 +193,11 @@ export const Editor = ({
               >
                 {status === "DR" ? "Publish" : "Update"}
               </div>
+              <Link
+                href={`/user/${user?.username}/article/${articleSlug}/setting`}
+              >
+                <FiSettings className="text-white" />
+              </Link>
             </div>
             <SaveIndicator />
           </div>
