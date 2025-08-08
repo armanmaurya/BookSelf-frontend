@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 import { GraphQLData } from "@/types/graphql";
 import client from "@/lib/apolloClient";
 import { useEffect, useState } from "react";
-import { User } from "@/types/auth";
+import { User } from "@/types/user";
 import { FollowCard } from "../element/cards/FollowCard";
 // import { Skeleton } from "../ui/skeleton";
 // import { Button } from "../ui/button";

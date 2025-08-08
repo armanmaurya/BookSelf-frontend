@@ -1,5 +1,5 @@
-import { Article } from "@bookself/types";
-import { User } from "./auth";
+import { Article } from "@/types/article";
+import { User } from "./user";
 
 export type GraphQLData = {
     article: Article;

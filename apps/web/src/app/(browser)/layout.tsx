@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 import { API_ENDPOINT } from "../utils";
 import { SlNote } from "react-icons/sl";
 import { AuthProvider } from "@/context/AuthContext";
-import { User } from "@/types/auth";
+import { User } from "@/types/user";
 import { LoadingProvider, TriangleSpinner } from "@bookself/react-loading";
 import { TopBar } from "@/components/TopBar";
 import ThemeSwitcher from "@/components/element/button/ThemeSwitchButton";

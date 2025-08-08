@@ -17,9 +17,11 @@ import Link from "next/link";
 import { TableOfContents } from "@/components/blocks/TableOfContents";
 import { SyntaxHighlight } from "@/components/SyntaxHighlight";
 // Import highlight.js CSS for syntax highlighting in article content
-import 'highlight.js/styles/github-dark.css';
+import "highlight.js/styles/github-dark.css";
 import dynamic from "next/dynamic";
 import { ArticleBodyWithMath } from "@/components/ArticleBodyWithMath";
+import { ArticleProvider } from "@/context/article-context";
+import { RelatedArticles } from "@/components/blocks/RelatedArticles";
 
 const QUERY = gql`
   query MyQuery($slug: String!) {
@@ -73,13 +75,12 @@ const QUERY = gql`
   }
 `;
 
-// Remove the commented out MORE_ARTICLES_QUERY since we're using relatedArticles now
-
 const Page = async ({
   params,
 }: {
   params: Promise<{ username: string; articleSlug: string }>;
 }) => {
+  // Extract username and articleSlug from params
   const { username, articleSlug } = await params;
 
   let data: GraphQLData | null = null;
@@ -94,234 +95,218 @@ const Page = async ({
   }
 
   const article = data?.article;
+
+  // Check if article exists
   if (!article) {
     return redirect("/not-found");
   }
+
+  // Check if article slug matches URL slug
   if (article.slug != articleSlug) {
     redirect(`${article.slug}`);
   }
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": article.title,
-            "description": article.content.replace(/<[^>]*>/g, '').substring(0, 160),
-            "url": `https://infobite.online/user/${username}/article/${articleSlug}`,
-            "datePublished": article.createdAt,
-            "dateModified": article.createdAt,
-            "author": {
-              "@type": "Person",
-              "name": `${article.author.firstName} ${article.author.lastName}`,
-              "url": `https://infobite.online/user/${article.author.username}`,
-              "image": article.author.profilePicture
-            },
-            "publisher": {
-              "@type": "Organization",
-              "name": "Infobite",
-              "url": "https://infobite.online",
-              "logo": "https://infobite.online/logo.png"
-            },
-            "mainEntityOfPage": {
-              "@type": "WebPage",
-              "@id": `https://infobite.online/user/${username}/article/${articleSlug}`
-            },
-            "interactionStatistic": [
-              {
-                "@type": "InteractionCounter",
-                "interactionType": "https://schema.org/LikeAction",
-                "userInteractionCount": article.likesCount
+      <ArticleProvider initialArticle={article}>
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: article.title,
+              description: article.content
+                .replace(/<[^>]*>/g, "")
+                .substring(0, 160),
+              url: `https://infobite.online/user/${username}/article/${articleSlug}`,
+              datePublished: article.createdAt,
+              dateModified: article.createdAt,
+              author: {
+                "@type": "Person",
+                name: `${article.author.firstName} ${article.author.lastName}`,
+                url: `https://infobite.online/user/${article.author.username}`,
+                image: article.author.profilePicture,
               },
-              {
-                "@type": "InteractionCounter", 
-                "interactionType": "https://schema.org/ViewAction",
-                "userInteractionCount": article.views
+              publisher: {
+                "@type": "Organization",
+                name: "Infobite",
+                url: "https://infobite.online",
+                logo: "https://infobite.online/logo.png",
               },
-              {
-                "@type": "InteractionCounter",
-                "interactionType": "https://schema.org/CommentAction", 
-                "userInteractionCount": article.totalCommentsCount
-              }
-            ]
-          })
-        }}
-      />
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id": `https://infobite.online/user/${username}/article/${articleSlug}`,
+              },
+              interactionStatistic: [
+                {
+                  "@type": "InteractionCounter",
+                  interactionType: "https://schema.org/LikeAction",
+                  userInteractionCount: article.likesCount,
+                },
+                {
+                  "@type": "InteractionCounter",
+                  interactionType: "https://schema.org/ViewAction",
+                  userInteractionCount: article.views,
+                },
+                {
+                  "@type": "InteractionCounter",
+                  interactionType: "https://schema.org/CommentAction",
+                  userInteractionCount: article.totalCommentsCount,
+                },
+              ],
+            }),
+          }}
+        />
+        <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-3 lg:px-6 pt-6 gap-8">
+          {/* Table of Contents Sidebar - Left */}
+          <aside
+            className="hidden xl:block flex-shrink-0"
+            aria-labelledby="toc-sidebar"
+          >
+            <div className="sticky top-20">
+              <TableOfContents />
+            </div>
+          </aside>
+          {/* Main Content */}
+          <article
+            className="flex-1 min-w-0 xl:pl-8"
+            itemScope
+            itemType="https://schema.org/Article"
+          >
+            {/* Article Header */}
+            <header className="border-none">
+              <h1 className="text-3xl font-bold mb-2" itemProp="headline">
+                {article.title}
+              </h1>
+              {/* Article Meta Information */}
+              <ArticleMetaActions />
+            </header>
 
-      <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-3 lg:px-6 pt-6 gap-8">
-        {/* Table of Contents Sidebar - Left */}
-        <aside className="hidden xl:block flex-shrink-0" aria-labelledby="toc-sidebar">
-          <div className="sticky top-20">
-            <TableOfContents />
-          </div>
-        </aside>
+            {/* Mobile Table of Contents */}
+            <div className="xl:hidden mb-6">
+              <TableOfContents />
+            </div>
 
-        {/* Main Content */}
-        <article className="flex-1 min-w-0 xl:pl-8" itemScope itemType="https://schema.org/Article">
-          {/* Article Header */}
-          <header className="border-none">
-            <h1 className="text-3xl font-bold mb-2" itemProp="headline">{article.title}</h1>
-
-            {/* Article Meta Information */}
-            <ArticleMetaActions
-              article={article}
-              articleSlug={articleSlug}
-              username={username}
-              likeUrl={`${API_ENDPOINT.likeArticle.url}?slug=${articleSlug}`}
-              likeMethod={API_ENDPOINT.likeArticle.method}
-              fullUrl={`https://infobite.online/user/${username}/article/${articleSlug}`}
-            />
-          </header>
-
-          {/* Mobile Table of Contents */}
-          <div className="xl:hidden mb-6">
-            <TableOfContents />
-          </div>
-
-          {/* Main Article Content */}
-          <main className="prose prose-strong:text-inherit dark:prose-invert max-w-none
+            {/* Main Article Content */}
+            <main
+              className="prose prose-strong:text-inherit dark:prose-invert max-w-none
             [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto
             [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono
             [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded
-            [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center" role="main">
-            <SyntaxHighlight>
-              <div
-                className="articleBody"
-                itemProp="articleBody"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-              />
-              <ArticleBodyWithMath />
-            </SyntaxHighlight>
-          </main>
-          
-          <Separator className="my-8" />
-          
-          {/* Author Information */}
-          <section className="p-4 mb-8 border rounded-lg" aria-labelledby="author-info" itemScope itemType="https://schema.org/Person">
-            <h2 id="author-info" className="sr-only">About the Author</h2>
-            <div className="flex items-start gap-4">
-              <Link href={`/user/${article.author.username}`} className="flex-shrink-0">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage 
-                    src={article.author.profilePicture} 
-                    alt={`${article.author.firstName} ${article.author.lastName}`}
-                    itemProp="image"
-                  />
-                  <AvatarFallback>
-                    {article.author.username.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 mb-1">
-                      <h3 className="text-lg font-semibold">
+            [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center"
+              role="main"
+            >
+              <SyntaxHighlight>
+                <div
+                  className="articleBody"
+                  itemProp="articleBody"
+                  dangerouslySetInnerHTML={{ __html: article.content }}
+                />
+                <ArticleBodyWithMath />
+              </SyntaxHighlight>
+            </main>
+
+            <Separator className="my-8" />
+
+            {/* Author Information */}
+            <section
+              className="p-4 mb-8 border rounded-lg"
+              aria-labelledby="author-info"
+              itemScope
+              itemType="https://schema.org/Person"
+            >
+              <h2 id="author-info" className="sr-only">
+                About the Author
+              </h2>
+              <div className="flex items-start gap-4">
+                <Link
+                  href={`/user/${article.author.username}`}
+                  className="flex-shrink-0"
+                >
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage
+                      src={article.author.profilePicture}
+                      alt={`${article.author.firstName} ${article.author.lastName}`}
+                      itemProp="image"
+                    />
+                    <AvatarFallback>
+                      {article.author.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 mb-1">
+                        <h3 className="text-lg font-semibold">
+                          <Link
+                            href={`/user/${article.author.username}`}
+                            className="hover:underline"
+                            itemProp="url"
+                          >
+                            <span itemProp="name">
+                              {article.author.firstName}{" "}
+                              {article.author.lastName}
+                            </span>
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground text-sm">
+                          @
+                          <span itemProp="alternateName">
+                            {article.author.username}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                         <Link
-                          href={`/user/${article.author.username}`}
-                          className="hover:underline"
-                          itemProp="url"
+                          href={`/user/${username}/followers`}
+                          className="hover:text-primary transition-colors"
                         >
-                          <span itemProp="name">{article.author.firstName} {article.author.lastName}</span>
+                          <span className="font-semibold">
+                            {article.author.followersCount}
+                          </span>{" "}
+                          Followers
                         </Link>
-                      </h3>
-                      <p className="text-muted-foreground text-sm">
-                        @<span itemProp="alternateName">{article.author.username}</span>
-                      </p>
+                        <Link
+                          href={`/user/${username}/following`}
+                          className="hover:text-primary transition-colors"
+                        >
+                          <span className="font-semibold">
+                            {article.author.followingCount}
+                          </span>{" "}
+                          Following
+                        </Link>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-                      <Link
-                        href={`/user/${username}/followers`}
-                        className="hover:text-primary transition-colors"
-                      >
-                        <span className="font-semibold">
-                          {article.author.followersCount}
-                        </span>{" "}
-                        Followers
-                      </Link>
-                      <Link
-                        href={`/user/${username}/following`}
-                        className="hover:text-primary transition-colors"
-                      >
-                        <span className="font-semibold">
-                          {article.author.followingCount}
-                        </span>{" "}
-                        Following
-                      </Link>
-                    </div>
+                    {!article.author.isSelf && (
+                      <div className="flex-shrink-0">
+                        <FollowButton
+                          initialIsFollowing={article.author.isFollowing}
+                          username={username}
+                        />
+                      </div>
+                    )}
                   </div>
-                  {!article.author.isSelf && (
-                    <div className="flex-shrink-0">
-                      <FollowButton
-                        initialIsFollowing={article.author.isFollowing}
-                        username={username}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
-            </div>
-          </section>
-          
-          {/* Comments Section */}
-          <section aria-labelledby="comments-section">
-            <h2 id="comments-section" className="sr-only">Comments</h2>
-            <Separator className="mb-4" />
-            <Comments
-              totalCommentsCount={article.totalCommentsCount}
-              commentsCount={article.commentsCount}
-              initialComments={article.comments}
-              articleSlug={articleSlug}
-            />
-          </section>
-        </article>
-        
-        {/* Related Articles Sidebar - Right */}
-        <aside className="hidden lg:block w-72 flex-shrink-0" aria-labelledby="related-sidebar">
-          <div className="sticky top-8 space-y-6">
-            {/* Related Articles */}
-            <div>
-              <h2 id="related-articles" className="text-xl font-semibold mb-4">Related Articles</h2>
-              <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2">
-                {(!(article as any).relatedArticles || (article as any).relatedArticles.length === 0) && (
-                  <div className="text-muted-foreground text-sm">
-                    No related articles found.
-                  </div>
-                )}
-                {(article as any).relatedArticles?.map((a: any) => (
-                  <Card key={a.id} className="p-4 hover:shadow-md transition-shadow">
-                    <Link
-                      href={`/user/${a.author.username}/article/${a.slug}`}
-                      className="block group"
-                    >
-                      <article className="space-y-3">
-                        <h3 className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-                          {a.title}
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-5 w-5">
-                            <AvatarImage src={a.author.profilePicture} alt={`${a.author.firstName} ${a.author.lastName}`} />
-                            <AvatarFallback className="text-xs">
-                              {a.author.username.charAt(0).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-xs text-muted-foreground">
-                            {a.author.firstName} {a.author.lastName}
-                          </span>
-                        </div>
-                      </article>
-                    </Link>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </div>
-        </aside>
-      </div>
+            </section>
+
+            {/* Comments Section */}
+            <section aria-labelledby="comments-section">
+              <h2 id="comments-section" className="sr-only">
+                Comments
+              </h2>
+              <Separator className="mb-4" />
+              <Comments />
+            </section>
+          </article>
+
+          {/* Related Articles Sidebar - Right */}
+          <RelatedArticles />
+        </div>
+      </ArticleProvider>
     </>
   );
 };
@@ -332,7 +317,7 @@ export async function generateMetadata({
   params: Promise<{ username: string; articleSlug: string }>;
 }): Promise<Metadata> {
   const { articleSlug, username } = await params;
-  
+
   try {
     const METADATA_QUERY = gql`
       query MetadataQuery($slug: String!) {
@@ -352,7 +337,7 @@ export async function generateMetadata({
         }
       }
     `;
-    
+
     const { data }: { data: GraphQLData } = await createServerClient().query({
       query: METADATA_QUERY,
       variables: { slug: articleSlug },
@@ -368,8 +353,8 @@ export async function generateMetadata({
 
     // Extract description from content (remove HTML tags and limit length)
     const description = article.content
-      .replace(/<[^>]*>/g, '')
-      .replace(/\s+/g, ' ')
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
       .trim()
       .substring(0, 160);
 
@@ -378,25 +363,31 @@ export async function generateMetadata({
 
     return {
       title: `${article.title} - Infobite`,
-      description: description || `Read "${article.title}" by ${authorName} on Infobite.`,
+      description:
+        description || `Read "${article.title}" by ${authorName} on Infobite.`,
       keywords: [
         article.title.toLowerCase(),
         authorName.toLowerCase(),
-        'infobite',
-        'article',
-        'blog',
-        'technology',
-        'knowledge sharing'
+        "infobite",
+        "article",
+        "blog",
+        "technology",
+        "knowledge sharing",
       ],
-      authors: [{ name: authorName, url: `https://infobite.online/user/${article.author.username}` }],
+      authors: [
+        {
+          name: authorName,
+          url: `https://infobite.online/user/${article.author.username}`,
+        },
+      ],
       creator: authorName,
-      publisher: 'Infobite',
+      publisher: "Infobite",
       formatDetection: {
         email: false,
         address: false,
         telephone: false,
       },
-      metadataBase: new URL('https://infobite.online'),
+      metadataBase: new URL("https://infobite.online"),
       alternates: {
         canonical: canonicalUrl,
       },
@@ -404,30 +395,34 @@ export async function generateMetadata({
         title: article.title,
         description: description,
         url: canonicalUrl,
-        siteName: 'Infobite',
-        locale: 'en_IN',
-        type: 'article',
+        siteName: "Infobite",
+        locale: "en_IN",
+        type: "article",
         publishedTime: article.createdAt,
         modifiedTime: article.createdAt,
         authors: [authorName],
-        section: 'Technology',
-        tags: ['technology', 'article', 'blog', 'infobite'],
-        images: article.author.profilePicture ? [
-          {
-            url: article.author.profilePicture,
-            width: 1200,
-            height: 630,
-            alt: `Article by ${authorName}`,
-          }
-        ] : undefined,
+        section: "Technology",
+        tags: ["technology", "article", "blog", "infobite"],
+        images: article.author.profilePicture
+          ? [
+              {
+                url: article.author.profilePicture,
+                width: 1200,
+                height: 630,
+                alt: `Article by ${authorName}`,
+              },
+            ]
+          : undefined,
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: article.title,
         description: description,
         creator: `@${article.author.username}`,
-        site: '@infobite',
-        images: article.author.profilePicture ? [article.author.profilePicture] : undefined,
+        site: "@infobite",
+        images: article.author.profilePicture
+          ? [article.author.profilePicture]
+          : undefined,
       },
       robots: {
         index: true,
@@ -435,26 +430,26 @@ export async function generateMetadata({
         googleBot: {
           index: true,
           follow: true,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
         },
       },
       verification: {
-        google: 'your-google-verification-code',
+        google: "your-google-verification-code",
       },
       other: {
-        'article:author': authorName,
-        'article:published_time': article.createdAt,
-        'article:modified_time': article.createdAt,
-        'article:section': 'Technology',
-        'article:tag': 'technology,article,blog,infobite',
-        'og:article:author': `https://infobite.online/user/${article.author.username}`,
-        'fb:app_id': 'your-facebook-app-id',
+        "article:author": authorName,
+        "article:published_time": article.createdAt,
+        "article:modified_time": article.createdAt,
+        "article:section": "Technology",
+        "article:tag": "technology,article,blog,infobite",
+        "og:article:author": `https://infobite.online/user/${article.author.username}`,
+        "fb:app_id": "your-facebook-app-id",
       },
     };
   } catch (error) {
-    console.error('Error generating metadata:', error);
+    console.error("Error generating metadata:", error);
     return {
       title: "Article - Infobite",
       description: "Discover amazing articles and insights on Infobite.",

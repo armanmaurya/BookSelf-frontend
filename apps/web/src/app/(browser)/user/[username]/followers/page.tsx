@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "@/app/utils";
 import { Follower } from "@/components/blocks/Follower";
-import { User } from "@/types/auth";
+import { User } from "@/types/user";
 import { cookies } from "next/headers";
 import React from "react";
 

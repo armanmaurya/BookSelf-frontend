@@ -1,5 +1,5 @@
-import { User } from "@/types/user";
-import { CommentType } from "@/types/comment";
+import { User } from "./user";
+import { CommentType } from "./comment";
 
 export interface Article {
   content: string;
@@ -18,4 +18,5 @@ export interface Article {
   image_url: string;
   status: string;
   savesCount: number;
+  relatedArticles: Article[];
 }

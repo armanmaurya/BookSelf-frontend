@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useArticle } from "@/hooks/useArticle";
 
 const QUERY = gql`
   query MyQuery($slug: String!, $number: Int!, $lastId: Int, $parentId: Int) {
@@ -74,18 +75,9 @@ const fetchComments = async ({
   }
 };
 
-export const Comments = ({
-  initialComments,
-  articleSlug,
-  commentsCount,
-  totalCommentsCount,
-}: {
-  initialComments: CommentType[];
-  articleSlug: string;
-  commentsCount: number;
-  totalCommentsCount: number;
-}) => {
-  const [comments, setComments] = useState(initialComments);
+export const Comments = () => {
+  const { article } = useArticle();
+  const [comments, setComments] = useState(article.comments);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -96,7 +88,7 @@ export const Comments = ({
         comments.length > 0 ? comments[comments.length - 1].id : undefined;
       const newComments = await fetchComments({
         lastId,
-        slug: articleSlug,
+        slug: article.slug,
       });
       if (newComments) {
         setComments([...comments, ...newComments]);
@@ -122,8 +114,8 @@ export const Comments = ({
     <div className="">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {totalCommentsCount}{" "}
-          {totalCommentsCount === 1 ? "Comment" : "Comments"}
+          {article.totalCommentsCount}{" "}
+          {article.totalCommentsCount === 1 ? "Comment" : "Comments"}
         </h3>
         {showScrollToTop && (
           <button
@@ -153,14 +145,14 @@ export const Comments = ({
         <AddComment
           comments={comments}
           setComments={setComments}
-          articleSlug={articleSlug}
+          articleSlug={article.slug}
         />
       </div>
 
       <div className="space-y-6">
         {comments.map((comment: CommentType) => (
           <Comment
-            articleSlug={articleSlug}
+            articleSlug={article.slug}
             comment={comment}
             key={comment.id}
             onCommentDeleted={(deletedCommentId) => {
@@ -170,7 +162,7 @@ export const Comments = ({
         ))}
       </div>
 
-      {comments.length < commentsCount && (
+      {comments.length < article.commentsCount && (
         <div className="mt-8 text-center">
           <button
             onClick={loadMoreComments}
@@ -204,7 +196,7 @@ export const Comments = ({
             ) : (
               `Show ${Math.min(
                 10,
-                commentsCount - comments.length
+                article.commentsCount - comments.length
               )} more comments`
             )}
           </button>

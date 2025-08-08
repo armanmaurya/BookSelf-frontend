@@ -16,38 +16,16 @@ import { IoMdEye } from "react-icons/io";
 import { FiEdit2, FiMoreHorizontal } from "react-icons/fi";
 import { Copy, Download, Bookmark } from "lucide-react";
 import Link from "next/link";
+import { useArticle } from "@/hooks/useArticle";
+import { API_ENDPOINT } from "@/app/utils";
 
-interface ArticleMetaActionsProps {
-  article: {
-    isLiked: boolean;
-    likesCount: number;
-    views: number;
-    createdAt: string;
-    savesCount: number;
-    title: string;
-    content: string;
-    author: {
-      firstName: string;
-      lastName: string;
-      username: string;
-      isSelf: boolean;
-    };
-  };
-  articleSlug: string;
-  username: string;
-  likeUrl: string;
-  likeMethod: string;
-  fullUrl: string;
-}
+export const ArticleMetaActions = () => {
+  const { article } = useArticle();
 
-export const ArticleMetaActions = ({
-  article,
-  articleSlug,
-  username,
-  likeUrl,
-  likeMethod,
-  fullUrl,
-}: ArticleMetaActionsProps) => {
+  const likeUrl = `${API_ENDPOINT.likeArticle.url}?slug=${article.slug}`;
+  const likeMethod = API_ENDPOINT.likeArticle.method;
+  const fullUrl = `https://infobite.online/user/${article.author.username}/article/${article.slug}`;
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -86,7 +64,7 @@ export const ArticleMetaActions = ({
       {/* Edit button - always visible for author */}
       {article.author.isSelf && (
         <Link 
-          href={`${articleSlug}/edit`} 
+          href={`${article.slug}/edit`} 
           className="flex items-center justify-center gap-1 hover:text-primary transition-colors mx-1"
           aria-label="Edit article"
         >
@@ -98,7 +76,7 @@ export const ArticleMetaActions = ({
       {/* Desktop: Show all actions */}
       <div className="hidden lg:flex items-center">
         <div className="flex items-center">
-          <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
+          <SaveArticleButton articleSlug={article.slug} isSaved={false} />
           <span>{article.savesCount}</span>
         </div>
 
@@ -139,7 +117,7 @@ export const ArticleMetaActions = ({
                   <span>Save</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <SaveArticleButton articleSlug={articleSlug} isSaved={false} />
+                  <SaveArticleButton articleSlug={article.slug} isSaved={false} />
                   <span className="text-sm">{article.savesCount}</span>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import { API_ENDPOINT } from "@/app/utils";
 import { FollowingBlock } from "@/components/blocks/Following";
 import { FollowButton } from "@/components/element/button/FollowButton";
-import { User } from "@/types/auth";
+import { User } from "@/types/user";
 import { cookies } from "next/headers";
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {

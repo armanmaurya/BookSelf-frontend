@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
-import { User } from "@/types/auth";
+import { User } from "@/types/user";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import {

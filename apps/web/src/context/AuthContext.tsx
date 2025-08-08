@@ -1,6 +1,6 @@
 "use client";
 import { API_ENDPOINT } from "@/app/utils";
-import { User } from "@/types/auth";
+import { User } from "@/types/user";
 import { createContext, useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@bookself/react-loading";
