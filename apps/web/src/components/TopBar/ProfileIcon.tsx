@@ -6,7 +6,7 @@ import { FaUser, FaHistory } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { IoDocumentText, IoFileTrayStackedOutline } from "react-icons/io5";
 import { SlSettings } from "react-icons/sl";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {

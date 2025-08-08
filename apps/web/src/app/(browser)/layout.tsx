@@ -13,12 +13,11 @@ import { IoBookOutline, IoLibrary, IoPaperPlane } from "react-icons/io5";
 import { cookies } from "next/headers";
 import { API_ENDPOINT } from "../utils";
 import { SlNote } from "react-icons/sl";
-import { AuthProvider } from "@/context/AuthContext";
+import { UserProvider } from "@/context/auth-context";
 import { User } from "@/types/user";
 import { LoadingProvider, TriangleSpinner } from "@bookself/react-loading";
 import { TopBar } from "@/components/TopBar";
 import ThemeSwitcher from "@/components/element/button/ThemeSwitchButton";
-import { ApolloProviderWrapper } from "@/context/ApolloProvider";
 // import client from "@/lib/apolloClient";
 import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
@@ -151,14 +150,14 @@ export default async function RootLayout({
               width={100}
               color="grey"
             />
-            <AuthProvider userData={user}>
+            <UserProvider userData={user}>
               <ContextProvider>
                 <TopBar />
                 <div className="pt-14">
                   <div className="p-3">{children}</div>
                 </div>
               </ContextProvider>
-            </AuthProvider>
+            </UserProvider>
           </LoadingProvider>
         </ThemeProvider>
         {/* </ApolloProviderWrapper> */}

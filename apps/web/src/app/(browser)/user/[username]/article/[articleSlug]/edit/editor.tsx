@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { useCallback, useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/app/utils";
 import { Store } from "react-notifications-component";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { FaImage, FaCog } from "react-icons/fa";

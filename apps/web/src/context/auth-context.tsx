@@ -6,19 +6,19 @@ import { useRouter } from "next/navigation";
 import { useLoading } from "@bookself/react-loading";
 import nProgress from "nprogress";
 
-type AuthContextType = {
+type UserContextType = {
     user: User | null;
     setUser: (user: User | null) => void;
     logout: () => void;
 };
 
-const AuthContext = createContext<AuthContextType>({
+export const UserContext = createContext<UserContextType>({
     user: null,
     logout: () => { },
     setUser: () => { },
 });
 
-export const AuthProvider = ({
+export const UserProvider = ({
     children,
     userData: initialUser = null,
 }: {
@@ -54,18 +54,8 @@ export const AuthProvider = ({
     };
 
     return (
-        <AuthContext.Provider value={{ user, logout, setUser }}>
+        <UserContext.Provider value={{ user, logout, setUser }}>
             {children}
-        </AuthContext.Provider>
+        </UserContext.Provider>
     );
 };
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-
-    return context;
-}

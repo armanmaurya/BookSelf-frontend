@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import client from "@/lib/apolloClient";
 import { CollectionType } from "@/types/Collection";
 import { gql } from "@apollo/client";

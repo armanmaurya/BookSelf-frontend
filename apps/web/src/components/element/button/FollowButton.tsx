@@ -1,7 +1,7 @@
 "use client";
 
 import { API_ENDPOINT } from "@/app/utils";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";

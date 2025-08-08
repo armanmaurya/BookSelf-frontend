@@ -5,7 +5,7 @@ import { getGoogleAuthUrl } from "../app/utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import nProgress from "nprogress";
 import { useLoading } from "@bookself/react-loading";
 import client from "@/lib/apolloClient";

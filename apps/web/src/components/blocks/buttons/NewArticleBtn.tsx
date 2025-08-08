@@ -1,6 +1,6 @@
 "use client";
 import { API_ENDPOINT } from "@/app/utils";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import client from "@/lib/apolloClient";
 import { gql } from "@apollo/client";
 import Cookies from "js-cookie";

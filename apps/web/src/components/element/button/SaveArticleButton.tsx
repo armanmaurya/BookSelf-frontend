@@ -1,6 +1,6 @@
 "use client";
 // import { SaveArticle } from "@/components/blocks/SaveArticle";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-user";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import nProgress, { set } from "nprogress";
