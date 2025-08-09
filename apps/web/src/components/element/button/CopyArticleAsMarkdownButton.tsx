@@ -12,9 +12,9 @@ export const CopyArticleAsMarkdownButton = () => {
   const { article } = useArticle();
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
-  const url = `${window.location.origin}/user/${article.author.username}/article/${article.slug}`;
-
+  
   const copyToClipboard = async () => {
+    const url = `${window.location.origin}/user/${article.author.username}/article/${article.slug}`;
     try {
       const formattedMarkdown = convertToMarkdown({
         title: article.title,

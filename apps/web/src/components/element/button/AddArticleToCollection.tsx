@@ -1,7 +1,7 @@
 "use client";
 import { useUser } from "@/hooks/use-user";
 import client from "@/lib/apolloClient";
-import { CollectionType } from "@/types/Collection";
+import { CollectionType } from "@/types/collection";
 import { gql } from "@apollo/client";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";

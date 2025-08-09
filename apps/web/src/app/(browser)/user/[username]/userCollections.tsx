@@ -1,6 +1,6 @@
 "use client";
 import client from "@/lib/apolloClient";
-import { CollectionType } from "@/types/Collection";
+import { CollectionType } from "@/types/collection";
 import { gql } from "@apollo/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";

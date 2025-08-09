@@ -8,4 +8,5 @@ export interface CommentType {
     likesCount: number;
     repliesCount: number;
     user: User;
+    isPinned: boolean;
 }

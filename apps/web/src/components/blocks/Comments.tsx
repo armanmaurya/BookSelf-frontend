@@ -9,7 +9,7 @@ import { CommentLikeButton } from "../element/button/CommentLikeButton";
 import { IoIosArrowUp } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Reply, MoreVertical } from "lucide-react";
+import { ChevronDown, ChevronUp, Reply, MoreVertical, Pin, PinOff} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -25,12 +25,13 @@ const QUERY = gql`
   query MyQuery($slug: String!, $number: Int!, $lastId: Int, $parentId: Int) {
     article(slug: $slug) {
       slug
-      comments(number: $number, lastId: $lastId, parentId: $parentId) {
+  comments(number: $number, lastId: $lastId, parentId: $parentId) {
         content
         id
         createdAt
         isLiked
         likesCount
+  isPinned
         repliesCount
         user {
           firstName
@@ -75,9 +76,14 @@ const fetchComments = async ({
   }
 };
 
+// Helper to keep pinned comments at the top without changing relative order otherwise
+const sortComments = (list: CommentType[]) => {
+  return [...list].sort((a, b) => Number(b.isPinned ?? false) - Number(a.isPinned ?? false));
+};
+
 export const Comments = () => {
   const { article } = useArticle();
-  const [comments, setComments] = useState(article.comments);
+  const [comments, setComments] = useState<CommentType[]>(() => sortComments(article.comments || []));
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -91,7 +97,7 @@ export const Comments = () => {
         slug: article.slug,
       });
       if (newComments) {
-        setComments([...comments, ...newComments]);
+        setComments((prev) => sortComments([...prev, ...newComments]));
       }
     } finally {
       setIsLoadingMore(false);
@@ -144,7 +150,12 @@ export const Comments = () => {
       <div className="mb-8">
         <AddComment
           comments={comments}
-          setComments={setComments}
+          setComments={(updater: any) =>
+            setComments((prev) => {
+              const next = typeof updater === "function" ? updater(prev) : updater;
+              return sortComments(next);
+            })
+          }
           articleSlug={article.slug}
         />
       </div>
@@ -156,7 +167,14 @@ export const Comments = () => {
             comment={comment}
             key={comment.id}
             onCommentDeleted={(deletedCommentId) => {
-              setComments(comments.filter(c => c.id !== deletedCommentId));
+              setComments((prev) => sortComments(prev.filter((c) => c.id !== deletedCommentId)));
+            }}
+            onPinToggled={(id, newIsPinned) => {
+              setComments((prev) =>
+                sortComments(
+                  prev.map((c) => (c.id === id ? { ...c, isPinned: newIsPinned } : c))
+                )
+              );
             }}
           />
         ))}
@@ -210,10 +228,12 @@ const Comment = ({
   comment,
   articleSlug,
   onCommentDeleted,
+  onPinToggled,
 }: {
   comment: CommentType;
   articleSlug: string;
   onCommentDeleted?: (commentId: number) => void;
+  onPinToggled?: (commentId: number, isPinned: boolean) => void;
 }) => {
   const [replies, setReplies] = useState<CommentType[]>([]);
   const [showAddReply, setShowAddReply] = useState(false);
@@ -221,6 +241,7 @@ const Comment = ({
   const [showReplies, setShowReplies] = useState(false);
   const { toast } = useToast();
   const { user } = useUser();
+  const { article } = useArticle();
 
   // Check if the current user is the comment author
   const isOwnComment = user?.username === comment.user.username;
@@ -234,7 +255,9 @@ const Comment = ({
         lastId: replies.length > 0 ? replies[replies.length - 1].id : undefined,
       });
       if (newComments) {
-        setReplies([...replies, ...newComments]);
+        const sortComments = (list: CommentType[]) =>
+          [...list].sort((a, b) => Number(b.isPinned ?? false) - Number(a.isPinned ?? false));
+        setReplies((prev) => sortComments([...prev, ...newComments]));
       }
     } catch (error) {
       toast({
@@ -265,6 +288,12 @@ const Comment = ({
     }
   `;
 
+  const TOGGLE_PIN_COMMENT = gql`
+    mutation MyMutation($id: Int!) {
+      togglePinComment(id: $id)
+    }
+  `;
+
   const handleDeleteComment = async (event: React.MouseEvent) => {
     event.stopPropagation();
     try {
@@ -288,6 +317,33 @@ const Comment = ({
     }
   };
 
+  const togglePin = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+    try {
+      await client.mutate({
+        mutation: TOGGLE_PIN_COMMENT,
+        variables: { id: comment.id },
+      });
+      toast({
+        title: comment.isPinned ? "Comment unpinned" : "Comment pinned",
+        description: comment.isPinned
+          ? "The comment has been successfully unpinned."
+          : "The comment has been successfully pinned.",
+      });
+      // Optimistically update the pinned state
+      const nextPinned = !comment.isPinned;
+      comment.isPinned = nextPinned;
+      onPinToggled?.(comment.id, nextPinned);
+    } catch (error) {
+      console.error("Error toggling pin on comment", error);
+      toast({
+        title: "Error",
+        description: "Failed to toggle pin on comment. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="my-4 group" key={comment.id}>
       <div className="flex flex-col">
@@ -301,11 +357,15 @@ const Comment = ({
           </Avatar>
 
           <div className="flex-1 space-y-2">
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-medium">
                   {comment.user.firstName} {comment.user.lastName}
                 </span>
+                {comment.isPinned && (
+                  <Pin className="h-4 w-4 text-yellow-500" />
+                )}
                 <span className="text-xs text-muted-foreground">
                   {new Date(comment.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -326,12 +386,30 @@ const Comment = ({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  {article.author.isSelf &&
+                    (comment.isPinned ? (
+                      <DropdownMenuItem
+                        onClick={(event) => {
+                          togglePin(event);
+                        }}
+                      >
+                        <PinOff className="h-4 w-4 mr-2" />
+                        <span>Unpin</span>
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={(event) => {
+                          togglePin(event);
+                        }}
+                      >
+                        <Pin className="h-4 w-4 mr-2" />
+                        <span>Pin</span>
+                      </DropdownMenuItem>
+                    ))}
                   {isOwnComment && (
                     <>
                       <DropdownMenuItem
-                        onClick={(e) =>
-                          handleDeleteComment(e)
-                        }
+                        onClick={(e) => handleDeleteComment(e)}
                         className="text-destructive"
                       >
                         Delete
@@ -429,7 +507,9 @@ const Comment = ({
                 comment={reply}
                 key={reply.id}
                 onCommentDeleted={(deletedCommentId) => {
-                  const updatedReplies = replies.filter(r => r.id !== deletedCommentId);
+                  const updatedReplies = replies.filter(
+                    (r) => r.id !== deletedCommentId
+                  );
                   setReplies(updatedReplies);
                   // Update the parent comment's replies count
                   comment.repliesCount = updatedReplies.length;

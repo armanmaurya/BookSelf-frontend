@@ -23,7 +23,7 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 import { NewCollectionBtn } from "@/components/blocks/buttons/NewCollectionBtn";
-import { CollectionType } from "@/types/Collection";
+import { CollectionType } from "@/types/collection";
 
 export const SaveArticleButton = ({
   articleSlug,

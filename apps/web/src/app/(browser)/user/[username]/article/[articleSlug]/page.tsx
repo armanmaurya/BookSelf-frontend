@@ -52,6 +52,7 @@ const QUERY = gql`
         createdAt
         isLiked
         likesCount
+        isPinned
         repliesCount
         user {
           firstName

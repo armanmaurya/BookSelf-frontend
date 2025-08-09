@@ -5,7 +5,7 @@ import { gql } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { AddArticleToCollection } from "../element/button/AddArticleToCollection";
 import { LoadingSpinner } from "../element/loadingSpinner";
-import { CollectionType } from "@/types/Collection";
+import { CollectionType } from "@/types/collection";
 
 export const SaveArticle = ({
   articleSlug,
