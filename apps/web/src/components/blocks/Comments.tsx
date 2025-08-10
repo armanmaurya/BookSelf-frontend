@@ -9,7 +9,14 @@ import { CommentLikeButton } from "../element/button/CommentLikeButton";
 import { IoIosArrowUp } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Reply, MoreVertical, Pin, PinOff} from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Reply,
+  MoreVertical,
+  Pin,
+  PinOff,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -25,13 +32,13 @@ const QUERY = gql`
   query MyQuery($slug: String!, $number: Int!, $lastId: Int, $parentId: Int) {
     article(slug: $slug) {
       slug
-  comments(number: $number, lastId: $lastId, parentId: $parentId) {
+      comments(number: $number, lastId: $lastId, parentId: $parentId) {
         content
         id
         createdAt
         isLiked
         likesCount
-  isPinned
+        isPinned
         repliesCount
         user {
           firstName
@@ -78,14 +85,21 @@ const fetchComments = async ({
 
 // Helper to keep pinned comments at the top without changing relative order otherwise
 const sortComments = (list: CommentType[]) => {
-  return [...list].sort((a, b) => Number(b.isPinned ?? false) - Number(a.isPinned ?? false));
+  return [...list].sort(
+    (a, b) => Number(b.isPinned ?? false) - Number(a.isPinned ?? false)
+  );
 };
 
 export const Comments = () => {
   const { article } = useArticle();
-  const [comments, setComments] = useState<CommentType[]>(() => sortComments(article.comments || []));
+  const [comments, setComments] = useState<CommentType[]>(() =>
+    sortComments(article.comments || [])
+  );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [remainingCommentsCount, setRemainingCommentsCount] = useState(
+    article.commentsCount
+  );
 
   const loadMoreComments = async () => {
     try {
@@ -98,6 +112,10 @@ export const Comments = () => {
       });
       if (newComments) {
         setComments((prev) => sortComments([...prev, ...newComments]));
+        // Update remaining count after loading more
+        setRemainingCommentsCount((prev) =>
+          Math.max(0, prev - newComments.length)
+        );
       }
     } finally {
       setIsLoadingMore(false);
@@ -152,7 +170,8 @@ export const Comments = () => {
           comments={comments}
           setComments={(updater: any) =>
             setComments((prev) => {
-              const next = typeof updater === "function" ? updater(prev) : updater;
+              const next =
+                typeof updater === "function" ? updater(prev) : updater;
               return sortComments(next);
             })
           }
@@ -167,12 +186,18 @@ export const Comments = () => {
             comment={comment}
             key={comment.id}
             onCommentDeleted={(deletedCommentId) => {
-              setComments((prev) => sortComments(prev.filter((c) => c.id !== deletedCommentId)));
+              setComments((prev) =>
+                sortComments(prev.filter((c) => c.id !== deletedCommentId))
+              );
+              // Update remaining count when comment is deleted
+              setRemainingCommentsCount((prev) => Math.max(0, prev - 1));
             }}
             onPinToggled={(id, newIsPinned) => {
               setComments((prev) =>
                 sortComments(
-                  prev.map((c) => (c.id === id ? { ...c, isPinned: newIsPinned } : c))
+                  prev.map((c) =>
+                    c.id === id ? { ...c, isPinned: newIsPinned } : c
+                  )
                 )
               );
             }}
@@ -180,7 +205,7 @@ export const Comments = () => {
         ))}
       </div>
 
-      {comments.length < article.commentsCount && (
+      {comments.length < remainingCommentsCount && (
         <div className="mt-8 text-center">
           <button
             onClick={loadMoreComments}
@@ -212,10 +237,7 @@ export const Comments = () => {
                 Loading...
               </>
             ) : (
-              `Show ${Math.min(
-                10,
-                article.commentsCount - comments.length
-              )} more comments`
+              "Load more"
             )}
           </button>
         </div>
@@ -256,7 +278,9 @@ const Comment = ({
       });
       if (newComments) {
         const sortComments = (list: CommentType[]) =>
-          [...list].sort((a, b) => Number(b.isPinned ?? false) - Number(a.isPinned ?? false));
+          [...list].sort(
+            (a, b) => Number(b.isPinned ?? false) - Number(a.isPinned ?? false)
+          );
         setReplies((prev) => sortComments([...prev, ...newComments]));
       }
     } catch (error) {
@@ -357,7 +381,6 @@ const Comment = ({
           </Avatar>
 
           <div className="flex-1 space-y-2">
-
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-medium">

@@ -65,7 +65,7 @@ const ProfilePage = async ({
         return (
           <div className="space-y-6">
             {/* Quick Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
@@ -110,45 +110,9 @@ const ProfilePage = async ({
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Collections
-                    </p>
+                    <p className="text-sm text-muted-foreground">Collections</p>
                     <p className="text-2xl font-bold">
-                      {Math.floor(Math.random() * 20) + 1}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                    <svg
-                      className="h-5 w-5 text-purple-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Profile Views
-                    </p>
-                    <p className="text-2xl font-bold">
-                      {Math.floor(Math.random() * 2000) + 500}
+                      {data.user.collectionsCount}
                     </p>
                   </div>
                 </div>
@@ -166,7 +130,7 @@ const ProfilePage = async ({
               </Card>
             )}
             {/* Featured Content */}
-            <div className="space-y-6">
+            <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
               {/* Recent Articles Preview - Full Width */}
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -192,6 +156,38 @@ const ProfilePage = async ({
                         <p className="text-xs text-muted-foreground mt-1">
                           {Math.floor(Math.random() * 30) + 1} days ago •{" "}
                           {Math.floor(Math.random() * 100) + 10} views
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Recent Collections Preview - Full Width */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Recent Collections</h3>
+                  <Link
+                    href={`/user/${username}?tab=collections`}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    View all →
+                  </Link>
+                </div>
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex-shrink-0"></div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-sm line-clamp-1">
+                          Sample Collection Title {i}
+                        </h4>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {Math.floor(Math.random() * 30) + 1} days ago •{" "}
+                          {Math.floor(Math.random() * 20) + 3} items
                         </p>
                       </div>
                     </div>
@@ -290,8 +286,9 @@ const ProfilePage = async ({
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    &ldquo;This changed my approach to TypeScript completely. The
-                    advanced type patterns section was incredibly detailed.&rdquo;
+                    &ldquo;This changed my approach to TypeScript completely.
+                    The advanced type patterns section was incredibly
+                    detailed.&rdquo;
                   </p>
                   <div className="mt-3 pt-3 border-t border-muted/30">
                     <div className="flex items-center justify-between">
@@ -336,8 +333,9 @@ const ProfilePage = async ({
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    &ldquo;This is exactly what I needed! Your explanation of state
-                    management patterns saved me hours of debugging.&rdquo;
+                    &ldquo;This is exactly what I needed! Your explanation of
+                    state management patterns saved me hours of
+                    debugging.&rdquo;
                   </p>
                   <div className="mt-3 pt-3 border-t border-yellow-200/50 dark:border-yellow-800/30">
                     <div className="flex items-center justify-between">

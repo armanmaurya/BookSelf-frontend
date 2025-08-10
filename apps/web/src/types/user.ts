@@ -16,4 +16,5 @@ export type User = {
     articles: Article[];
     about?: string;
     articlesCount: number; // Updated to match the new field
+    collectionsCount: number;
 }
