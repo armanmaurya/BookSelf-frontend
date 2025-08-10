@@ -74,7 +74,7 @@ const MenuBar = ({
   const [mathEditMode, setMathEditMode] = useState(false);
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  // const [imageFile, setImageFile] = useState<File | null>(null); // File upload disabled
   
   // Effect to handle external math edit dialog
   useEffect(() => {
@@ -456,23 +456,24 @@ const MenuBar = ({
   const handleImageInsert = async () => {
     if (!editor) return;
     
-    if (imageFile) {
-      // For demo: convert file to base64 (in real app, upload to server and use the URL)
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          editor.chain().focus().setImage({ src: reader.result as string }).run();
-          setIsImageDialogOpen(false);
-          setImageFile(null);
-          setImageUrl('');
-        }
-      };
-      reader.readAsDataURL(imageFile);
-    } else if (imageUrl) {
+  // if (imageFile) {
+  //   // For demo: convert file to base64 (in real app, upload to server and use the URL)
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     if (reader.result) {
+  //       editor.chain().focus().setImage({ src: reader.result as string }).run();
+  //       setIsImageDialogOpen(false);
+  //       setImageFile(null);
+  //       setImageUrl('');
+  //     }
+  //   };
+  //   reader.readAsDataURL(imageFile);
+  // } else 
+  if (imageUrl) {
       editor.chain().focus().setImage({ src: imageUrl }).run();
       setIsImageDialogOpen(false);
       setImageUrl('');
-      setImageFile(null);
+  // setImageFile(null);
     }
   };
 
@@ -788,10 +789,11 @@ const MenuBar = ({
                   value={imageUrl}
                   onChange={(e) => {
                     setImageUrl(e.target.value);
-                    setImageFile(null);
+                    // setImageFile(null);
                   }}
                 />
               </div>
+              {/*
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">or</span>
               </div>
@@ -814,6 +816,7 @@ const MenuBar = ({
                   </p>
                 )}
               </div>
+              */}
               <div className="flex justify-end gap-2 mt-2">
                 <Button 
                   variant="outline" 
@@ -821,7 +824,7 @@ const MenuBar = ({
                   onClick={() => {
                     setIsImageDialogOpen(false);
                     setImageUrl('');
-                    setImageFile(null);
+                    // setImageFile(null);
                   }}
                 >
                   Cancel
@@ -829,7 +832,7 @@ const MenuBar = ({
                 <Button 
                   size="sm" 
                   onClick={handleImageInsert} 
-                  disabled={!imageUrl && !imageFile}
+                  disabled={!imageUrl /* && !imageFile */}
                 >
                   Insert
                 </Button>
