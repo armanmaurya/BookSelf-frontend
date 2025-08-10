@@ -11,7 +11,7 @@ import 'highlight.js/styles/github-dark.css'; // You can choose different themes
 import 'katex/dist/katex.min.css';
 import {
   useEditor,
-  EditorContent,
+  EditorContent,  
   type Editor,
 } from "@tiptap/react";
 import { Extension } from '@tiptap/core';
@@ -366,25 +366,17 @@ const Tiptap = ({
               className="prose prose-strong:text-inherit dark:prose-invert max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center"
             />
           </div>
-          <div 
-            className="h-60 w-full bg-muted/20 hover:bg-muted/40 transition-all duration-200 cursor-pointer border-t flex items-center justify-center text-muted-foreground hover:text-foreground rounded-b-md"
+            <div 
+            className="h-60 w-full cursor-pointer flex items-center justify-center text-muted-foreground hover:text-foreground rounded-b-md"
             onClick={() => {
               if (editor) {
-                // Move cursor to the end and add a new paragraph
-                editor.chain().focus().setTextSelection(editor.state.doc.content.size).insertContent('<p></p>').run();
+              // Move cursor to the end and add a new paragraph
+              editor.chain().focus().setTextSelection(editor.state.doc.content.size).insertContent('<p></p>').run();
               }
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.height = '60px';
-            }}
-          onMouseLeave={(e) => {
-              e.currentTarget.style.height = '48px';
-            }}
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-          </div>
+            >
+            &nbsp;
+            </div>
         </div>
       </div>
     </div>

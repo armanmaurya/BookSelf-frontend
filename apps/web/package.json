@@ -82,6 +82,7 @@
     "date-fns": "^4.1.0",
     "emotion": "^11.0.0",
     "framer-motion": "^11.2.12",
+    "fuse.js": "^7.1.0",
     "hamburger-react": "^2.5.1",
     "highlight.js": "^11.9.0",
     "js-cookie": "^3.0.5",

@@ -224,11 +224,31 @@ input[type="number"] {
     }
   }
 
-  .tiptap-mathematics-render {
+  .tiptap-mathematics-render[data-type="block-math"] {
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &.ProseMirror-selectednode {
-      outline: 1px solid lightskyblue;
+      outline: 1px solid #a78bfa; /* Tailwind purple-400 */
       border-radius: 8px;
       outline-offset: 4px;
+    }
+    &:hover {
+      cursor: pointer;
+      background: rgba(41, 39, 46, 0.15);
+      border-radius: 8px;
+    }
+  }
+  .tiptap-mathematics-render[data-type="inline-math"] {
+    &.ProseMirror-selectednode {
+      outline: 1px solid #a78bfa; /* Tailwind purple-400 */
+      border-radius: 8px;
+    }
+    &:hover {
+      cursor: pointer;
+      background: rgba(41, 39, 46, 0.15);
+      border-radius: 8px;
     }
   }
 }
