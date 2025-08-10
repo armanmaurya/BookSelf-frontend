@@ -202,7 +202,7 @@ const Page = async ({
             >
               <SyntaxHighlight>
                 <div
-                  className="articleBody"
+                  className="articleBody tiptap"
                   itemProp="articleBody"
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
