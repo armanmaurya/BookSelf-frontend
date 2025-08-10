@@ -51,6 +51,7 @@ import {
   FileCode,
   Search,
   Sigma,
+  Image as ImageIcon,
 } from "lucide-react";
 import { MenuBarProps } from './types';
 
@@ -69,6 +70,9 @@ const MenuBar = ({
   const [isMathDialogOpen, setIsMathDialogOpen] = useState(false);
   const [mathType, setMathType] = useState<'inline' | 'block'>('inline');
   const [mathEditMode, setMathEditMode] = useState(false);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
   
   // Effect to handle external math edit dialog
   useEffect(() => {
@@ -564,6 +568,30 @@ const MenuBar = ({
 
   const removeBlockMath = () => {
     editor.chain().deleteBlockMath().focus().run();
+  };
+
+  // Handle image insertion
+  const handleImageInsert = async () => {
+    if (!editor) return;
+    
+    if (imageFile) {
+      // For demo: convert file to base64 (in real app, upload to server and use the URL)
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          editor.chain().focus().setImage({ src: reader.result as string }).run();
+          setIsImageDialogOpen(false);
+          setImageFile(null);
+          setImageUrl('');
+        }
+      };
+      reader.readAsDataURL(imageFile);
+    } else if (imageUrl) {
+      editor.chain().focus().setImage({ src: imageUrl }).run();
+      setIsImageDialogOpen(false);
+      setImageUrl('');
+      setImageFile(null);
+    }
   };
 
   return (
@@ -1202,6 +1230,81 @@ const MenuBar = ({
             </svg>
           </Button>
         )}
+
+        {/* Image Insert Button */}
+        <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              title="Insert Image"
+            >
+              <ImageIcon className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Insert Image</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Image URL</label>
+                <Input
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  value={imageUrl}
+                  onChange={(e) => {
+                    setImageUrl(e.target.value);
+                    setImageFile(null);
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">or</span>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">Upload File</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setImageFile(e.target.files[0]);
+                      setImageUrl('');
+                    }
+                  }}
+                  className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80"
+                />
+                {imageFile && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Selected: {imageFile.name}
+                  </p>
+                )}
+              </div>
+              <div className="flex justify-end gap-2 mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    setIsImageDialogOpen(false);
+                    setImageUrl('');
+                    setImageFile(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={handleImageInsert} 
+                  disabled={!imageUrl && !imageFile}
+                >
+                  Insert
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Separator orientation="vertical" className="h-6 mx-0.5" />
 

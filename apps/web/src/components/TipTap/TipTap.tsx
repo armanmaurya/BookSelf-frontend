@@ -27,7 +27,7 @@ import Highlight from "@tiptap/extension-highlight";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import Underline from "@tiptap/extension-underline";
-import { UndoRedo } from "@tiptap/extensions";
+import { UndoRedo, Dropcursor } from "@tiptap/extensions";
 import Blockquote from "@tiptap/extension-blockquote";
 import { OrderedList, BulletList, ListItem } from "@tiptap/extension-list";
 import HardBreak from "@tiptap/extension-hard-break";
@@ -43,6 +43,7 @@ import { Selection } from '@tiptap/extensions';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { all, createLowlight } from 'lowlight';
 import { Mathematics } from '@tiptap/extension-mathematics';
+import Image from '@tiptap/extension-image';
 
 const Tiptap = ({
   initialContent = null,
@@ -243,12 +244,17 @@ const Tiptap = ({
               node,
               pos,
             });
+            },
           },
-        },
-      }),
-    ],
-    content: initialContent || "<p></p>",
-    onUpdate: ({ editor }) => {
+          }),
+          Dropcursor.configure({
+          color: 'blue',
+          width: 2,
+          }),
+          Image
+        ],
+        content: initialContent || "<p></p>",
+        onUpdate: ({ editor }) => {
       const content = editor.getHTML();
       // Use a simple debounce for content changes
       if (onContentChange) {
@@ -357,8 +363,27 @@ const Tiptap = ({
           <div className="px-6 pb-6">
             <EditorContent
               editor={editor}
-              className="prose prose-strong:text-inherit dark:prose-invert min-h-[200px] max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center"
+              className="prose prose-strong:text-inherit dark:prose-invert max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center"
             />
+          </div>
+          <div 
+            className="h-60 w-full bg-muted/20 hover:bg-muted/40 transition-all duration-200 cursor-pointer border-t flex items-center justify-center text-muted-foreground hover:text-foreground rounded-b-md"
+            onClick={() => {
+              if (editor) {
+                // Move cursor to the end and add a new paragraph
+                editor.chain().focus().setTextSelection(editor.state.doc.content.size).insertContent('<p></p>').run();
+              }
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.height = '60px';
+            }}
+          onMouseLeave={(e) => {
+              e.currentTarget.style.height = '48px';
+            }}
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
           </div>
         </div>
       </div>

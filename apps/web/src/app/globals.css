@@ -6,9 +6,7 @@ html {
   scroll-behavior: smooth;
 }
 
-
-Custom Scrollbar
-::-webkit-scrollbar {
+Custom Scrollbar ::-webkit-scrollbar {
   width: 8px;
   display: none;
 }
@@ -24,7 +22,8 @@ span:empty::before {
   cursor: pointer;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -41,10 +40,6 @@ html, body {
 .dark .tiptap p.is-empty::before {
   color: #5a5e67;
 }
-
-
-
-
 
 .hover-div:hover > .color-change-div {
   opacity: 1;
@@ -110,7 +105,7 @@ html, body {
 }
 input {
   outline: 0px solid transparent;
-} 
+}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
@@ -121,7 +116,6 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield; /* Hides the spinners in Firefox */
 }
-
 
 .menu-animation {
   position: absolute;
@@ -143,11 +137,14 @@ input[type="number"] {
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
-
-
 
 @layer base {
   :root {
@@ -205,13 +202,33 @@ input[type="number"] {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ProseMirror Styles */
+
+/* TipTap Image Styles */
+.tiptap {
+  img {
+    border-radius: 8px;
+    &.ProseMirror-selectednode {
+      outline: 1px solid lightskyblue;
+      border-radius: 8px;
+      outline-offset: 4px;
+    }
+  }
+
+  .tiptap-mathematics-render {
+    &.ProseMirror-selectednode {
+      outline: 1px solid lightskyblue;
+      border-radius: 8px;
+      outline-offset: 4px;
+    }
   }
 }
