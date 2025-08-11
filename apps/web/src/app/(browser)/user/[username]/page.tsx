@@ -195,170 +195,6 @@ const ProfilePage = async ({
                 </div>
               </Card>
             </div>
-            {/* Comments Section - Full Width Horizontal Scroll */}
-            <Card className="p-6 w-full">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Comments</h3>
-                <div className="flex gap-2">
-                  <button className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-600 rounded-md font-medium">
-                    New
-                  </button>
-                  <button className="text-xs px-2 py-1 text-muted-foreground hover:text-foreground rounded-md">
-                    Top
-                  </button>
-                </div>
-              </div>
-
-              <div
-                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
-                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-              >
-                {/* New Comment 1 */}
-                <div className="flex flex-col p-4 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors w-[280px] h-[180px] flex-shrink-0">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Avatar className="h-10 w-10 flex-shrink-0">
-                      <AvatarImage
-                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=sarah`}
-                      />
-                      <AvatarFallback className="text-xs">SA</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium truncate">
-                          Sarah Chen
-                        </span>
-                        <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-600 px-1.5 py-0.5 rounded flex-shrink-0">
-                          New
-                        </span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        2 hours ago
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    &ldquo;Great insights on React performance optimization! The
-                    useMemo examples really helped me understand when to use
-                    it.&rdquo;
-                  </p>
-                  <div className="mt-3 pt-3 border-t border-muted/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground truncate">
-                        On: &ldquo;React Performance Tips&rdquo;
-                      </span>
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <svg
-                          className="h-3 w-3 text-red-500"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                        <span className="text-xs text-muted-foreground">
-                          12
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* New Comment 2 */}
-                <div className="flex flex-col p-4 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors w-[280px] h-[180px] flex-shrink-0">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Avatar className="h-10 w-10 flex-shrink-0">
-                      <AvatarImage
-                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=mike`}
-                      />
-                      <AvatarFallback className="text-xs">MJ</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium truncate">
-                          Mike Johnson
-                        </span>
-                        <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-600 px-1.5 py-0.5 rounded flex-shrink-0">
-                          New
-                        </span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        5 hours ago
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    &ldquo;This changed my approach to TypeScript completely.
-                    The advanced type patterns section was incredibly
-                    detailed.&rdquo;
-                  </p>
-                  <div className="mt-3 pt-3 border-t border-muted/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground truncate">
-                        On: &ldquo;Advanced TypeScript&rdquo;
-                      </span>
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <svg
-                          className="h-3 w-3 text-red-500"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                        <span className="text-xs text-muted-foreground">8</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Top Comment */}
-                <div className="flex flex-col p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800/30 w-[280px] h-[180px] flex-shrink-0">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Avatar className="h-10 w-10 flex-shrink-0">
-                      <AvatarImage
-                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=alex`}
-                      />
-                      <AvatarFallback className="text-xs">AL</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium truncate">
-                          Alex Rivera
-                        </span>
-                        <span className="text-xs bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded flex-shrink-0">
-                          ⭐ Top
-                        </span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        1 week ago
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-4 flex-1">
-                    &ldquo;This is exactly what I needed! Your explanation of
-                    state management patterns saved me hours of
-                    debugging.&rdquo;
-                  </p>
-                  <div className="mt-3 pt-3 border-t border-yellow-200/50 dark:border-yellow-800/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground truncate">
-                        On: &ldquo;State Management Guide&rdquo;
-                      </span>
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <svg
-                          className="h-3 w-3 text-red-500"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                        <span className="text-xs text-muted-foreground">
-                          24
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>{" "}
             {/* Empty State for new users */}
             {(!data.user.about || data.user.about.trim().length === 0) && (
               <Card className="p-8 text-center">
@@ -472,7 +308,7 @@ const ProfilePage = async ({
 
                 {/* Action Button */}
                 {!data.user.isSelf ? (
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 mt-4">
                     <FollowButton
                       initialIsFollowing={data.user.isFollowing}
                       username={data.user.username}
@@ -499,15 +335,6 @@ const ProfilePage = async ({
                   </div>
                 )}
               </div>
-
-              {/* Bio/About Section in Header */}
-              {data.user.about && data.user.about.trim().length > 0 && (
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed max-w-2xl">
-                    {data.user.about}
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         </div>
