@@ -25,7 +25,7 @@ export const RelatedArticles = () => {
       className="hidden lg:block w-72 flex-shrink-0"
       aria-labelledby="related-sidebar"
     >
-      <div className="sticky top-8 space-y-6">
+    <div className="space-y-6">
         {/* Related Articles */}
         <div>
           <h2
@@ -34,7 +34,7 @@ export const RelatedArticles = () => {
           >
             Related Articles
           </h2>
-          <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2">
+          <div className="flex flex-col gap-3 pr-2">
             {(!article.relatedArticles || article.relatedArticles.length === 0) && (
               <div className="text-muted-foreground text-sm">
                 No related articles found.
