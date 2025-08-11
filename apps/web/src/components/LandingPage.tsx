@@ -805,7 +805,7 @@ export const LandingPage = () => {
               variants={fadeUp}
               className="text-xl text-muted-foreground max-w-3xl mx-auto"
             >
-              Whether you're a seasoned writer or just starting out, InfoBite
+              Whether you&apos;re a seasoned writer or just starting out, InfoBite
               provides everything you need to create, publish, and grow your
               audience.
             </motion.p>
