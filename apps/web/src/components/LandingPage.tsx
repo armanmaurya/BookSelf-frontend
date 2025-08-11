@@ -175,7 +175,7 @@ export const LandingPage = () => {
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   return (
-    <div className="relative">
+    <div className="relative overflow-x-hidden">
       {/* Scroll Progress Indicator */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50 origin-left"
@@ -257,7 +257,7 @@ export const LandingPage = () => {
             >
               <FaBookOpen className="h-4 w-4" />
             </motion.div>
-            <span>Welcome to BookSelf</span>
+            <span>Welcome to InfoBite</span>
           </motion.div>
 
           <motion.h1
@@ -403,7 +403,7 @@ export const LandingPage = () => {
               variants={slideInScale}
               className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
             >
-              Why Choose BookSelf?
+              Why Choose InfoBite?
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -755,7 +755,7 @@ export const LandingPage = () => {
                 <h3 className="text-2xl font-bold">Start Writing Today</h3>
                 <p className="text-muted-foreground">
                   Join thousands of writers who have already discovered the joy
-                  of writing on BookSelf
+                  of writing on InfoBite
                 </p>
 
                 <motion.div
@@ -805,7 +805,7 @@ export const LandingPage = () => {
               variants={fadeUp}
               className="text-xl text-muted-foreground max-w-3xl mx-auto"
             >
-              Whether you're a seasoned writer or just starting out, BookSelf
+              Whether you're a seasoned writer or just starting out, InfoBite
               provides everything you need to create, publish, and grow your
               audience.
             </motion.p>
