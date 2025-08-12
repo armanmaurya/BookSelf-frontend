@@ -315,8 +315,8 @@ const ProfilePage = async ({
                     />
                   </div>
                 ) : (
-                  <div className="flex-shrink-0">
-                    <Button variant="outline" size="sm" className="gap-2">
+                  <div className="flex-shrink-0 mt-4">
+                    <Link href={`/settings/profile`} className="gap-2 flex outline p-1 outline-1 rounded-lg items-center">
                       <svg
                         className="h-4 w-4"
                         fill="none"
@@ -331,7 +331,7 @@ const ProfilePage = async ({
                         />
                       </svg>
                       Edit Profile
-                    </Button>
+                    </Link>
                   </div>
                 )}
               </div>

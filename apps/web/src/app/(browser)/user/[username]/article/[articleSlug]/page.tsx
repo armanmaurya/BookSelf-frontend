@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import Image from "next/image";
 import { TableOfContents } from "@/components/blocks/TableOfContents";
 import { SyntaxHighlight } from "@/components/SyntaxHighlight";
 // Import highlight.js CSS for syntax highlighting in article content
@@ -36,6 +37,7 @@ const QUERY = gql`
       title
       views
       savesCount
+      thumbnail
       author {
         firstName
         lastName
@@ -125,6 +127,7 @@ const Page = async ({
               url: `https://infobite.online/user/${username}/article/${articleSlug}`,
               datePublished: article.createdAt,
               dateModified: article.createdAt,
+              ...(article.thumbnail && { image: article.thumbnail }),
               author: {
                 "@type": "Person",
                 name: `${article.author.firstName} ${article.author.lastName}`,
@@ -185,6 +188,22 @@ const Page = async ({
               {/* Article Meta Information */}
               <ArticleMetaActions />
             </header>
+
+            {/* Article Thumbnail */}
+            {article.thumbnail && (
+              <div className="my-6">
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-muted">
+                  <Image
+                    src={article.thumbnail}
+                    alt={`Thumbnail for ${article.title}`}
+                    fill
+                    className="object-cover transition-transform"
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Mobile Table of Contents */}
             <div className="xl:hidden mb-6">

@@ -4,7 +4,7 @@ import { DraftArticleCard } from "@/components/element/cards/DraftArticleCard";
 import client from "@/lib/apolloClient";
 import { GraphQLData } from "@/types/graphql";
 import { gql } from "@apollo/client";
-import { Article, DraftArticle } from "@bookself/types";
+import { Article, DraftArticle } from "@/types/article";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -146,7 +146,9 @@ export const UserArticles = ({
                 </div>
                 <Select
                   value={sortBy}
-                  onValueChange={(value) => setSortBy(value as "LATEST" | "POPULAR")}
+                  onValueChange={(value) =>
+                    setSortBy(value as "LATEST" | "POPULAR")
+                  }
                 >
                   <SelectTrigger className="w-[140px] h-9 border-2 hover:border-primary/50 transition-colors">
                     <div className="flex items-center gap-2">
@@ -174,7 +176,8 @@ export const UserArticles = ({
                   </SelectContent>
                 </Select>
                 <Badge variant="outline" className="hidden sm:inline-flex">
-                  {articles.length} {articles.length === 1 ? 'article' : 'articles'}
+                  {articles.length}{" "}
+                  {articles.length === 1 ? "article" : "articles"}
                 </Badge>
               </div>
 
@@ -204,14 +207,14 @@ export const UserArticles = ({
               className="w-full max-w-md"
             >
               <TabsList className="grid w-full grid-cols-2 h-11 bg-muted/50">
-                <TabsTrigger 
-                  value="published" 
+                <TabsTrigger
+                  value="published"
                   className="text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
                   📚 Published
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="draft" 
+                <TabsTrigger
+                  value="draft"
                   className="text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
                   ✏️ Drafts
@@ -227,7 +230,10 @@ export const UserArticles = ({
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300">
+              <Card
+                key={i}
+                className="group hover:shadow-lg transition-all duration-300"
+              >
                 <CardContent className="p-0">
                   <div className="aspect-[16/9] bg-gradient-to-br from-muted via-muted/70 to-muted animate-pulse rounded-t-lg" />
                   <div className="p-6 space-y-3">
@@ -251,9 +257,7 @@ export const UserArticles = ({
               <h3 className="text-lg font-semibold mb-2 text-destructive">
                 Something went wrong
               </h3>
-              <p className="text-muted-foreground max-w-md">
-                {error}
-              </p>
+              <p className="text-muted-foreground max-w-md">{error}</p>
             </CardContent>
           </Card>
         ) : articles.length > 0 ? (
@@ -262,7 +266,10 @@ export const UserArticles = ({
               if (filter === "published") {
                 if ((article as Article).slug) {
                   return (
-                    <div key={(article as Article).slug} className="transform hover:-translate-y-1 transition-all duration-300">
+                    <div
+                      key={(article as Article).slug}
+                      className="transform hover:-translate-y-1 transition-all duration-300"
+                    >
                       <ArticleCard article={article as Article} />
                     </div>
                   );
@@ -272,7 +279,10 @@ export const UserArticles = ({
               const draft = article as DraftArticle;
               if (draft.article?.slug) {
                 return (
-                  <div key={draft.article.slug} className="transform hover:-translate-y-1 transition-all duration-300">
+                  <div
+                    key={draft.article.slug}
+                    className="transform hover:-translate-y-1 transition-all duration-300"
+                  >
                     <DraftArticleCard
                       draftArticle={draft}
                       href={`/user/${username}/article/${draft.article.slug}/edit`}
@@ -293,20 +303,18 @@ export const UserArticles = ({
                 )}
               </div>
               <h3 className="text-lg font-semibold mb-2">
-                {filter === "draft" 
-                  ? "No drafts yet" 
-                  : isSelf 
-                    ? "No published articles yet" 
-                    : "No articles published yet"
-                }
+                {filter === "draft"
+                  ? "No drafts yet"
+                  : isSelf
+                  ? "No published articles yet"
+                  : "No articles published yet"}
               </h3>
               <p className="text-muted-foreground max-w-md mb-6">
-                {filter === "draft" 
+                {filter === "draft"
                   ? "Start writing and save your ideas as drafts. They'll appear here when you're ready to work on them."
-                  : isSelf 
-                    ? "Share your knowledge and stories with the world. Create your first article to get started."
-                    : "This user hasn't published any articles yet. Check back later!"
-                }
+                  : isSelf
+                  ? "Share your knowledge and stories with the world. Create your first article to get started."
+                  : "This user hasn't published any articles yet. Check back later!"}
               </p>
               {isSelf && filter === "published" && (
                 <NewArticleButton>

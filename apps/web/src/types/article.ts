@@ -19,4 +19,14 @@ export interface Article {
   status: string;
   savesCount: number;
   relatedArticles: Article[];
+  thumbnail: string;
 }
+
+
+export type DraftArticle = {
+  image: string;
+  title: string;
+  updatedAt: string;
+  article: Article;
+};
+

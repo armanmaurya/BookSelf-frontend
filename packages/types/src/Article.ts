@@ -18,4 +18,5 @@ export interface Article {
   image_url: string;
   status: string;
   savesCount: number;
+  thumbnail: string | null;
 }

@@ -33,4 +33,6 @@ export interface TipTapProps {
   initialTitle: string;
   onTitleChange: (title: string) => void;
   onContentChange: (content: string) => void;
+  thumbnail?: string | null;
+  onThumbnailRemove?: () => void;
 }

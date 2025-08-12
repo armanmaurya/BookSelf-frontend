@@ -4,7 +4,7 @@ import { API_ENDPOINT } from "../utils";
 import client from "@/lib/apolloClient";
 import { gql } from "@apollo/client";
 import { ArticleCard } from "@/components/element/cards/ArticleCard";
-import { Article } from "@bookself/types";
+import { Article } from "@/types/article";
 import { cookies } from "next/headers";
 import { LandingPage } from "@/components/LandingPage";
 
@@ -18,6 +18,7 @@ const GET_ARTICLES = gql`
       likesCount
       status
       isSelf
+      thumbnail
       author {
         username
         firstName

@@ -5,6 +5,10 @@ import KeyboardShortcutsHelper from './KeyboardShortcutsHelper';
 import MenuBar from './MenuBar';
 import TipTapBubbleMenu from './TipTapBubbleMenu';
 import { TipTapProps } from './types';
+import Image from "next/image";
+import { X, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 // Import highlight.js CSS for syntax highlighting styles
 import 'highlight.js/styles/github-dark.css'; // You can choose different themes
 // Import KaTeX CSS for math rendering
@@ -35,7 +39,6 @@ import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import TextAlign from "@tiptap/extension-text-align";
 import Typography from "@tiptap/extension-typography";
 import UniqueID from "@tiptap/extension-unique-id";
-import { Button } from "@/components/ui/button";
 import { FontFamily, TextStyle, Color, FontSize } from "@tiptap/extension-text-style";
 import { Placeholder } from "@tiptap/extensions";
 import Link from '@tiptap/extension-link';
@@ -43,13 +46,15 @@ import { Selection } from '@tiptap/extensions';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { all, createLowlight } from 'lowlight';
 import { Mathematics } from '@tiptap/extension-mathematics';
-import Image from '@tiptap/extension-image';
+import ImageExtension from '@tiptap/extension-image';
 
 const Tiptap = ({
   initialContent = null,
   initialTitle = "",
   onTitleChange,
   onContentChange,
+  thumbnail,
+  onThumbnailRemove,
 }: TipTapProps) => {
   const [title, setTitle] = useState(initialTitle);
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
@@ -65,6 +70,8 @@ const Tiptap = ({
     type: 'inline',
     currentLatex: '',
   });
+
+  console.log("thumbnail:", thumbnail);
 
   // create a lowlight instance with all languages loaded
   const lowlight = createLowlight(all);
@@ -251,7 +258,7 @@ const Tiptap = ({
           color: 'blue',
           width: 2,
           }),
-          Image
+          ImageExtension
         ],
         content: initialContent || "<p></p>",
         onUpdate: ({ editor }) => {
@@ -296,7 +303,7 @@ const Tiptap = ({
     <div className="w-full">
       {/* Main Toolbar - Conditionally visible */}
       {isToolbarVisible && (
-        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="sticky top-16 z-10 border-border/50">
           <MenuBar 
             editor={editor} 
             onHideToolbar={() => setIsToolbarVisible(false)}
@@ -308,9 +315,9 @@ const Tiptap = ({
       )}
 
       {/* Floating Buttons - Always visible */}
-      <div className="fixed bottom-4 left-4 z-20 flex flex-col gap-2">
+      <div className="fixed bottom-6 left-6 z-20 flex flex-col gap-3">
         {/* Keyboard Shortcuts Helper - Always floating */}
-        <div className="h-10 w-10 rounded-full shadow-lg bg-background border-2 flex items-center justify-center">
+        <div className="h-12 w-12 rounded-full shadow-lg bg-background/95 backdrop-blur-sm border-2 border-border/50 flex items-center justify-center hover:bg-muted/50 transition-all duration-200">
           <KeyboardShortcutsHelper />
         </div>
 
@@ -320,10 +327,10 @@ const Tiptap = ({
             variant="outline"
             size="sm"
             onClick={() => setIsToolbarVisible(true)}
-            className="h-10 w-10 p-0 rounded-full shadow-lg bg-background border-2"
+            className="h-12 w-12 p-0 rounded-full shadow-lg bg-background/95 backdrop-blur-sm border-2 border-border/50 hover:bg-muted/50 transition-all duration-200"
             title="Show Toolbar (Ctrl+Shift+T)"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </Button>
@@ -338,7 +345,41 @@ const Tiptap = ({
       )}
 
         <div className="max-w-4xl mx-auto">
-        <div className="border border-input rounded-md">
+        <div className="border border-input rounded-lg shadow-sm bg-card">
+          {/* Thumbnail Preview Section */}
+          {thumbnail && (
+            <div className="p-6 pb-4 ">
+              <div className="space-y-3">
+                <div className="relative group w-full">
+                  <Card className="overflow-hidden w-full">
+                    <CardContent className="p-0">
+                      <div className="relative aspect-video w-full">
+                        <Image
+                          src={thumbnail}
+                          alt="Article Thumbnail"
+                          fill
+                          className="object-cover transition-transform duration-200 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                        {onThumbnailRemove && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={onThumbnailRemove}
+                            className="absolute top-2 right-2 h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg hover:shadow-xl"
+                            title="Remove thumbnail"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Document Title Input - Notion Style */}
           <div className="p-6 pb-2">
             <textarea
@@ -363,11 +404,17 @@ const Tiptap = ({
           <div className="px-6 pb-6">
             <EditorContent
               editor={editor}
-              className="prose prose-strong:text-inherit dark:prose-invert max-w-none [&_pre]:bg-muted [&_pre]:border [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-1 [&_.math-inline]:rounded [&_.math-display]:bg-muted/30 [&_.math-display]:p-3 [&_.math-display]:rounded-md [&_.math-display]:my-4 [&_.math-display]:text-center"
+              className="prose prose-strong:text-inherit dark:prose-invert max-w-none 
+                [&_pre]:bg-muted/70 [&_pre]:border [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto 
+                [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono 
+                [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-2 [&_.math-inline]:py-1 [&_.math-inline]:rounded-md [&_.math-inline]:text-sm
+                [&_.math-display]:bg-muted/30 [&_.math-display]:p-4 [&_.math-display]:rounded-lg [&_.math-display]:my-6 [&_.math-display]:text-center
+                [&_blockquote]:border-l-4 [&_blockquote]:border-primary/30 [&_blockquote]:bg-muted/30 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:rounded-r-md
+                [&_img]:rounded-lg [&_img]:shadow-sm"
             />
           </div>
             <div 
-            className="h-60 w-full cursor-pointer flex items-center justify-center text-muted-foreground hover:text-foreground rounded-b-md"
+            className="h-60 w-full cursor-pointer flex items-center justify-center text-muted-foreground/50 rounded-b-lg transition-all duration-200"
             onClick={() => {
               if (editor) {
               // Move cursor to the end and add a new paragraph
@@ -375,7 +422,6 @@ const Tiptap = ({
               }
             }}
             >
-            &nbsp;
             </div>
         </div>
       </div>
