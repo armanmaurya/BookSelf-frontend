@@ -1,7 +1,7 @@
 import { ArticleCard } from "@/components/element/cards/ArticleCard";
 import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
-import { Article } from "@bookself/types";
+import { Article } from "@/types/article";
 
 const Page = async ({ params: { query } }: { params: { query: string } }) => {
   // Decode and sanitize the query parameter
