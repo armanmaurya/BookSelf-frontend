@@ -57,9 +57,6 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL("https://infobite.online"),
-  alternates: {
-    canonical: "https://infobite.online",
-  },
   openGraph: {
     title: "Infobite - Discover, Learn, and Share Knowledge",
     description:
@@ -118,7 +115,8 @@ export default async function RootLayout({
     <html lang="en-IN" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="canonical" href="https://infobite.online" />
+        {/* Remove duplicate canonical link - let pages set their own */}
+        {/* <link rel="canonical" href="https://infobite.online" /> */}
         <meta name="theme-color" content="#000000" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

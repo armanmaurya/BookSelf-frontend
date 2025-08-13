@@ -7,6 +7,13 @@ import { ArticleCard } from "@/components/element/cards/ArticleCard";
 import { Article } from "@/types/article";
 import { cookies } from "next/headers";
 import { LandingPage } from "@/components/LandingPage";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://infobite.online",
+  },
+};
 
 const GET_ARTICLES = gql`
   query MyQuery {
