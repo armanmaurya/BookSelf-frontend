@@ -68,6 +68,10 @@ const QUERY = gql`
         id
         slug
         title
+        thumbnail
+        likesCount
+        savesCount
+        totalCommentsCount
         author {
           username
           firstName
