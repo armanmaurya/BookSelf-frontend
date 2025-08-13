@@ -27,6 +27,7 @@ import {
   organizationStructuredData,
   websiteStructuredData,
 } from "@/lib/structured-data";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -137,6 +138,11 @@ export default async function RootLayout({
       <body
         className={`${inter.className} dark:bg-[#121212] dark:text-slate-200`}
       >
+        {/* Google Analytics */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
+        
         {/* <ApolloProviderWrapper> */}
         <ThemeProvider attribute="class" enableSystem>
           <NextTopLoader />
