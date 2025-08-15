@@ -47,6 +47,7 @@ export const UserArticles = ({
           createdAt
           status
           isSelf
+          thumbnail
           author {
             isSelf
             username
@@ -68,6 +69,7 @@ export const UserArticles = ({
           articles {
             title
             updatedAt
+            imageUrl
             article {
               slug
               author {

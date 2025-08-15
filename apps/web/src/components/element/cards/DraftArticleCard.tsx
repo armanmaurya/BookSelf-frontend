@@ -1,6 +1,7 @@
-import { DraftArticle } from "@bookself/types";
+import { DraftArticle } from "@/types/article";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import Link from "next/link";
+import Image from "next/image";
 import { FiEdit2, FiClock, FiTrash2, FiShare2, FiSettings } from "react-icons/fi";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,28 +39,43 @@ export const DraftArticleCard = ({
     <Card className="group p-0 transition-all hover:shadow-lg hover:shadow-orange-500/10 overflow-hidden relative border-0 shadow-sm bg-gradient-to-br from-orange-50/50 via-background to-orange-50/20 dark:from-orange-950/10 dark:to-orange-950/5">
       {/* Thumbnail Image - 16:9 aspect ratio */}
       <div className="relative w-full aspect-[16/9] bg-gradient-to-br from-orange-100/50 via-orange-50/30 to-orange-100/20 dark:from-orange-950/20 dark:to-orange-950/10 overflow-hidden">
-        {/* Dummy thumbnail - will be replaced with actual image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-100 via-orange-50 to-yellow-50 dark:from-orange-900 dark:via-orange-800 dark:to-yellow-900 flex items-center justify-center">
-          <div className="text-center space-y-3">
-            <div className="relative">
-              <div className="w-16 h-16 bg-orange-200/50 dark:bg-orange-800/50 rounded-2xl flex items-center justify-center mx-auto">
-                <FiEdit2 className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+        {draftArticle.imageUrl ? (
+          // Actual thumbnail image
+          <>
+            <Image
+              src={draftArticle.imageUrl}
+              alt={`Thumbnail for ${draftArticle.title}`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+            {/* Subtle overlay for better text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+          </>
+        ) : (
+          // Fallback placeholder when no image
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-100 via-orange-50 to-yellow-50 dark:from-orange-900 dark:via-orange-800 dark:to-yellow-900 flex items-center justify-center">
+            <div className="text-center space-y-3">
+              <div className="relative">
+                <div className="w-16 h-16 bg-orange-200/50 dark:bg-orange-800/50 rounded-2xl flex items-center justify-center mx-auto">
+                  <FiEdit2 className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-300/60 dark:bg-orange-700/60 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-300/60 dark:bg-orange-700/60 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+              <div className="space-y-1">
+                <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">Draft Preview</p>
+                <div className="flex items-center justify-center gap-1">
+                  <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse" />
+                  <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+                  <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                </div>
               </div>
             </div>
-            <div className="space-y-1">
-              <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">Draft Preview</p>
-              <div className="flex items-center justify-center gap-1">
-                <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse" />
-                <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-              </div>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           </div>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+        )}
         
         {/* Draft Badge */}
         <Badge variant="secondary" className="absolute top-3 left-3 z-10 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-300">

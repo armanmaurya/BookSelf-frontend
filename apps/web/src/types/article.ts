@@ -28,5 +28,6 @@ export type DraftArticle = {
   title: string;
   updatedAt: string;
   article: Article;
+  imageUrl: string;
 };
 
