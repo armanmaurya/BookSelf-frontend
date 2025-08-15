@@ -46,7 +46,7 @@ import { Selection } from '@tiptap/extensions';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { all, createLowlight } from 'lowlight';
 import { Mathematics } from '@tiptap/extension-mathematics';
-import ImageExtension from '@tiptap/extension-image';
+import ResizableImage from './extensions/ResizableImage';
 
 const Tiptap = ({
   initialContent = null,
@@ -258,7 +258,7 @@ const Tiptap = ({
           color: 'blue',
           width: 2,
           }),
-          ImageExtension
+          ResizableImage
         ],
         content: initialContent || "<p></p>",
         onUpdate: ({ editor }) => {

@@ -22,6 +22,9 @@ import {
   Link as LinkIcon,
   Edit as EditIcon,
   Trash2 as DeleteIcon,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
 } from "lucide-react";
 
 interface TipTapBubbleMenuProps {
@@ -36,6 +39,7 @@ const TipTapBubbleMenu = ({
   const [isImageEditOpen, setIsImageEditOpen] = useState(false);
   const [editImageUrl, setEditImageUrl] = useState('');
   const [isImageSelected, setIsImageSelected] = useState(false);
+  const currentAlign = isImageSelected ? (editor.getAttributes('image').align || null) : null;
   
   // Track when image is selected using useEffect
   useEffect(() => {
@@ -195,6 +199,37 @@ const TipTapBubbleMenu = ({
         {isImageSelected ? (
           // Image editing menu - only show edit and delete buttons
           <>
+            {/* Image Alignment Controls */}
+            <div className="flex items-center gap-1 mr-1">
+              <Button
+                variant={currentAlign === 'left' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => editor.chain().focus().updateAttributes('image', { align: 'left' }).run()}
+                className="h-8 w-8 p-0"
+                title="Align Left"
+              >
+                <AlignLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={currentAlign === 'center' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => editor.chain().focus().updateAttributes('image', { align: 'center' }).run()}
+                className="h-8 w-8 p-0"
+                title="Align Center"
+              >
+                <AlignCenter className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={currentAlign === 'right' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => editor.chain().focus().updateAttributes('image', { align: 'right' }).run()}
+                className="h-8 w-8 p-0"
+                title="Align Right"
+              >
+                <AlignRight className="h-4 w-4" />
+              </Button>
+            </div>
+
             <Dialog open={isImageEditOpen} onOpenChange={setIsImageEditOpen}>
               <DialogTrigger asChild>
                 <Button
