@@ -49,6 +49,10 @@ function ResizableImageView({ node, updateAttributes, selected }: NodeViewProps)
   const onHandleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // If currently full width, exit full width mode when user starts resizing
+    if (node?.attrs?.fullWidth) {
+      updateAttributes({ fullWidth: false });
+    }
     setIsResizing(true);
     startXRef.current = e.clientX;
     startWidthRef.current = node?.attrs?.width ?? (wrapperRef.current?.getBoundingClientRect().width ?? 0);
@@ -56,12 +60,20 @@ function ResizableImageView({ node, updateAttributes, selected }: NodeViewProps)
 
   const width = node?.attrs?.width as number | null;
   const align = (node?.attrs?.align as 'left' | 'center' | 'right' | null) ?? null;
+  const fullWidth = !!node?.attrs?.fullWidth;
 
   // Compute wrapper style based on alignment
   const wrapperStyle: React.CSSProperties = {
-    width: width ? `${width}px` : undefined,
+    width: fullWidth ? '100%' : width ? `${width}px` : undefined,
   };
-  if (align === 'center') {
+  if (fullWidth) {
+    wrapperStyle.display = 'block';
+    wrapperStyle.marginLeft = 'auto';
+    wrapperStyle.marginRight = 'auto';
+    wrapperStyle.clear = 'both';
+    // Remove floats if any
+    (wrapperStyle as any).float = 'none';
+  } else if (align === 'center') {
     wrapperStyle.display = 'block';
     wrapperStyle.marginLeft = 'auto';
     wrapperStyle.marginRight = 'auto';
@@ -127,6 +139,17 @@ export const ResizableImage = BaseImage.extend({
           return { 'data-width': attributes.width } as Record<string, string>;
         },
       },
+      fullWidth: {
+        default: false,
+        parseHTML: (element: HTMLElement) => {
+          return element.getAttribute('data-full-width') === 'true';
+        },
+        // Keep only data attribute here; styles are built in align.renderHTML
+        renderHTML: (attributes: Record<string, any>) => {
+          if (!attributes.fullWidth) return {};
+          return { 'data-full-width': 'true' } as Record<string, string>;
+        },
+      },
       align: {
         default: null,
         parseHTML: (element: HTMLElement) => {
@@ -135,8 +158,10 @@ export const ResizableImage = BaseImage.extend({
         renderHTML: (attributes: Record<string, any>) => {
           const rules: Record<string, string> = {};
           const styles: string[] = [];
-          // Include width from attributes if present
-          if (attributes.width) {
+          // Full width takes priority
+          if (attributes.fullWidth) {
+            styles.push('width: 100%; height: auto; display: block; clear: both;');
+          } else if (attributes.width) {
             const width = typeof attributes.width === 'number' ? `${attributes.width}px` : String(attributes.width);
             styles.push(`width: ${width}; height: auto;`);
           }
@@ -153,6 +178,9 @@ export const ResizableImage = BaseImage.extend({
           }
           if (attributes.align) {
             (rules as any)['data-align'] = attributes.align;
+          }
+          if (attributes.fullWidth) {
+            (rules as any)['data-full-width'] = 'true';
           }
           return rules;
         },

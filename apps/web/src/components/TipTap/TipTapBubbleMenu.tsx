@@ -25,6 +25,7 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  Maximize2,
 } from "lucide-react";
 
 interface TipTapBubbleMenuProps {
@@ -40,6 +41,7 @@ const TipTapBubbleMenu = ({
   const [editImageUrl, setEditImageUrl] = useState('');
   const [isImageSelected, setIsImageSelected] = useState(false);
   const currentAlign = isImageSelected ? (editor.getAttributes('image').align || null) : null;
+  const isFullWidth = isImageSelected ? !!editor.getAttributes('image').fullWidth : false;
   
   // Track when image is selected using useEffect
   useEffect(() => {
@@ -201,6 +203,17 @@ const TipTapBubbleMenu = ({
           <>
             {/* Image Alignment Controls */}
             <div className="flex items-center gap-1 mr-1">
+              {/* Full width toggle */}
+              <Button
+                variant={isFullWidth ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => editor.chain().focus().updateAttributes('image', { fullWidth: !isFullWidth }).run()}
+                className="h-8 w-8 p-0"
+                title={isFullWidth ? 'Unset Full Width' : 'Set Full Width'}
+              >
+                <Maximize2 className="h-4 w-4" />
+              </Button>
+
               <Button
                 variant={currentAlign === 'left' ? 'default' : 'ghost'}
                 size="sm"
