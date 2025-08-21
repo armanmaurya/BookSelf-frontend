@@ -22,6 +22,7 @@ export interface MenuBarProps {
   };
   onMathEdit?: (newLatex: string) => void;
   onCloseMathEditDialog?: () => void;
+  initialSlug: string;
 }
 
 export interface TipTapBubbleMenuProps {
@@ -35,4 +36,5 @@ export interface TipTapProps {
   onContentChange: (content: string) => void;
   thumbnail?: string | null;
   onThumbnailRemove?: () => void;
+  initialSlug?: string;
 }

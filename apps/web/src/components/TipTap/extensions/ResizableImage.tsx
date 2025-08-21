@@ -189,6 +189,7 @@ export const ResizableImage = BaseImage.extend({
   },
   addCommands() {
     return {
+      ...this.parent?.(),
       setImageAlign:
         (align: 'left' | 'center' | 'right' | null) => ({ chain }: { chain: any }) => {
           return chain().updateAttributes(this.name, { align }).run();

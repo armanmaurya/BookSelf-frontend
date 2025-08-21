@@ -270,6 +270,7 @@ export const Editor = ({
       <Tiptap
         initialContent={content}
         initialTitle={title}
+        initialSlug={slug}
         onTitleChange={UpdateTitle}
         onContentChange={UpdateContent}
         thumbnail={thumbnail}

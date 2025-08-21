@@ -50,6 +50,7 @@ import ResizableImage from './extensions/ResizableImage';
 
 const Tiptap = ({
   initialContent = null,
+  initialSlug = "",
   initialTitle = "",
   onTitleChange,
   onContentChange,
@@ -305,6 +306,7 @@ const Tiptap = ({
       {isToolbarVisible && (
         <div className="sticky top-16 z-10 border-border/50">
           <MenuBar 
+            initialSlug={initialSlug}
             editor={editor} 
             onHideToolbar={() => setIsToolbarVisible(false)}
             mathEditDialog={mathEditDialog}

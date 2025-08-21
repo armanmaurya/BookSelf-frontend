@@ -53,29 +53,30 @@ import {
   Sigma,
   Image as ImageIcon,
 } from "lucide-react";
-import { MenuBarProps } from '../types';
-import FontSelection from './FontSelection';
-import CodeBlockControls, { CodeBlockToggle } from './CodeBlockControls';
+import { MenuBarProps } from "../types";
+import FontSelection from "./FontSelection";
+import CodeBlockControls, { CodeBlockToggle } from "./CodeBlockControls";
+import ImageInsertButton from "./ImageInsertButton";
 
-const MenuBar = ({ 
-  editor, 
-  onHideToolbar, 
-  mathEditDialog, 
-  onMathEdit, 
-  onCloseMathEditDialog 
+const MenuBar = ({
+  editor,
+  onHideToolbar,
+  mathEditDialog,
+  onMathEdit,
+  onCloseMathEditDialog,
+  initialSlug
 }: MenuBarProps) => {
-  const [linkUrl, setLinkUrl] = useState('');
+  const [linkUrl, setLinkUrl] = useState("");
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
-  const [customFontSize, setCustomFontSize] = useState('');
-  const [languageSearch, setLanguageSearch] = useState('');
-  const [mathExpression, setMathExpression] = useState('');
+  const [customFontSize, setCustomFontSize] = useState("");
+  const [languageSearch, setLanguageSearch] = useState("");
+  const [mathExpression, setMathExpression] = useState("");
   const [isMathDialogOpen, setIsMathDialogOpen] = useState(false);
-  const [mathType, setMathType] = useState<'inline' | 'block'>('inline');
+  const [mathType, setMathType] = useState<"inline" | "block">("inline");
   const [mathEditMode, setMathEditMode] = useState(false);
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
+  // Image insertion moved to ImageInsertButton component
   // const [imageFile, setImageFile] = useState<File | null>(null); // File upload disabled
-  
+
   // Effect to handle external math edit dialog
   useEffect(() => {
     if (mathEditDialog?.isOpen) {
@@ -85,7 +86,7 @@ const MenuBar = ({
       setIsMathDialogOpen(true);
     }
   }, [mathEditDialog]);
-  
+
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
     editor,
@@ -148,7 +149,7 @@ const MenuBar = ({
           isPoppins: false,
           isLink: false,
           canLink: false,
-          currentLineHeight: '1.6',
+          currentLineHeight: "1.6",
         };
       }
       return {
@@ -241,19 +242,20 @@ const MenuBar = ({
         isPoppins:
           ctx.editor.isActive("textStyle", { fontFamily: "Poppins" }) ?? false,
         isLink: ctx.editor.isActive("link") ?? false,
-        canLink: !ctx.editor.state.selection.empty && 
-                 !ctx.editor.isActive("inline-math") && 
-                 !ctx.editor.isActive("block-math"),
+        canLink:
+          !ctx.editor.state.selection.empty &&
+          !ctx.editor.isActive("inline-math") &&
+          !ctx.editor.isActive("block-math"),
         // Font size states
         currentFontSize: (() => {
-          const attributes = ctx.editor.getAttributes('textStyle');
-          return attributes.fontSize || '16px';
+          const attributes = ctx.editor.getAttributes("textStyle");
+          return attributes.fontSize || "16px";
         })(),
         // Code block states
         isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
         currentCodeLanguage: (() => {
-          const attributes = ctx.editor.getAttributes('codeBlock');
-          return attributes.language || 'javascript';
+          const attributes = ctx.editor.getAttributes("codeBlock");
+          return attributes.language || "javascript";
         })(),
         // Math states
         isInlineMath: ctx.editor.isActive("inline-math") ?? false,
@@ -324,9 +326,9 @@ const MenuBar = ({
     isPoppins: false,
     isLink: false,
     canLink: false,
-    currentFontSize: '16px',
+    currentFontSize: "16px",
     isCodeBlock: false,
-    currentCodeLanguage: 'javascript',
+    currentCodeLanguage: "javascript",
     isInlineMath: false,
     isBlockMath: false,
   };
@@ -372,26 +374,31 @@ const MenuBar = ({
 
   const getCurrentTextColor = () => {
     // Get the current attributes from textStyle
-    const attributes = editor.getAttributes('textStyle');
-    return attributes.color || '#000000';
+    const attributes = editor.getAttributes("textStyle");
+    return attributes.color || "#000000";
   };
 
   const setLink = () => {
-    const previousUrl = editor.getAttributes('link').href;
-    setLinkUrl(previousUrl || '');
+    const previousUrl = editor.getAttributes("link").href;
+    setLinkUrl(previousUrl || "");
     setIsLinkDialogOpen(true);
   };
 
   const handleLinkSubmit = () => {
     // empty
-    if (linkUrl === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+    if (linkUrl === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
       setIsLinkDialogOpen(false);
       return;
     }
 
     // update link
-    editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: linkUrl })
+      .run();
     setIsLinkDialogOpen(false);
   };
 
@@ -402,45 +409,49 @@ const MenuBar = ({
   // Math functions
   const insertInlineMath = () => {
     const hasSelection = !editor.state.selection.empty;
-    
+
     if (hasSelection) {
-      return editor.chain().insertInlineMath({ latex: '' }).focus().run();
+      return editor.chain().insertInlineMath({ latex: "" }).focus().run();
     }
-    
-    setMathType('inline');
-    setMathExpression('');
+
+    setMathType("inline");
+    setMathExpression("");
     setIsMathDialogOpen(true);
   };
 
   const insertDisplayMath = () => {
     const hasSelection = !editor.state.selection.empty;
-    
+
     if (hasSelection) {
-      return editor.chain().insertBlockMath({ latex: '' }).focus().run();
+      return editor.chain().insertBlockMath({ latex: "" }).focus().run();
     }
-    
-    setMathType('block');
-    setMathExpression('');
+
+    setMathType("block");
+    setMathExpression("");
     setIsMathDialogOpen(true);
   };
 
   const handleMathSubmit = () => {
     if (!mathExpression.trim()) return;
-    
+
     if (mathEditMode && onMathEdit) {
       // Edit existing math
       onMathEdit(mathExpression);
     } else {
       // Insert new math
-      if (mathType === 'inline') {
-        editor.chain().insertInlineMath({ latex: mathExpression }).focus().run();
+      if (mathType === "inline") {
+        editor
+          .chain()
+          .insertInlineMath({ latex: mathExpression })
+          .focus()
+          .run();
       } else {
         editor.chain().insertBlockMath({ latex: mathExpression }).focus().run();
       }
     }
-    
+
     setIsMathDialogOpen(false);
-    setMathExpression('');
+    setMathExpression("");
     setMathEditMode(false);
   };
 
@@ -452,30 +463,7 @@ const MenuBar = ({
     editor.chain().deleteBlockMath().focus().run();
   };
 
-  // Handle image insertion
-  const handleImageInsert = async () => {
-    if (!editor) return;
-    
-  // if (imageFile) {
-  //   // For demo: convert file to base64 (in real app, upload to server and use the URL)
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     if (reader.result) {
-  //       editor.chain().focus().setImage({ src: reader.result as string }).run();
-  //       setIsImageDialogOpen(false);
-  //       setImageFile(null);
-  //       setImageUrl('');
-  //     }
-  //   };
-  //   reader.readAsDataURL(imageFile);
-  // } else 
-  if (imageUrl) {
-      editor.chain().focus().setImage({ src: imageUrl }).run();
-      setIsImageDialogOpen(false);
-      setImageUrl('');
-  // setImageFile(null);
-    }
-  };
+  // Image insertion handled inside ImageInsertButton
 
   return (
     <div className="border border-input bg-background rounded-md p-2 mb-4 relative overflow-hidden">
@@ -487,11 +475,21 @@ const MenuBar = ({
         className="h-6 w-6 p-0 absolute top-1 right-1 opacity-60 hover:opacity-100 z-10"
         title="Hide Toolbar (Ctrl+Shift+T)"
       >
-        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+        <svg
+          className="h-3 w-3"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 15l7-7 7 7"
+          />
         </svg>
       </Button>
-      
+
       <div className="flex items-center gap-0.5 flex-wrap pr-8 overflow-hidden max-w-full min-h-[2rem]">
         {/* Undo/Redo */}
         <Button
@@ -516,7 +514,7 @@ const MenuBar = ({
         <Separator orientation="vertical" className="h-6 mx-0.5" />
 
         {/* Font Selection Component */}
-        <FontSelection 
+        <FontSelection
           editor={editor}
           safeEditorState={safeEditorState}
           customFontSize={customFontSize}
@@ -581,9 +579,9 @@ const MenuBar = ({
               <Heading6 className="h-4 w-4 mr-2" />
               Heading 6
             </DropdownMenuItem>
-            
+
             <DropdownMenuSeparator />
-            
+
             <CodeBlockToggle editor={editor} />
           </DropdownMenuContent>
         </DropdownMenu>
@@ -637,15 +635,15 @@ const MenuBar = ({
         >
           <Code2 className="h-4 w-4" />
         </Button>
-        
+
         {/* Code Block Controls Component */}
-        <CodeBlockControls 
+        <CodeBlockControls
           editor={editor}
           safeEditorState={safeEditorState}
           languageSearch={languageSearch}
           setLanguageSearch={setLanguageSearch}
         />
-        
+
         <Button
           variant={safeEditorState.isHighlight ? "default" : "ghost"}
           size="sm"
@@ -661,7 +659,7 @@ const MenuBar = ({
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 relative">
               <Palette className="h-4 w-4" />
-              <div 
+              <div
                 className="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-background"
                 style={{ backgroundColor: getCurrentTextColor() }}
               />
@@ -670,14 +668,42 @@ const MenuBar = ({
           <DropdownMenuContent align="start" className="w-64">
             <div className="p-2">
               <div className="text-sm font-medium mb-2">Text Color</div>
-              
+
               {/* Color Swatches */}
               <div className="grid grid-cols-8 gap-1 mb-3">
                 {[
-                  '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF', '#FF0000', '#FF8000',
-                  '#FFFF00', '#80FF00', '#00FF00', '#00FF80', '#00FFFF', '#0080FF', '#0000FF', '#8000FF',
-                  '#FF00FF', '#FF0080', '#8B4513', '#A0522D', '#D2691E', '#CD853F', '#F4A460', '#DEB887',
-                  '#800080', '#9932CC', '#8A2BE2', '#4B0082', '#6A5ACD', '#7B68EE', '#9370DB', '#BA55D3'
+                  "#000000",
+                  "#333333",
+                  "#666666",
+                  "#999999",
+                  "#CCCCCC",
+                  "#FFFFFF",
+                  "#FF0000",
+                  "#FF8000",
+                  "#FFFF00",
+                  "#80FF00",
+                  "#00FF00",
+                  "#00FF80",
+                  "#00FFFF",
+                  "#0080FF",
+                  "#0000FF",
+                  "#8000FF",
+                  "#FF00FF",
+                  "#FF0080",
+                  "#8B4513",
+                  "#A0522D",
+                  "#D2691E",
+                  "#CD853F",
+                  "#F4A460",
+                  "#DEB887",
+                  "#800080",
+                  "#9932CC",
+                  "#8A2BE2",
+                  "#4B0082",
+                  "#6A5ACD",
+                  "#7B68EE",
+                  "#9370DB",
+                  "#BA55D3",
                 ].map((color) => (
                   <button
                     key={color}
@@ -698,7 +724,9 @@ const MenuBar = ({
                   className="w-8 h-8 rounded border border-input cursor-pointer"
                   title="Custom color"
                 />
-                <span className="text-xs text-muted-foreground flex-1">Custom</span>
+                <span className="text-xs text-muted-foreground flex-1">
+                  Custom
+                </span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -737,7 +765,7 @@ const MenuBar = ({
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       handleLinkSubmit();
                     }
                   }}
@@ -758,88 +786,24 @@ const MenuBar = ({
             className="h-8 w-8 p-0"
             title="Remove Link"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+              />
             </svg>
           </Button>
         )}
 
         {/* Image Insert Button */}
-        <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              title="Insert Image"
-            >
-              <ImageIcon className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Insert Image</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col gap-3">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Image URL</label>
-                <Input
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={imageUrl}
-                  onChange={(e) => {
-                    setImageUrl(e.target.value);
-                    // setImageFile(null);
-                  }}
-                />
-              </div>
-              {/*
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">or</span>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Upload File</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setImageFile(e.target.files[0]);
-                      setImageUrl('');
-                    }
-                  }}
-                  className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80"
-                />
-                {imageFile && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Selected: {imageFile.name}
-                  </p>
-                )}
-              </div>
-              */}
-              <div className="flex justify-end gap-2 mt-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    setIsImageDialogOpen(false);
-                    setImageUrl('');
-                    // setImageFile(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  size="sm" 
-                  onClick={handleImageInsert} 
-                  disabled={!imageUrl /* && !imageFile */}
-                >
-                  Insert
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <ImageInsertButton editor={editor} initialSlug={initialSlug} />
 
         <Separator orientation="vertical" className="h-6 mx-0.5" />
 
@@ -928,10 +892,14 @@ const MenuBar = ({
         {/* Math Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button 
-              variant={safeEditorState.isInlineMath || safeEditorState.isBlockMath ? "default" : "ghost"} 
-              size="sm" 
-              className="h-8 w-8 p-0" 
+            <Button
+              variant={
+                safeEditorState.isInlineMath || safeEditorState.isBlockMath
+                  ? "default"
+                  : "ghost"
+              }
+              size="sm"
+              className="h-8 w-8 p-0"
               title="Insert Math"
             >
               <Sigma className="h-4 w-4" />
@@ -946,18 +914,24 @@ const MenuBar = ({
               <Sigma className="h-4 w-4 mr-2" />
               Display Math
             </DropdownMenuItem>
-            
+
             {/* Show remove options when math is active */}
             {(safeEditorState.isInlineMath || safeEditorState.isBlockMath) && (
               <>
                 <DropdownMenuSeparator />
                 {safeEditorState.isInlineMath && (
-                  <DropdownMenuItem onClick={removeInlineMath} className="text-destructive">
+                  <DropdownMenuItem
+                    onClick={removeInlineMath}
+                    className="text-destructive"
+                  >
                     Remove Inline Math
                   </DropdownMenuItem>
                 )}
                 {safeEditorState.isBlockMath && (
-                  <DropdownMenuItem onClick={removeBlockMath} className="text-destructive">
+                  <DropdownMenuItem
+                    onClick={removeBlockMath}
+                    className="text-destructive"
+                  >
                     Remove Block Math
                   </DropdownMenuItem>
                 )}
@@ -977,13 +951,13 @@ const MenuBar = ({
         </Button>
 
         {/* Math Dialog */}
-        <Dialog 
-          open={isMathDialogOpen} 
+        <Dialog
+          open={isMathDialogOpen}
           onOpenChange={(open) => {
             setIsMathDialogOpen(open);
             if (!open) {
               setMathEditMode(false);
-              setMathExpression('');
+              setMathExpression("");
               if (mathEditMode && onCloseMathEditDialog) {
                 onCloseMathEditDialog();
               }
@@ -991,22 +965,25 @@ const MenuBar = ({
           }}
         >
           <DialogTrigger asChild>
-            <div style={{ display: 'none' }} />
+            <div style={{ display: "none" }} />
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>
-                {mathEditMode ? 'Edit' : 'Insert'} {mathType === 'inline' ? 'Inline' : 'Block'} Math
+                {mathEditMode ? "Edit" : "Insert"}{" "}
+                {mathType === "inline" ? "Inline" : "Block"} Math
               </DialogTitle>
             </DialogHeader>
             <div className="flex flex-col space-y-4">
               <div className="grid flex-1 gap-2">
                 <Input
-                  placeholder={mathType === 'inline' ? 'E = mc^2' : '\\int_a^b x^2 dx'}
+                  placeholder={
+                    mathType === "inline" ? "E = mc^2" : "\\int_a^b x^2 dx"
+                  }
                   value={mathExpression}
                   onChange={(e) => setMathExpression(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       handleMathSubmit();
                     }
                   }}
@@ -1014,7 +991,9 @@ const MenuBar = ({
                   autoFocus
                 />
                 <div className="text-xs text-muted-foreground">
-                  Enter LaTeX expression. Examples: x^2, \\frac&#123;a&#125;&#123;b&#125;, \\sqrt&#123;x&#125;, \\sum_&#123;i=1&#125;^n
+                  Enter LaTeX expression. Examples: x^2,
+                  \\frac&#123;a&#125;&#123;b&#125;, \\sqrt&#123;x&#125;,
+                  \\sum_&#123;i=1&#125;^n
                 </div>
               </div>
               <div className="flex justify-end space-x-2">
@@ -1023,7 +1002,7 @@ const MenuBar = ({
                   onClick={() => {
                     setIsMathDialogOpen(false);
                     setMathEditMode(false);
-                    setMathExpression('');
+                    setMathExpression("");
                     if (mathEditMode && onCloseMathEditDialog) {
                       onCloseMathEditDialog();
                     }
@@ -1032,12 +1011,12 @@ const MenuBar = ({
                 >
                   Cancel
                 </Button>
-                <Button 
-                  onClick={handleMathSubmit} 
-                  size="sm" 
+                <Button
+                  onClick={handleMathSubmit}
+                  size="sm"
                   disabled={!mathExpression.trim()}
                 >
-                  {mathEditMode ? 'Update' : 'Insert'}
+                  {mathEditMode ? "Update" : "Insert"}
                 </Button>
               </div>
             </div>
