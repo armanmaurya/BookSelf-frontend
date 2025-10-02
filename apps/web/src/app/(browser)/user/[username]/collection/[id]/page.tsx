@@ -15,7 +15,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, MoreHorizontal, MoreVertical } from "lucide-react";
 import { EditCollectionBtn } from "@/components/blocks/buttons/EditCollectionBtn";
-
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -27,6 +26,8 @@ import { FaDumpster } from "react-icons/fa";
 import { RemoveArticleFromCollectionBtn } from "@/components/blocks/buttons/RemoveArticleFromCollectionBtn";
 import { ShareButton } from "@/components/blocks/buttons/ShareButton";
 import { IoShareOutline } from "react-icons/io5";
+import Image from "next/image";
+import { FiBookmark } from "react-icons/fi";
 
 interface CollectionItem {
   id: string;
@@ -40,6 +41,7 @@ interface CollectionItem {
       username: string;
       profilePicture?: string;
     };
+    thumbnail?: string;
   };
 }
 
@@ -79,6 +81,7 @@ const Page = async ({
             title
             views
             createdAt
+            thumbnail
             author {
               username
               profilePicture
@@ -189,58 +192,101 @@ const Page = async ({
             articles.map((article, index) => (
               <Card
                 key={`${article.slug}-${index}`}
-                className="hover:border-primary transition-all"
+                className="hover:border-primary transition-all overflow-hidden"
               >
-                <CardContent className="p-6 flex flex-col sm:flex-row gap-4 relative">
-                  {/* <div className="flex-shrink-0">
-                    <Avatar className="h-24 w-full sm:w-24 rounded-md aspect-video">
-                      <AvatarFallback className="rounded-md bg-muted text-lg font-medium">
-                        {article.title.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div> */}
-                  <div className="absolute top-4 right-4 z-10">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 p-0"
-                        >
-                          <MoreVertical className="h-5 w-5" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        {collection.isSelf && (
-                          <>
-                            <DropdownMenuItem className="cursor-pointer">
-                              <Link
-                                href={`/user/${username}/article/${article.slug}/edit`}
-                              >
-                                Edit
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="cursor-pointer">
-                              <RemoveArticleFromCollectionBtn
-                                collectionId={parseInt(collection.id)}
-                                articleSlug={article.slug}
-                              >
-                                Remove
-                              </RemoveArticleFromCollectionBtn>
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                  <div className="space-y-2 flex-1">
+                <CardContent className="p-0 flex flex-col sm:flex-row gap-0 relative">
+                  {/* Thumbnail Section - Always 16:9 */}
+                  <div className="sm:w-48 flex-shrink-0">
                     <Link href={`/user/${username}/article/${article.slug}`}>
-                      <h3 className="font-medium text-lg hover:underline">
+                      <div className="relative w-full aspect-[16/9] sm:aspect-auto sm:h-full bg-gradient-to-br from-primary/20 via-primary/10 to-muted/20 overflow-hidden">
+                        {article.thumbnail ? (
+                          // Actual thumbnail image
+                          <>
+                            <Image
+                              src={article.thumbnail}
+                              alt={`Thumbnail for ${article.title}`}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 640px) 100vw, 192px"
+                            />
+                            {/* Subtle overlay for better text contrast */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                          </>
+                        ) : (
+                          // Fallback placeholder when no thumbnail
+                          <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-700 dark:to-blue-900 flex items-center justify-center">
+                            <div className="text-center space-y-3">
+                              <div className="relative">
+                                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
+                                  <FiBookmark className="h-6 w-6 text-primary/60" />
+                                </div>
+                                <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
+                                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                                </div>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground font-medium">
+                                  No Thumbnail
+                                </p>
+                                <div className="flex items-center justify-center gap-1">
+                                  <div className="w-1.5 h-0.5 bg-primary/30 rounded-full" />
+                                  <div className="w-3 h-0.5 bg-primary/50 rounded-full" />
+                                  <div className="w-1.5 h-0.5 bg-primary/30 rounded-full" />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  </div>
+
+                  {/* Article Content Section */}
+                  <div className="flex-1 p-6 space-y-2 relative">
+                    <div className="absolute top-4 right-4 z-10">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 p-0"
+                          >
+                            <MoreVertical className="h-5 w-5" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          {collection.isSelf && (
+                            <>
+                              <DropdownMenuItem className="cursor-pointer">
+                                <Link
+                                  href={`/user/${username}/article/${article.slug}/edit`}
+                                >
+                                  Edit
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="cursor-pointer">
+                                <RemoveArticleFromCollectionBtn
+                                  collectionId={parseInt(collection.id)}
+                                  articleSlug={article.slug}
+                                >
+                                  Remove
+                                </RemoveArticleFromCollectionBtn>
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+
+                    <Link href={`/user/${username}/article/${article.slug}`}>
+                      <h3 className="font-medium text-lg hover:underline pr-8">
                         {article.title}
                       </h3>
                     </Link>
+
                     <div className="flex items-center gap-3 text-sm text-muted-foreground pt-2">
                       <Link
                         href={`/user/${article.author.username}`}

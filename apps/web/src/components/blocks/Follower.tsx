@@ -9,7 +9,7 @@ import { FollowCard } from "../element/cards/FollowCard";
 // import { Button } from "../ui/button";
 // import { Alert, AlertDescription } from "../ui/alert";
 
-export const Follower = ({ username }: { username: string }) => {
+export const Follower = ({ username, className }: { username: string; className?: string }) => {
   const [followers, setFollowers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,36 +71,33 @@ export const Follower = ({ username }: { username: string }) => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )} */}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {followers.map((user) => (
-          <FollowCard 
-            key={user.id} 
-            {...user} 
-            showFollowButton={!user.isSelf}
-            // displayName={`${user.firstName} ${user.lastName}`}
-          />
-        ))}
-
-        {/* {loading && (
-          Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="flex items-center space-x-4 p-4 border rounded-lg">
-              <Skeleton className="h-12 w-12 rounded-full" />
-              <div className="space-y-2 flex-1">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/2" />
-              </div>
-              <Skeleton className="h-9 w-24 rounded-md" />
+    <div className={"space-y-4 " + (className || "")}>
+      {loading && followers.length === 0 ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="relative">
+            <div className="h-12 w-12 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+            <div className="absolute inset-0 h-12 w-12 rounded-full border-4 border-transparent border-r-primary/40 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          {followers.map((user, index) => (
+            <div
+              key={user.id}
+              className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+              style={{ 
+                animationDelay: `${Math.min(index, 8) * 50}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+              <FollowCard 
+                {...user} 
+                showFollowButton={!user.isSelf}
+              />
             </div>
-          ))
-        )} */}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* {hasMore && !loading && (
         <div className="flex justify-center mt-6">

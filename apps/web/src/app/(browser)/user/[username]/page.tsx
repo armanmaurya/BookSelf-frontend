@@ -118,83 +118,7 @@ const ProfilePage = async ({
                 </div>
               </Card>
             </div>
-            {/* About Section (if available) */}
-            {data.user.about && data.user.about.trim().length > 0 && (
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">
-                  About {data.user.firstName}
-                </h2>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {data.user.about}
-                </p>
-              </Card>
-            )}
-            {/* Featured Content */}
-            <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
-              {/* Recent Articles Preview - Full Width */}
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Recent Articles</h3>
-                  <Link
-                    href={`/user/${username}?tab=articles`}
-                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    View all →
-                  </Link>
-                </div>
-                <div className="space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex-shrink-0"></div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm line-clamp-1">
-                          Sample Article Title {i}
-                        </h4>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {Math.floor(Math.random() * 30) + 1} days ago •{" "}
-                          {Math.floor(Math.random() * 100) + 10} views
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              {/* Recent Collections Preview - Full Width */}
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Recent Collections</h3>
-                  <Link
-                    href={`/user/${username}?tab=collections`}
-                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    View all →
-                  </Link>
-                </div>
-                <div className="space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex-shrink-0"></div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm line-clamp-1">
-                          Sample Collection Title {i}
-                        </h4>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {Math.floor(Math.random() * 30) + 1} days ago •{" "}
-                          {Math.floor(Math.random() * 20) + 3} items
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
+            
             {/* Empty State for new users */}
             {(!data.user.about || data.user.about.trim().length === 0) && (
               <Card className="p-8 text-center">
@@ -238,122 +162,127 @@ const ProfilePage = async ({
   };
 
   return (
-    <div className="mx-auto px-4 sm:px-6 my-8 max-w-[1400px]">
-      {/* Profile Header */}
-      <Card className="overflow-hidden mb-8">
-        {/* Cover/Background Section */}
-        <div className="h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 relative">
-          <div className="absolute inset-0 bg-black/20"></div>
-        </div>
+    <div className="mx-auto px-4 sm:px-6 py-8 inset-0 -z-10 bg-gradient-to-b from-primary/5 via-background to-background">
+      <div className="max-w-7xl mx-auto">
+        {/* Profile Header */}
+        <Card className="overflow-hidden mb-8">
+          {/* Cover/Background Section */}
+          <div className="h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 relative">
+            <div className="absolute inset-0 bg-black/20"></div>
+          </div>
 
-        <div className="relative px-6 pb-6">
-          {/* Profile Picture - Overlapping the cover */}
-          <div className="flex flex-col sm:flex-row items-start gap-6 -mt-12">
-            <div className="flex-shrink-0 relative">
-              <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-                <AvatarImage
-                  src={data.user.profilePicture}
-                  alt={`${data.user.firstName} ${data.user.lastName}`}
-                />
-                <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                  {data.user.firstName?.charAt(0).toUpperCase()}
-                  {data.user.lastName?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+          <div className="relative px-6 pb-6">
+            {/* Profile Picture - Overlapping the cover */}
+            <div className="flex flex-col sm:flex-row items-start gap-6 -mt-12">
+              <div className="flex-shrink-0 relative">
+                <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
+                  <AvatarImage
+                    src={data.user.profilePicture}
+                    alt={`${data.user.firstName} ${data.user.lastName}`}
+                  />
+                  <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    {data.user.firstName?.charAt(0).toUpperCase()}
+                    {data.user.lastName?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
-              {/* Online status indicator */}
-              <div className="absolute bottom-1 right-1 h-6 w-6 bg-green-500 border-2 border-white rounded-full"></div>
-            </div>
+                {/* Online status indicator */}
+                <div className="absolute bottom-1 right-1 h-6 w-6 bg-green-500 border-2 border-white rounded-full"></div>
+              </div>
 
-            {/* Profile Info */}
-            <div className="flex-1 space-y-4 mt-4 sm:mt-12">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div className="space-y-2">
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {data.user.firstName} {data.user.lastName}
-                    </h1>
-                    <p className="text-lg text-muted-foreground flex items-center gap-2">
-                      @{data.user.username}
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
-                        {data.user.isSelf ? "You" : "Member"}
-                      </span>
-                    </p>
-                  </div>
+              {/* Profile Info */}
+              <div className="flex-1 space-y-4 mt-4 sm:mt-12">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="space-y-2">
+                    <div>
+                      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        {data.user.firstName} {data.user.lastName}
+                      </h1>
+                      <p className="text-lg text-muted-foreground flex items-center gap-2">
+                        @{data.user.username}
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                          {data.user.isSelf ? "You" : "Member"}
+                        </span>
+                      </p>
+                    </div>
 
-                  {/* Stats */}
-                  <div className="flex items-center gap-6 pt-2">
-                    <Link
-                      href={`/user/${username}/followers`}
-                      className="text-sm hover:text-primary transition-colors group"
-                    >
-                      <span className="font-bold text-lg group-hover:text-primary">
-                        {data.user.followersCount}
-                      </span>
-                      <br />
-                      <span className="text-muted-foreground">Followers</span>
-                    </Link>
-                    <Link
-                      href={`/user/${username}/following`}
-                      className="text-sm hover:text-primary transition-colors group"
-                    >
-                      <span className="font-bold text-lg group-hover:text-primary">
-                        {data.user.followingCount}
-                      </span>
-                      <br />
-                      <span className="text-muted-foreground">Following</span>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Action Button */}
-                {!data.user.isSelf ? (
-                  <div className="flex-shrink-0 mt-4">
-                    <FollowButton
-                      initialIsFollowing={data.user.isFollowing}
-                      username={data.user.username}
-                    />
-                  </div>
-                ) : (
-                  <div className="flex-shrink-0 mt-4">
-                    <Link href={`/settings/profile`} className="gap-2 flex outline p-1 outline-1 rounded-lg items-center">
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    {/* Stats */}
+                    <div className="flex items-center gap-6 pt-2">
+                      <Link
+                        href={`/user/${username}/followers`}
+                        className="text-sm hover:text-primary transition-colors group"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
-                      Edit Profile
-                    </Link>
+                        <span className="font-bold text-lg group-hover:text-primary">
+                          {data.user.followersCount}
+                        </span>
+                        <br />
+                        <span className="text-muted-foreground">Followers</span>
+                      </Link>
+                      <Link
+                        href={`/user/${username}/following`}
+                        className="text-sm hover:text-primary transition-colors group"
+                      >
+                        <span className="font-bold text-lg group-hover:text-primary">
+                          {data.user.followingCount}
+                        </span>
+                        <br />
+                        <span className="text-muted-foreground">Following</span>
+                      </Link>
+                    </div>
                   </div>
-                )}
+
+                  {/* Action Button */}
+                  {!data.user.isSelf ? (
+                    <div className="flex-shrink-0 mt-4">
+                      <FollowButton
+                        initialIsFollowing={data.user.isFollowing}
+                        username={data.user.username}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex-shrink-0 mt-4">
+                      <Link
+                        href={`/settings/profile`}
+                        className="gap-2 flex outline p-1 outline-1 rounded-lg items-center"
+                      >
+                        <svg
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                        Edit Profile
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
+        </Card>
+
+        {/* Tabs */}
+        <Tabs value={activeTab} className="mb-6">
+          <TabsList>
+            {tabs.map((tab) => (
+              <Link href={`/user/${username}?tab=${tab.value}`} key={tab.value}>
+                <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
+              </Link>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        {/* Tab Content */}
+        <div className="mb-8">
+          <RenderTab />
         </div>
-      </Card>
-
-      {/* Tabs */}
-      <Tabs value={activeTab} className="mb-6">
-        <TabsList>
-          {tabs.map((tab) => (
-            <Link href={`/user/${username}?tab=${tab.value}`} key={tab.value}>
-              <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
-            </Link>
-          ))}
-        </TabsList>
-      </Tabs>
-
-      {/* Tab Content */}
-      <div className="mb-8">
-        <RenderTab />
       </div>
     </div>
   );

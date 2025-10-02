@@ -7,7 +7,7 @@ import { User } from "@/types/user";
 import { FollowCard } from "../element/cards/FollowCard";
 // import { Skeleton } from "../ui/skeleton";
 
-export const FollowingBlock = ({ username }: { username: string }) => {
+export const FollowingBlock = ({ username, className }: { username: string; className?: string }) => {
   const [following, setFollowing] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -60,27 +60,30 @@ export const FollowingBlock = ({ username }: { username: string }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {following.map((user: User) => (
-          <FollowCard key={user.id} {...user} />
-        ))}
-        
-        {/* {loading && (
-          Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="space-y-3 p-4 border rounded-lg">
-              <div className="flex items-center space-x-3">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[120px]" />
-                  <Skeleton className="h-3 w-[80px]" />
-                </div>
-              </div>
-              <Skeleton className="h-8 w-full rounded-md" />
+    <div className={"space-y-4 " + (className || "") }>
+      {loading && following.length === 0 ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="relative">
+            <div className="h-12 w-12 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+            <div className="absolute inset-0 h-12 w-12 rounded-full border-4 border-transparent border-r-primary/40 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {following.map((user: User, index: number) => (
+            <div
+              key={user.id}
+              className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+              style={{ 
+                animationDelay: `${Math.min(index, 8) * 50}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+              <FollowCard {...user} />
             </div>
-          ))
-        )} */}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* {hasMore && !loading && (
         <div className="flex justify-center mt-6">
