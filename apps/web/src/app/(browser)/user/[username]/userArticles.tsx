@@ -134,121 +134,97 @@ export const UserArticles = ({
   }, [username, filter, sortBy]);
 
   return (
-    <div className="space-y-8">
-      {/* Header Section with improved design */}
-      <div className="flex flex-col space-y-6">
-        {/* Sort Controls - Always visible for published articles */}
-        <Card className="border-0 shadow-sm bg-gradient-to-r from-background via-background to-muted/20">
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <FaFilter className="h-4 w-4" />
-                  <span className="text-sm font-medium">Sort Articles</span>
-                </div>
-                <Select
-                  value={sortBy}
-                  onValueChange={(value) =>
-                    setSortBy(value as "LATEST" | "POPULAR")
-                  }
-                >
-                  <SelectTrigger className="w-[140px] h-9 border-2 hover:border-primary/50 transition-colors">
-                    <div className="flex items-center gap-2">
-                      {sortBy === "LATEST" ? (
-                        <FaClock className="h-3 w-3 text-blue-500" />
-                      ) : (
-                        <FaFire className="h-3 w-3 text-orange-500" />
-                      )}
-                      <SelectValue />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="LATEST">
-                      <div className="flex items-center gap-2">
-                        <FaClock className="h-3 w-3 text-blue-500" />
-                        <span>Latest</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="POPULAR">
-                      <div className="flex items-center gap-2">
-                        <FaFire className="h-3 w-3 text-orange-500" />
-                        <span>Popular</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <Badge variant="outline" className="hidden sm:inline-flex">
-                  {articles.length}{" "}
-                  {articles.length === 1 ? "article" : "articles"}
-                </Badge>
+    <div className="space-y-6">
+      {/* Header with filters */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <h2 className="text-xl font-semibold">Articles</h2>
+          {!loading && articles.length > 0 && (
+            <Badge variant="secondary" className="text-xs">
+              {articles.length} {articles.length === 1 ? "article" : "articles"}
+            </Badge>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {/* Create New Article Button */}
+          {isSelf && (
+            <NewArticleButton>
+              <FaPenNib className="h-4 w-4" />
+              <span>New Article</span>
+            </NewArticleButton>
+          )}
+          
+          {/* Filter and Sort Controls */}
+          <div className="flex items-center gap-2">
+            {/* Tabs for Owner */}
+            {isSelf && (
+              <div className="flex items-center gap-1 bg-muted/30 rounded-lg p-1">
+                {["published", "draft"].map((tabValue) => (
+                  <button
+                    key={tabValue}
+                    onClick={() => setFilter(tabValue as "published" | "draft")}
+                    className={`
+                      px-3 py-1.5 text-sm rounded-md transition-colors flex items-center gap-1
+                      ${filter === tabValue 
+                        ? "bg-primary text-primary-foreground" 
+                        : "bg-transparent text-muted-foreground hover:bg-muted/80"
+                      }
+                    `}
+                  >
+                    {tabValue === "published" ? (
+                      <>
+                        <FaBookOpen className="h-3.5 w-3.5" />
+                        Published
+                      </>
+                    ) : (
+                      <>
+                        <FaPenNib className="h-3.5 w-3.5" />
+                        Drafts
+                      </>
+                    )}
+                  </button>
+                ))}
               </div>
+            )}
 
-              {/* Owner Controls */}
-              {isSelf && (
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 rounded-md">
-                    <NewArticleButton>
-                      <FaPenNib className="h-4 w-4" />
-                      <span>Create Article</span>
-                    </NewArticleButton>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Tabs for Owner */}
-        {isSelf && (
-          <div className="flex justify-center">
-            <Tabs
-              value={filter}
+            {/* Sort Control */}
+            <Select
+              value={sortBy}
               onValueChange={(value) =>
-                setFilter(value as "published" | "draft")
+                setSortBy(value as "LATEST" | "POPULAR")
               }
-              className="w-full max-w-md"
             >
-              <TabsList className="grid w-full grid-cols-2 h-11 bg-muted/50">
-                <TabsTrigger
-                  value="published"
-                  className="text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                >
-                  📚 Published
-                </TabsTrigger>
-                <TabsTrigger
-                  value="draft"
-                  className="text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                >
-                  ✏️ Drafts
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+              <SelectTrigger className="w-[120px] h-8 border-0 bg-muted/50 hover:bg-muted transition-colors focus:ring-1 focus:ring-primary">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="LATEST">
+                  <div className="flex items-center gap-2">
+                    <FaClock className="h-3 w-3 text-blue-500" />
+                    <span>Latest</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="POPULAR">
+                  <div className="flex items-center gap-2">
+                    <FaFire className="h-3 w-3 text-orange-500" />
+                    <span>Popular</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Articles Section */}
       <div className="space-y-6">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card
-                key={i}
-                className="group hover:shadow-lg transition-all duration-300"
-              >
-                <CardContent className="p-0">
-                  <div className="aspect-[16/9] bg-gradient-to-br from-muted via-muted/70 to-muted animate-pulse rounded-t-lg" />
-                  <div className="p-6 space-y-3">
-                    <div className="h-4 bg-muted animate-pulse rounded" />
-                    <div className="h-3 bg-muted animate-pulse rounded w-3/4" />
-                    <div className="flex gap-2">
-                      <div className="h-5 bg-muted animate-pulse rounded w-16" />
-                      <div className="h-5 bg-muted animate-pulse rounded w-20" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex items-center justify-center py-20">
+            <div className="relative">
+              <div className="h-16 w-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+              <div className="absolute inset-0 h-16 w-16 rounded-full border-4 border-transparent border-r-primary/40 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+            </div>
           </div>
         ) : error ? (
           <Card className="border-destructive/20 bg-destructive/5">
@@ -270,9 +246,15 @@ export const UserArticles = ({
                   return (
                     <div
                       key={(article as Article).slug}
-                      className="transform hover:-translate-y-1 transition-all duration-300"
+                      className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+                      style={{ 
+                        animationDelay: `${Math.min(idx, 8) * 50}ms`,
+                        animationFillMode: 'both'
+                      }}
                     >
-                      <ArticleCard article={article as Article} />
+                      <div className="transform hover:-translate-y-1 transition-all duration-300">
+                        <ArticleCard article={article as Article} />
+                      </div>
                     </div>
                   );
                 }
@@ -283,12 +265,18 @@ export const UserArticles = ({
                 return (
                   <div
                     key={draft.article.slug}
-                    className="transform hover:-translate-y-1 transition-all duration-300"
+                    className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+                    style={{ 
+                      animationDelay: `${Math.min(idx, 8) * 50}ms`,
+                      animationFillMode: 'both'
+                    }}
                   >
-                    <DraftArticleCard
-                      draftArticle={draft}
-                      href={`/user/${username}/article/${draft.article.slug}/edit`}
-                    />
+                    <div className="transform hover:-translate-y-1 transition-all duration-300">
+                      <DraftArticleCard
+                        draftArticle={draft}
+                        href={`/user/${username}/article/${draft.article.slug}/edit`}
+                      />
+                    </div>
                   </div>
                 );
               }

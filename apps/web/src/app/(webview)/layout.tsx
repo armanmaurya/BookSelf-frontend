@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Average } from "next/font/google";
 import "../globals.css";
 // import 'react-notifications-component/dist/theme.css'
 // import 'animate.css/animate.min.css';
@@ -7,7 +7,11 @@ import { ContextProvider } from "../../components/context";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "next-themes";
 
-const inter = Inter({ subsets: ["latin"] });
+const average = Average({ 
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title:
@@ -23,9 +27,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning style={{ '--font-average': average.style.fontFamily } as React.CSSProperties}>
       <body
-        className={`${inter.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}
+        className={`${average.className} h-screen dark:bg-neutral-800 dark:text-slate-200`}
       >
         <ThemeProvider attribute="class">{children}</ThemeProvider>
       </body>

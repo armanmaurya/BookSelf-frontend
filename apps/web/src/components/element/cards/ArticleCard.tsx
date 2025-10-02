@@ -23,148 +23,102 @@ export const ArticleCard = ({ article }: { article: Article }) => {
   });
 
   return (
-    <Card className="group p-0 flex flex-col transition-all hover:shadow-lg hover:shadow-primary/10 overflow-hidden relative border-0 shadow-sm bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Thumbnail Image - 16:9 aspect ratio */}
+    <Card className="group overflow-hidden relative border-0 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer">
       <Link href={`/user/${article.author.username}/article/${article.slug}`}>
-        <div className="relative w-full aspect-[16/9] bg-gradient-to-br from-primary/20 via-primary/10 to-muted/20 overflow-hidden">
+        <div className="relative w-full aspect-[16/9] overflow-hidden">
           {article.thumbnail ? (
-            // Actual thumbnail image
-            <>
-              <Image
-                src={article.thumbnail}
-                alt={`Thumbnail for ${article.title}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
-              {/* Subtle overlay for better text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-            </>
+            <Image
+              src={article.thumbnail}
+              alt={`Thumbnail for ${article.title}`}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
           ) : (
-            // Fallback placeholder when no thumbnail
             <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-700 dark:to-blue-900 flex items-center justify-center">
-              <div className="text-center space-y-3">
-                <div className="relative">
-                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
-                    <FiBookmark className="h-8 w-8 text-primary/60" />
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
+              <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center">
+                <FiBookmark className="h-10 w-10 text-primary/40" />
+              </div>
+            </div>
+          )}
+
+          {/* Gradient overlay for text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+          {/* Content overlay */}
+          <div className="absolute inset-0 p-4 flex flex-col justify-between text-white">
+            {/* Top section with menu */}
+            <div className="flex justify-end">
+              {article.isSelf && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    asChild
+                  >
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-white hover:bg-white/20 backdrop-blur-sm"
+                    >
+                      <BsThreeDotsVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Link
+                        href={`/user/${article.author.username}/article/${article.slug}/edit`}
+                      >
+                        Edit
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link
+                        href={`/user/${article.author.username}/article/${article.slug}/setting`}
+                      >
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+
+            {/* Bottom section with content */}
+            <div className="space-y-3">
+              <h2 className="text-xl text-white line-clamp-2 leading-tight">
+                {article.title || "Untitled Article"}
+              </h2>
+
+              {/* Author and metadata */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Avatar className="h-8 w-8 ring-2 ring-white/20">
+                    <AvatarImage src={article.author.profilePicture} />
+                    <AvatarFallback className="text-xs bg-white/20 text-white">
+                      {article.author.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium text-white/90">
+                    {article.author.username}
+                  </span>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium">
-                    No Thumbnail
-                  </p>
-                  <div className="flex items-center justify-center gap-1">
-                    <div className="w-2 h-0.5 bg-primary/30 rounded-full" />
-                    <div className="w-4 h-0.5 bg-primary/50 rounded-full" />
-                    <div className="w-2 h-0.5 bg-primary/30 rounded-full" />
+                <div className="text-sm text-white/80 absolute left -4 top-4">{formattedDate}</div>
+
+                {/* Stats */}
+                <div className="flex items-center space-x-4 text-sm text-white/80">
+                  <div className="flex items-center space-x-1">
+                    <IoMdEye className="h-4 w-4" />
+                    <span>{article.views}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <AiOutlineLike className="h-4 w-4" />
+                    <span>{article.likesCount}</span>
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
             </div>
-          )}
-
-          {/* Status Badge */}
-          {article.status === "draft" && (
-            <Badge
-              variant="secondary"
-              className="absolute top-3 left-3 z-10 bg-orange-100 text-orange-700 hover:bg-orange-200"
-            >
-              <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse mr-2" />
-              Draft
-            </Badge>
-          )}
-
-          {/* Three dot menu */}
-          {article.isSelf && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-3 right-3 h-8 w-8 z-10 bg-background/80 hover:bg-background backdrop-blur-sm"
-                >
-                  <BsThreeDotsVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Link
-                    href={`/user/${article.author.username}/article/${article.slug}/edit`}
-                  >
-                    Edit
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="">
-                  <Link
-                    href={`/user/${article.author.username}/article/${article.slug}/setting`}
-                  >
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+          </div>
         </div>
       </Link>
-
-      {/* Article Content */}
-      <div className="flex flex-col flex-grow h-full p-6">
-        <div className="mb-4 flex-grow">
-          <Link
-            href={`/user/${article.author.username}/article/${article.slug}`}
-          >
-            <h2 className="text-lg font-bold group-hover:text-primary transition-colors line-clamp-2 leading-tight mb-3">
-              {article.title || "Untitled Article"}
-            </h2>
-          </Link>
-
-          {/* Author info */}
-          <div className="flex items-center mb-3">
-            <Link
-              href={`/user/${article.author.username}`}
-              className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Avatar className="h-6 w-6 mr-2 ring-2 ring-primary/10">
-                <AvatarImage src={article.author.profilePicture} />
-                <AvatarFallback className="text-xs bg-primary/10">
-                  {article.author.username.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <span className="font-medium">{article.author.username}</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Meta Info */}
-        <div className="mt-auto pt-3 border-t border-muted/30 flex items-center justify-between">
-          <div className="flex items-center gap-4 text-muted-foreground text-sm">
-            <div className="flex items-center gap-1.5 hover:text-primary transition-colors">
-              <IoMdEye className="h-4 w-4" />
-              <span className="font-medium">{article.views}</span>
-            </div>
-            <div className="flex items-center gap-1.5 hover:text-red-500 transition-colors">
-              <AiOutlineLike className="h-4 w-4" />
-              <span className="font-medium">{article.likesCount}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-muted-foreground text-xs font-medium">
-              {formattedDate}
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-primary transition-all duration-200"
-            >
-              <FiBookmark className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
     </Card>
   );
 };

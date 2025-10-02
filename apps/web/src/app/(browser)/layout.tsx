@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Average } from "next/font/google";
 import "../globals.css";
 import {
   SideBar,
@@ -29,7 +29,11 @@ import {
 } from "@/lib/structured-data";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
-const inter = Inter({ subsets: ["latin"] });
+const average = Average({ 
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Infobite - Discover, Learn, and Share Knowledge",
@@ -144,7 +148,7 @@ export default async function RootLayout({
   let user: User | null = data.me;
   console.log("User", user);
   return (
-    <html lang="en-IN" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning style={{ '--font-average': average.style.fontFamily } as React.CSSProperties}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
@@ -163,7 +167,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${inter.className} dark:bg-[#121212] dark:text-slate-200`}
+        className={`${average.className} dark:bg-[#121212] dark:text-slate-200`}
       >
         {/* Google Analytics */}
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (

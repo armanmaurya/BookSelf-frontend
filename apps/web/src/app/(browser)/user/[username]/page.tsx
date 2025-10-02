@@ -4,7 +4,6 @@ import { gql } from "@apollo/client";
 import { createServerClient } from "@/lib/ServerClient";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +11,8 @@ import { FollowButton } from "@/components/element/button/FollowButton";
 import { UserArticles } from "./userArticles";
 import { GraphQLData } from "@/types/graphql";
 import { UserCollections } from "./userCollections";
+import { UserBooks } from "./userBooks";
+import { AnimatedTabs } from "./AnimatedTabs";
 
 const ProfilePage = async ({
   params,
@@ -51,6 +52,7 @@ const ProfilePage = async ({
     { value: "overview", label: "Overview" },
     { value: "articles", label: "Articles" },
     { value: "collections", label: "Collections" },
+    { value: "books", label: "Books" },
   ];
 
   const activeTab = searchParams?.tab || "overview";
@@ -58,9 +60,13 @@ const ProfilePage = async ({
   const RenderTab = () => {
     switch (activeTab) {
       case "collections":
-        return <UserCollections username={username} />;
+        return (
+          <UserCollections username={username} isSelf={data.user.isSelf} />
+        );
       case "articles":
         return <UserArticles isSelf={data.user.isSelf} username={username} />;
+      case "books":
+        return <UserBooks username={username} isSelf={data.user.isSelf} />;
       default:
         return (
           <div className="space-y-6">
@@ -118,7 +124,7 @@ const ProfilePage = async ({
                 </div>
               </Card>
             </div>
-            
+
             {/* Empty State for new users */}
             {(!data.user.about || data.user.about.trim().length === 0) && (
               <Card className="p-8 text-center">
@@ -167,27 +173,27 @@ const ProfilePage = async ({
         {/* Profile Header */}
         <Card className="overflow-hidden mb-8">
           {/* Cover/Background Section */}
-          <div className="h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 relative">
-            <div className="absolute inset-0 bg-black/20"></div>
+          <div className="h-32 bg-gradient-to-r from-neutral-700 to-neutral-900 relative">
+            <div className="absolute inset-0 bg-black/30"></div>
           </div>
 
           <div className="relative px-6 pb-6">
             {/* Profile Picture - Overlapping the cover */}
             <div className="flex flex-col sm:flex-row items-start gap-6 -mt-12">
               <div className="flex-shrink-0 relative">
-                <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
+                <Avatar className="h-24 w-24 border-4 border-white dark:border-neutral-800 shadow-lg">
                   <AvatarImage
                     src={data.user.profilePicture}
                     alt={`${data.user.firstName} ${data.user.lastName}`}
                   />
-                  <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                  <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-neutral-700 to-neutral-900 text-white">
                     {data.user.firstName?.charAt(0).toUpperCase()}
                     {data.user.lastName?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
 
                 {/* Online status indicator */}
-                <div className="absolute bottom-1 right-1 h-6 w-6 bg-green-500 border-2 border-white rounded-full"></div>
+                <div className="absolute bottom-1 right-1 h-6 w-6 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
               </div>
 
               {/* Profile Info */}
@@ -200,7 +206,7 @@ const ProfilePage = async ({
                       </h1>
                       <p className="text-lg text-muted-foreground flex items-center gap-2">
                         @{data.user.username}
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                           {data.user.isSelf ? "You" : "Member"}
                         </span>
                       </p>
@@ -210,9 +216,9 @@ const ProfilePage = async ({
                     <div className="flex items-center gap-6 pt-2">
                       <Link
                         href={`/user/${username}/followers`}
-                        className="text-sm hover:text-primary transition-colors group"
+                        className="text-sm hover:text-gray-700 dark:hover:text-gray-300 transition-colors group"
                       >
-                        <span className="font-bold text-lg group-hover:text-primary">
+                        <span className="font-bold text-lg group-hover:text-gray-700 dark:group-hover:text-gray-300">
                           {data.user.followersCount}
                         </span>
                         <br />
@@ -220,9 +226,9 @@ const ProfilePage = async ({
                       </Link>
                       <Link
                         href={`/user/${username}/following`}
-                        className="text-sm hover:text-primary transition-colors group"
+                        className="text-sm hover:text-gray-700 dark:hover:text-gray-300 transition-colors group"
                       >
-                        <span className="font-bold text-lg group-hover:text-primary">
+                        <span className="font-bold text-lg group-hover:text-gray-700 dark:group-hover:text-gray-300">
                           {data.user.followingCount}
                         </span>
                         <br />
@@ -243,7 +249,7 @@ const ProfilePage = async ({
                     <div className="flex-shrink-0 mt-4">
                       <Link
                         href={`/settings/profile`}
-                        className="gap-2 flex outline p-1 outline-1 rounded-lg items-center"
+                        className="gap-2 flex outline p-2 outline-1 outline-gray-300 dark:outline-gray-600 rounded-lg items-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       >
                         <svg
                           className="h-4 w-4"
@@ -269,15 +275,7 @@ const ProfilePage = async ({
         </Card>
 
         {/* Tabs */}
-        <Tabs value={activeTab} className="mb-6">
-          <TabsList>
-            {tabs.map((tab) => (
-              <Link href={`/user/${username}?tab=${tab.value}`} key={tab.value}>
-                <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
-              </Link>
-            ))}
-          </TabsList>
-        </Tabs>
+        <AnimatedTabs tabs={tabs} activeTab={activeTab} username={username} />
 
         {/* Tab Content */}
         <div className="mb-8">
