@@ -478,28 +478,29 @@ const MenuBar = ({
   };
 
   return (
-    <div className="border border-input bg-background rounded-md p-2 mb-4 relative overflow-hidden">
-      {/* Hide Toolbar Button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onHideToolbar}
-        className="h-6 w-6 p-0 absolute top-1 right-1 opacity-60 hover:opacity-100 z-10"
-        title="Hide Toolbar (Ctrl+Shift+T)"
-      >
-        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-        </svg>
-      </Button>
-      
-      <div className="flex items-center gap-0.5 flex-wrap pr-8 overflow-hidden max-w-full min-h-[2rem]">
+    <div className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
+      <div className="mx-auto px-6 py-2 relative">
+        {/* Hide Toolbar Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onHideToolbar}
+          className="h-7 w-7 p-0 absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity"
+          title="Hide Toolbar (Ctrl+Shift+T)"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          </svg>
+        </Button>
+        
+        <div className="flex items-center gap-1 flex-wrap pr-10">
         {/* Undo/Redo */}
         <Button
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!safeEditorState.canUndo}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 hover:bg-muted/80"
         >
           <Undo className="h-4 w-4" />
         </Button>
@@ -508,12 +509,12 @@ const MenuBar = ({
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!safeEditorState.canRedo}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 hover:bg-muted/80"
         >
           <Redo className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Font Selection Component */}
         <FontSelection 
@@ -523,7 +524,7 @@ const MenuBar = ({
           setCustomFontSize={setCustomFontSize}
         />
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Headings Dropdown */}
         <DropdownMenu>
@@ -588,7 +589,7 @@ const MenuBar = ({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Text Formatting */}
         <Button
@@ -841,7 +842,7 @@ const MenuBar = ({
           </DialogContent>
         </Dialog>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Subscript/Superscript */}
         <Button
@@ -863,7 +864,7 @@ const MenuBar = ({
           <SuperscriptIcon className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Text Alignment Dropdown */}
         <DropdownMenu>
@@ -893,7 +894,7 @@ const MenuBar = ({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Lists */}
         <Button
@@ -913,7 +914,7 @@ const MenuBar = ({
           <ListOrdered className="h-4 w-4" />
         </Button>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Blockquote */}
         <Button
@@ -1044,9 +1045,10 @@ const MenuBar = ({
           </DialogContent>
         </Dialog>
 
-        <Separator orientation="vertical" className="h-6 mx-0.5" />
+        <Separator orientation="vertical" className="h-6 mx-1.5" />
 
         {/* Keyboard Shortcuts Helper - Removed from here, now floating */}
+        </div>
       </div>
     </div>
   );

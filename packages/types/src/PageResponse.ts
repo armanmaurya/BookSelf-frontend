@@ -9,4 +9,5 @@ export interface PageResponse {
     index: number;
     has_children: boolean;
     slug: string;
+    children?: PageResponse[];
 }

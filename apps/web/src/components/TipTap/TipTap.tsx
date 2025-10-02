@@ -303,15 +303,13 @@ const Tiptap = ({
     <div className="w-full">
       {/* Main Toolbar - Conditionally visible */}
       {isToolbarVisible && (
-        <div className="sticky top-16 z-10 border-border/50">
-          <MenuBar 
-            editor={editor} 
-            onHideToolbar={() => setIsToolbarVisible(false)}
-            mathEditDialog={mathEditDialog}
-            onMathEdit={handleMathEdit}
-            onCloseMathEditDialog={closeMathEditDialog}
-          />
-        </div>
+        <MenuBar 
+          editor={editor} 
+          onHideToolbar={() => setIsToolbarVisible(false)}
+          mathEditDialog={mathEditDialog}
+          onMathEdit={handleMathEdit}
+          onCloseMathEditDialog={closeMathEditDialog}
+        />
       )}
 
       {/* Floating Buttons - Always visible */}
@@ -344,86 +342,81 @@ const Tiptap = ({
         />
       )}
 
-        <div className="max-w-4xl mx-auto">
-        <div className="border border-input rounded-lg shadow-sm bg-card">
-          {/* Thumbnail Preview Section */}
-          {thumbnail && (
-            <div className="p-6 pb-4 ">
-              <div className="space-y-3">
-                <div className="relative group w-full">
-                  <Card className="overflow-hidden w-full">
-                    <CardContent className="p-0">
-                      <div className="relative aspect-video w-full">
-                        <Image
-                          src={thumbnail}
-                          alt="Article Thumbnail"
-                          fill
-                          className="object-cover transition-transform duration-200 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                        {onThumbnailRemove && (
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={onThumbnailRemove}
-                            className="absolute top-2 right-2 h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg hover:shadow-xl"
-                            title="Remove thumbnail"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+      <div className="mx-auto px-6 py-8">
+        {/* Thumbnail Preview Section */}
+        {thumbnail && (
+          <div className="mb-8">
+            <div className="relative group w-full">
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                <Image
+                  src={thumbnail}
+                  alt="Article Thumbnail"
+                  fill
+                  className="object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                {onThumbnailRemove && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={onThumbnailRemove}
+                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg hover:shadow-xl"
+                    title="Remove thumbnail"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </div>
-          )}
-
-          {/* Document Title Input - Notion Style */}
-          <div className="p-6 pb-2">
-            <textarea
-              ref={titleRef}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Untitled"
-              className="font-bold border-none px-0 py-2 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-muted-foreground/60 resize-none w-full overflow-hidden focus:outline-none"
-              style={{
-                lineHeight: "1.1",
-                fontWeight: "800",
-                fontSize: "2.8rem",
-                minHeight: "3.5rem",
-                outline: "none",
-                border: "none",
-              }}
-              rows={1}
-              onInput={(e) => autoResizeTitle(e.target as HTMLTextAreaElement)}
-              onFocus={(e) => autoResizeTitle(e.target as HTMLTextAreaElement)}
-            />
-          </div>          {/* Editor Content */}
-          <div className="px-6 pb-6">
-            <EditorContent
-              editor={editor}
-              className="prose prose-strong:text-inherit dark:prose-invert max-w-none 
-                [&_pre]:bg-muted/70 [&_pre]:border [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto 
-                [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono 
-                [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-2 [&_.math-inline]:py-1 [&_.math-inline]:rounded-md [&_.math-inline]:text-sm
-                [&_.math-display]:bg-muted/30 [&_.math-display]:p-4 [&_.math-display]:rounded-lg [&_.math-display]:my-6 [&_.math-display]:text-center
-                [&_blockquote]:border-l-4 [&_blockquote]:border-primary/30 [&_blockquote]:bg-muted/30 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:rounded-r-md
-                [&_img]:rounded-lg [&_img]:shadow-sm"
-            />
           </div>
-            <div 
-            className="h-60 w-full cursor-pointer flex items-center justify-center text-muted-foreground/50 rounded-b-lg transition-all duration-200"
-            onClick={() => {
-              if (editor) {
+        )}
+
+        {/* Document Title Input - Notion Style */}
+        <div className="mb-6">
+          <textarea
+            ref={titleRef}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Untitled"
+            className="font-bold border-none px-0 py-2 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-muted-foreground/60 resize-none w-full overflow-hidden focus:outline-none"
+            style={{
+              lineHeight: "1.1",
+              fontWeight: "800",
+              fontSize: "2.8rem",
+              minHeight: "3.5rem",
+              outline: "none",
+              border: "none",
+            }}
+            rows={1}
+            onInput={(e) => autoResizeTitle(e.target as HTMLTextAreaElement)}
+            onFocus={(e) => autoResizeTitle(e.target as HTMLTextAreaElement)}
+          />
+        </div>
+
+        {/* Editor Content */}
+        <div className="mb-8">
+          <EditorContent
+            editor={editor}
+            className="prose prose-strong:text-inherit dark:prose-invert max-w-none 
+              [&_pre]:bg-muted/70 [&_pre]:border [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto 
+              [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono 
+              [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-2 [&_.math-inline]:py-1 [&_.math-inline]:rounded-md [&_.math-inline]:text-sm
+              [&_.math-display]:bg-muted/30 [&_.math-display]:p-4 [&_.math-display]:rounded-lg [&_.math-display]:my-6 [&_.math-display]:text-center
+              [&_blockquote]:border-l-4 [&_blockquote]:border-primary/30 [&_blockquote]:bg-muted/30 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:rounded-r-md
+              [&_img]:rounded-lg [&_img]:shadow-sm"
+          />
+        </div>
+
+        {/* Bottom spacer for easier editing */}
+        <div 
+          className="h-60 w-full cursor-pointer flex items-center justify-center text-muted-foreground/50 transition-all duration-200"
+          onClick={() => {
+            if (editor) {
               // Move cursor to the end and add a new paragraph
               editor.chain().focus().setTextSelection(editor.state.doc.content.size).insertContent('<p></p>').run();
-              }
-            }}
-            >
-            </div>
-        </div>
+            }
+          }}
+        />
       </div>
     </div>
   );

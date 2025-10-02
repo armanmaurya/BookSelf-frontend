@@ -30,9 +30,9 @@ export const ProfileIcon = () => {
         <Button variant="outline" asChild>
           <Link href="/signin">Login</Link>
         </Button>
-        <Button asChild>
+        {/* <Button asChild>
           <Link href="/signup">Sign Up</Link>
-        </Button>
+        </Button> */}
       </div>
     );
   }

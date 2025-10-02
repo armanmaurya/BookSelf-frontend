@@ -118,9 +118,12 @@ export const revalidate = 1;
 
 export default async function RootLayout({
   children,
+  params
 }: Readonly<{
   children: React.ReactNode;
+  params: { path?: string[] };
 }>) {
+  console.log(`Rendering RootLayout with params:`, params.path);
   const QUERY = gql`
     query MyQuery {
       me {
@@ -182,7 +185,7 @@ export default async function RootLayout({
               <ContextProvider>
                 <TopBar />
                 <div className="pt-14">
-                  <div className="p-3">{children}</div>
+                  <div className="">{children}</div>
                 </div>
               </ContextProvider>
             </UserProvider>
