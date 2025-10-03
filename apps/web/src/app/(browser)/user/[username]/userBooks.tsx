@@ -1,20 +1,16 @@
 "use client";
 import client from "@/lib/apolloClient";
 import { gql } from "@apollo/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { 
-  FaBook, 
   FaBookOpen, 
-  FaStar, 
-  FaClock, 
-  FaEye,
   FaPlus,
-  FaSearch
 } from "react-icons/fa";
+import { NotebookCard } from "@/components/notebook/NotebookCard";
 
 interface Notebook {
   id: string;
@@ -211,71 +207,7 @@ export const UserBooks = ({ username, isSelf }: UserBooksProps) => {
       {filteredNotebooks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredNotebooks.map((notebook, index) => (
-            <div
-              key={notebook.id}
-              className="animate-in fade-in slide-in-from-bottom-4 duration-500"
-              style={{ 
-                animationDelay: `${Math.min(index, 8) * 50}ms`,
-                animationFillMode: 'both'
-              }}
-            >
-              <Link href={`/user/${username}/notebook/${notebook.slug}`}>
-                <Card className="group hover:shadow-lg transition-all duration-300 h-full cursor-pointer overflow-hidden">
-                  {/* Cover Image - 9:16 aspect ratio (portrait like book cover) */}
-                  <div className="relative w-full aspect-[9/16] overflow-hidden">
-                    {notebook.cover ? (
-                      <img
-                        src={notebook.cover}
-                        alt={notebook.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
-                        <FaBook className="h-16 w-16 text-primary/60" />
-                      </div>
-                    )}
-                    {/* Gradient overlay for better text contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/10" />
-
-                    {/* Content overlay */}
-                    <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
-                      <div className="space-y-2">
-                        <h3 className="font-bold text-lg leading-tight line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
-                          {notebook.name}
-                        </h3>
-                        
-                        {notebook.overview && (
-                          <p className="text-sm text-white/80 line-clamp-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.55)]">
-                            {notebook.overview}
-                          </p>
-                        )}
-
-                        {/* Meta information */}
-                        <div className="flex items-center justify-between pt-2 text-[13px]">
-                          <div className="flex items-center gap-2">
-                            <Badge 
-                              variant={notebook.hasPages ? "default" : "secondary"}
-                              className="text-xs bg-white/25 text-white border-white/40 backdrop-blur-sm"
-                            >
-                              {notebook.pagesCount || 0} pages
-                            </Badge>
-                            {!notebook.hasPages && (
-                              <Badge variant="outline" className="text-xs border-white/40 text-white/80 backdrop-blur-sm">
-                                Empty
-                              </Badge>
-                            )}
-                          </div>
-                          
-                          <span className="text-xs text-white/80 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
-                            {new Date(notebook.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            </div>
+            <NotebookCard key={notebook.id} notebook={notebook} index={index} />
           ))}
         </div>
       ) : (

@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,6 +57,7 @@ export interface NotebookSidebarPage {
   slug: string;
   path: string;
   hasChildren: boolean;
+  index: number;
   children?: NotebookSidebarPage[];
 }
 
@@ -66,6 +68,7 @@ export interface NotebookSidebarRawPage {
   path?: string;
   hasChildren?: boolean;
   has_children?: boolean;
+  index?: number;
   children?: NotebookSidebarRawPage[];
   [key: string]: unknown;
 }
@@ -136,6 +139,33 @@ const DELETE_PAGE_MUTATION = gql`
   }
 `;
 
+const MOVE_PAGE_MUTATION = gql`
+  mutation MovePage(
+    $notebookSlug: String!
+    $pagePath: String!
+    $parentPath: String
+    $insertBeforePageId: Int
+    $insertAfterPageId: Int
+  ) {
+    updatePage(
+      notebookSlug: $notebookSlug
+      pagePath: $pagePath
+      parentPath: $parentPath
+      insertBeforePageId: $insertBeforePageId
+      insertAfterPageId: $insertAfterPageId
+    ) {
+      ... on PageType {
+        hasChildren
+        id
+        index
+        path
+        slug
+        title
+      }
+    }
+  }
+`;
+
 const PAGE_QUERY = gql`
   query SidebarPages($notebookSlug: String!, $parentId: Int) {
     pages(notebookSlug: $notebookSlug, parentId: $parentId) {
@@ -177,13 +207,14 @@ const normalizePage = (
     hasChildren: Boolean(
       record?.hasChildren ?? record?.has_children ?? children.length > 0
     ),
-    children,
+    index: record?.index ?? 0,
+    children: children.sort((a, b) => a.index - b.index),
   };
 };
 
 const normalizePages = (
   pages: NotebookSidebarInitialPage[]
-): NotebookSidebarPage[] => pages.map(normalizePage);
+): NotebookSidebarPage[] => pages.map(normalizePage).sort((a, b) => a.index - b.index);
 
 const flattenPath = (segments: string[]): string =>
   segments.filter(Boolean).join("/");
@@ -298,6 +329,11 @@ interface PageTreeItemProps {
   onRefresh: () => void;
   parentRefresh?: () => void;
   loadChildren?: (parentId: number) => Promise<NotebookSidebarPage[]>;
+  onDragStart?: (item: NotebookSidebarPage, path: string[]) => void;
+  onDragEnd?: () => void;
+  onDrop?: (targetItem: NotebookSidebarPage, targetPath: string[], position: 'before' | 'inside' | 'after') => void;
+  isDragging?: boolean;
+  draggedItemId?: number | null;
 }
 
 const PageTreeItem: React.FC<PageTreeItemProps> = ({
@@ -312,6 +348,11 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
   onRefresh,
   parentRefresh,
   loadChildren,
+  onDragStart,
+  onDragEnd,
+  onDrop,
+  isDragging: isDraggingAny,
+  draggedItemId,
 }) => {
   const isEditMode = mode === "edit";
   const currentPath = flattenPath(path);
@@ -338,8 +379,13 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
   const [isLoadingChildren, setIsLoadingChildren] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [dropPosition, setDropPosition] = useState<'before' | 'inside' | 'after' | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const isDraggingThis = draggedItemId === item.id;
+  const canDrop = isDraggingAny && !isDraggingThis;
 
   const displayHasChildren =
     item.hasChildren || children.length > 0 || showingChildNewPage;
@@ -352,7 +398,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
     setIsLoadingChildren(true);
     try {
       const fetchedChildren = await loadChildren(item.id);
-      setChildren(fetchedChildren);
+      setChildren(fetchedChildren.sort((a, b) => a.index - b.index));
       setHasLoadedChildren(true);
     } catch (error) {
       console.error("Failed to load page children:", error);
@@ -364,7 +410,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
   useEffect(() => {
     const nextChildren = item.children ?? [];
     if (nextChildren.length > 0) {
-      setChildren(nextChildren);
+      setChildren(nextChildren.sort((a, b) => a.index - b.index));
       setHasLoadedChildren(true);
     }
   }, [item.children]);
@@ -562,6 +608,60 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
     setIsExpanded(true);
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    if (!isEditMode || isRenaming) {
+      e.preventDefault();
+      return;
+    }
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', item.id.toString());
+    onDragStart?.(item, path);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!isEditMode || !canDrop) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const rect = itemRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const y = e.clientY - rect.top;
+    const height = rect.height;
+
+    // Determine drop position based on cursor position
+    if (y < height * 0.25) {
+      setDropPosition('before');
+    } else if (y > height * 0.75) {
+      setDropPosition('after');
+    } else {
+      setDropPosition('inside');
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.stopPropagation();
+    setDropPosition(null);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (!isEditMode || !canDrop || !dropPosition) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    
+    onDrop?.(item, path, dropPosition);
+    setDropPosition(null);
+  };
+
+  const handleDragEnd = () => {
+    onDragEnd?.();
+    setDropPosition(null);
+  };
+
   return (
     <div className="select-none relative">
       {/* Vertical connector line */}
@@ -573,12 +673,24 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
       )}
       
       <div
+        ref={itemRef}
+        draggable={isEditMode && !isRenaming}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onDragEnd={handleDragEnd}
         className={cn(
           "group relative flex items-center gap-1 px-1 md:px-2 py-1 md:py-1.5 rounded-md transition-colors",
-          isActive ? "bg-primary/10 text-primary" : "hover:bg-muted/50"
+          isActive ? "bg-primary/10 text-primary" : "hover:bg-muted/50",
+          isDraggingThis && "opacity-40",
+          canDrop && dropPosition === 'before' && "border-t-2 border-primary",
+          canDrop && dropPosition === 'after' && "border-b-2 border-primary",
+          canDrop && dropPosition === 'inside' && "ring-2 ring-primary ring-inset"
         )}
         style={{ 
-          paddingLeft: `${level * 16 + 8}px`
+          paddingLeft: `${level * 16 + 8}px`,
+          cursor: isEditMode && !isRenaming ? 'grab' : 'default'
         }}
         onDoubleClick={isEditMode ? startRename : undefined}
       >
@@ -686,6 +798,11 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
                 mode={mode}
                 onRefresh={onRefresh}
                 parentRefresh={parentRefresh}
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+                onDrop={onDrop}
+                isDragging={isDraggingAny}
+                draggedItemId={draggedItemId}
               />
             ))}
           </div>
@@ -702,14 +819,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
           )}
         >
           <div className="overflow-hidden ml-2">
-            {isLoadingChildren && (
-              <p className="px-3 py-1 text-xs text-muted-foreground">
-                Loading...
-              </p>
-            )}
-
-            {!isLoadingChildren &&
-              children.map((child) => (
+            {children.map((child) => (
                 <PageTreeItem
                   key={child.id}
                   item={child}
@@ -723,6 +833,11 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
                   onRefresh={fetchChildren}
                   parentRefresh={onRefresh}
                   loadChildren={loadChildren}
+                  onDragStart={onDragStart}
+                  onDragEnd={onDragEnd}
+                  onDrop={onDrop}
+                  isDragging={isDraggingAny}
+                  draggedItemId={draggedItemId}
                 />
               ))}
 
@@ -793,6 +908,11 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
     normalizePages(initialPages ?? [])
   );
   const [isLoadingPages, setIsLoadingPages] = useState(false);
+  const [draggedItem, setDraggedItem] = useState<{
+    item: NotebookSidebarPage;
+    path: string[];
+  } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const notebookUrl = useMemo(
     () => getNotebookUrl(username, notebook, mode),
@@ -814,7 +934,7 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
       const fetched = normalizePages(data?.pages ?? []);
       return fetched.map((child) => ({
         ...child,
-        children: child.children ?? [],
+        children: (child.children ?? []).sort((a, b) => a.index - b.index),
       }));
     },
     [notebook]
@@ -853,6 +973,89 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
       void loadRootPages();
     }
   }, [isEditMode, initialPages.length, loadRootPages]);
+
+  const handleDragStart = useCallback(
+    (item: NotebookSidebarPage, path: string[]) => {
+      setDraggedItem({ item, path });
+      setIsDragging(true);
+    },
+    []
+  );
+
+  const handleDragEnd = useCallback(() => {
+    setDraggedItem(null);
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    async (
+      targetItem: NotebookSidebarPage,
+      targetPath: string[],
+      position: 'before' | 'inside' | 'after'
+    ) => {
+      if (!draggedItem || !isEditMode) return;
+
+      const { item: draggedPage, path: draggedPath } = draggedItem;
+
+      // Prevent dropping on itself or its descendants
+      if (draggedPage.id === targetItem.id) return;
+      if (targetPath.some(slug => slug === draggedPage.slug)) return;
+
+      try {
+        let newParentPath: string | null;
+        let insertBeforePageId: number | undefined;
+        let insertAfterPageId: number | undefined;
+
+        if (position === 'inside') {
+          // Drop inside the target (make it a child at the beginning)
+          newParentPath = `/${flattenPath(targetPath)}`;
+          // No insertBeforePageId or insertAfterPageId means it will be added at the end
+          // To add at the beginning, we need to get the first child
+          const targetChildren = await loadChildren(targetItem.id);
+          if (targetChildren.length > 0) {
+            const sortedChildren = targetChildren.sort((a, b) => a.index - b.index);
+            insertBeforePageId = sortedChildren[0].id;
+          }
+        } else {
+          // Drop before or after (same parent as target)
+          const targetParentPath = targetPath.slice(0, -1);
+          newParentPath = targetParentPath.length > 0 ? `/${flattenPath(targetParentPath)}` : '/';
+          
+          if (position === 'before') {
+            insertBeforePageId = targetItem.id;
+          } else {
+            insertAfterPageId = targetItem.id;
+          }
+        }
+
+        const { data, errors } = await client.mutate({
+          mutation: MOVE_PAGE_MUTATION,
+          variables: {
+            notebookSlug: notebook,
+            pagePath: `/${flattenPath(draggedPath)}`,
+            parentPath: newParentPath,
+            insertBeforePageId,
+            insertAfterPageId,
+          },
+        });
+
+        if (errors && errors.length > 0) {
+          throw new Error(errors[0].message);
+        }
+
+        if (data?.updatePage) {
+          // Refresh the entire tree
+          await loadRootPages();
+        }
+      } catch (error) {
+        console.error('Failed to move page:', error);
+      } finally {
+        setDraggedItem(null);
+        setIsDragging(false);
+      }
+    },
+    [draggedItem, isEditMode, notebook, loadChildren, loadRootPages]
+  );
 
   const handleCreateRootPage = async (title: string) => {
     if (!isEditMode) {
@@ -910,19 +1113,38 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
           </Button>
         )}
       </div>
-
       {isEditMode && (
         <div className="px-3 md:px-4 py-2 text-xs text-muted-foreground bg-muted/10 border-b shrink-0 hidden md:block">
           Double-click a page to rename it, or use the menu for more actions.
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide p-1 md:p-2 min-h-0">
-        {isEditMode && isLoadingPages ? (
-          <div className="px-3 py-2 text-xs text-muted-foreground">
-            Loading pages...
-          </div>
-        ) : pages.length > 0 ? (
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-1 md:p-2 pb-8 md:pb-40 min-h-0 relative">
+        {/* Loading Overlay */}
+        <AnimatePresence>
+          {isEditMode && isLoadingPages && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center"
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center gap-3"
+              >
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                <p className="text-xs text-muted-foreground">Loading pages...</p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {pages.length > 0 ? (
           <div className="space-y-1">
             {pages.map((page) => (
               <PageTreeItem
@@ -938,6 +1160,11 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
                 onRefresh={isEditMode ? loadRootPages : () => undefined}
                 parentRefresh={isEditMode ? loadRootPages : undefined}
                 loadChildren={isEditMode ? loadChildren : undefined}
+                onDragStart={isEditMode ? handleDragStart : undefined}
+                onDragEnd={isEditMode ? handleDragEnd : undefined}
+                onDrop={isEditMode ? handleDrop : undefined}
+                isDragging={isDragging}
+                draggedItemId={draggedItem?.item.id ?? null}
               />
             ))}
 

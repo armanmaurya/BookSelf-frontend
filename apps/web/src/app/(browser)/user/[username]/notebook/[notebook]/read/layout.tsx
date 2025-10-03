@@ -39,7 +39,9 @@ interface PageItem {
   slug: string;
   path: string;
   hasChildren: boolean;
+  index?: number;
   children?: PageItem[];
+  [key: string]: unknown;
 }
 
 const ReadLayout = async ({
