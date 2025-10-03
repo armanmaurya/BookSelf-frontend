@@ -1,6 +1,7 @@
 import { Article } from "@/types/article";
 import { User } from "./user";
 import { Notebook } from "./notebook";
+import { Page } from "./page";
 
 export type GraphQLData = {
     article: Article;
@@ -10,4 +11,6 @@ export type GraphQLData = {
     users: User[];
     notebooks: Notebook[];
     notebook: Notebook;
+    page: Page;
+    pages: Page[];
 }

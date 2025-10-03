@@ -1,11 +1,10 @@
 import React from "react";
-import { PanelsLayout } from "./PanelsLayout";
+import { ReadingPanelsLayout } from "./ReadingPanelsLayout";
 import { createServerClient } from "@/lib/ServerClient";
 import { gql } from "@apollo/client";
-import { PageResponse } from "@bookself/types";
 
 const PAGE_QUERY = gql`
-  query MyQuery($notebookSlug: String!, $parentId: Int) {
+  query GetPages($notebookSlug: String!, $parentId: Int) {
     pages(notebookSlug: $notebookSlug, parentId: $parentId) {
       hasChildren
       id
@@ -24,7 +23,26 @@ const PAGE_QUERY = gql`
   }
 `;
 
-const EditLayout = async ({
+const NOTEBOOK_QUERY = gql`
+  query GetNotebook($slug: String!) {
+    notebook(slug: $slug) {
+      id
+      name
+      slug
+    }
+  }
+`;
+
+interface PageItem {
+  id: number;
+  title: string;
+  slug: string;
+  path: string;
+  hasChildren: boolean;
+  children?: PageItem[];
+}
+
+const ReadLayout = async ({
   children,
   params,
 }: {
@@ -33,15 +51,16 @@ const EditLayout = async ({
 }) => {
   const { username, notebook } = params;
 
-  let initialPages: PageResponse[] = [];
+  let initialPages: PageItem[] = [];
+  let notebookName = "";
 
   try {
     const client = createServerClient();
 
-    // Recursive function to fetch pages and their children
+    // Recursive function to fetch pages and their children (full tree)
     const fetchPagesWithChildren = async (
       parentId: number | null
-    ): Promise<PageResponse[]> => {
+    ): Promise<PageItem[]> => {
       const { data } = await client.query({
         query: PAGE_QUERY,
         variables: {
@@ -53,13 +72,13 @@ const EditLayout = async ({
       const pages = ((data?.pages ?? []) as any[]).map((page: any) => ({
         ...page,
         id: typeof page.id === "string" ? parseInt(page.id, 10) : page.id,
-        has_children: page.hasChildren,
-      })) as PageResponse[];
+        hasChildren: page.hasChildren,
+      })) as PageItem[];
 
       // Recursively fetch children for each page that has children
       const pagesWithChildren = await Promise.all(
         pages.map(async (page) => {
-          if (page.has_children) {
+          if (page.hasChildren) {
             const children = await fetchPagesWithChildren(page.id);
             return { ...page, children };
           }
@@ -70,24 +89,31 @@ const EditLayout = async ({
       return pagesWithChildren;
     };
 
-    // Fetch all pages starting from root
+    // Fetch all pages starting from root (full tree)
     initialPages = await fetchPagesWithChildren(null);
 
+    // Fetch notebook info
+    const notebookResult = await client.query({
+      query: NOTEBOOK_QUERY,
+      variables: { slug: notebook },
+    });
+
+    notebookName = notebookResult.data?.notebook?.name || "";
+
   } catch (error) {
-    console.error("Failed to load page hierarchy:", error);
+    console.error("Error fetching full page tree:", error);
   }
 
   return (
-    <div className="h-[calc(100vh-3.5rem)]">
-      <PanelsLayout
-        username={username}
-        notebook={notebook}
-        initialPages={initialPages}
-      >
-        {children}
-      </PanelsLayout>
-    </div>
+    <ReadingPanelsLayout
+      username={username}
+      notebook={notebook}
+      initialPages={initialPages}
+      notebookName={notebookName}
+    >
+      {children}
+    </ReadingPanelsLayout>
   );
 };
 
-export default EditLayout;
+export default ReadLayout;

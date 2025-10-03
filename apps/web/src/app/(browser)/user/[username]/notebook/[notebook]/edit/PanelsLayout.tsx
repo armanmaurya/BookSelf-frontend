@@ -2,7 +2,7 @@
 import { ReactPanel } from "@/components/element/panels/panel";
 import { ReactPanelGroup } from "@/components/element/panels/panelGroup";
 import { ReactPanelResizeHandler } from "@/components/element/panels/PanelResizeHandler";
-import { EnhancedSidebar } from "./EnhancedSidebar";
+import { NotebookSidebar } from "@/components/notebook/NotebookSidebar";
 import { PageResponse } from "@bookself/types";
 
 export const PanelsLayout = ({
@@ -23,9 +23,10 @@ export const PanelsLayout = ({
                 <ReactPanelGroup direction="horizontal">
                     {/* Navigation Panel */}
                     <ReactPanel defaultSize={25} minSize={20} maxSize={40}>
-                        <EnhancedSidebar 
-                            username={username} 
-                            notebook={notebook} 
+                        <NotebookSidebar
+                            mode="edit"
+                            username={username}
+                            notebook={notebook}
                             initialPages={initialPages}
                         />
                     </ReactPanel>

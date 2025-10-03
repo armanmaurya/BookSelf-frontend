@@ -10,4 +10,7 @@ export interface Notebook {
     pagesCount: number;
     slug: string;
     user: User;
+    indexPage: {
+        slug: string;
+    };
 }

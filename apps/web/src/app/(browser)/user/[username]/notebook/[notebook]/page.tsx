@@ -55,6 +55,9 @@ const NotebookPage = async ({
           email
           username
         }
+        indexPage {
+          slug
+        }
       }
     }
   `;
@@ -77,7 +80,7 @@ const NotebookPage = async ({
   return (
     <div className="">
       <div className="w-full px-4 py-8">
-        <div className="grid md:grid-cols-[320px_1fr] gap-8 max-w-full">
+        <div className="grid md:grid-cols-[310px_1fr] max-w-full">
           {/* Left Side - Cover Image */}
           {notebookData?.cover ? (
             <div className="relative w-full max-w-[280px] aspect-[2/3] rounded-lg overflow-hidden shadow-md">
@@ -96,15 +99,25 @@ const NotebookPage = async ({
           )}
 
           {/* Right Side - Content */}
-          <div className="p-8 space-y-6">
-            {/* Badge and Actions Header */}
-            <div className="flex items-start justify-between">
-              <Badge
-                variant="secondary"
-                className="text-xs font-medium uppercase tracking-wide"
-              >
-                Novel
-              </Badge>
+          <div className="">
+            {/* Title and Actions */}
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div className="space-y-3 flex-1">
+                <h1 className="text-4xl font-bold text-foreground leading-tight">
+                  {notebookData?.name || "A Slice of Life"}
+                </h1>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>
+                    Created{" "}
+                    {notebookData?.createdAt
+                      ? new Date(notebookData.createdAt).toLocaleDateString(
+                          "en-US",
+                          { year: "numeric", month: "numeric", day: "numeric" }
+                        )
+                      : "27/9/2025"}
+                  </span>
+                </div>
+              </div>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon">
                   <Share2 className="h-4 w-4" />
@@ -134,31 +147,8 @@ const NotebookPage = async ({
               </div>
             </div>
 
-            {/* Title and Metadata */}
-            <div className="space-y-3">
-              <h1 className="text-4xl font-bold text-foreground leading-tight">
-                {notebookData?.name || "A Slice of Life"}
-              </h1>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>
-                  By {notebookData?.user?.firstName || "Arman"}{" "}
-                  {notebookData?.user?.lastName || "Maurya"}
-                </span>
-                <span>•</span>
-                <span>
-                  Created{" "}
-                  {notebookData?.createdAt
-                    ? new Date(notebookData.createdAt).toLocaleDateString(
-                        "en-US",
-                        { year: "numeric", month: "numeric", day: "numeric" }
-                      )
-                    : "27/9/2025"}
-                </span>
-              </div>
-            </div>
-
             {/* Overview Section */}
-            <div className="space-y-3">
+            <div className="space-y-3 mb-6">
               <h2 className="text-lg font-semibold text-foreground">
                 Overview
               </h2>
@@ -168,63 +158,39 @@ const NotebookPage = async ({
               </p>
             </div>
 
-            {/* Information and Author Grid */}
-            <div className="grid sm:grid-cols-2 gap-6">
-              {/* Information */}
-              <div className="space-y-3">
-                <h3 className="text-base font-semibold text-foreground">
-                  Information
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Pages</span>
-                    <span className="font-medium text-foreground">
-                      {notebookData?.pagesCount || 11}
-                    </span>
+            {/* Author Section */}
+            <div className="space-y-3 mb-6">
+              <h3 className="text-base font-semibold text-foreground">
+                Author
+              </h3>
+              <div className="flex items-center gap-3">
+                {notebookData?.user?.profilePicture ? (
+                  <Image
+                    src={notebookData.user.profilePicture}
+                    alt={`${notebookData.user.firstName} ${notebookData.user.lastName}`}
+                    width={48}
+                    height={48}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <User className="h-6 w-6 text-primary" />
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Has Content</span>
-                    <span className="font-medium text-green-600">
-                      {notebookData?.hasPages ? "Yes" : "Yes"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Author */}
-              <div className="space-y-3">
-                <h3 className="text-base font-semibold text-foreground">
-                  Author
-                </h3>
-                <div className="flex items-center gap-3">
-                  {notebookData?.user?.profilePicture ? (
-                    <Image
-                      src={notebookData.user.profilePicture}
-                      alt={`${notebookData.user.firstName} ${notebookData.user.lastName}`}
-                      width={48}
-                      height={48}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <User className="h-6 w-6 text-primary" />
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-medium text-foreground">
-                      {notebookData?.user?.firstName || "Arman"}{" "}
-                      {notebookData?.user?.lastName || "Maurya"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      @{notebookData?.user?.username || "armanmaurya"}
-                    </p>
-                  </div>
+                )}
+                <div>
+                  <p className="font-medium text-foreground">
+                    {notebookData?.user?.firstName || "Arman"}{" "}
+                    {notebookData?.user?.lastName || "Maurya"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    @{notebookData?.user?.username || "armanmaurya"}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Details Section */}
-            <div className="space-y-3 pt-4 border-t border-border">
+            <div className="space-y-3 pt-4 border-t border-border mb-6">
               <h3 className="text-base font-semibold text-foreground">
                 Details
               </h3>
@@ -241,20 +207,13 @@ const NotebookPage = async ({
                       : "27/9/2025"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Slug:</span>
-                  <span className="text-foreground font-mono text-xs">
-                    {notebookData?.slug || "a-slice-of-life-2"}
-                  </span>
-                </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3 pt-4">
+            <div className="grid grid-cols-2 gap-3">
               <Button variant="default" className="w-full" asChild>
-                <Link href={`/user/${username}/notebook/${notebook}/read`}>
+                <Link href={`/user/${username}/notebook/${notebook}/read/${notebookData?.indexPage.slug}`}>
                   <BookOpen className="h-4 w-4 mr-2" />
                   Open Notebook
                 </Link>

@@ -23,6 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { toast } from "@/hooks/use-toast";
+import nProgress from "nprogress";
 
 export default function NewPage() {
   const { user } = useUser();
@@ -52,6 +53,7 @@ export default function NewPage() {
       });
       return;
     }
+    nProgress.start();
     router.push(`/new/notebook`);
   };
 
@@ -87,6 +89,7 @@ export default function NewPage() {
       
       // Optionally redirect to the new collection
       if (data?.createCollection?.id && user?.username) {
+        nProgress.start();
         router.push(`/user/${user.username}/collection/${data.createCollection.id}`);
       }
     } catch (error) {

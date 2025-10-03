@@ -3,7 +3,6 @@ import {
   ReactPanel,
   ReactPanelGroup,
 } from "@/components/element/panels";
-import { RenderNavTree } from "@/components/navTree/EditNavTree";
 import { MenuProvider } from "@bookself/context-menu";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
