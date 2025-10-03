@@ -235,38 +235,38 @@ export const UserBooks = ({ username, isSelf }: UserBooksProps) => {
                       </div>
                     )}
                     {/* Gradient overlay for better text contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/10" />
 
                     {/* Content overlay */}
                     <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
                       <div className="space-y-2">
-                        <h3 className="font-bold text-lg leading-tight line-clamp-2">
+                        <h3 className="font-bold text-lg leading-tight line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                           {notebook.name}
                         </h3>
                         
                         {notebook.overview && (
-                          <p className="text-sm text-white/80 line-clamp-2">
+                          <p className="text-sm text-white/80 line-clamp-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.55)]">
                             {notebook.overview}
                           </p>
                         )}
 
                         {/* Meta information */}
-                        <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center justify-between pt-2 text-[13px]">
                           <div className="flex items-center gap-2">
                             <Badge 
                               variant={notebook.hasPages ? "default" : "secondary"}
-                              className="text-xs bg-white/20 text-white border-white/30 hover:bg-white/30"
+                              className="text-xs bg-white/25 text-white border-white/40 backdrop-blur-sm"
                             >
                               {notebook.pagesCount || 0} pages
                             </Badge>
                             {!notebook.hasPages && (
-                              <Badge variant="outline" className="text-xs border-white/30 text-white/80">
+                              <Badge variant="outline" className="text-xs border-white/40 text-white/80 backdrop-blur-sm">
                                 Empty
                               </Badge>
                             )}
                           </div>
                           
-                          <span className="text-xs text-white/70">
+                          <span className="text-xs text-white/80 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
                             {new Date(notebook.createdAt).toLocaleDateString()}
                           </span>
                         </div>

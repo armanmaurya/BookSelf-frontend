@@ -52,6 +52,7 @@ import {
   Search,
   Sigma,
   Image as ImageIcon,
+  MoreVertical,
 } from "lucide-react";
 import { MenuBarProps } from '../types';
 import FontSelection from './FontSelection';
@@ -74,7 +75,7 @@ const MenuBar = ({
   const [mathEditMode, setMathEditMode] = useState(false);
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-  // const [imageFile, setImageFile] = useState<File | null>(null); // File upload disabled
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   
   // Effect to handle external math edit dialog
   useEffect(() => {
@@ -456,598 +457,560 @@ const MenuBar = ({
   const handleImageInsert = async () => {
     if (!editor) return;
     
-  // if (imageFile) {
-  //   // For demo: convert file to base64 (in real app, upload to server and use the URL)
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     if (reader.result) {
-  //       editor.chain().focus().setImage({ src: reader.result as string }).run();
-  //       setIsImageDialogOpen(false);
-  //       setImageFile(null);
-  //       setImageUrl('');
-  //     }
-  //   };
-  //   reader.readAsDataURL(imageFile);
-  // } else 
-  if (imageUrl) {
+    if (imageUrl) {
       editor.chain().focus().setImage({ src: imageUrl }).run();
       setIsImageDialogOpen(false);
       setImageUrl('');
-  // setImageFile(null);
     }
   };
 
   return (
     <div className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
-      <div className="mx-auto px-6 py-2 relative">
-        {/* Hide Toolbar Button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onHideToolbar}
-          className="h-7 w-7 p-0 absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity"
-          title="Hide Toolbar (Ctrl+Shift+T)"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-          </svg>
-        </Button>
-        
+      <div className="mx-auto px-6 py-2 relative">        
         <div className="flex items-center gap-1 flex-wrap pr-10">
-        {/* Undo/Redo */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!safeEditorState.canUndo}
-          className="h-8 w-8 p-0 hover:bg-muted/80"
-        >
-          <Undo className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!safeEditorState.canRedo}
-          className="h-8 w-8 p-0 hover:bg-muted/80"
-        >
-          <Redo className="h-4 w-4" />
-        </Button>
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Font Selection Component */}
-        <FontSelection 
-          editor={editor}
-          safeEditorState={safeEditorState}
-          customFontSize={customFontSize}
-          setCustomFontSize={setCustomFontSize}
-        />
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Headings Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 w-[90px] overflow-hidden text-ellipsis whitespace-nowrap justify-start"
-            >
-              {safeEditorState.isHeading1 && <Heading1 className="h-4 w-4" />}
-              {safeEditorState.isHeading2 && <Heading2 className="h-4 w-4" />}
-              {safeEditorState.isHeading3 && <Heading3 className="h-4 w-4" />}
-              {safeEditorState.isHeading4 && <Heading4 className="h-4 w-4" />}
-              {safeEditorState.isHeading5 && <Heading5 className="h-4 w-4" />}
-              {safeEditorState.isHeading6 && <Heading6 className="h-4 w-4" />}
-              {safeEditorState.isParagraph && (
-                <span className="text-sm">Paragraph</span>
-              )}
-              {safeEditorState.isCodeBlock && (
-                <>
-                  <FileCode className="h-4 w-4" />
-                  <span className="text-sm ml-1">Code Block</span>
-                </>
-              )}
-              <ChevronDown className="h-3 w-3 ml-auto" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto">
-            <DropdownMenuItem
-              onClick={() => editor.chain().focus().setParagraph().run()}
-            >
-              <span>Paragraph</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleHeading(1)}>
-              <Heading1 className="h-4 w-4 mr-2" />
-              Heading 1
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleHeading(2)}>
-              <Heading2 className="h-4 w-4 mr-2" />
-              Heading 2
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleHeading(3)}>
-              <Heading3 className="h-4 w-4 mr-2" />
-              Heading 3
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleHeading(4)}>
-              <Heading4 className="h-4 w-4 mr-2" />
-              Heading 4
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleHeading(5)}>
-              <Heading5 className="h-4 w-4 mr-2" />
-              Heading 5
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleHeading(6)}>
-              <Heading6 className="h-4 w-4 mr-2" />
-              Heading 6
-            </DropdownMenuItem>
-            
-            <DropdownMenuSeparator />
-            
-            <CodeBlockToggle editor={editor} />
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Text Formatting */}
-        <Button
-          variant={safeEditorState.isBold ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!safeEditorState.canBold}
-          className="h-8 w-8 p-0"
-        >
-          <BoldIcon className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={safeEditorState.isItalic ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!safeEditorState.canItalic}
-          className="h-8 w-8 p-0"
-        >
-          <ItalicIcon className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={safeEditorState.isUnderline ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          disabled={!safeEditorState.canUnderline}
-          className="h-8 w-8 p-0"
-        >
-          <UnderlineIcon className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={safeEditorState.isStrike ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          disabled={!safeEditorState.canStrike}
-          className="h-8 w-8 p-0"
-        >
-          <Strikethrough className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={safeEditorState.isCode ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          disabled={!safeEditorState.canCode}
-          className="h-8 w-8 p-0"
-          title="Inline Code"
-        >
-          <Code2 className="h-4 w-4" />
-        </Button>
-        
-        {/* Code Block Controls Component */}
-        <CodeBlockControls 
-          editor={editor}
-          safeEditorState={safeEditorState}
-          languageSearch={languageSearch}
-          setLanguageSearch={setLanguageSearch}
-        />
-        
-        <Button
-          variant={safeEditorState.isHighlight ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
-          disabled={!safeEditorState.canHighlight}
-          className="h-8 w-8 p-0"
-        >
-          <Highlighter className="h-4 w-4" />
-        </Button>
-
-        {/* Text Color Picker */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 relative">
-              <Palette className="h-4 w-4" />
-              <div 
-                className="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-background"
-                style={{ backgroundColor: getCurrentTextColor() }}
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-64">
-            <div className="p-2">
-              <div className="text-sm font-medium mb-2">Text Color</div>
-              
-              {/* Color Swatches */}
-              <div className="grid grid-cols-8 gap-1 mb-3">
-                {[
-                  '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF', '#FF0000', '#FF8000',
-                  '#FFFF00', '#80FF00', '#00FF00', '#00FF80', '#00FFFF', '#0080FF', '#0000FF', '#8000FF',
-                  '#FF00FF', '#FF0080', '#8B4513', '#A0522D', '#D2691E', '#CD853F', '#F4A460', '#DEB887',
-                  '#800080', '#9932CC', '#8A2BE2', '#4B0082', '#6A5ACD', '#7B68EE', '#9370DB', '#BA55D3'
-                ].map((color) => (
-                  <button
-                    key={color}
-                    className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform cursor-pointer"
-                    style={{ backgroundColor: color }}
-                    onClick={() => setTextColor(color)}
-                    title={color}
-                  />
-                ))}
-              </div>
-
-              {/* Custom Color Input */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={getCurrentTextColor()}
-                  onChange={(e) => setTextColor(e.target.value)}
-                  className="w-8 h-8 rounded border border-input cursor-pointer"
-                  title="Custom color"
-                />
-                <span className="text-xs text-muted-foreground flex-1">Custom</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={unsetTextColor}
-                  className="h-6 px-2 text-xs"
-                >
-                  Reset
-                </Button>
-              </div>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Link Button */}
-        <Dialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
-          <DialogTrigger asChild>
-            <Button
-              variant={safeEditorState.isLink ? "default" : "ghost"}
-              size="sm"
-              onClick={setLink}
-              className="h-8 w-8 p-0"
-              title="Add/Edit Link"
-              disabled={!safeEditorState.canLink}
-            >
-              <LinkIcon className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Add Link</DialogTitle>
-            </DialogHeader>
-            <div className="flex items-center space-x-2">
-              <div className="grid flex-1 gap-2">
-                <Input
-                  placeholder="https://example.com"
-                  value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleLinkSubmit();
-                    }
-                  }}
-                />
-              </div>
-              <Button onClick={handleLinkSubmit} size="sm" className="px-3">
-                <span className="sr-only">Add Link</span>
-                Add
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-        {safeEditorState.isLink && (
+          {/* Undo/Redo */}
           <Button
             variant="ghost"
             size="sm"
-            onClick={unsetLink}
-            className="h-8 w-8 p-0"
-            title="Remove Link"
+            onClick={() => editor.chain().focus().undo().run()}
+            disabled={!safeEditorState.canUndo}
+            className="h-8 w-8 p-0 hover:bg-muted/80"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
+            <Undo className="h-4 w-4" />
           </Button>
-        )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().redo().run()}
+            disabled={!safeEditorState.canRedo}
+            className="h-8 w-8 p-0 hover:bg-muted/80"
+          >
+            <Redo className="h-4 w-4" />
+          </Button>
 
-        {/* Image Insert Button */}
-        <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
-          <DialogTrigger asChild>
+          <Separator orientation="vertical" className="h-6 mx-1.5" />
+
+          {/* Font Selection Component */}
+          <FontSelection 
+            editor={editor}
+            safeEditorState={safeEditorState}
+            customFontSize={customFontSize}
+            setCustomFontSize={setCustomFontSize}
+          />
+
+          <Separator orientation="vertical" className="h-6 mx-1.5" />
+
+          {/* Headings Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2 w-[90px] overflow-hidden text-ellipsis whitespace-nowrap justify-start"
+              >
+                {safeEditorState.isHeading1 && <Heading1 className="h-4 w-4" />}
+                {safeEditorState.isHeading2 && <Heading2 className="h-4 w-4" />}
+                {safeEditorState.isHeading3 && <Heading3 className="h-4 w-4" />}
+                {safeEditorState.isHeading4 && <Heading4 className="h-4 w-4" />}
+                {safeEditorState.isHeading5 && <Heading5 className="h-4 w-4" />}
+                {safeEditorState.isHeading6 && <Heading6 className="h-4 w-4" />}
+                {safeEditorState.isParagraph && (
+                  <span className="text-sm">Paragraph</span>
+                )}
+                {safeEditorState.isCodeBlock && (
+                  <>
+                    <FileCode className="h-4 w-4" />
+                    <span className="text-sm ml-1">Code Block</span>
+                  </>
+                )}
+                <ChevronDown className="h-3 w-3 ml-auto" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto">
+              <DropdownMenuItem
+                onClick={() => editor.chain().focus().setParagraph().run()}
+              >
+                <span>Paragraph</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleHeading(1)}>
+                <Heading1 className="h-4 w-4 mr-2" />
+                Heading 1
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleHeading(2)}>
+                <Heading2 className="h-4 w-4 mr-2" />
+                Heading 2
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleHeading(3)}>
+                <Heading3 className="h-4 w-4 mr-2" />
+                Heading 3
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleHeading(4)}>
+                <Heading4 className="h-4 w-4 mr-2" />
+                Heading 4
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleHeading(5)}>
+                <Heading5 className="h-4 w-4 mr-2" />
+                Heading 5
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleHeading(6)}>
+                <Heading6 className="h-4 w-4 mr-2" />
+                Heading 6
+              </DropdownMenuItem>
+              
+              <DropdownMenuSeparator />
+              
+              <CodeBlockToggle editor={editor} />
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Separator orientation="vertical" className="h-6 mx-1.5" />
+
+          {/* Text Formatting */}
+          <Button
+            variant={safeEditorState.isBold ? "default" : "ghost"}
+            size="sm"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            disabled={!safeEditorState.canBold}
+            className="h-8 w-8 p-0"
+          >
+            <BoldIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={safeEditorState.isItalic ? "default" : "ghost"}
+            size="sm"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            disabled={!safeEditorState.canItalic}
+            className="h-8 w-8 p-0"
+          >
+            <ItalicIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={safeEditorState.isUnderline ? "default" : "ghost"}
+            size="sm"
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            disabled={!safeEditorState.canUnderline}
+            className="h-8 w-8 p-0"
+          >
+            <UnderlineIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={safeEditorState.isStrike ? "default" : "ghost"}
+            size="sm"
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            disabled={!safeEditorState.canStrike}
+            className="h-8 w-8 p-0"
+          >
+            <Strikethrough className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={safeEditorState.isCode ? "default" : "ghost"}
+            size="sm"
+            onClick={() => editor.chain().focus().toggleCode().run()}
+            disabled={!safeEditorState.canCode}
+            className="h-8 w-8 p-0"
+            title="Inline Code"
+          >
+            <Code2 className="h-4 w-4" />
+          </Button>
+          
+          {/* Code Block Controls Component */}
+          <CodeBlockControls 
+            editor={editor}
+            safeEditorState={safeEditorState}
+            languageSearch={languageSearch}
+            setLanguageSearch={setLanguageSearch}
+          />
+          
+          <Button
+            variant={safeEditorState.isHighlight ? "default" : "ghost"}
+            size="sm"
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
+            disabled={!safeEditorState.canHighlight}
+            className="h-8 w-8 p-0"
+          >
+            <Highlighter className="h-4 w-4" />
+          </Button>
+
+          {/* Text Color Picker */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 relative">
+                <Palette className="h-4 w-4" />
+                <div 
+                  className="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-background"
+                  style={{ backgroundColor: getCurrentTextColor() }}
+                />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64">
+              <div className="p-2">
+                <div className="text-sm font-medium mb-2">Text Color</div>
+                
+                {/* Color Swatches */}
+                <div className="grid grid-cols-8 gap-1 mb-3">
+                  {[
+                    '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF', '#FF0000', '#FF8000',
+                    '#FFFF00', '#80FF00', '#00FF00', '#00FF80', '#00FFFF', '#0080FF', '#0000FF', '#8000FF',
+                    '#FF00FF', '#FF0080', '#8B4513', '#A0522D', '#D2691E', '#CD853F', '#F4A460', '#DEB887',
+                    '#800080', '#9932CC', '#8A2BE2', '#4B0082', '#6A5ACD', '#7B68EE', '#9370DB', '#BA55D3'
+                  ].map((color) => (
+                    <button
+                      key={color}
+                      className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform cursor-pointer"
+                      style={{ backgroundColor: color }}
+                      onClick={() => setTextColor(color)}
+                      title={color}
+                    />
+                  ))}
+                </div>
+
+                {/* Custom Color Input */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={getCurrentTextColor()}
+                    onChange={(e) => setTextColor(e.target.value)}
+                    className="w-8 h-8 rounded border border-input cursor-pointer"
+                    title="Custom color"
+                  />
+                  <span className="text-xs text-muted-foreground flex-1">Custom</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={unsetTextColor}
+                    className="h-6 px-2 text-xs"
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Link Button */}
+          <Dialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant={safeEditorState.isLink ? "default" : "ghost"}
+                size="sm"
+                onClick={setLink}
+                className="h-8 w-8 p-0"
+                title="Add/Edit Link"
+                disabled={!safeEditorState.canLink}
+              >
+                <LinkIcon className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Add Link</DialogTitle>
+              </DialogHeader>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Input
+                    placeholder="https://example.com"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleLinkSubmit();
+                      }
+                    }}
+                  />
+                </div>
+                <Button onClick={handleLinkSubmit} size="sm" className="px-3">
+                  <span className="sr-only">Add Link</span>
+                  Add
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          {safeEditorState.isLink && (
             <Button
               variant="ghost"
               size="sm"
+              onClick={unsetLink}
               className="h-8 w-8 p-0"
-              title="Insert Image"
+              title="Remove Link"
             >
-              <ImageIcon className="h-4 w-4" />
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Insert Image</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col gap-3">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Image URL</label>
-                <Input
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={imageUrl}
-                  onChange={(e) => {
-                    setImageUrl(e.target.value);
-                    // setImageFile(null);
-                  }}
-                />
-              </div>
-              {/*
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">or</span>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Upload File</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setImageFile(e.target.files[0]);
-                      setImageUrl('');
-                    }
-                  }}
-                  className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80"
-                />
-                {imageFile && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Selected: {imageFile.name}
-                  </p>
-                )}
-              </div>
-              */}
-              <div className="flex justify-end gap-2 mt-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    setIsImageDialogOpen(false);
-                    setImageUrl('');
-                    // setImageFile(null);
-                  }}
+          )}
+
+          {/* Three Dots More Menu */}
+          <DropdownMenu open={isMoreMenuOpen} onOpenChange={setIsMoreMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                title="More options"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-64 p-3">
+              <div className="grid grid-cols-3 gap-2">
+                {/* Image Insert Button */}
+                <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-12 flex-col gap-1"
+                      title="Insert Image"
+                    >
+                      <ImageIcon className="h-4 w-4" />
+                      <span className="text-xs">Image</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Insert Image</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Image URL</label>
+                        <Input
+                          type="url"
+                          placeholder="https://example.com/image.jpg"
+                          value={imageUrl}
+                          onChange={(e) => {
+                            setImageUrl(e.target.value);
+                          }}
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2 mt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            setIsImageDialogOpen(false);
+                            setImageUrl('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          onClick={handleImageInsert} 
+                          disabled={!imageUrl}
+                        >
+                          Insert
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {/* Subscript */}
+                <Button
+                  variant={safeEditorState.isSubscript ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => editor.chain().focus().toggleSubscript().run()}
+                  disabled={!safeEditorState.canSubscript}
+                  className="h-12 flex-col gap-1"
                 >
-                  Cancel
+                  <SubscriptIcon className="h-4 w-4" />
+                  <span className="text-xs">Subscript</span>
                 </Button>
-                <Button 
-                  size="sm" 
-                  onClick={handleImageInsert} 
-                  disabled={!imageUrl /* && !imageFile */}
+
+                {/* Superscript */}
+                <Button
+                  variant={safeEditorState.isSuperscript ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => editor.chain().focus().toggleSuperscript().run()}
+                  disabled={!safeEditorState.canSuperscript}
+                  className="h-12 flex-col gap-1"
                 >
-                  Insert
+                  <SuperscriptIcon className="h-4 w-4" />
+                  <span className="text-xs">Superscript</span>
+                </Button>
+
+                {/* Text Alignment Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-12 flex-col gap-1">
+                      {getAlignmentIcon()}
+                      <span className="text-xs">Align</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setTextAlign("left")}>
+                      <AlignLeft className="h-4 w-4 mr-2" />
+                      Align Left
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign("center")}>
+                      <AlignCenter className="h-4 w-4 mr-2" />
+                      Align Center
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign("right")}>
+                      <AlignRight className="h-4 w-4 mr-2" />
+                      Align Right
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign("justify")}>
+                      <AlignJustify className="h-4 w-4 mr-2" />
+                      Justify
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Lists */}
+                <Button
+                  variant={safeEditorState.isBulletList ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => editor.chain().focus().toggleBulletList().run()}
+                  className="h-12 flex-col gap-1"
+                >
+                  <List className="h-4 w-4" />
+                  <span className="text-xs">Bullet List</span>
+                </Button>
+                <Button
+                  variant={safeEditorState.isOrderedList ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                  className="h-12 flex-col gap-1"
+                >
+                  <ListOrdered className="h-4 w-4" />
+                  <span className="text-xs">Numbered List</span>
+                </Button>
+
+                {/* Blockquote */}
+                <Button
+                  variant={safeEditorState.isBlockquote ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                  className="h-12 flex-col gap-1"
+                >
+                  <Quote className="h-4 w-4" />
+                  <span className="text-xs">Quote</span>
+                </Button>
+
+                {/* Math Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant={safeEditorState.isInlineMath || safeEditorState.isBlockMath ? "default" : "ghost"} 
+                      size="sm" 
+                      className="h-12 flex-col gap-1" 
+                      title="Insert Math"
+                    >
+                      <Sigma className="h-4 w-4" />
+                      <span className="text-xs">Math</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={insertInlineMath}>
+                      <Sigma className="h-4 w-4 mr-2" />
+                      Inline Math
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={insertDisplayMath}>
+                      <Sigma className="h-4 w-4 mr-2" />
+                      Display Math
+                    </DropdownMenuItem>
+                    
+                    {/* Show remove options when math is active */}
+                    {(safeEditorState.isInlineMath || safeEditorState.isBlockMath) && (
+                      <>
+                        <DropdownMenuSeparator />
+                        {safeEditorState.isInlineMath && (
+                          <DropdownMenuItem onClick={removeInlineMath} className="text-destructive">
+                            Remove Inline Math
+                          </DropdownMenuItem>
+                        )}
+                        {safeEditorState.isBlockMath && (
+                          <DropdownMenuItem onClick={removeBlockMath} className="text-destructive">
+                            Remove Block Math
+                          </DropdownMenuItem>
+                        )}
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Horizontal Rule */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                  className="h-12 flex-col gap-1"
+                >
+                  <Minus className="h-4 w-4" />
+                  <span className="text-xs">Divider</span>
                 </Button>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Subscript/Superscript */}
-        <Button
-          variant={safeEditorState.isSubscript ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleSubscript().run()}
-          disabled={!safeEditorState.canSubscript}
-          className="h-8 w-8 p-0"
-        >
-          <SubscriptIcon className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={safeEditorState.isSuperscript ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleSuperscript().run()}
-          disabled={!safeEditorState.canSuperscript}
-          className="h-8 w-8 p-0"
-        >
-          <SuperscriptIcon className="h-4 w-4" />
-        </Button>
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Text Alignment Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 px-2">
-              {getAlignmentIcon()}
-              <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => setTextAlign("left")}>
-              <AlignLeft className="h-4 w-4 mr-2" />
-              Align Left
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTextAlign("center")}>
-              <AlignCenter className="h-4 w-4 mr-2" />
-              Align Center
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTextAlign("right")}>
-              <AlignRight className="h-4 w-4 mr-2" />
-              Align Right
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTextAlign("justify")}>
-              <AlignJustify className="h-4 w-4 mr-2" />
-              Justify
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Lists */}
-        <Button
-          variant={safeEditorState.isBulletList ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className="h-8 w-8 p-0"
-        >
-          <List className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={safeEditorState.isOrderedList ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className="h-8 w-8 p-0"
-        >
-          <ListOrdered className="h-4 w-4" />
-        </Button>
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Blockquote */}
-        <Button
-          variant={safeEditorState.isBlockquote ? "default" : "ghost"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className="h-8 w-8 p-0"
-        >
-          <Quote className="h-4 w-4" />
-        </Button>
-
-        {/* Math Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              variant={safeEditorState.isInlineMath || safeEditorState.isBlockMath ? "default" : "ghost"} 
-              size="sm" 
-              className="h-8 w-8 p-0" 
-              title="Insert Math"
-            >
-              <Sigma className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={insertInlineMath}>
-              <Sigma className="h-4 w-4 mr-2" />
-              Inline Math
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={insertDisplayMath}>
-              <Sigma className="h-4 w-4 mr-2" />
-              Display Math
-            </DropdownMenuItem>
-            
-            {/* Show remove options when math is active */}
-            {(safeEditorState.isInlineMath || safeEditorState.isBlockMath) && (
-              <>
-                <DropdownMenuSeparator />
-                {safeEditorState.isInlineMath && (
-                  <DropdownMenuItem onClick={removeInlineMath} className="text-destructive">
-                    Remove Inline Math
-                  </DropdownMenuItem>
-                )}
-                {safeEditorState.isBlockMath && (
-                  <DropdownMenuItem onClick={removeBlockMath} className="text-destructive">
-                    Remove Block Math
-                  </DropdownMenuItem>
-                )}
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Horizontal Rule */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="h-8 w-8 p-0"
-        >
-          <Minus className="h-4 w-4" />
-        </Button>
-
-        {/* Math Dialog */}
-        <Dialog 
-          open={isMathDialogOpen} 
-          onOpenChange={(open) => {
-            setIsMathDialogOpen(open);
-            if (!open) {
-              setMathEditMode(false);
-              setMathExpression('');
-              if (mathEditMode && onCloseMathEditDialog) {
-                onCloseMathEditDialog();
+          {/* Math Dialog */}
+          <Dialog 
+            open={isMathDialogOpen} 
+            onOpenChange={(open) => {
+              setIsMathDialogOpen(open);
+              if (!open) {
+                setMathEditMode(false);
+                setMathExpression('');
+                if (mathEditMode && onCloseMathEditDialog) {
+                  onCloseMathEditDialog();
+                }
               }
-            }
-          }}
-        >
-          <DialogTrigger asChild>
-            <div style={{ display: 'none' }} />
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {mathEditMode ? 'Edit' : 'Insert'} {mathType === 'inline' ? 'Inline' : 'Block'} Math
-              </DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col space-y-4">
-              <div className="grid flex-1 gap-2">
-                <Input
-                  placeholder={mathType === 'inline' ? 'E = mc^2' : '\\int_a^b x^2 dx'}
-                  value={mathExpression}
-                  onChange={(e) => setMathExpression(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleMathSubmit();
-                    }
-                  }}
-                  className="font-mono"
-                  autoFocus
-                />
-                <div className="text-xs text-muted-foreground">
-                  Enter LaTeX expression. Examples: x^2, \\frac&#123;a&#125;&#123;b&#125;, \\sqrt&#123;x&#125;, \\sum_&#123;i=1&#125;^n
+            }}
+          >
+            <DialogTrigger asChild>
+              <div style={{ display: 'none' }} />
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {mathEditMode ? 'Edit' : 'Insert'} {mathType === 'inline' ? 'Inline' : 'Block'} Math
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-col space-y-4">
+                <div className="grid flex-1 gap-2">
+                  <Input
+                    placeholder={mathType === 'inline' ? 'E = mc^2' : '\\int_a^b x^2 dx'}
+                    value={mathExpression}
+                    onChange={(e) => setMathExpression(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleMathSubmit();
+                      }
+                    }}
+                    className="font-mono"
+                    autoFocus
+                  />
+                  <div className="text-xs text-muted-foreground">
+                    Enter LaTeX expression. Examples: x^2, \\frac&#123;a&#125;&#123;b&#125;, \\sqrt&#123;x&#125;, \\sum_&#123;i=1&#125;^n
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsMathDialogOpen(false);
+                      setMathEditMode(false);
+                      setMathExpression('');
+                      if (mathEditMode && onCloseMathEditDialog) {
+                        onCloseMathEditDialog();
+                      }
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleMathSubmit} 
+                    size="sm" 
+                    disabled={!mathExpression.trim()}
+                  >
+                    {mathEditMode ? 'Update' : 'Insert'}
+                  </Button>
                 </div>
               </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsMathDialogOpen(false);
-                    setMathEditMode(false);
-                    setMathExpression('');
-                    if (mathEditMode && onCloseMathEditDialog) {
-                      onCloseMathEditDialog();
-                    }
-                  }}
-                  size="sm"
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleMathSubmit} 
-                  size="sm" 
-                  disabled={!mathExpression.trim()}
-                >
-                  {mathEditMode ? 'Update' : 'Insert'}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        <Separator orientation="vertical" className="h-6 mx-1.5" />
-
-        {/* Keyboard Shortcuts Helper - Removed from here, now floating */}
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

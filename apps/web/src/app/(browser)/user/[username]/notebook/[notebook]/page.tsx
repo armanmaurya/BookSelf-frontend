@@ -16,6 +16,8 @@ import {
   Star,
   Download,
   Copy,
+  Settings,
+  Settings2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -30,6 +32,8 @@ import { gql } from "@apollo/client";
 import { GraphQLData } from "@/types/graphql";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { formatDate } from "@/lib/dateUtils";
+import { BsGear } from "react-icons/bs";
 
 const NotebookPage = async ({
   params,
@@ -54,6 +58,7 @@ const NotebookPage = async ({
           profilePicture
           email
           username
+          isSelf
         }
         indexPage {
           slug
@@ -110,17 +115,19 @@ const NotebookPage = async ({
                   <span>
                     Created{" "}
                     {notebookData?.createdAt
-                      ? new Date(notebookData.createdAt).toLocaleDateString(
-                          "en-US",
-                          { year: "numeric", month: "numeric", day: "numeric" }
-                        )
-                      : "27/9/2025"}
+                      ? formatDate(notebookData.createdAt)
+                      : "09/27/2025"}
                   </span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon">
                   <Share2 className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <Link href={`/user/${username}/notebook/${notebook}/settings`}>
+                    <BsGear className="h-4 w-4" />
+                  </Link>
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -129,6 +136,17 @@ const NotebookPage = async ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    {notebookData?.user?.isSelf && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link href={`/user/${username}/notebook/${notebook}/settings`}>
+                            <Settings className="h-4 w-4 mr-2" />
+                            Settings
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     <DropdownMenuItem>
                       <Download className="h-4 w-4 mr-2" />
                       Download PDF
@@ -200,11 +218,8 @@ const NotebookPage = async ({
                   <span className="text-muted-foreground">Created:</span>
                   <span className="text-foreground">
                     {notebookData?.createdAt
-                      ? new Date(notebookData.createdAt).toLocaleDateString(
-                          "en-US",
-                          { year: "numeric", month: "numeric", day: "numeric" }
-                        )
-                      : "27/9/2025"}
+                      ? formatDate(notebookData.createdAt)
+                      : "09/27/2025"}
                   </span>
                 </div>
               </div>
@@ -213,7 +228,9 @@ const NotebookPage = async ({
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-3">
               <Button variant="default" className="w-full" asChild>
-                <Link href={`/user/${username}/notebook/${notebook}/read/${notebookData?.indexPage.slug}`}>
+                <Link
+                  href={`/user/${username}/notebook/${notebook}/read/${notebookData?.indexPage.slug}`}
+                >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Open Notebook
                 </Link>
@@ -221,7 +238,7 @@ const NotebookPage = async ({
               <Button variant="outline" className="w-full" asChild>
                 <Link href={`/user/${username}/notebook/${notebook}/edit`}>
                   <Edit3 className="h-4 w-4 mr-2" />
-                  Edit
+                  Edit Pages
                 </Link>
               </Button>
             </div>

@@ -16,6 +16,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -70,6 +81,56 @@ const CREATE_PAGE_MUTATION = gql`
       ... on PageType {
         id
         slug
+      }
+    }
+  }
+`;
+
+const UPDATE_PAGE_MUTATION = gql`
+  mutation UpdatePage(
+    $notebookSlug: String!
+    $pagePath: String!
+    $title: String!
+  ) {
+    updatePage(
+      notebookSlug: $notebookSlug
+      pagePath: $pagePath
+      title: $title
+    ) {
+      ... on PageType {
+        hasChildren
+        id
+        index
+        path
+        slug
+        title
+        children {
+          hasChildren
+          id
+          path
+          slug
+          title
+        }
+      }
+    }
+  }
+`;
+
+const DELETE_PAGE_MUTATION = gql`
+  mutation DeletePage($notebookSlug: String!, $pagePath: String!) {
+    deletePage(notebookSlug: $notebookSlug, pagePath: $pagePath) {
+      ... on NotebookDeleteSuccess {
+        __typename
+        message
+        success
+      }
+      ... on NotebookAuthenticationError {
+        __typename
+        message
+      }
+      ... on NotebookPermissionError {
+        __typename
+        message
       }
     }
   }
@@ -178,10 +239,22 @@ const NewPageInput: React.FC<{
 
   return (
     <div
-      className="flex items-center gap-1 px-2 py-1.5 rounded-md bg-muted/20"
-      style={{ paddingLeft: `${level * 12 + 20}px` }}
+      className="flex items-center gap-1 px-1 md:px-2 py-1 md:py-1.5 rounded-md bg-muted/20 relative"
+      style={{ paddingLeft: `${level * 16 + 8}px` }}
     >
-      <FileText className="h-4 w-4 text-muted-foreground" />
+      {level > 0 && (
+        <div 
+          className="absolute top-0 bottom-0 w-px bg-border/40"
+          style={{ left: `${(level - 1) * 16 + 16}px` }}
+        />
+      )}
+      {level > 0 && (
+        <div 
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-px bg-border/40"
+          style={{ left: `${(level - 1) * 16 + 16}px` }}
+        />
+      )}
+      <FileText className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground shrink-0" />
       <Input
         ref={inputRef}
         value={title}
@@ -263,6 +336,8 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
     (item.children ?? []).length > 0
   );
   const [isLoadingChildren, setIsLoadingChildren] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -361,18 +436,20 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
 
     if (newTitle.trim() && newTitle !== item.title) {
       try {
-        const response = await fetch(
-          `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${currentPath}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title: newTitle.trim() }),
-          }
-        );
+        const { data, errors } = await client.mutate({
+          mutation: UPDATE_PAGE_MUTATION,
+          variables: {
+            notebookSlug: notebook,
+            pagePath: `/${currentPath}`,
+            title: newTitle.trim(),
+          },
+        });
 
-        if (response.ok) {
+        if (errors && errors.length > 0) {
+          throw new Error(errors[0].message);
+        }
+
+        if (data?.updatePage) {
           onRefresh();
           parentRefresh?.();
         }
@@ -384,37 +461,53 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
     setIsRenaming(false);
   };
 
-  const handleDelete = async () => {
+  const handleDeleteConfirm = async () => {
     if (!isEditMode) {
       return;
     }
 
-    if (
-      confirm(
-        `Delete "${item.title}"? This action cannot be undone.${
-          displayHasChildren ? " All child pages will also be deleted." : ""
-        }`
-      )
-    ) {
-      try {
-        const response = await fetch(
-          `${API_ENDPOINT.notebook.url}/${username}/${notebook}/${currentPath}`,
-          {
-            method: "DELETE",
-          }
-        );
+    setIsDeleting(true);
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: DELETE_PAGE_MUTATION,
+        variables: {
+          notebookSlug: notebook,
+          pagePath: `/${currentPath}`,
+        },
+      });
 
-        if (response.ok) {
-          parentRefresh?.();
-          if (isActive) {
-            const parentPath = path.slice(0, -1);
-            router.push(`${notebookUrl}/${flattenPath(parentPath)}`);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to delete page:", error);
+      if (errors && errors.length > 0) {
+        throw new Error(errors[0].message);
       }
+
+      const result = data?.deletePage;
+      
+      if (result?.__typename === "NotebookDeleteSuccess" && result.success) {
+        setShowDeleteDialog(false);
+        parentRefresh?.();
+        if (isActive) {
+          const parentPath = path.slice(0, -1);
+          router.push(`${notebookUrl}/${flattenPath(parentPath)}`);
+        }
+      } else if (result?.__typename === "NotebookAuthenticationError") {
+        console.error("Authentication error:", result.message);
+      } else if (result?.__typename === "NotebookPermissionError") {
+        console.error("Permission error:", result.message);
+      } else {
+        console.error("Failed to delete page: Unknown error");
+      }
+    } catch (error) {
+      console.error("Failed to delete page:", error);
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleDelete = () => {
+    if (!isEditMode) {
+      return;
+    }
+    setShowDeleteDialog(true);
   };
 
   const handleCreateChildPage = async (title: string) => {
@@ -470,23 +563,40 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
   };
 
   return (
-    <div className="select-none">
+    <div className="select-none relative">
+      {/* Vertical connector line */}
+      {level > 0 && (
+        <div 
+          className="absolute top-0 bottom-0 w-px bg-border/40"
+          style={{ left: `${(level - 1) * 16 + 16}px` }}
+        />
+      )}
+      
       <div
         className={cn(
-          "group flex items-center gap-1 px-2 py-1.5 rounded-md transition-colors",
+          "group relative flex items-center gap-1 px-1 md:px-2 py-1 md:py-1.5 rounded-md transition-colors",
           isActive ? "bg-primary/10 text-primary" : "hover:bg-muted/50"
         )}
-        style={{ paddingLeft: `${level * 12 + 8}px` }}
+        style={{ 
+          paddingLeft: `${level * 16 + 8}px`
+        }}
         onDoubleClick={isEditMode ? startRename : undefined}
       >
+        {/* Horizontal connector line */}
+        {level > 0 && (
+          <div 
+            className="absolute top-1/2 -translate-y-1/2 w-3 h-px bg-border/40"
+            style={{ left: `${(level - 1) * 16 + 16}px` }}
+          />
+        )}
         {displayHasChildren ? (
           <button
             onClick={handleToggle}
-            className="flex h-4 w-4 items-center justify-center rounded hover:bg-muted/50 transition-colors"
+            className="flex h-3 w-3 md:h-4 md:w-4 items-center justify-center rounded hover:bg-muted/50 transition-colors shrink-0"
           >
             <ChevronRight
               className={cn(
-                "h-3 w-3",
+                "h-2 w-2 md:h-3 md:w-3",
                 enableAnimation &&
                   "transition-transform duration-200 ease-in-out",
                 isExpanded && "rotate-90"
@@ -494,10 +604,10 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
             />
           </button>
         ) : (
-          <div className="w-4" />
+          <div className="w-3 md:w-4" />
         )}
 
-        <FileText className="h-4 w-4 text-muted-foreground" />
+        <FileText className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground shrink-0" />
 
         <div className="flex-1 min-w-0">
           {isEditMode && isRenaming ? (
@@ -556,13 +666,13 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
       {!isEditMode && children.length > 0 && (
         <div
           className={cn(
-            "grid overflow-hidden",
+            "grid overflow-hidden relative",
             isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
             enableAnimation &&
               "transition-[grid-template-rows] duration-200 ease-in-out"
           )}
         >
-          <div className="overflow-hidden ml-2">
+          <div className="overflow-hidden">
             {children.map((child) => (
               <PageTreeItem
                 key={child.id}
@@ -626,6 +736,36 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Page</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{item.title}"? This action cannot be undone.
+              {displayHasChildren && " All child pages will also be deleted."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
@@ -747,8 +887,8 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-card border-r">
-      <div className="flex items-center gap-3 p-4 border-b bg-muted/20">
+    <div className="h-full flex flex-col bg-card border-r overflow-hidden">
+      <div className="flex items-center gap-3 p-3 md:p-4 border-b bg-muted/20 shrink-0">
         <BookOpen className="h-5 w-5 text-primary" />
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-sm truncate">
@@ -763,21 +903,21 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
             size="sm"
             variant="outline"
             onClick={startNewRootPage}
-            className="gap-2"
+            className="gap-1 md:gap-2 px-2 md:px-3"
           >
-            <Plus className="h-4 w-4" />
-            New
+            <Plus className="h-3 w-3 md:h-4 md:w-4" />
+            <span className="hidden sm:inline">New</span>
           </Button>
         )}
       </div>
 
       {isEditMode && (
-        <div className="px-4 py-2 text-xs text-muted-foreground bg-muted/10 border-b">
+        <div className="px-3 md:px-4 py-2 text-xs text-muted-foreground bg-muted/10 border-b shrink-0 hidden md:block">
           Double-click a page to rename it, or use the menu for more actions.
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide p-2">
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-1 md:p-2 min-h-0">
         {isEditMode && isLoadingPages ? (
           <div className="px-3 py-2 text-xs text-muted-foreground">
             Loading pages...
@@ -796,6 +936,7 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
                 level={0}
                 mode={mode}
                 onRefresh={isEditMode ? loadRootPages : () => undefined}
+                parentRefresh={isEditMode ? loadRootPages : undefined}
                 loadChildren={isEditMode ? loadChildren : undefined}
               />
             ))}
@@ -849,12 +990,12 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
       </div>
 
       {!isEditMode && (
-        <div className="p-3 border-t bg-muted/10">
+        <div className="p-2 md:p-3 border-t bg-muted/10 shrink-0">
           <Link
             href={`/user/${username}/notebook/${notebook}/read`}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors block"
           >
-            ← Back to notebook overview
+            <span className="hidden md:inline">←</span> Back to overview
           </Link>
         </div>
       )}

@@ -5,15 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Upload,
-  X,
-  BookOpen,
-  FileText,
-  Image as ImageIcon,
-} from "lucide-react";
+import { BookOpen, FileText, Image as ImageIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
 import { gql } from "@apollo/client";
 import client from "@/lib/apolloClient";
 import { useRouter } from "next/navigation";
@@ -23,11 +16,9 @@ const Page = () => {
   const [formData, setFormData] = useState({
     name: "",
     overview: "",
-    cover: null as File | null,
   });
   const { user } = useUser();
   const router = useRouter();
-  const [coverPreview, setCoverPreview] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (
@@ -60,25 +51,6 @@ const Page = () => {
     }
   `;
 
-  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, cover: file }));
-
-      // Create preview URL
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCoverPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeCover = () => {
-    setFormData((prev) => ({ ...prev, cover: null }));
-    setCoverPreview("");
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -104,7 +76,7 @@ const Page = () => {
   const isFormValid = formData.name.trim() && formData.overview.trim();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
@@ -181,95 +153,17 @@ const Page = () => {
               </div>
             </div>
 
-            {/* Cover Upload Sidebar */}
-            <div className="space-y-6">
-              {/* Cover Upload Section */}
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <ImageIcon className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold text-foreground">
-                    Cover Image
-                  </h2>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Add a visual identity to your notebook
-                </p>
-
-                <div className="space-y-4">
-                  {!coverPreview ? (
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleCoverChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        id="cover-upload"
-                      />
-                      <Label
-                        htmlFor="cover-upload"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/50 transition-colors"
-                      >
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <span className="text-sm font-medium text-foreground">
-                          Upload Cover
-                        </span>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          PNG, JPG up to 5MB
-                        </span>
-                      </Label>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                        <Image
-                          src={coverPreview}
-                          alt="Cover preview"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
-                        onClick={removeCover}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
+            {/* Sidebar */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <ImageIcon className="h-5 w-5 text-primary" />
+                <h2 className="text-lg font-semibold text-foreground">
+                  Cover Image
+                </h2>
               </div>
-
-              {/* Preview Section */}
-              <div className="bg-muted/20 rounded-lg p-4 border border-border/40">
-                <h3 className="text-sm font-medium mb-3">Preview</h3>
-                <div className="space-y-3">
-                  <div className="w-full h-20 bg-background rounded-md flex items-center justify-center border">
-                    {coverPreview ? (
-                      <div className="relative w-full h-full rounded-md overflow-hidden">
-                        <Image
-                          src={coverPreview}
-                          alt="Preview"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm truncate">
-                      {formData.name || "Untitled Notebook"}
-                    </h4>
-                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                      {formData.overview || "No description provided"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                Notebook covers can be added from settings after creation.
+              </p>
             </div>
           </div>
 
