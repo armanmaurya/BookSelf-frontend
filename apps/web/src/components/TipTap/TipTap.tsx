@@ -174,7 +174,115 @@ const Tiptap = ({
               
               return result;
             },
+            // Auto-convert math patterns when typing
+            '$': () => {
+              // Allow the $ to be typed normally - conversion happens on space
+              return false;
+            },
+            // Handle space to trigger math conversions
+            ' ': () => {
+              const { state } = this.editor;
+              const { selection } = state;
+              const { $from } = selection;
+              
+              // Get text before cursor
+              const textBefore = $from.parent.textContent.slice(0, $from.parentOffset);
+              
+              // Check for block math pattern: $$ + space
+              if (textBefore.endsWith('$$')) {
+                // Remove the $$ and insert block math, then add space
+                this.editor.chain()
+                  .deleteRange({
+                    from: $from.pos - 2,
+                    to: $from.pos,
+                  })
+                  .insertContent('<div class="tiptap-mathematics-render" data-type="block-math" data-latex=""></div>')
+                  .run();
+                return true;
+              }
+              
+              // Check for inline math pattern: content$ + space
+              const inlineMathMatch = textBefore.match(/([^$\s]+)\$$/);
+              if (inlineMathMatch) {
+                const mathContent = inlineMathMatch[1];
+                
+                // Only convert if it looks like math and is reasonable length
+                if (mathContent.length <= 30 && mathContent.length > 0 && (
+                  /[a-zA-Z]/.test(mathContent) || // contains letters (variables)
+                  /[\+\-\*\/\=\^\(\)\[\]{}\\]/.test(mathContent) || // contains math operators or backslash
+                  /\d/.test(mathContent) // contains numbers
+                )) {
+                  // Remove the content and $ and insert inline math, then add the space
+                  this.editor.chain()
+                    .deleteRange({
+                      from: $from.pos - mathContent.length - 1,
+                      to: $from.pos,
+                    })
+                    .insertContent(`<span class="tiptap-mathematics-render" data-type="inline-math" data-latex="${mathContent}"></span> `)
+                    .run();
+                  return true;
+                }
+              }
+              
+              return false;
+            },
           };
+        },
+      }),
+      // Custom extension to handle math markdown paste
+      Extension.create({
+        name: 'mathMarkdownPaste',
+        addProseMirrorPlugins() {
+          const { Plugin, PluginKey } = require('@tiptap/pm/state');
+          
+          return [
+            new Plugin({
+              key: new PluginKey('mathMarkdownPaste'),
+              props: {
+                handlePaste: (view: any, event: ClipboardEvent, slice: any) => {
+                  const text = event.clipboardData?.getData('text/plain');
+                  if (!text) return false;
+
+                  // Check if text contains math expressions
+                  const hasBlockMath = /\$\$[\s\S]*?\$\$/g.test(text);
+                  const hasInlineMath = /(?<!\$)\$(?!\$)[\s\S]*?(?<!\$)\$(?!\$)/g.test(text);
+
+                  if (hasBlockMath || hasInlineMath) {
+                    event.preventDefault();
+                    
+                    let processedText = text;
+                    
+                    // Process block math first ($$...$$)
+                    processedText = processedText.replace(/\$\$([\s\S]*?)\$\$/g, (match: string, latex: string) => {
+                      const cleanLatex = latex.trim();
+                      // Use Mathematics extension's format
+                      return `<div class="tiptap-mathematics-render" data-type="block-math" data-latex="${cleanLatex.replace(/"/g, '&quot;')}"></div>`;
+                    });
+                    
+                    // Process inline math ($...$)
+                    processedText = processedText.replace(/(?<!\$)\$(?!\$)([\s\S]*?)(?<!\$)\$(?!\$)/g, (match: string, latex: string) => {
+                      const cleanLatex = latex.trim();
+                      // Use Mathematics extension's format
+                      return `<span class="tiptap-mathematics-render" data-type="inline-math" data-latex="${cleanLatex.replace(/"/g, '&quot;')}"></span>`;
+                    });
+                    
+                    // Convert remaining markdown to basic HTML
+                    processedText = processedText
+                      .replace(/\n\n/g, '</p><p>')
+                      .replace(/\n/g, '<br>')
+                      .replace(/^/, '<p>')
+                      .replace(/$/, '</p>');
+                    
+                    // Insert the processed content
+                    this.editor.chain().focus().insertContent(processedText).run();
+                    return true;
+                  }
+                  
+                  return false;
+                },
+              },
+            }),
+          ];
         },
       }),
       UniqueID.configure({
@@ -407,6 +515,8 @@ const Tiptap = ({
               [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:font-mono 
               [&_.math-inline]:bg-muted/50 [&_.math-inline]:px-2 [&_.math-inline]:py-1 [&_.math-inline]:rounded-md [&_.math-inline]:text-sm
               [&_.math-display]:bg-muted/30 [&_.math-display]:p-4 [&_.math-display]:rounded-lg [&_.math-display]:my-6 [&_.math-display]:text-center
+              [&_.tiptap-mathematics-render[data-type='block-math']]:bg-muted/40 [&_.tiptap-mathematics-render[data-type='block-math']]:border [&_.tiptap-mathematics-render[data-type='block-math']]:border-border/30 [&_.tiptap-mathematics-render[data-type='block-math']]:rounded-lg [&_.tiptap-mathematics-render[data-type='block-math']]:p-4 [&_.tiptap-mathematics-render[data-type='block-math']]:my-4 [&_.tiptap-mathematics-render[data-type='block-math']]:min-h-[3rem] [&_.tiptap-mathematics-render[data-type='block-math']]:flex [&_.tiptap-mathematics-render[data-type='block-math']]:items-center [&_.tiptap-mathematics-render[data-type='block-math']]:justify-center [&_.tiptap-mathematics-render[data-type='block-math']]:cursor-pointer [&_.tiptap-mathematics-render[data-type='block-math']]:transition-colors [&_.tiptap-mathematics-render[data-type='block-math']]:hover:bg-muted/60
+              [&_.tiptap-mathematics-render[data-type='inline-math']]:bg-muted/30 [&_.tiptap-mathematics-render[data-type='inline-math']]:px-2 [&_.tiptap-mathematics-render[data-type='inline-math']]:py-1 [&_.tiptap-mathematics-render[data-type='inline-math']]:rounded-md [&_.tiptap-mathematics-render[data-type='inline-math']]:text-sm [&_.tiptap-mathematics-render[data-type='inline-math']]:cursor-pointer [&_.tiptap-mathematics-render[data-type='inline-math']]:transition-colors [&_.tiptap-mathematics-render[data-type='inline-math']]:hover:bg-muted/50
               [&_blockquote]:border-l-4 [&_blockquote]:border-primary/30 [&_blockquote]:bg-muted/30 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:rounded-r-md
               [&_img]:rounded-lg [&_img]:shadow-sm"
           />
