@@ -21,7 +21,7 @@ export const ArticleCard = ({ article }: { article: Article }) => {
   const formattedDate = formatDistanceToNow(parseISO(article.createdAt), {
     addSuffix: true,
   });
-
+  
   return (
     <Card className="group overflow-hidden relative border-0 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer">
       <Link href={`/user/${article.author.username}/article/${article.slug}`}>
@@ -43,7 +43,7 @@ export const ArticleCard = ({ article }: { article: Article }) => {
           )}
 
           {/* Gradient overlay for text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
 
           {/* Content overlay */}
           <div className="absolute inset-0 p-4 flex flex-col justify-between text-white">

@@ -207,7 +207,18 @@ export const UserBooks = ({ username, isSelf }: UserBooksProps) => {
       {filteredNotebooks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredNotebooks.map((notebook, index) => (
-            <NotebookCard key={notebook.id} notebook={notebook} index={index} />
+            <div
+              key={notebook.id}
+              className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+              style={{ 
+                animationDelay: `${Math.min(index, 8) * 50}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+              <div className="">
+                <NotebookCard notebook={notebook} index={index} />
+              </div>
+            </div>
           ))}
         </div>
       ) : (

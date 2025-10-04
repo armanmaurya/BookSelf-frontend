@@ -27,13 +27,7 @@ interface NotebookCardProps {
 
 export const NotebookCard = ({ notebook, index = 0 }: NotebookCardProps) => {
   return (
-    <div
-      className="animate-in fade-in slide-in-from-bottom-4 duration-500"
-      style={{ 
-        animationDelay: `${Math.min(index, 8) * 50}ms`,
-        animationFillMode: 'both'
-      }}
-    >
+    <div>
       <Link href={`/user/${notebook.user.username}/notebook/${notebook.slug}`}>
         <Card className="group hover:shadow-lg transition-all duration-300 h-full cursor-pointer overflow-hidden">
           {/* Cover Image - 9:16 aspect ratio (portrait like book cover) */}
