@@ -275,3 +275,27 @@ input[type="number"] {
     margin: 0 auto;
   }
 }
+
+/* Force monospace font for all code elements */
+.tiptap pre,
+.tiptap pre *,
+.tiptap code,
+.tiptap .hljs,
+.tiptap .hljs *,
+pre,
+code,
+.language-javascript,
+.language-python,
+.language-java,
+.language-css,
+.language-html,
+.language-typescript,
+.language-json,
+.language-bash,
+.language-shell,
+.language-sql,
+.language-yaml,
+.language-xml {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-variant-ligatures: normal !important;
+}

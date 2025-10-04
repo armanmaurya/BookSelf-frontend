@@ -154,6 +154,11 @@ const Tiptap = ({
         addKeyboardShortcuts() {
           return {
             Enter: () => {
+              // Check if we're inside a code block - if so, let the default behavior handle it
+              if (this.editor.isActive('codeBlock')) {
+                return false; // Let the default Enter behavior in code blocks handle this
+              }
+              
               const { defaultFontFamily, defaultFontSize } = this.storage as { defaultFontFamily: string | null; defaultFontSize: string | null };
               
               // Split the block first
