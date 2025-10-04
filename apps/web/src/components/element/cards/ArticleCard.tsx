@@ -84,7 +84,7 @@ export const ArticleCard = ({ article }: { article: Article }) => {
 
             {/* Bottom section with content */}
             <div className="space-y-3">
-              <h2 className="text-xl text-white line-clamp-2 leading-tight">
+              <h2 className="font-bold text-lg leading-tight line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                 {article.title || "Untitled Article"}
               </h2>
 
