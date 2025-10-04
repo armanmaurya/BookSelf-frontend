@@ -24,6 +24,7 @@ import { ArticleBodyWithMath } from "@/components/ArticleBodyWithMath";
 import { ArticleProvider } from "@/context/article-context";
 import { RelatedArticles } from "@/components/blocks/RelatedArticles";
 import { AuthorInformation } from "@/components/blocks/AuthorInformation";
+import Script from "next/script";
 
 const QUERY = gql`
   query MyQuery($slug: String!) {
@@ -116,6 +117,14 @@ const Page = async ({
 
   return (
     <>
+      {/* Google AdSense Script */}
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2256001565970115"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+      
       <ArticleProvider initialArticle={article}>
         {/* JSON-LD Structured Data */}
         <script
@@ -232,6 +241,20 @@ const Page = async ({
                 <ArticleBodyWithMath />
               </SyntaxHighlight>
             </main>
+
+            {/* Google AdSense Ad - After Content */}
+            <div className="my-6">
+              <ins
+                className="adsbygoogle"
+                style={{ display: "block" }}
+                data-ad-format="autorelaxed"
+                data-ad-client="ca-pub-2256001565970115"
+                data-ad-slot="YOUR_AD_SLOT_ID_2"
+              />
+              <Script id="adsense-init-2" strategy="afterInteractive">
+                {`(adsbygoogle = window.adsbygoogle || []).push({});`}
+              </Script>
+            </div>
 
             <Separator className="my-8" />
 

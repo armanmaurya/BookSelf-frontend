@@ -9,6 +9,7 @@ import { Article } from "@/types/article";
 import { cookies } from "next/headers";
 import { LandingPage } from "@/components/LandingPage";
 import { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   alternates: {
@@ -89,7 +90,16 @@ export default async function Home() {
   const notebooks = notebooksResult.data.notebooks;
 
   return (
-    <main className="p-3 space-y-8">
+    <>
+      {/* Google AdSense Script */}
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2256001565970115"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+      
+      <main className="p-3 space-y-8">
       {/* Notebooks Section */}
       {notebooks && notebooks.length > 0 && (
         <section>
@@ -107,6 +117,21 @@ export default async function Home() {
         </section>
       )}
 
+      {/* Google AdSense Ad - Between Sections */}
+      <div className="flex justify-center my-8">
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client="ca-pub-2256001565970115"
+          data-ad-slot="YOUR_AD_SLOT_ID_HOME"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+        <Script id="adsense-init-home" strategy="afterInteractive">
+          {`(adsbygoogle = window.adsbygoogle || []).push({});`}
+        </Script>
+      </div>
+
       {/* Articles Section */}
       <section>
         <div className="flex items-center justify-between mb-4">
@@ -121,5 +146,6 @@ export default async function Home() {
         </div>
       </section>
     </main>
+    </>
   );
 }
