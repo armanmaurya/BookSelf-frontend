@@ -227,14 +227,21 @@ const NotebookPage = async ({
 
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="default" className="w-full" asChild>
-                <Link
-                  href={`/user/${username}/notebook/${notebook}/read/${notebookData?.indexPage.slug}`}
-                >
+              {notebookData?.indexPage?.slug ? (
+                <Button variant="default" className="w-full" asChild>
+                  <Link
+                    href={`/user/${username}/notebook/${notebook}/read/${notebookData.indexPage.slug}`}
+                  >
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Open Notebook
+                  </Link>
+                </Button>
+              ) : (
+                <Button variant="default" className="w-full" disabled>
                   <BookOpen className="h-4 w-4 mr-2" />
-                  Open Notebook
-                </Link>
-              </Button>
+                  No Pages Yet
+                </Button>
+              )}
               <Button variant="outline" className="w-full" asChild>
                 <Link href={`/user/${username}/notebook/${notebook}/edit`}>
                   <Edit3 className="h-4 w-4 mr-2" />
