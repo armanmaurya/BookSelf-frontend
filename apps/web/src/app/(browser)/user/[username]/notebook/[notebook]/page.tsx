@@ -124,11 +124,13 @@ const NotebookPage = async ({
                 <Button variant="ghost" size="icon">
                   <Share2 className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon">
-                  <Link href={`/user/${username}/notebook/${notebook}/settings`}>
-                    <BsGear className="h-4 w-4" />
-                  </Link>
-                </Button>
+                {notebookData?.user?.isSelf && (
+                  <Button variant="ghost" size="icon">
+                    <Link href={`/user/${username}/notebook/${notebook}/settings`}>
+                      <BsGear className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -226,7 +228,7 @@ const NotebookPage = async ({
             </div>
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className={`grid gap-3 ${notebookData?.user?.isSelf ? 'grid-cols-2' : 'grid-cols-1'}`}>
               {notebookData?.indexPage?.slug ? (
                 <Button variant="default" className="w-full" asChild>
                   <Link
@@ -242,12 +244,14 @@ const NotebookPage = async ({
                   No Pages Yet
                 </Button>
               )}
-              <Button variant="outline" className="w-full" asChild>
-                <Link href={`/user/${username}/notebook/${notebook}/edit`}>
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  Edit Pages
-                </Link>
-              </Button>
+              {notebookData?.user?.isSelf && (
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href={`/user/${username}/notebook/${notebook}/edit`}>
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Edit Pages
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
