@@ -1,4 +1,4 @@
-# Copilot Instructions for BookSelf Frontend
+# Copilot Instructions for Infobite Frontend
 
 ## Core architecture
 - Monorepo managed with Turborepo (`turbo.json`) and npm workspaces; the main app lives in `apps/web` and ships a Next.js 14 App Router experience.

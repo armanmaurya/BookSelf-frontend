@@ -1,6 +1,6 @@
 "use client";
 import { gql } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import client from "@/lib/apolloClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,10 +91,30 @@ export const NotebooksView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"LATEST" | "OLDEST" | "NAME">("LATEST");
   const [authorFilter, setAuthorFilter] = useState("");
+  const [debouncedAuthorFilter, setDebouncedAuthorFilter] = useState("");
   const [limit, setLimit] = useState(20);
   const [lastId, setLastId] = useState<number | undefined>(undefined);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 1000); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Debounce author filter
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedAuthorFilter(authorFilter);
+    }, 1000); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [authorFilter]);
 
   const fetchNotebooks = async () => {
     try {
@@ -105,9 +125,9 @@ export const NotebooksView = () => {
         query: NOTEBOOKS_QUERY,
         variables: {
           limit,
-          query: searchQuery,
+          query: debouncedSearchQuery,
           sortBy,
-          username: authorFilter || undefined,
+          username: debouncedAuthorFilter || undefined,
           lastId,
         },
       });
@@ -131,7 +151,7 @@ export const NotebooksView = () => {
     // Reset pagination when search or filters change
     setLastId(undefined);
     fetchNotebooks();
-  }, [searchQuery, sortBy, authorFilter]);
+  }, [debouncedSearchQuery, sortBy, debouncedAuthorFilter]);
 
   useEffect(() => {
     // Handle pagination
@@ -146,8 +166,8 @@ export const NotebooksView = () => {
   };
 
   const filteredNotebooks = notebooks.filter(notebook => {
-    if (searchQuery && !notebook.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        !notebook.overview?.toLowerCase().includes(searchQuery.toLowerCase())) {
+    if (debouncedSearchQuery && !notebook.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) && 
+        !notebook.overview?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())) {
       return false;
     }
     return true;
@@ -159,7 +179,7 @@ export const NotebooksView = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Discover Notebooks</h1>
         <p className="text-muted-foreground">
-          Explore knowledge and ideas shared by the BookSelf community
+          Explore knowledge and ideas shared by the InfoBite community
         </p>
       </div>
 
@@ -300,7 +320,7 @@ export const NotebooksView = () => {
               No notebooks found
             </h3>
             <p className="text-muted-foreground max-w-md mb-6">
-              {searchQuery || authorFilter 
+              {debouncedSearchQuery || debouncedAuthorFilter 
                 ? "Try adjusting your search criteria or filters to find more notebooks."
                 : "No notebooks have been published yet. Be the first to share your knowledge!"
               }
@@ -309,7 +329,9 @@ export const NotebooksView = () => {
               <Button 
                 onClick={() => {
                   setSearchQuery("");
+                  setDebouncedSearchQuery("");
                   setAuthorFilter("");
+                  setDebouncedAuthorFilter("");
                   setLastId(undefined);
                 }}
                 variant="outline"

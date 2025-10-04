@@ -17,6 +17,7 @@ import { UserProvider } from "@/context/auth-context";
 import { User } from "@/types/user";
 import { LoadingProvider, TriangleSpinner } from "@bookself/react-loading";
 import { TopBar } from "@/components/TopBar";
+import { GlobalSidebar, SidebarProvider } from "@/components/GlobalSidebar";
 import ThemeSwitcher from "@/components/element/button/ThemeSwitchButton";
 // import client from "@/lib/apolloClient";
 import { createServerClient } from "@/lib/ServerClient";
@@ -187,10 +188,13 @@ export default async function RootLayout({
             />
             <UserProvider userData={user}>
               <ContextProvider>
-                <TopBar />
-                <div className="pt-14">
-                  <div className="">{children}</div>
-                </div>
+                <SidebarProvider>
+                  <TopBar />
+                  <GlobalSidebar />
+                  <div className="pt-14">
+                    <div className="">{children}</div>
+                  </div>
+                </SidebarProvider>
               </ContextProvider>
             </UserProvider>
           </LoadingProvider>

@@ -13,13 +13,15 @@ import {
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { HomeIcon, Plus } from "lucide-react";
 import { FaPenNib } from "react-icons/fa";
+import { HamburgerMenuButton } from "./HamburgerMenuButton";
 
 export const TopBar = () => {
   return (
     <header className="w-full h-14 border-b fixed top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container flex items-center justify-between h-full px-4">
-        {/* Left side - Logo and Navigation */}
-        <div className="flex items-center gap-6">
+        {/* Left side - Hamburger Menu, Logo and Navigation */}
+        <div className="flex items-center gap-4">
+          <HamburgerMenuButton />
           <Link href="/" className="flex items-center gap-2">
             <HomeIcon className="h-5 w-5" />
             <span className="text-lg font-semibold">Infobite</span>

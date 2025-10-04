@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { usePathname } from "next/navigation";
+import React, { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   Card,
@@ -61,6 +61,16 @@ const Sidebar = () => {
 };
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Redirect /settings to /settings/profile
+  useEffect(() => {
+    if (pathname === "/settings") {
+      router.replace("/settings/profile");
+    }
+  }, [pathname, router]);
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen mx-auto max-w-7xl px-4 sm:px-6">
       <div className="flex flex-col md:flex-row flex-1 gap-4 py-4">

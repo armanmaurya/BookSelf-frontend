@@ -15,7 +15,7 @@ const average = Average({
 
 export const metadata: Metadata = {
   title:
-    "BookSelf - Your go-to destination for insightful and engaging articles",
+    "InfoBite - Your go-to destination for insightful and engaging articles",
   description:
     "Welcome to bookself.site, your go-to destination for insightful and engaging articles on a wide range of topics. Whether you're looking to stay informed, learn something new, or simply enjoy some quality reading time",
 };

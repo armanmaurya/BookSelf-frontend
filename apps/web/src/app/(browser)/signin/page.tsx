@@ -37,7 +37,7 @@ export default async function Login() {
             <div className="max-w-lg">
               {/* Logo/Brand */}
               <div className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-2">BookSelf</h1>
+                <h1 className="text-4xl font-bold text-foreground mb-2">InfoBite</h1>
                 <div className="w-12 h-1 bg-primary rounded-full" />
               </div>
               
@@ -77,7 +77,7 @@ export default async function Login() {
           <div className="w-full max-w-md">
             {/* Mobile Brand Header */}
             <div className="lg:hidden text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-2">BookSelf</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">InfoBite</h1>
               <p className="text-muted-foreground">Welcome back to your library</p>
             </div>
 
