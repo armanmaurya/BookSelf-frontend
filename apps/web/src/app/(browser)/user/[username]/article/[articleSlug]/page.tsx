@@ -117,14 +117,6 @@ const Page = async ({
 
   return (
     <>
-      {/* Google AdSense Script */}
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2256001565970115"
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-      
       <ArticleProvider initialArticle={article}>
         {/* JSON-LD Structured Data */}
         <script

@@ -154,6 +154,14 @@ export default async function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* Google AdSense Script */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2256001565970115"
+          crossOrigin="anonymous"
+        />
+        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

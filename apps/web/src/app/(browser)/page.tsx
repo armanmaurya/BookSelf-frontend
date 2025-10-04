@@ -76,9 +76,9 @@ export default async function Home() {
   const isAuthenticated = !!cookieStore.get("sessionid")?.value;
 
   // If user is not authenticated, show landing page
-  if (!isAuthenticated) {
-    return <LandingPage />;
-  }
+  // if (!isAuthenticated) {
+  //   return <LandingPage />;
+  // }
 
   // If user is authenticated, fetch both articles and notebooks in parallel
   const [articlesResult, notebooksResult] = await Promise.all([
@@ -90,16 +90,7 @@ export default async function Home() {
   const notebooks = notebooksResult.data.notebooks;
 
   return (
-    <>
-      {/* Google AdSense Script */}
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2256001565970115"
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-      
-      <main className="p-3 space-y-8">
+    <main className="p-3 space-y-8">
       {/* Notebooks Section */}
       {notebooks && notebooks.length > 0 && (
         <section>
@@ -146,6 +137,5 @@ export default async function Home() {
         </div>
       </section>
     </main>
-    </>
   );
 }
