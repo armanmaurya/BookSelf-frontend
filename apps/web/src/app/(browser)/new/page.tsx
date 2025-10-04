@@ -113,7 +113,7 @@ export default function NewPage() {
             Create Something New
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose what you'd like to create. Whether it's a quick article, an organized notebook, or a curated collection.
+            Choose what you&apos;d like to create. Whether it&apos;s a quick article, an organized notebook, or a curated collection.
           </p>
         </div>
 

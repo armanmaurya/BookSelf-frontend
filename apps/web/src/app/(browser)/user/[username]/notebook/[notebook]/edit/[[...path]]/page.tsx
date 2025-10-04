@@ -113,7 +113,7 @@ const EditPage = async ({
               </div>
               <h2 className="text-xl font-semibold mb-2">Page Not Found</h2>
               <p className="text-muted-foreground mb-6">
-                The page you're looking for doesn't exist or you don't have access to it.
+                The page you&apos;re looking for doesn&apos;t exist or you don&apos;t have access to it.
               </p>
             </CardContent>
           </Card>

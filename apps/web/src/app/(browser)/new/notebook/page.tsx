@@ -125,7 +125,7 @@ const Page = () => {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      Choose a name that clearly describes the notebook's topic
+                      Choose a name that clearly describes the notebook&apos;s topic
                       or purpose
                     </p>
                   </div>
@@ -146,7 +146,7 @@ const Page = () => {
                     />
                     <p className="text-xs text-muted-foreground">
                       Provide a clear overview to help you and others understand
-                      the notebook's scope
+                      the notebook&apos;s scope
                     </p>
                   </div>
                 </div>

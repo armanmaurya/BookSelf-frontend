@@ -858,7 +858,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Page</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{item.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{item.title}&quot;? This action cannot be undone.
               {displayHasChildren && " All child pages will also be deleted."}
             </AlertDialogDescription>
           </AlertDialogHeader>

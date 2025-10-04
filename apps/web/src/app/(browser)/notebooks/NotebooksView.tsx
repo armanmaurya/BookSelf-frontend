@@ -116,7 +116,7 @@ export const NotebooksView = () => {
     return () => clearTimeout(timer);
   }, [authorFilter]);
 
-  const fetchNotebooks = async () => {
+  const fetchNotebooks = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -145,20 +145,20 @@ export const NotebooksView = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [limit, debouncedSearchQuery, sortBy, debouncedAuthorFilter, lastId]);
 
   useEffect(() => {
     // Reset pagination when search or filters change
     setLastId(undefined);
     fetchNotebooks();
-  }, [debouncedSearchQuery, sortBy, debouncedAuthorFilter]);
+  }, [debouncedSearchQuery, sortBy, debouncedAuthorFilter, fetchNotebooks]);
 
   useEffect(() => {
     // Handle pagination
     if (lastId) {
       fetchNotebooks();
     }
-  }, [lastId]);
+  }, [lastId, fetchNotebooks]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

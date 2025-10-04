@@ -366,7 +366,7 @@ export default function NotebookSettingsForm({
               Basic Information
             </CardTitle>
             <CardDescription>
-              Update your notebook's basic details
+              Update your notebook&apos;s basic details
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -630,7 +630,7 @@ export default function NotebookSettingsForm({
                       <AlertDialogDescription className="space-y-3">
                         <p>
                           This will permanently delete{" "}
-                          <strong>"{notebookData.name}"</strong> and all its
+                          <strong>&quot;{notebookData.name}&quot;</strong> and all its
                           pages. This action cannot be undone.
                         </p>
                         <div className="space-y-2">

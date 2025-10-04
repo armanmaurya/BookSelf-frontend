@@ -336,7 +336,7 @@ export default function NotebookSettings({
               Basic Information
             </CardTitle>
             <CardDescription>
-              Update your notebook's name, description, and thumbnail
+              Update your notebook&apos;s name, description, and thumbnail
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -575,7 +575,7 @@ export default function NotebookSettings({
                           <AlertDialogDescription className="space-y-3">
                             <p>
                               This action cannot be undone. This will permanently delete the notebook
-                              <strong> "{notebookData.name}" </strong>
+                              <strong> &quot;{notebookData.name}&quot; </strong>
                               and all of its pages.
                             </p>
                             <div className="space-y-2">
