@@ -21,7 +21,6 @@ export const TopBar = () => {
       <nav className="container flex items-center justify-between h-full px-4">
         {/* Left side - Hamburger Menu, Logo and Navigation */}
         <div className="flex items-center gap-4">
-          <HamburgerMenuButton />
           <Link href="/" className="flex items-center gap-2">
             <HomeIcon className="h-5 w-5" />
             <span className="text-lg font-semibold">Infobite</span>

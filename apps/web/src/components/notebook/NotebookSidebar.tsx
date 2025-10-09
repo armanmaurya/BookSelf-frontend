@@ -10,6 +10,7 @@ import React, {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import "./NotebookSidebar.css";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -334,6 +335,7 @@ interface PageTreeItemProps {
   onDrop?: (targetItem: NotebookSidebarPage, targetPath: string[], position: 'before' | 'inside' | 'after') => void;
   isDragging?: boolean;
   draggedItemId?: number | null;
+  onMobileClose?: () => void;
 }
 
 const PageTreeItem: React.FC<PageTreeItemProps> = ({
@@ -353,6 +355,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
   onDrop,
   isDragging: isDraggingAny,
   draggedItemId,
+  onMobileClose,
 }) => {
   const isEditMode = mode === "edit";
   const currentPath = flattenPath(path);
@@ -736,6 +739,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
               href={`${notebookUrl}/${currentPath}`}
               className="block truncate text-sm hover:underline"
               title={item.title}
+              onClick={onMobileClose}
             >
               {item.title}
             </Link>
@@ -803,6 +807,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
                 onDrop={onDrop}
                 isDragging={isDraggingAny}
                 draggedItemId={draggedItemId}
+                onMobileClose={onMobileClose}
               />
             ))}
           </div>
@@ -838,6 +843,7 @@ const PageTreeItem: React.FC<PageTreeItemProps> = ({
                   onDrop={onDrop}
                   isDragging={isDraggingAny}
                   draggedItemId={draggedItemId}
+                  onMobileClose={onMobileClose}
                 />
               ))}
 
@@ -891,6 +897,7 @@ interface NotebookSidebarProps {
   notebook: string;
   initialPages: NotebookSidebarInitialPage[];
   notebookName?: string;
+  onMobileClose?: () => void;
 }
 
 export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
@@ -899,6 +906,7 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
   notebook,
   initialPages,
   notebookName,
+  onMobileClose,
 }) => {
   const isEditMode = mode === "edit";
   const pathname = usePathname();
@@ -1090,142 +1098,158 @@ export const NotebookSidebar: React.FC<NotebookSidebarProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-card border-r overflow-hidden">
-      <div className="flex items-center gap-3 p-3 md:p-4 border-b bg-muted/20 shrink-0">
-        <BookOpen className="h-5 w-5 text-primary" />
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-sm truncate">
-            {notebookName || "Notebook"}
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            {isEditMode ? "Manage pages" : "Browse notebook pages"}
-          </p>
-        </div>
-        {isEditMode && (
+    <div className="h-full flex flex-col bg-card border-r overflow-hidden transition-all duration-300 ease-in-out">
+      <div className="flex items-center gap-3 p-3 md:p-4 border-b bg-muted/20 shrink-0 animate-in fade-in duration-300">
+        {/* Close Button - Shows on all screens when onMobileClose is provided */}
+        {onMobileClose && (
           <Button
             size="sm"
-            variant="outline"
-            onClick={startNewRootPage}
-            className="gap-1 md:gap-2 px-2 md:px-3"
+            variant="ghost"
+            onClick={onMobileClose}
+            className="h-8 w-8 p-0"
+            aria-label="Close sidebar"
           >
-            <Plus className="h-3 w-3 md:h-4 md:w-4" />
-            <span className="hidden sm:inline">New</span>
+            <X className="h-4 w-4" />
           </Button>
         )}
-      </div>
-      {isEditMode && (
-        <div className="px-3 md:px-4 py-2 text-xs text-muted-foreground bg-muted/10 border-b shrink-0 hidden md:block">
-          Double-click a page to rename it, or use the menu for more actions.
-        </div>
-      )}
-
-      <div className="flex-1 overflow-y-auto scrollbar-hide p-1 md:p-2 pb-8 md:pb-40 min-h-0 relative">
-        {/* Loading Overlay */}
-        <AnimatePresence>
-          {isEditMode && isLoadingPages && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex flex-col items-center gap-3"
+            
+            <BookOpen className="h-5 w-5 text-primary" />
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-sm truncate">
+                {notebookName || "Notebook"}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {isEditMode ? "Manage pages" : "Browse notebook pages"}
+              </p>
+            </div>
+            {isEditMode && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={startNewRootPage}
+                className="gap-1 md:gap-2 px-2 md:px-3"
               >
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                <p className="text-xs text-muted-foreground">Loading pages...</p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {pages.length > 0 ? (
-          <div className="space-y-1">
-            {pages.map((page) => (
-              <PageTreeItem
-                key={page.id}
-                item={page}
-                username={username}
-                notebook={notebook}
-                path={[page.slug]}
-                activePath={activePath}
-                notebookUrl={notebookUrl}
-                level={0}
-                mode={mode}
-                onRefresh={isEditMode ? loadRootPages : () => undefined}
-                parentRefresh={isEditMode ? loadRootPages : undefined}
-                loadChildren={isEditMode ? loadChildren : undefined}
-                onDragStart={isEditMode ? handleDragStart : undefined}
-                onDragEnd={isEditMode ? handleDragEnd : undefined}
-                onDrop={isEditMode ? handleDrop : undefined}
-                isDragging={isDragging}
-                draggedItemId={draggedItem?.item.id ?? null}
-              />
-            ))}
-
-            {isEditMode && showingNewRootPage && (
-              <NewPageInput
-                level={0}
-                onCancel={() => setShowingNewRootPage(false)}
-                onCreate={handleCreateRootPage}
-                placeholder="New page title..."
-              />
+                <Plus className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">New</span>
+              </Button>
             )}
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            {isEditMode ? (
-              !showingNewRootPage ? (
-                <>
-                  <FileText className="h-12 w-12 text-muted-foreground mb-3" />
-                  <h4 className="font-medium text-foreground mb-1">
-                    No pages yet
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Start by creating your first page
-                  </p>
-                  <Button size="sm" onClick={startNewRootPage}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create First Page
-                  </Button>
-                </>
-              ) : (
-                <div className="w-full">
+          {isEditMode && (
+            <div className="px-3 md:px-4 py-2 text-xs text-muted-foreground bg-muted/10 border-b shrink-0 hidden md:block">
+              Double-click a page to rename it, or use the menu for more actions.
+            </div>
+          )}
+
+          <div 
+            className="flex-1 overflow-y-auto p-1 md:p-2 pb-8 md:pb-40 min-h-0 relative notebook-sidebar-scroll"
+          >
+            {/* Loading Overlay */}
+            <AnimatePresence>
+              {isEditMode && isLoadingPages && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col items-center gap-3"
+                  >
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                    <p className="text-xs text-muted-foreground">Loading pages...</p>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {pages.length > 0 ? (
+              <div className="space-y-1">
+                {pages.map((page) => (
+                  <PageTreeItem
+                    key={page.id}
+                    item={page}
+                    username={username}
+                    notebook={notebook}
+                    path={[page.slug]}
+                    activePath={activePath}
+                    notebookUrl={notebookUrl}
+                    level={0}
+                    mode={mode}
+                    onRefresh={isEditMode ? loadRootPages : () => undefined}
+                    parentRefresh={isEditMode ? loadRootPages : undefined}
+                    loadChildren={isEditMode ? loadChildren : undefined}
+                    onDragStart={isEditMode ? handleDragStart : undefined}
+                    onDragEnd={isEditMode ? handleDragEnd : undefined}
+                    onDrop={isEditMode ? handleDrop : undefined}
+                    isDragging={isDragging}
+                    draggedItemId={draggedItem?.item.id ?? null}
+                    onMobileClose={onMobileClose}
+                  />
+                ))}
+
+                {isEditMode && showingNewRootPage && (
                   <NewPageInput
                     level={0}
                     onCancel={() => setShowingNewRootPage(false)}
                     onCreate={handleCreateRootPage}
-                    placeholder="First page title..."
+                    placeholder="New page title..."
                   />
-                </div>
-              )
+                )}
+              </div>
             ) : (
-              <>
-                <FileText className="h-12 w-12 text-muted-foreground mb-3" />
-                <p className="text-sm text-muted-foreground">
-                  No pages in this notebook
-                </p>
-              </>
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                {isEditMode ? (
+                  !showingNewRootPage ? (
+                    <>
+                      <FileText className="h-12 w-12 text-muted-foreground mb-3" />
+                      <h4 className="font-medium text-foreground mb-1">
+                        No pages yet
+                      </h4>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Start by creating your first page
+                      </p>
+                      <Button size="sm" onClick={startNewRootPage}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create First Page
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="w-full">
+                      <NewPageInput
+                        level={0}
+                        onCancel={() => setShowingNewRootPage(false)}
+                        onCreate={handleCreateRootPage}
+                        placeholder="First page title..."
+                      />
+                    </div>
+                  )
+                ) : (
+                  <>
+                    <FileText className="h-12 w-12 text-muted-foreground mb-3" />
+                    <p className="text-sm text-muted-foreground">
+                      No pages in this notebook
+                    </p>
+                  </>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
 
-      {!isEditMode && (
-        <div className="p-2 md:p-3 border-t bg-muted/10 shrink-0">
-          <Link
-            href={`/user/${username}/notebook/${notebook}/read`}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors block"
-          >
-            <span className="hidden md:inline">←</span> Back to overview
-          </Link>
-        </div>
-      )}
+          {!isEditMode && (
+            <div className="p-2 md:p-3 border-t bg-muted/10 shrink-0">
+              <Link
+                href={`/user/${username}/notebook/${notebook}/read`}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors block"
+              >
+                <span className="hidden md:inline">←</span> Back to overview
+              </Link>
+            </div>
+          )}
     </div>
   );
 };

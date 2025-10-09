@@ -196,13 +196,10 @@ export default async function RootLayout({
             />
             <UserProvider userData={user}>
               <ContextProvider>
-                <SidebarProvider>
                   <TopBar />
-                  <GlobalSidebar />
                   <div className="pt-14">
                     <div className="">{children}</div>
                   </div>
-                </SidebarProvider>
               </ContextProvider>
             </UserProvider>
           </LoadingProvider>
