@@ -170,12 +170,12 @@ export const SearchInput = () => {
   };
 
   return (
-    <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
+    <div className="relative w-full">
       <div className="relative">
         <Input
           id="search-bar"
           autoComplete="off"
-          className="w-full pl-10 pr-4 py-2 rounded-full text-base sm:text-lg"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border-muted-foreground/20 bg-muted/30 hover:bg-muted/50 focus:bg-background transition-colors text-sm placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
           placeholder="Search users with @ or articles..."
           type="text"
           value={searchQuery}
@@ -188,18 +188,18 @@ export const SearchInput = () => {
           onKeyDown={handleKeyPress}
           onFocus={() => setIsOpen(true)}
         />
-        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
       </div>
 
       {isOpen && searchQuery.startsWith("@") && (
-        <Command className="absolute top-12 w-full rounded-lg shadow-lg border max-h-96 min-h-24 overflow-y-auto bg-background z-50">
-          <CommandList>
+        <Command className="absolute top-14 w-full rounded-lg shadow-xl border border-border bg-popover z-50 max-h-96 min-h-24 overflow-hidden">
+          <CommandList className="max-h-96 overflow-y-auto">
             {isLoading ? (
-              <div className="flex items-center justify-center py-6">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
               </div>
             ) : users.length > 0 ? (
-              <CommandGroup heading="Users">
+              <CommandGroup heading="Users" className="p-2">
                 {users.map((user) => (
                   <CommandItem
                     key={user.id}
@@ -208,16 +208,16 @@ export const SearchInput = () => {
                       router.push(`/user/${user.username}`);
                       setIsOpen(false);
                     }}
-                    className="cursor-pointer min-h-[48px] flex items-center gap-2 px-2 sm:px-4"
+                    className="cursor-pointer min-h-[56px] flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted/50 transition-colors"
                   >
-                    <Avatar className="mr-3 h-8 w-8 flex-shrink-0">
+                    <Avatar className="h-9 w-9 flex-shrink-0 ring-2 ring-background">
                       <AvatarImage src={user.profilePicture} />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
                         {user.username?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="min-w-0">
-                      <p className="font-medium truncate">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium truncate text-sm">
                         {user.firstName} {user.lastName}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
@@ -228,7 +228,7 @@ export const SearchInput = () => {
                 ))}
               </CommandGroup>
             ) : (
-              <CommandEmpty className="py-6 text-center text-sm">
+              <CommandEmpty className="py-8 text-center text-sm text-muted-foreground">
                 No users found
               </CommandEmpty>
             )}

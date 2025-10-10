@@ -60,7 +60,7 @@ export const PanelsLayout = ({
                     {/* Backdrop - Only on mobile when sidebar is open */}
                     {isSidebarOpen && (
                         <div 
-                            className="fixed inset-0 top-14 bg-black/50 z-30 transition-opacity duration-300 ease-in-out"
+                            className="fixed inset-0 top-16 bg-black/50 z-30 transition-opacity duration-300 ease-in-out"
                             onClick={closeSidebar}
                         />
                     )}
@@ -68,7 +68,7 @@ export const PanelsLayout = ({
                     {/* Sidebar Overlay - Only on mobile */}
                     <div 
                         className={`
-                            fixed top-14 bottom-0 left-0 z-40 w-80 max-w-[85vw]
+                            fixed top-16 bottom-0 left-0 z-40 w-80 max-w-[85vw]
                             transform transition-transform duration-300 ease-in-out
                             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
                         `}
